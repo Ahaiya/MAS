@@ -23,8 +23,8 @@ Before executing ANY task, read the relevant source documents in this priority o
 
 ## Current Progress
 
-- [ ] Phase 0: Repository & Environment Setup   ← **CURRENT PHASE**
-- [ ] Phase 1: Constitutional Contracts & Config Compiler
+- [x] Phase 0: Repository & Environment Setup   ✅ **COMPLETED**
+- [ ] Phase 1: Constitutional Contracts & Config Compiler   ← **CURRENT PHASE**
 - [ ] Phase 2: Intermediate Data Contracts
 - [ ] Phase 3: Mocked Orchestrator-StateGraph Baseline
 - [ ] Phase 4: Policy-Aware MAS Wiring
@@ -45,7 +45,6 @@ Before executing ANY task, read the relevant source documents in this priority o
 ### Phase Gate
 - Do not start Phase N+1 until ALL exit conditions of Phase N are met.
 - After completing a Phase, run the full Phase integration verification.
-- Tag the commit: `phase-N-done`.
 
 ### Failure & Rollback Protocol
 - If a verification command fails, fix within the scope of the current task.

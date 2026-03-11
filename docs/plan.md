@@ -41,43 +41,43 @@ MVP 成功标准：
 
 ## 3. Phase 0: Repository & Environment Setup
 
-- [ ] 初始化目录结构与包占位文件  
+- [x] 初始化目录结构与包占位文件  
   输入: 仓库根目录、`Zen.md`、`research.md`、`architecture.md`  
   输出: `configs/`、`data/samples/`、`scripts/`、`src/contracts/`、`src/config/`、`src/orchestrator/`、`src/agents/`、`src/policies/`、`src/providers/`、`src/pipeline/`、`src/evaluation/`、`tests/unit/`、`tests/integration/`、`tests/e2e/`，以及必要的 `__init__.py`  
   验收: `test -d configs && test -d src/contracts && test -d src/orchestrator && test -d tests/e2e`  
   依赖: 无
 
-- [ ] 初始化 Python 项目元数据与开发依赖模板  
+- [x] 初始化 Python 项目元数据与开发依赖模板  
   输入: 目录骨架、测试与脚本运行需求  
   输出: `pyproject.toml`、`pytest.ini`、可选 `.python-version`  
   验收: `python -c "import tomllib; tomllib.load(open('pyproject.toml','rb'))"`  
   依赖: 目录结构已创建
 
-- [ ] 创建 `.env.example` 并显式隔离 provider 配置  
+- [x] 创建 `.env.example` 并显式隔离 provider 配置  
   输入: provider 抽象需求、`Zen.md` 的 LLM-agnostic 约束  
   输出: `.env.example`，至少包含 `LLM_PROVIDER`、`LLM_MODEL`、`LLM_API_KEY`、`LLM_API_BASE`、`LLM_TIMEOUT_SECONDS`  
   验收: `test -f .env.example`  
   依赖: Python 项目元数据已创建
 
-- [ ] 创建配置加载入口与空实现 CLI 骨架  
+- [x] 创建配置加载入口与空实现 CLI 骨架  
   输入: `configs/` 目录、未来 bundle 加载需求  
   输出: `src/config/loader.py`、`src/config/__init__.py`、`scripts/validate_config.py` 占位实现  
   验收: `python scripts/validate_config.py --help`  
   依赖: 目录结构、项目元数据
 
-- [ ] 初始化测试目录与 smoke test  
+- [x] 初始化测试目录与 smoke test  
   输入: 包结构、CLI 骨架  
   输出: `tests/unit/test_smoke.py`，至少覆盖包导入、脚本入口与基础目录存在性  
   验收: `python -m pytest tests/unit/test_smoke.py`  
   依赖: 项目元数据、配置加载入口
 
-- [ ] 创建基础运行脚本入口  
+- [x] 创建基础运行脚本入口  
   输入: baseline 主链路目标、CLI 参数需求  
   输出: `scripts/run_baseline.py`，支持 `--bundle`、`--provider`、`--input-file`、`--output-dir` 参数；`scripts/extract_sample.py`，支持从 TSV 提取样例  
   验收: `python scripts/run_baseline.py --help && python scripts/extract_sample.py --help`  
   依赖: 项目元数据、测试骨架
 
-- [ ] 从 `data/training_set_8.tsv` 提取 baseline 样例与 manifest  
+- [x] 从 `data/training_set_8.tsv` 提取 baseline 样例与 manifest  
   输入: `data/training_set_8.tsv`、样例 essay id `20716` 与 `20717`  
   输出: `data/samples/sample_20716.txt`、`data/samples/sample_20717.txt`、`data/samples/baseline_manifest.yaml`  
   验收: `python scripts/extract_sample.py --essay-id 20716 --source data/training_set_8.tsv --output data/samples/sample_20716.txt && python scripts/extract_sample.py --essay-id 20717 --source data/training_set_8.tsv --output data/samples/sample_20717.txt`  

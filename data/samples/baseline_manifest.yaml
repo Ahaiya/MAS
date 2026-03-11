@@ -1,0 +1,61 @@
+# Baseline Sample Manifest
+#
+# This manifest defines the sample essays used for baseline validation.
+# These samples exercise different evaluation paths:
+# - 20716: Normal path (standard evaluation flow)
+# - 20717: Path with adjudication (potential scoring conflicts)
+
+metadata:
+  version: "0.1.0"
+  source_dataset: "ASAP Set 8"
+  source_file: "data/training_set_8.tsv"
+  description: "Baseline validation samples for MAS evaluation system"
+
+samples:
+  - id: 20716
+    path: "data/samples/sample_20716.txt"
+    character_count: 3421
+    description: "Normal path sample - standard evaluation flow without adjudication"
+    expected_path: "normal"
+
+  - id: 20717
+    path: "data/samples/sample_20717.txt"
+    character_count: 3963
+    description: "Adjudication path sample - may trigger adjudication due to rater disagreement"
+    expected_path: "adjudication"
+
+# Paths that should be validated
+expected_paths:
+  normal:
+    - description: "Standard evaluation flow"
+      steps:
+        - "config_resolved"
+        - "preprocessed"
+        - "coverage_planned"
+        - "evidence_extracted"
+        - "observation_built"
+        - "scored"
+        - "consistency_checked"
+        - "feedback_rendered"
+        - "validated"
+
+  adjudication:
+    - description: "Evaluation with adjudication triggered"
+      steps:
+        - "config_resolved"
+        - "preprocessed"
+        - "coverage_planned"
+        - "evidence_extracted"
+        - "observation_built"
+        - "scored"
+        - "consistency_checked"
+        - "adjudicated"  # Additional step triggered by rater disagreement
+        - "feedback_rendered"
+        - "validated"
+
+# Validation criteria
+validation:
+  min_evidence_spans: 1
+  min_observations: 1
+  require_score_feedback_link: true
+  require_citation_chain: true

@@ -1,0 +1,33 @@
+Metadata-Version: 2.4
+Name: mas-rubric-evaluation
+Version: 0.0.1
+Summary: Multi-Agent System for rubric-based automated text evaluation and feedback
+Author: Project Team
+License: MIT
+Keywords: multi-agent,rubric,evaluation,LLM,education
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Education
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: pydantic>=2.5.0
+Requires-Dist: pyyaml>=6.0.1
+Requires-Dist: jinja2>=3.1.3
+Requires-Dist: typer>=0.9.0
+Provides-Extra: dev
+Requires-Dist: pytest>=8.0.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.1.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.23.0; extra == "dev"
+Requires-Dist: pytest-mock>=3.12.0; extra == "dev"
+Requires-Dist: black>=24.0.0; extra == "dev"
+Requires-Dist: ruff>=0.1.0; extra == "dev"
+Requires-Dist: mypy>=1.8.0; extra == "dev"
+Provides-Extra: real-provider
+Requires-Dist: openai>=1.10.0; extra == "real-provider"
+Requires-Dist: anthropic>=0.18.0; extra == "real-provider"
+Requires-Dist: httpx>=0.26.0; extra == "real-provider"

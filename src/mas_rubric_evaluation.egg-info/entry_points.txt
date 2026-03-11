@@ -1,0 +1,4 @@
+[console_scripts]
+extract-sample = scripts.extract_sample:main
+run-baseline = scripts.run_baseline:main
+validate-config = scripts.validate_config:main
