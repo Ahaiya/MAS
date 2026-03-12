@@ -164,10 +164,10 @@ MVP 成功标准：
 
 ## 6. Phase 3: Mocked Orchestrator-StateGraph Baseline
 
-- [ ] 定义状态机与节点路由骨架  
-  输入: `architecture.md` 的 Mermaid 运行流、Phase 2 contract  
-  输出: `src/orchestrator/states.py`、`src/orchestrator/graph.py`、`src/orchestrator/router.py`，至少覆盖 `CONFIG_RESOLVED -> PREPROCESSED -> COVERAGE_PLANNED -> EVIDENCE_EXTRACTED -> OBSERVATION_BUILT -> SCORED -> CONSISTENCY_CHECKED -> ADJUDICATED | RE_EXTRACT | RE_SCORE | HUMAN_REVIEW -> FEEDBACK_RENDERED -> VALIDATED`  
-  验收: `python -m pytest tests/unit/orchestrator/test_state_graph.py`  
+- [x] 定义状态机与节点路由骨架
+  输入: `architecture.md` 的 Mermaid 运行流、Phase 2 contract
+  输出: `src/orchestrator/states.py`、`src/orchestrator/graph.py`、`src/orchestrator/router.py`，至少覆盖 `CONFIG_RESOLVED -> PREPROCESSED -> COVERAGE_PLANNED -> EVIDENCE_EXTRACTED -> OBSERVATION_BUILT -> SCORED -> CONSISTENCY_CHECKED -> ADJUDICATED | RE_EXTRACT | RE_SCORE | HUMAN_REVIEW -> FEEDBACK_RENDERED -> VALIDATED`
+  验收: `python -m pytest tests/unit/orchestrator/test_state_graph.py`
   依赖: Phase 2 完成
 
 - [ ] 实现 checkpoint、fallback 与 revert hooks  

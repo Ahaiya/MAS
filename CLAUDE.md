@@ -25,8 +25,8 @@ Before executing ANY task, read the relevant source documents in this priority o
 
 - [x] Phase 0: Repository & Environment Setup
 - [x] Phase 1: Constitutional Contracts & Config Compiler   
-- [ ] Phase 2: Intermediate Data Contracts ← **CURRENT PHASE**
-- [ ] Phase 3: Mocked Orchestrator-StateGraph Baseline
+- [x] Phase 2: Intermediate Data Contracts
+- [ ] Phase 3: Mocked Orchestrator-StateGraph Baseline ← **CURRENT PHASE**
 - [ ] Phase 4: Policy-Aware MAS Wiring
 - [ ] Phase 5: Real Provider Adapter & Prompt Wiring
 - [ ] Phase 6: End-to-End Baseline Validation
