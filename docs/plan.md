@@ -88,37 +88,37 @@ MVP 成功标准：
 
 ## 4. Phase 1: Constitutional Contracts & Config Compiler
 
-- [ ] 将规则源文件转写为运行时配置工件  
+- [x] 将规则源文件转写为运行时配置工件  
   输入: `Rubric_Guidelines.md`、`Adjudication_Rules.md`、`Example.md`  
   输出: `configs/rubrics/asap_set8_baseline.yaml`、`configs/policies/adjudication/asap_set8_default.yaml`、`configs/policies/aggregation/asap_set8_composite.yaml`、`configs/policies/explanation/evidence_grounded_v1.yaml`、`configs/prompts/` 占位模板、`configs/bundles/asap_set8_baseline.bundle.yaml`  
   验收: `test -f configs/rubrics/asap_set8_baseline.yaml && test -f configs/policies/adjudication/asap_set8_default.yaml && test -f configs/bundles/asap_set8_baseline.bundle.yaml`  
   依赖: Phase 0 完成
 
-- [ ] 定义 `ArtifactBundle` 与 `ResolvedArtifactBundle` schema  
+- [x] 定义 `ArtifactBundle` 与 `ResolvedArtifactBundle` schema  
   输入: `Zen.md`、`research.md`、`architecture.md`、配置工件  
   输出: `src/contracts/artifact_bundle.py`，至少覆盖 bundle id/version、rubric/adjudication/aggregation/explanation/prompt refs、freeze hash、source refs  
   验收: `python -m pytest tests/unit/contracts/test_artifact_bundle.py`  
   依赖: 配置工件已创建
 
-- [ ] 定义 Rubric / Policy / Explanation / Prompt 配置 schema  
+- [x] 定义 Rubric / Policy / Explanation / Prompt 配置 schema  
   输入: `Rubric_Guidelines.md`、`Adjudication_Rules.md`、`Example.md`  
   输出: `src/config/schema.py`，覆盖 Rubric Core、Adjudication Policy、Aggregation Policy、Explanation Policy、Prompt Template schema  
   验收: `python -m pytest tests/unit/config/test_schema_validation.py`  
   依赖: `ArtifactBundle` schema
 
-- [ ] 实现配置编译、解析、冻结与版本闭包校验  
+- [x] 实现配置编译、解析、冻结与版本闭包校验  
   输入: `configs/` 工件、配置 schema  
   输出: `src/config/compiler.py`、`src/config/resolver.py`、`src/config/freeze.py`、`scripts/validate_config.py`  
   验收: `python -m pytest tests/unit/config/test_config_compiler.py && python scripts/validate_config.py --bundle configs/bundles/asap_set8_baseline.bundle.yaml`  
   依赖: 配置 schema 已定义
 
-- [ ] 显式定义 canonical score 与 display annotation 分离 contract  
+- [x] 显式定义 canonical score 与 display annotation 分离 contract  
   输入: `Rubric_Guidelines.md` 的整数评分、`Example.md` 的 `4-` / `3-` 展示标记  
   输出: `src/contracts/score_representation.py`，至少包含 `canonical_score`、`display_score`、`display_annotation`、`scale_ref`  
   验收: `python -m pytest tests/unit/contracts/test_score_representation.py`  
   依赖: 配置 schema 已定义
 
-- [ ] 编写零硬编码防线测试  
+- [x] 编写零硬编码防线测试  
   输入: 主配置工件、变体配置夹具需求  
   输出: `tests/fixtures/configs/alt_bundle.yaml`、`tests/unit/config/test_no_business_facts_in_code.py`，验证维度数、trait 名称、分档范围、composite 公式、display annotation 均来自配置  
   验收: `python -m pytest tests/unit/config/test_no_business_facts_in_code.py`  

@@ -3,6 +3,7 @@ src/agents/__init__.py
 src/config/__init__.py
 src/config/loader.py
 src/contracts/__init__.py
+src/contracts/artifact_bundle.py
 src/evaluation/__init__.py
 src/mas_rubric_evaluation.egg-info/PKG-INFO
 src/mas_rubric_evaluation.egg-info/SOURCES.txt

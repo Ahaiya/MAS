@@ -1,0 +1,58 @@
+# ASAP Set 8 Baseline Artifact Bundle
+# This bundle combines all configuration artifacts for a complete MAS evaluation
+
+schema_version: "2.0"
+
+artifact_bundle:
+  bundle_id: "asap_set8_baseline"
+  bundle_version: "2026-03-12"
+  bundle_name: "ASAP Set 8 Baseline Bundle"
+  description: "Complete configuration bundle for ASAP Set 8 automated essay scoring baseline"
+
+  # Artifact References
+  rubric_core_ref: "rubric://asap_set8_writing_traits/v1"
+  rubric_source_file: "rubrics/asap_set8_baseline.yaml"
+
+  adjudication_policy_ref: "policy://asap_set8_default_adjudication/v1"
+  adjudication_source_file: "policies/adjudication/asap_set8_default.yaml"
+
+  aggregation_policy_ref: "policy://asap_set8_composite/v1"
+  aggregation_source_file: "policies/aggregation/asap_set8_composite.yaml"
+
+  explanation_policy_ref: "explain://evidence_grounded_v1"
+  explanation_source_file: "policies/explanation/evidence_grounded_v1.yaml"
+
+  operational_prompt_recipe_ref: "ops://prompts/baseline/v1"
+  prompt_templates:
+    - "prompts/evidence_extraction.yaml"
+    - "prompts/scoring.yaml"
+    - "prompts/explanation.yaml"
+
+  # Version Closure
+  freeze_hash: "TBD"  # Computed at load time
+  freeze_timestamp: "2026-03-12"
+
+  # Source Documentation References
+  source_documents:
+    - "docs/Rubric_Guidelines.md"
+    - "docs/Adjudication_Rules.md"
+    - "docs/Example.md"
+
+  # Bundle Validation
+  validation_rules:
+    - rule_id: "all_refs_resolvable"
+      type: "reference_resolution"
+      description: "All artifact references must resolve to existing files"
+    - rule_id: "schema_version_consistent"
+      type: "version_check"
+      description: "All artifacts must use consistent schema version"
+    - rule_id: "scale_consistent"
+      type: "cross_artifact_check"
+      description: "Rubric scale must match adjudication and aggregation expectations"
+
+  # Metadata
+  metadata:
+    created_by: "Phase 1 Task 1 execution"
+    target_evaluation: "automated_essay_scoring"
+    target_dataset: "ASAP Set 8"
+    baseline_compatible: true

@@ -1,0 +1,97 @@
+# Alternative 3-Dimension Rubric (for zero-hardcoding firewall tests)
+# Intentionally different from baseline: 3 dimensions, 1-4 scale
+
+schema_version: "2.0"
+
+rubric_core:
+  rubric_id: "alt_3dim_rubric"
+  rubric_version: "v1"
+  rubric_name: "Alternative 3-Dimension Rubric"
+  description: "Minimal alternative rubric to prove config-driven behavior"
+
+  scales:
+    - scale_id: "ordinal_4"
+      type: "ordinal"
+      min: 1
+      max: 4
+      canonical_score_type: "integer"
+      display_overlays_allowed: false
+
+  dimensions:
+    - dimension_id: "alpha"
+      code: "A"
+      name: "Alpha Dimension"
+      scale_ref: "ordinal_4"
+      description: "First alternative dimension for firewall testing."
+      observation_schema:
+        required_facets:
+          - "alpha_facet"
+      evidence_requirements:
+        minimum_evidence_units: 1
+        allowed_evidence_scope: ["span"]
+        require_textual_grounding: true
+      levels:
+        - rank: 1
+          summary: "Minimal alpha."
+          descriptors: ["alpha characteristic 1"]
+        - rank: 2
+          summary: "Developing alpha."
+          descriptors: ["alpha characteristic 2"]
+        - rank: 3
+          summary: "Proficient alpha."
+          descriptors: ["alpha characteristic 3"]
+        - rank: 4
+          summary: "Exemplary alpha."
+          descriptors: ["alpha characteristic 4"]
+
+    - dimension_id: "beta"
+      code: "B"
+      name: "Beta Dimension"
+      scale_ref: "ordinal_4"
+      description: "Second alternative dimension for firewall testing."
+      observation_schema:
+        required_facets:
+          - "beta_facet"
+      evidence_requirements:
+        minimum_evidence_units: 1
+        allowed_evidence_scope: ["span"]
+        require_textual_grounding: false
+      levels:
+        - rank: 1
+          summary: "Minimal beta."
+          descriptors: ["beta characteristic 1"]
+        - rank: 2
+          summary: "Developing beta."
+          descriptors: ["beta characteristic 2"]
+        - rank: 3
+          summary: "Proficient beta."
+          descriptors: ["beta characteristic 3"]
+        - rank: 4
+          summary: "Exemplary beta."
+          descriptors: ["beta characteristic 4"]
+
+    - dimension_id: "gamma"
+      code: "G"
+      name: "Gamma Dimension"
+      scale_ref: "ordinal_4"
+      description: "Third alternative dimension for firewall testing."
+      observation_schema:
+        required_facets:
+          - "gamma_facet"
+      evidence_requirements:
+        minimum_evidence_units: 1
+        allowed_evidence_scope: ["span", "global"]
+        require_textual_grounding: true
+      levels:
+        - rank: 1
+          summary: "Minimal gamma."
+          descriptors: ["gamma characteristic 1"]
+        - rank: 2
+          summary: "Developing gamma."
+          descriptors: ["gamma characteristic 2"]
+        - rank: 3
+          summary: "Proficient gamma."
+          descriptors: ["gamma characteristic 3"]
+        - rank: 4
+          summary: "Exemplary gamma."
+          descriptors: ["gamma characteristic 4"]

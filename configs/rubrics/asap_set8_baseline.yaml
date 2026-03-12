@@ -1,0 +1,421 @@
+# ASAP Set 8 Baseline Rubric Core
+# Source: docs/Rubric_Guidelines.md
+# This configuration defines the six writing traits with 1-6 ordinal scale
+
+schema_version: "2.0"
+
+rubric_core:
+  rubric_id: "asap_set8_writing_traits"
+  rubric_version: "v1"
+  rubric_name: "ASAP Set 8 Writing Traits"
+  description: "Six-trait writing rubric for automated essay scoring"
+
+  scales:
+    - scale_id: "ordinal_6"
+      type: "ordinal"
+      min: 1
+      max: 6
+      canonical_score_type: "integer"
+      display_overlays_allowed: true
+
+  dimensions:
+    # Dimension 1: Ideas and Content (I)
+    - dimension_id: "ideas_content"
+      code: "I"
+      name: "Ideas and Content"
+      scale_ref: "ordinal_6"
+      description: "Clarity, focus, main idea development, support relevance, depth, audience and purpose fit."
+      observation_schema:
+        required_facets:
+          - "clarity_focus"
+          - "main_idea_salience"
+          - "support_relevance"
+          - "development_depth"
+          - "audience_purpose_fit"
+      evidence_requirements:
+        minimum_evidence_units: 2
+        allowed_evidence_scope: ["span", "global"]
+        require_textual_grounding: true
+      levels:
+        - rank: 1
+          summary: "Lacks central idea or purpose."
+          descriptors:
+            - "ideas are extremely limited or unclear"
+            - "development is minimal or nonexistent"
+            - "paper is too short to demonstrate development"
+        - rank: 2
+          summary: "Main ideas somewhat unclear; minimal development."
+          descriptors:
+            - "purpose and main ideas may require extensive inferences"
+            - "minimal development; insufficient details"
+            - "irrelevant details clutter the text"
+            - "extensive repetition of detail"
+        - rank: 3
+          summary: "Understandable but simplistic; support often limited."
+          descriptors:
+            - "predictable or overly-obvious main ideas"
+            - "support attempted but details are limited, uneven, somewhat off-topic, or too general"
+            - "details may not be well-grounded in credible resources"
+            - "difficulties moving from general observations to specifics"
+        - rank: 4
+          summary: "Clear main ideas with relevant but limited support."
+          descriptors:
+            - "easily identifiable purpose"
+            - "clear main ideas"
+            - "supporting details are relevant but may be overly general or limited"
+            - "topic is explored but developmental details may be out of balance"
+            - "content is relevant but perhaps not consistently well-chosen"
+        - rank: 5
+          summary: "Clear, focused, interesting with strong support."
+          descriptors:
+            - "clarity, focus, and control"
+            - "main ideas stand out"
+            - "supporting, relevant, carefully selected details"
+            - "thorough, balanced explanation/exploration of topic"
+            - "content and details well-suited to audience and purpose"
+        - rank: 6
+          summary: "Exceptionally clear, rich, focused, well-supported."
+          descriptors:
+            - "exceptional clarity, focus, and control"
+            - "main ideas stand out strongly"
+            - "strong, accurate, credible support with rich details"
+            - "thorough, balanced, in-depth exploration with connections and insights"
+            - "content exceptionally well-suited to audience and purpose"
+
+    # Dimension 2: Organization (O)
+    - dimension_id: "organization"
+      code: "O"
+      name: "Organization"
+      scale_ref: "ordinal_6"
+      description: "Order, structure, sequencing, transitions, beginning and closure, detail placement."
+      observation_schema:
+        required_facets:
+          - "sequencing"
+          - "beginning_closure"
+          - "transitions"
+          - "detail_placement"
+      evidence_requirements:
+        minimum_evidence_units: 2
+        allowed_evidence_scope: ["span", "global"]
+        require_textual_grounding: true
+      levels:
+        - rank: 1
+          summary: "Lacks coherence; haphazard and disjointed."
+          descriptors:
+            - "lack of effective sequencing and paragraph breaks"
+            - "failure to provide identifiable beginning, body, and/or ending"
+            - "lack of transitions"
+            - "pacing consistently awkward; mired or rushed"
+            - "lack of organization obscures or distorts main point"
+        - rank: 2
+          summary: "Unclear organizational structure; difficult to follow."
+          descriptors:
+            - "some attempts at sequencing but order frequently unclear"
+            - "missing or extremely undeveloped beginning, body, and/or ending"
+            - "lack of transitions, or ineffective/overused"
+            - "details seem randomly placed, leaving reader confused"
+            - "lack of effective organizational structure"
+        - rank: 3
+          summary: "Attempted organization; inconsistent or skeletal structure."
+          descriptors:
+            - "attempts at sequencing and paragraph breaks but order occasionally unclear"
+            - "beginning and ending present but undeveloped or too obvious"
+            - "transitions sometimes work; same few devices overused"
+            - "structure is skeletal or too rigid"
+            - "placement of details not always effective"
+        - rank: 4
+          summary: "Clear and coherent organization; may seem formulaic."
+          descriptors:
+            - "clear sequencing and paragraph breaks"
+            - "organization may be predictable"
+            - "recognizable, developed beginning not particularly inviting"
+            - "developed conclusion may lack subtlety"
+            - "body easy to follow with details fitting where placed"
+            - "transitions may be stilted or formulaic"
+            - "organization helps reader despite some weaknesses"
+        - rank: 5
+          summary: "Strong order and structure; moves reader through text."
+          descriptors:
+            - "effective sequencing and paragraph breaks"
+            - "organizational structure fits topic and is easy to follow"
+            - "inviting beginning draws reader in"
+            - "satisfying sense of resolution or closure"
+            - "smooth, effective transitions among all elements"
+            - "details fit where placed"
+        - rank: 6
+          summary: "Compelling order and structure; exceptional flow."
+          descriptors:
+            - "effective, perhaps creative, sequencing and paragraph breaks"
+            - "strong, inviting beginning that draws reader in"
+            - "strong, satisfying sense of resolution or closure"
+            - "smooth, effective transitions among all elements"
+            - "details fit where placed"
+
+    # Dimension 3: Voice (V)
+    - dimension_id: "voice"
+      code: "V"
+      name: "Voice"
+      scale_ref: "ordinal_6"
+      description: "Writer's personality and individuality; audience awareness; commitment to topic."
+      observation_schema:
+        required_facets:
+          - "audience_awareness"
+          - "commitment"
+          - "expressiveness"
+      evidence_requirements:
+        minimum_evidence_units: 1
+        allowed_evidence_scope: ["span", "global"]
+        require_textual_grounding: true
+      levels:
+        - rank: 1
+          summary: "No engagement; flat and lifeless."
+          descriptors:
+            - "no engagement of writer; writing is flat and lifeless"
+            - "lack of audience awareness; no sense of 'writing to be read'"
+            - "no hint of writer behind words"
+            - "no sense of interaction between reader and writer"
+        - rank: 2
+          summary: "Little involvement or commitment; inappropriate voice."
+          descriptors:
+            - "little engagement of writer; writing tends to be flat, lifeless, stiff, or mechanical"
+            - "voice likely to be overly informal and personal"
+            - "lack of audience awareness; little sense of 'writing to be read'"
+            - "little or no hint of writer behind words"
+        - rank: 3
+          summary: "Inconsistent commitment; inappropriate or impersonal voice."
+          descriptors:
+            - "limited sense of audience; writer's awareness unclear"
+            - "occasional sense of writer but voice may shift or disappear"
+            - "voice either inappropriately personal or inappropriately impersonal"
+            - "limited ability to shift to more objective voice when necessary"
+        - rank: 4
+          summary: "Voice present; some expressiveness and sincerity."
+          descriptors:
+            - "suitable level of closeness to or distance from audience"
+            - "sense of audience; writer seems aware but has not consistently employed appropriate voice"
+            - "reader may glimpse writer and feel sense of interaction in places"
+            - "liveliness, sincerity, or humor when appropriate"
+            - "writing may be inappropriately casual or inappropriately formal in places"
+        - rank: 5
+          summary: "Appropriate voice with commitment; sense of 'writing to be read'."
+          descriptors:
+            - "appropriate level of closeness to or distance from audience"
+            - "strong sense of audience; writer seems aware of reader and how to communicate effectively"
+            - "reader may discern writer behind words and feel sense of interaction"
+            - "topic has come to life; shows originality, liveliness, honesty, conviction, excitement, humor, or suspense"
+        - rank: 6
+          summary: "Exceptional voice; deep commitment and expressive."
+          descriptors:
+            - "effective level of closeness to or distance from audience"
+            - "exceptionally strong sense of audience; writer seems aware of reader and how to communicate effectively"
+            - "sense that topic has come to life; shows originality, liveliness, honesty, conviction, excitement, humor, or suspense"
+            - "writer demonstrates deep commitment to topic"
+
+    # Dimension 4: Word Choice (W)
+    - dimension_id: "word_choice"
+      code: "W"
+      name: "Word Choice"
+      scale_ref: "ordinal_6"
+      description: "Precision, variety, appropriateness; imagery and figurative language."
+      observation_schema:
+        required_facets:
+          - "precision"
+          - "variety"
+          - "imagery"
+          - "appropriateness"
+      evidence_requirements:
+        minimum_evidence_units: 2
+        allowed_evidence_scope: ["span"]
+        require_textual_grounding: true
+      levels:
+        - rank: 1
+          summary: "Extremely limited vocabulary; meaning obscured."
+          descriptors:
+            - "general, vague words that fail to communicate"
+            - "extremely limited range of words"
+            - "words simply do not fit text; seem imprecise, inadequate, or just plain wrong"
+        - rank: 2
+          summary: "Monotonous and/or misused language."
+          descriptors:
+            - "words that are colorless, flat, or imprecise"
+            - "monotonous repetition or overwhelming reliance on worn expressions"
+            - "images that are fuzzy or absent altogether"
+        - rank: 3
+          summary: "Lacks precision and variety; generic paper."
+          descriptors:
+            - "words that work but rarely capture reader's interest"
+            - "expression seems mundane and general; slang not effective"
+            - "attempts at colorful language seem overdone or forced"
+            - "words generally accurate but misused words may occasionally appear"
+            - "reliance on cliches and overused expressions"
+        - rank: 4
+          summary: "Words effectively convey message; functional but not energizing."
+          descriptors:
+            - "words that work but do not particularly energize writing"
+            - "expression is functional; slang not purposeful or effective"
+            - "attempts at colorful language may occasionally seem overdone"
+            - "occasional overuse of technical language or jargon"
+            - "rare experiments with language; avoids clichés"
+        - rank: 5
+          summary: "Interesting, precise, natural language."
+          descriptors:
+            - "accurate, specific words; word choices energize writing"
+            - "fresh, vivid expression; slang purposeful and effective"
+            - "vocabulary may be striking and varied but natural and not overdone"
+            - "ordinary words used in unusual way"
+            - "words that evoke clear images; figurative language may be used"
+        - rank: 6
+          summary: "Exceptionally interesting, precise, natural language."
+          descriptors:
+            - "accurate, strong, specific words; powerful words energize writing"
+            - "fresh, original expression; slang purposeful and effective"
+            - "vocabulary that is striking and varied but natural and not overdone"
+            - "ordinary words used in unusual way"
+            - "words that evoke strong images; figurative language may be used"
+
+    # Dimension 5: Sentence Fluency (S)
+    - dimension_id: "sentence_fluency"
+      code: "S"
+      name: "Sentence Fluency"
+      scale_ref: "ordinal_6"
+      description: "Flow, rhythm, sentence structure variety, readability."
+      observation_schema:
+        required_facets:
+          - "flow_rhythm"
+          - "sentence_variety"
+          - "structural_control"
+      evidence_requirements:
+        minimum_evidence_units: 2
+        allowed_evidence_scope: ["span", "global"]
+        require_textual_grounding: true
+      levels:
+        - rank: 1
+          summary: "Difficult to follow or read aloud; disjointed."
+          descriptors:
+            - "text does not invite smooth oral reading"
+            - "confusing word order often jarring and irregular"
+            - "sentence structure frequently obscures meaning"
+            - "sentences are disjointed, confusing, or rambling"
+        - rank: 2
+          summary: "Choppy or rambling; awkward constructions."
+          descriptors:
+            - "significant portions difficult to follow or read aloud"
+            - "sentence patterns that are monotonous"
+            - "significant number of awkward, choppy, or rambling constructions"
+        - rank: 3
+          summary: "Mechanical rather than fluid; occasional awkwardness."
+          descriptors:
+            - "some passages invite fluid oral reading; others do not"
+            - "some variety but falls into repetitive patterns"
+            - "good control over simple sentences, little over complex"
+            - "sentences functional but lack energy"
+            - "lapses in stylistic control; dialogue may sound stilted"
+        - rank: 4
+          summary: "Flows but less than fluid; somewhat varied patterns."
+          descriptors:
+            - "natural sound; reader moves easily but lacks rhythm and grace"
+            - "some repeated patterns that detract from impact"
+            - "strong control over simple sentences, variable over complex"
+            - "occasional lapses in stylistic control"
+            - "dialogue sounds natural for most part but may be stilted"
+        - rank: 5
+          summary: "Easy flow and rhythm; carefully crafted sentences."
+          descriptors:
+            - "natural, fluent sound; glides from sentence to sentence"
+            - "variation in structure, length, and beginnings that add interest"
+            - "sentence structure that enhances meaning"
+            - "control over sentence structure; fragments work well"
+            - "stylistic control; dialogue sounds natural"
+        - rank: 6
+          summary: "Effective flow and rhythm; high degree of craftsmanship."
+          descriptors:
+            - "natural, fluent sound; glides effortlessly"
+            - "extensive variation in structure, length, and beginnings"
+            - "structure enhances meaning by drawing attention to key ideas"
+            - "varied patterns creating effective combination of power and grace"
+            - "strong control over structure; fragments work well"
+            - "stylistic control; dialogue sounds natural"
+
+    # Dimension 6: Conventions (C)
+    - dimension_id: "conventions"
+      code: "C"
+      name: "Conventions"
+      scale_ref: "ordinal_6"
+      description: "Punctuation, spelling, capitalization, grammar, and usage."
+      observation_schema:
+        required_facets:
+          - "punctuation"
+          - "spelling"
+          - "capitalization"
+          - "grammar_usage"
+          - "readability_impact"
+      evidence_requirements:
+        minimum_evidence_units: 3
+        allowed_evidence_scope: ["span"]
+        require_textual_grounding: true
+      levels:
+        - rank: 1
+          summary: "Numerous errors; text difficult to read."
+          descriptors:
+            - "very limited skill in using conventions"
+            - "basic punctuation tends to be omitted, haphazard, or incorrect"
+            - "frequent spelling errors that significantly impair readability"
+            - "capitalization appears random"
+            - "need for extensive editing"
+        - rank: 2
+          summary: "Little control; errors impede readability."
+          descriptors:
+            - "little control over basic conventions"
+            - "many end-of-sentence errors; frequent internal punctuation errors"
+            - "spelling errors that frequently distract reader; common words misspelled"
+            - "capitalization inconsistent or often incorrect"
+            - "errors interfere with readability and meaning"
+            - "substantial need for editing"
+        - rank: 3
+          summary: "Limited control; errors begin to impede readability."
+          descriptors:
+            - "some control over basic conventions"
+            - "end-of-sentence punctuation usually correct; internal punctuation has frequent errors"
+            - "spelling errors distract reader; common words misspelled"
+            - "capitalization errors"
+            - "errors in grammar and usage do not block meaning but distract reader"
+            - "significant need for editing"
+        - rank: 4
+          summary: "Control of conventions; minor errors do not impede."
+          descriptors:
+            - "control over conventions used, though wide range not demonstrated"
+            - "correct end-of-sentence punctuation; internal sometimes incorrect"
+            - "spelling usually correct, especially on common words"
+            - "correct capitalization; errors, if any, are minor"
+            - "occasional lapses in grammar and usage; not severe enough to distort meaning"
+            - "moderate need for editing"
+        - rank: 5
+          summary: "Strong control; errors are few and minor."
+          descriptors:
+            - "strong control of conventions"
+            - "effective use of punctuation that guides reader through text"
+            - "correct spelling, even of more difficult words"
+            - "correct capitalization; errors, if any, are minor"
+            - "correct grammar and usage contribute to clarity and style"
+            - "skill in using wide range of conventions"
+            - "little need for editing"
+        - rank: 6
+          summary: "Exceptionally strong control; errors so few they escape notice."
+          descriptors:
+            - "strong control; manipulation may occur for stylistic effect"
+            - "strong, effective use of punctuation"
+            - "correct spelling, even of difficult words"
+            - "correct grammar and usage contribute to clarity and style"
+            - "skill in using wide range of conventions in complex piece"
+            - "little or no need for editing"
+
+  validation_rules:
+    - rule_id: "level_order_monotonic"
+      type: "descriptor_order"
+      description: "Levels must be ordered from 1 to 6 with progressive quality"
+    - rule_id: "facet_coverage_required"
+      type: "requires_observation_facets"
+      description: "All required facets must be covered in observation"
+    - rule_id: "score_in_scale_range"
+      type: "range_check"
+      description: "All scores must be within scale min-max"

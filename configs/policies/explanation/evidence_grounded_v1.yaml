@@ -1,0 +1,75 @@
+# Evidence-Grounded Explanation Policy v1
+# Source: docs/Example.md
+# This policy governs how explanations are assembled and rendered
+
+schema_version: "2.0"
+
+explanation_policy:
+  policy_id: "evidence_grounded_v1"
+  policy_version: "v1"
+  policy_name: "Evidence-Grounded Explanation"
+  description: "Explanations must reference rubric descriptors and textual evidence"
+
+  requirements:
+    require_descriptor_alignment: true
+    require_evidence_links: true
+    forbid_unreferenced_claims: true
+    require_score_citation: true
+
+  render_sections:
+    - section_id: "dimension_score"
+      type: "score_with_annotation"
+      description: "Display canonical score with optional display annotation"
+      fields:
+        - "dimension_name"
+        - "canonical_score"
+        - "display_annotation_optional"
+
+    - section_id: "rubric_alignment"
+      type: "descriptor_based_commentary"
+      description: "Commentary that references specific rubric descriptors"
+      requirements:
+        - "must quote or paraphrase relevant descriptors from rubric"
+        - "must link descriptors to observed evidence"
+        - "must not introduce rubric terminology not in descriptor set"
+      template_style: "structured_paragraph"
+
+    - section_id: "evidence_summary"
+      type: "textual_evidence_citations"
+      description: "Citations of specific text spans that support the score"
+      requirements:
+        - "must provide at least minimum_evidence_units per dimension"
+        - "must include direct quotes or close paraphrases"
+        - "must link each evidence to specific facet or descriptor"
+        - "may include span offsets for precision"
+
+    - section_id: "uncertainty_note"
+      type: "conditional_uncertainty"
+      description: "Note when confidence is low or observation incomplete"
+      render_when:
+        - "observation_confidence_below_threshold"
+        - "coverage_gaps_exist"
+        - "adjudication_was_required"
+      content_style: "caveat_statement"
+
+  citation_rules:
+    descriptor_citation_style: "direct_reference"
+    evidence_citation_style: "quoted_span_with_context"
+    min_citations_per_dimension: 1
+    allow_synthetic_summary: false
+
+  display_annotation_policy:
+    allow_canonical_only: true
+    allow_range_annotations: true  # e.g., "4-", "3-"
+    allow_quality_labels: true  # e.g., "High", "Medium", "Low"
+    canonical_score_field: "final_score"
+    display_annotation_field: "display_annotation"
+
+  output_constraints:
+    max_commentary_length_per_dimension: 150
+    require_evidence_score_chain: true
+    forbid_free_form_generation: true
+
+  metadata:
+    source_document: "docs/Example.md"
+    version_timestamp: "2026-03-12"

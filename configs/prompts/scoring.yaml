@@ -1,0 +1,50 @@
+# Scoring Prompt Template
+# This template guides agents to assign scores based on rubric descriptors
+
+prompt_template: |
+  You are a trained essay scorer using the ASAP Set 8 writing rubric.
+
+  Your task is to score the essay for the writing trait: {{ dimension_name }} ({{ dimension_code }}).
+
+  ## Rubric Scale (1-6)
+  {% for level in levels %}
+  **Score {{ level.rank }}: {{ level.summary }}**
+  {% for descriptor in level.descriptors %}
+  - {{ descriptor }}
+  {% endfor %}
+
+  {% endfor %}
+
+  ## Essay Text
+  {{ essay_text }}
+
+  ## Evidence Summary
+  {% for evidence in evidence_spans %}
+  - "{{ evidence.quote }}" (supports {{ evidence.facets|join(', ') }})
+  {% endfor %}
+
+  ## Instructions
+  1. Review the rubric scale descriptors carefully.
+  2. Consider the evidence provided and the essay as a whole.
+  3. Select the score (1-6) that best matches the essay's performance on this trait.
+  4. Reference specific descriptors from the rubric in your justification.
+  5. Link your decision to specific evidence from the essay.
+
+  ## Output Format (JSON)
+  {
+    "proposed_score": integer,
+    "descriptor_refs": [
+      "exact text of 2-3 relevant descriptors"
+    ],
+    "evidence_ids": [
+      "ids of evidence that support this score"
+    ],
+    "confidence": float,
+    "justification": "brief explanation linking score to descriptors and evidence"
+  }
+
+  Score based on the rubric descriptors. Your score must be between 1 and 6.
+
+metadata:
+  template_version: "v1"
+  compatible_dimensions: ["*"]

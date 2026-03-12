@@ -1,0 +1,51 @@
+# Alternative Explanation Policy (for zero-hardcoding firewall tests)
+# Intentionally different: allow_range_annotations: false (baseline uses true)
+
+schema_version: "2.0"
+
+explanation_policy:
+  policy_id: "alt_simple_explanation"
+  policy_version: "v1"
+  policy_name: "Simple Alternative Explanation"
+  description: "Explanation policy without range annotations for firewall testing"
+
+  requirements:
+    require_descriptor_alignment: true
+    require_evidence_links: false
+    forbid_unreferenced_claims: false
+    require_score_citation: true
+
+  render_sections:
+    - section_id: "score_display"
+      type: "score_with_annotation"
+      description: "Display canonical score"
+      fields:
+        - "canonical_score"
+
+    - section_id: "brief_commentary"
+      type: "descriptor_based_commentary"
+      description: "Brief descriptor-aligned commentary"
+      requirements:
+        - "must reference relevant descriptor"
+      template_style: "single_sentence"
+
+  citation_rules:
+    descriptor_citation_style: "summary_reference"
+    evidence_citation_style: "brief_quote"
+    min_citations_per_dimension: 1
+    allow_synthetic_summary: true
+
+  display_annotation_policy:
+    allow_canonical_only: true
+    allow_range_annotations: false
+    allow_quality_labels: false
+    canonical_score_field: "score"
+    display_annotation_field: "annotation"
+
+  output_constraints:
+    max_commentary_length_per_dimension: 80
+    require_evidence_score_chain: false
+    forbid_free_form_generation: false
+
+  metadata:
+    purpose: "zero_hardcoding_firewall_test"

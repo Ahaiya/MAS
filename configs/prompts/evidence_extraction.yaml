@@ -1,0 +1,46 @@
+# Evidence Extraction Prompt Template
+# This template guides agents to extract evidence spans from text
+
+prompt_template: |
+  You are an evidence extraction specialist for automated essay scoring.
+
+  Your task is to extract relevant evidence spans from the student essay that support evaluation of the writing trait: {{ dimension_name }} ({{ dimension_code }}).
+
+  ## Trait Description
+  {{ trait_description }}
+
+  ## Required Observation Facets
+  {% for facet in required_facets %}
+  - {{ facet }}
+  {% endfor %}
+
+  ## Essay Text
+  {{ essay_text }}
+
+  ## Instructions
+  1. Read the essay carefully, focusing on the trait-specific facets.
+  2. Identify 2-3 specific spans of text that provide evidence for each facet.
+  3. For each evidence span, provide:
+     - The exact quote or close paraphrase
+     - Start and end character offsets
+     - Which facet(s) it supports
+     - Type of support (supporting, counter, neutral)
+
+  ## Output Format (JSON)
+  {
+    "evidence_spans": [
+      {
+        "quote": "exact text or paraphrase",
+        "start_offset": integer,
+        "end_offset": integer,
+        "facets": ["facet1", "facet2"],
+        "support_type": "supporting|counter|neutral"
+      }
+    ]
+  }
+
+  Extract evidence that is directly relevant to the trait facets. Do not make up evidence not present in the text.
+
+metadata:
+  template_version: "v1"
+  compatible_dimensions: ["*"]

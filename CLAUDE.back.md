@@ -11,10 +11,10 @@ Before executing ANY task, read the relevant source documents in this priority o
 
 | Priority | Document | Role | When to Read |
 |----------|----------|------|--------------|
-| **HIGHEST** | `docs/Zen.md` | Project constitution — overrides ALL conflicts | When making architectural decisions or resolving conflicts between docs |
+| **HIGHEST** | `docs/Zen.md` | Project constitution — overrides ALL conflicts | Every session start |
 | HIGH | `docs/architecture.md` | Agent roles, state machine, data flow | Before implementing any agent, orchestrator, or pipeline code |
 | HIGH | `docs/research.md` | System invariants, data contracts, config meta-schema, evaluation harness | Before defining contracts, configs, or evaluation logic |
-| HIGH | `docs/plan.md` | Phased execution plan with per-task verification commands | Every session start; before starting any task |
+| HIGH | `docs/plan.md` | Phased execution plan with per-task verification commands | Before starting any task |
 | HIGH | `docs/Rubric_Guidelines.md` | Rubric core definition (dimensions, levels, descriptors) | When writing config artifacts only — NOT for code logic |
 | HIGH | `docs/Adjudication_Rules.md` | Double/triple scoring, composite formula | When writing config artifacts only — NOT for code logic |
 | LOW | `docs/Example.md` | Output format examples ONLY — NOT a rule source | When implementing feedback/explanation rendering |
@@ -32,14 +32,6 @@ Before executing ANY task, read the relevant source documents in this priority o
 - [ ] Phase 6: End-to-End Baseline Validation
 - [ ] Phase 7: Evaluation Harness & Iteration Guardrails
 
-## Session Start Protocol
-
-At the beginning of every session:
-
-1. Read `docs/plan.md` to identify the current Phase and the next unchecked task.
-2. If the task involves contracts, configs, or pipeline code, read the relevant source docs per the Source of Truth table above.
-3. State the task you are about to execute and its verification command BEFORE writing any code.
-
 ## Execution Discipline
 
 ### Task Granularity
@@ -54,7 +46,7 @@ At the beginning of every session:
 
 ### Failure & Rollback Protocol
 - If a verification command fails, fix within the scope of the current task.
-- If the same verification command fails after 2 fix attempts with the same approach, STOP. Report the failure pattern to the human operator and wait for guidance before reverting or trying a different approach.
+- If fixes require more than 2 attempts on the same approach, STOP. Revert to the current Phase start point and re-implement from scratch per `docs/plan.md` Execution Rule #8.
 - Never carry unverified temporary fields, scripts, or prompts into the next task.
 - If any previously-passing test breaks, revert ALL changes from the current Phase and restore the last green state.
 
@@ -62,11 +54,6 @@ At the beginning of every session:
 - Claude Code MUST NOT execute any git commands (commit, push, pull, rebase, checkout, etc.).
 - After completing a task and passing its verification, Claude Code should report the result and prompt for manual commit.
 - The human operator owns all git operations: commit granularity, message authoring, branch management, and rollback decisions.
-
-### Task Completion Protocol
-- After verification passes, report: (a) what was done, (b) verification result, (c) files created or modified.
-- Update the checkbox in `docs/plan.md` for the completed task.
-- Do NOT update `CLAUDE.md` Current Progress — the human operator maintains this file.
 
 ## The Zero-Hardcoding Firewall
 
@@ -138,13 +125,12 @@ Before committing any file under `src/`, ask yourself:
 - E2E tests must cover: normal path, adjudication path, fallback/re-extract path, terminal validation.
 - Golden snapshot tests protect baseline from regression.
 
-## Key Commands
-
-Verification commands are defined per-task in `docs/plan.md`. Do not duplicate them here.
-
 ## Language Requirements
 
-Use **Simplified Chinese** as the primary language for all responses, explanations, and reasoning. English is used for code, identifiers, file paths, CLI output, and inline technical terms where appropriate.
+All responses, explanations, and reasoning (including internal thinking) MUST be written in **Simplified Chinese (简体中文) and English**.
+- Use Simplified Chinese as the primary language for all communication and explanations.
+- Code, identifiers, file paths, and command-line output remain in English.
+- When explaining code or decisions, write in Simplified Chinese with English technical terms inline where appropriate.
 
 ## Out of Scope for MVP
 
