@@ -170,16 +170,16 @@ MVP 成功标准：
   验收: `python -m pytest tests/unit/orchestrator/test_state_graph.py`
   依赖: Phase 2 完成
 
-- [ ] 实现 checkpoint、fallback 与 revert hooks  
-  输入: 状态机骨架、trace contract  
-  输出: `src/orchestrator/checkpoints.py`、`src/orchestrator/trace_store.py`，支持节点级 snapshot、重跑入口与失败回退标记  
-  验收: `python -m pytest tests/unit/orchestrator/test_checkpoints.py`  
+- [x] 实现 checkpoint、fallback 与 revert hooks
+  输入: 状态机骨架、trace contract
+  输出: `src/orchestrator/checkpoints.py`、`src/orchestrator/trace_store.py`，支持节点级 snapshot、重跑入口与失败回退标记
+  验收: `python -m pytest tests/unit/orchestrator/test_checkpoints.py`
   依赖: 状态机骨架、trace contract
 
-- [ ] 实现 deterministic mock workers  
-  输入: Phase 1 配置、Phase 2 contract、状态机节点定义  
-  输出: `src/agents/mock_config_resolver.py`、`src/agents/mock_preprocess.py`、`src/agents/mock_coverage.py`、`src/agents/mock_extractor.py`、`src/agents/mock_observer.py`、`src/agents/mock_scorer.py`、`src/agents/mock_consistency_checker.py`、`src/agents/mock_adjudicator.py`、`src/agents/mock_feedback.py`  
-  验收: `python -m pytest tests/unit/agents/test_mock_workers.py`  
+- [x] 实现 deterministic mock workers
+  输入: Phase 1 配置、Phase 2 contract、状态机节点定义
+  输出: `src/agents/mock_config_resolver.py`、`src/agents/mock_preprocess.py`、`src/agents/mock_coverage.py`、`src/agents/mock_extractor.py`、`src/agents/mock_observer.py`、`src/agents/mock_scorer.py`、`src/agents/mock_consistency_checker.py`、`src/agents/mock_adjudicator.py`、`src/agents/mock_feedback.py`
+  验收: `python -m pytest tests/unit/agents/test_mock_workers.py`
   依赖: 状态机骨架、配置编译器、所有 contract
 
 - [ ] 实现 pipeline runner 与 CLI 主入口  
