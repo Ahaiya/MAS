@@ -129,34 +129,34 @@ MVP 成功标准：
 
 ## 5. Phase 2: Intermediate Data Contracts
 
-- [ ] 定义请求归一化与文本切分 contract  
-  输入: `architecture.md` 的 orchestrator-worker 流程、样例文本  
-  输出: `src/contracts/request_models.py`，至少包含 `EvaluationRequest`、`NormalizedRequest`、`NormalizedDocument`、`TextUnit`、`CoveragePlan`  
-  验收: `python -m pytest tests/unit/contracts/test_request_models.py`  
+- [x] 定义请求归一化与文本切分 contract
+  输入: `architecture.md` 的 orchestrator-worker 流程、样例文本
+  输出: `src/contracts/request_models.py`，至少包含 `EvaluationRequest`、`NormalizedRequest`、`NormalizedDocument`、`TextUnit`、`CoveragePlan`
+  验收: `python -m pytest tests/unit/contracts/test_request_models.py`
   依赖: Phase 1 完成
 
-- [ ] 定义证据与观察 contract  
-  输入: `research.md`、`architecture.md`、Rubric Core 配置  
-  输出: `src/contracts/evidence.py`，至少包含 `EvidenceSpan`、`DimensionObservation` 及 facet-level evidence refs  
-  验收: `python -m pytest tests/unit/contracts/test_evidence_and_observation.py`  
+- [x] 定义证据与观察 contract
+  输入: `research.md`、`architecture.md`、Rubric Core 配置
+  输出: `src/contracts/evidence.py`，至少包含 `EvidenceSpan`、`DimensionObservation` 及 facet-level evidence refs
+  验收: `python -m pytest tests/unit/contracts/test_evidence_and_observation.py`
   依赖: 请求归一化 contract
 
-- [ ] 定义评分与冲突 contract  
-  输入: Rubric Core、Adjudication Policy、Aggregation Policy  
-  输出: `src/contracts/scoring.py`，至少包含 `ScoreHypothesis`、`ConflictRecord`、`AdjudicationRecord`、`FinalDimensionDecision`、可选 `CompositeDecision`  
-  验收: `python -m pytest tests/unit/contracts/test_scoring_and_adjudication.py`  
+- [x] 定义评分与冲突 contract
+  输入: Rubric Core、Adjudication Policy、Aggregation Policy
+  输出: `src/contracts/scoring.py`，至少包含 `ScoreHypothesis`、`ConflictRecord`、`AdjudicationRecord`、`FinalDimensionDecision`、可选 `CompositeDecision`
+  验收: `python -m pytest tests/unit/contracts/test_scoring_and_adjudication.py`
   依赖: 证据与观察 contract、score 表示 contract
 
-- [ ] 定义 trace / replay metadata contract  
-  输入: `Zen.md` 的审计与回放要求、`architecture.md` 的 checkpoint 需求  
-  输出: `src/contracts/trace.py`，至少包含 `RunTrace`、`NodeTrace`、`CheckpointRef`、bundle version、node input/output refs、fallback history  
-  验收: `python -m pytest tests/unit/contracts/test_trace_models.py`  
+- [x] 定义 trace / replay metadata contract
+  输入: `Zen.md` 的审计与回放要求、`architecture.md` 的 checkpoint 需求
+  输出: `src/contracts/trace.py`，至少包含 `RunTrace`、`NodeTrace`、`CheckpointRef`、bundle version、node input/output refs、fallback history
+  验收: `python -m pytest tests/unit/contracts/test_trace_models.py`
   依赖: 请求、证据、评分 contract
 
-- [ ] 为全部 contract 增加序列化、反序列化与禁用隐式字段测试  
-  输入: 所有 contract 模型  
-  输出: `tests/unit/contracts/test_roundtrip_serialization.py`、`tests/unit/contracts/test_no_extra_fields.py`  
-  验收: `python -m pytest tests/unit/contracts/test_roundtrip_serialization.py tests/unit/contracts/test_no_extra_fields.py`  
+- [x] 为全部 contract 增加序列化、反序列化与禁用隐式字段测试
+  输入: 所有 contract 模型
+  输出: `tests/unit/contracts/test_roundtrip_serialization.py`、`tests/unit/contracts/test_no_extra_fields.py`
+  验收: `python -m pytest tests/unit/contracts/test_roundtrip_serialization.py tests/unit/contracts/test_no_extra_fields.py`
   依赖: 全部 contract 已定义
 
 阶段退出条件：所有关键 contract 均有 schema-level unit tests；所有对象可稳定序列化/反序列化；后续 Phase 只能依赖这些 contract。  
