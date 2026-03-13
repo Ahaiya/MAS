@@ -182,13 +182,13 @@ MVP 成功标准：
   验收: `python -m pytest tests/unit/agents/test_mock_workers.py`
   依赖: 状态机骨架、配置编译器、所有 contract
 
-- [ ] 实现 pipeline runner 与 CLI 主入口  
-  输入: 状态机骨架、mock workers、样例 manifest  
-  输出: `src/pipeline/runner.py`、`src/pipeline/validators.py`、`scripts/run_baseline.py` 的可运行 mock 模式  
-  验收: `python -m pytest tests/integration/test_mock_pipeline.py`  
+- [x] 实现 pipeline runner 与 CLI 主入口
+  输入: 状态机骨架、mock workers、样例 manifest
+  输出: `src/pipeline/runner.py`、`src/pipeline/validators.py`、`scripts/run_baseline.py` 的可运行 mock 模式
+  验收: `python -m pytest tests/integration/test_mock_pipeline.py`
   依赖: mock workers、checkpoint hooks
 
-- [ ] 覆盖 normal path 与 fallback path  
+- [x] 覆盖 normal path 与 fallback path  
   输入: `data/samples/sample_20716.txt`、故意制造 coverage 缺口/评分冲突的测试夹具  
   输出: `tests/e2e/test_mock_baseline_normal_path.py`、`tests/integration/test_mock_fallback_paths.py`  
   验收: `python -m pytest tests/e2e/test_mock_baseline_normal_path.py tests/integration/test_mock_fallback_paths.py`  
