@@ -309,31 +309,31 @@ MVP 成功标准：
 
 ## 10. Phase 7: Evaluation Harness & Iteration Guardrails
 
-- [ ] 创建 regression test entry 与 replay script  
+- [x] 创建 regression test entry 与 replay script
   输入: golden snapshots、trace metadata、baseline manifest  
   输出: `scripts/replay_run.py`、`scripts/compare_snapshot.py`、`tests/integration/test_replay_and_regression.py`  
   验收: `python -m pytest tests/integration/test_replay_and_regression.py`  
   依赖: Phase 6 完成
 
-- [ ] 导出 QWK-ready 字段与评分评测接口  
+- [x] 导出 QWK-ready 字段与评分评测接口
   输入: `FinalDimensionDecision[]`、可选 `CompositeDecision`、样例标签映射  
   输出: `src/evaluation/qwk.py`、`src/evaluation/export.py`、`tests/unit/evaluation/test_qwk_export.py`  
   验收: `python -m pytest tests/unit/evaluation/test_qwk_export.py`  
   依赖: baseline 输出结构已稳定
 
-- [ ] 增加 inter-agent consistency metrics hooks  
+- [x] 增加 inter-agent consistency metrics hooks
   输入: `ScoreHypothesis[]`、`ConflictRecord[]`、`AdjudicationRecord[]`  
   输出: `src/evaluation/consistency.py`、`tests/unit/evaluation/test_consistency_hooks.py`  
   验收: `python -m pytest tests/unit/evaluation/test_consistency_hooks.py`  
   依赖: QWK-ready 导出、评分与冲突 contract
 
-- [ ] 固化未来迭代边界与 baseline 回归护栏  
+- [x] 固化未来迭代边界与 baseline 回归护栏
   输入: golden snapshots、统一验收入口、零硬编码规则  
   输出: `tests/integration/test_iteration_guardrails.py`、`docs/iteration_guardrails.md` 或等价执行说明  
   验收: `python -m pytest tests/integration/test_iteration_guardrails.py`  
   依赖: regression/replay、snapshot 比对、QWK/consistency hooks
 
-- [ ] 将统一验收入口升级为 baseline 回归入口  
+- [x] 将统一验收入口升级为 baseline 回归入口
   输入: baseline manifest、snapshot 比对、可选真实 provider smoke  
   输出: 支持回归模式的 `scripts/accept_baseline.py`  
   验收: `python scripts/accept_baseline.py --bundle configs/bundles/asap_set8_baseline.bundle.yaml --manifest data/samples/baseline_manifest.yaml --provider mock --check-snapshots`  
