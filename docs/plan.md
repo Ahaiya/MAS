@@ -16,7 +16,6 @@ MVP 成功标准：
 - `docs/Rubric_Guidelines.md`
 - `docs/Adjudication_Rules.md`
 - `docs/Example.md`
-- `data/training_set_8.tsv`
 - 后续生成的 `configs/` 配置工件与 `data/samples/` 学生样例
 
 执行前提：
@@ -199,34 +198,34 @@ MVP 成功标准：
 
 ## 7. Phase 4: Policy-Aware MAS Wiring
 
-- [ ] 让 Coverage / Observe / Score 流程按 Rubric Core 配置驱动遍历  
+- [x] 让 Coverage / Observe / Score 流程按 Rubric Core 配置驱动遍历
   输入: `ResolvedArtifactBundle`、Rubric Core 配置、Phase 3 mock skeleton  
   输出: `src/policies/rubric_core.py`、对 `src/agents/` 的配置驱动改造，禁止在流程中写死当前六维与 1-6 分档  
   验收: `python -m pytest tests/unit/policies/test_rubric_core_traversal.py`  
   依赖: Phase 3 完成
 
-- [ ] 实现 adjudication trigger evaluation  
-  输入: `configs/policies/adjudication/asap_set8_default.yaml`、`ScoreHypothesis[]`、`ConflictRecord` contract  
-  输出: `src/policies/adjudication.py`、`src/agents/consistency_checker.py`，覆盖 non-adjacent rule 与 cusp rule 的配置化执行  
-  验收: `python -m pytest tests/unit/policies/test_adjudication_triggers.py`  
+- [x] 实现 adjudication trigger evaluation
+  输入: `configs/policies/adjudication/asap_set8_default.yaml`、`ScoreHypothesis[]`、`ConflictRecord` contract
+  输出: `src/policies/adjudication.py`、`src/agents/consistency_checker.py`，覆盖 non-adjacent rule 与 cusp rule 的配置化执行
+  验收: `python -m pytest tests/unit/policies/test_adjudication_triggers.py`
   依赖: Rubric Core 遍历逻辑、评分 contract
 
-- [ ] 实现 aggregation policy 与可选 `CompositeDecision`  
-  输入: Aggregation Policy 配置、`FinalDimensionDecision[]`、`AdjudicationRecord[]`  
-  输出: `src/policies/aggregation.py`、`src/pipeline/export.py`，显式区分 trait-level 输出与 composite 输出  
-  验收: `python -m pytest tests/unit/policies/test_aggregation_policy.py`  
+- [x] 实现 aggregation policy 与可选 `CompositeDecision`
+  输入: Aggregation Policy 配置、`FinalDimensionDecision[]`、`AdjudicationRecord[]`
+  输出: `src/policies/aggregation.py`、`src/pipeline/export.py`，显式区分 trait-level 输出与 composite 输出
+  验收: `python -m pytest tests/unit/policies/test_aggregation_policy.py`
   依赖: adjudication trigger evaluation
 
-- [ ] 实现 explanation policy enforcement 与 citation renderer  
-  输入: Explanation Policy 配置、`EvidenceSpan[]`、`FinalDimensionDecision[]`、`Example.md` 的表现形态约束  
-  输出: `src/policies/explanation.py`、`src/agents/feedback.py`，强制 descriptor ref、evidence id、score 引用链闭合  
-  验收: `python -m pytest tests/unit/policies/test_explanation_policy.py`  
+- [x] 实现 explanation policy enforcement 与 citation renderer
+  输入: Explanation Policy 配置、`EvidenceSpan[]`、`FinalDimensionDecision[]`、`Example.md` 的表现形态约束
+  输出: `src/policies/explanation.py`、`src/agents/feedback.py`，强制 descriptor ref、evidence id、score 引用链闭合
+  验收: `python -m pytest tests/unit/policies/test_explanation_policy.py`
   依赖: aggregation policy、证据与最终决策 contract
 
-- [ ] 导出 canonical vs display 字段并添加 policy-aware 集成测试  
-  输入: score 表示 contract、全部 policy 实现、alt config fixture  
-  输出: `tests/integration/test_policy_aware_pipeline.py`、`tests/integration/test_config_variants.py`  
-  验收: `python -m pytest tests/integration/test_policy_aware_pipeline.py tests/integration/test_config_variants.py`  
+- [x] 导出 canonical vs display 字段并添加 policy-aware 集成测试
+  输入: score 表示 contract、全部 policy 实现、alt config fixture
+  输出: `tests/integration/test_policy_aware_pipeline.py`、`tests/integration/test_config_variants.py`
+  验收: `python -m pytest tests/integration/test_policy_aware_pipeline.py tests/integration/test_config_variants.py`
   依赖: Rubric / Adjudication / Aggregation / Explanation policy 均已实现
 
 阶段退出条件：系统逻辑已由 policy/config 驱动；变更 policy 时优先改 `configs/` 与编译器，而不是改 agent 主逻辑；所有集成测试通过。  

@@ -18,6 +18,8 @@ Before executing ANY task, read the relevant source documents in this priority o
 | HIGH | `docs/Rubric_Guidelines.md` | Rubric core definition (dimensions, levels, descriptors) | When writing config artifacts only — NOT for code logic |
 | HIGH | `docs/Adjudication_Rules.md` | Double/triple scoring, composite formula | When writing config artifacts only — NOT for code logic |
 | LOW | `docs/Example.md` | Output format examples ONLY — NOT a rule source | When implementing feedback/explanation rendering |
+| HIGH | `configs/**/*.yaml` | Runtime config artifacts — the actual data contracts consume | When implementing policy logic or debugging config-driven behavior |
+
 
 **CRITICAL**: Always go to the source document. Do NOT rely on summaries in this file as your basis for implementation decisions. This file provides behavioral rules and guardrails, not specifications.
 
@@ -39,6 +41,7 @@ At the beginning of every session:
 1. Read `docs/plan.md` to identify the current Phase and the next unchecked task.
 2. If the task involves contracts, configs, or pipeline code, read the relevant source docs per the Source of Truth table above.
 3. State the task you are about to execute and its verification command BEFORE writing any code.
+4. If this is the first task of a new Phase, run `python -m pytest tests/ -q --tb=no` to verify all prior tests still pass before proceeding.
 
 ## Execution Discipline
 
@@ -51,6 +54,11 @@ At the beginning of every session:
 ### Phase Gate
 - Do not start Phase N+1 until ALL exit conditions of Phase N are met.
 - After completing a Phase, run the full Phase integration verification.
+
+### Context Loading for Mid-Phase Tasks
+- When starting a task that depends on prior tasks within the same Phase, read the source files listed in the task's "依赖" field before writing any code.
+- For `src/` dependencies, read the actual implementation files, not just the contracts.
+- For `tests/` dependencies, read the passing test files to understand expected behavior.
 
 ### Failure & Rollback Protocol
 - If a verification command fails, fix within the scope of the current task.

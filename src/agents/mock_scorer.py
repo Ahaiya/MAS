@@ -3,7 +3,8 @@ Mock Scorer — deterministic ScoreHypothesis generation.
 
 Derives a canonical score from a hash of (observation_id + rater_id +
 dimension_id), then maps it into the dimension's valid scale range
-[min, max] (read from RubricSnapshot — zero-hardcoding).
+[min, max]. Scale range and descriptor lookup are delegated to
+``src.policies.rubric_core`` (zero-hardcoding).
 
 Different rater_ids produce different hypothesis_ids (and typically different
 scores) because the seed string includes the rater_id.
@@ -18,6 +19,11 @@ from src.contracts.artifact_bundle import RubricSnapshot
 from src.contracts.evidence import DimensionObservation
 from src.contracts.score_representation import create_score_representation
 from src.contracts.scoring import ScoreHypothesis
+from src.policies.rubric_core import (
+    get_descriptor_refs_for_score,
+    get_scale_range,
+    get_scale_ref,
+)
 
 
 def _hid(seed: str, length: int = 12) -> str:
@@ -37,8 +43,8 @@ def run(
 ) -> ScoreHypothesis:
     """Generate a deterministic score hypothesis for one rater.
 
-    Scale range is read from the rubric config via RubricSnapshot; no scale
-    values are hardcoded here.
+    Scale range and descriptors are resolved through rubric_core policy
+    functions — no raw dict access or hardcoded values here.
 
     Args:
         observation: The DimensionObservation to score.
@@ -48,15 +54,17 @@ def run(
     Returns:
         A ScoreHypothesis with a score within the dimension's valid range.
     """
-    dim = rubric.dimension_by_id.get(observation.dimension_id, {})
-    scale_ref: str = dim.get("scale_ref", "unknown_scale")
-    scale = rubric.scale_by_id.get(scale_ref, {})
-    min_score: int = int(scale.get("min", 1))
-    max_score: int = int(scale.get("max", 6))
+    dim_id = observation.dimension_id
+    min_score, max_score = get_scale_range(rubric, dim_id)
+    scale_ref = get_scale_ref(rubric, dim_id)
 
-    seed = f"{observation.observation_id}:{rater_id}:{observation.dimension_id}"
+    seed = f"{observation.observation_id}:{rater_id}:{dim_id}"
     score_val = _derive_score(seed, min_score, max_score)
     score = create_score_representation(score_val, scale_ref)
+
+    descriptor_refs = get_descriptor_refs_for_score(rubric, dim_id, score_val)
+    if not descriptor_refs:
+        descriptor_refs = [f"level_{score_val}"]
 
     hypothesis_id = f"hyp-{_hid(seed)}"
     evidence_span_ids: List[str] = list(observation.supporting_span_ids)
@@ -64,11 +72,11 @@ def run(
     return ScoreHypothesis(
         hypothesis_id=hypothesis_id,
         observation_id=observation.observation_id,
-        dimension_id=observation.dimension_id,
+        dimension_id=dim_id,
         rater_id=rater_id,
         score=score,
-        descriptor_refs=[f"level_{score_val}"],
+        descriptor_refs=descriptor_refs,
         evidence_span_ids=evidence_span_ids,
-        rationale=f"Mock score {score_val} for {observation.dimension_id} by {rater_id}",
+        rationale=f"Mock score {score_val} for {dim_id} by {rater_id}",
         confidence=0.8,
     )
