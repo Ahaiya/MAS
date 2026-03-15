@@ -30,8 +30,8 @@ Before executing ANY task, read the relevant source documents in this priority o
 - [x] Phase 2: Intermediate Data Contracts
 - [x] Phase 3: Mocked Orchestrator-StateGraph Baseline 
 - [x] Phase 4: Policy-Aware MAS Wiring 
-- [ ] Phase 5: Real Provider Adapter & Prompt Wiring ← **CURRENT PHASE**
-- [ ] Phase 6: End-to-End Baseline Validation
+- [x] Phase 5: Real Provider Adapter & Prompt Wiring 
+- [ ] Phase 6: End-to-End Baseline Validation ← **CURRENT PHASE**
 - [ ] Phase 7: Evaluation Harness & Iteration Guardrails
 
 ## Session Start Protocol
