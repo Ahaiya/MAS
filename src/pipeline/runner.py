@@ -33,8 +33,13 @@ from src.agents import (
     mock_observer,
     mock_preprocess,
     mock_scorer,
+    real_extractor,
+    real_feedback,
+    real_scorer,
 )
 from src.contracts.artifact_bundle import ResolvedArtifactBundle
+from src.providers.base import BaseProvider
+from src.providers.prompt_loader import PromptLoader, PromptTemplate
 from src.contracts.evidence import DimensionObservation, EvidenceSpan
 from src.contracts.request_models import (
     CoveragePlan,
@@ -71,14 +76,38 @@ def _get_rater_ids(bundle: ResolvedArtifactBundle) -> List[str]:
 
 
 class PipelineRunner:
-    """Drives the full mock evaluation pipeline for one EvaluationRequest.
+    """Drives the evaluation pipeline for one EvaluationRequest.
 
     Args:
-        bundle: A frozen ResolvedArtifactBundle (from ConfigCompiler).
+        bundle   : A frozen ResolvedArtifactBundle (from ConfigCompiler).
+        provider : Optional BaseProvider for real LLM calls.  When None (default)
+                   the pipeline uses deterministic mock workers.  When set, the
+                   extraction, scoring and feedback stages call the real LLM.
+        prompt_templates: Optional dict mapping template name to PromptTemplate
+                   for real provider mode.  Required when provider is not None.
     """
 
-    def __init__(self, bundle: ResolvedArtifactBundle) -> None:
+    def __init__(
+        self,
+        bundle: ResolvedArtifactBundle,
+        provider: Optional[BaseProvider] = None,
+        prompt_templates: Optional[Dict[str, PromptTemplate]] = None,
+    ) -> None:
         self._bundle = bundle
+        self._provider = provider
+        self._prompt_templates = prompt_templates or {}
+
+    def _is_real(self) -> bool:
+        return self._provider is not None
+
+    def _tpl(self, name: str) -> PromptTemplate:
+        """Return a named PromptTemplate; raises KeyError if missing."""
+        if name not in self._prompt_templates:
+            raise KeyError(
+                f"Prompt template '{name}' not found. "
+                f"Available: {sorted(self._prompt_templates)}"
+            )
+        return self._prompt_templates[name]
 
     def run(
         self,
@@ -159,10 +188,19 @@ class PipelineRunner:
                 if cs == PipelineState.COVERAGE_PLANNED:
                     store.record_node_start("node_extractor", "extract",
                                             input_ref=f"plans:{len(plans)}")
-                    all_spans_by_dim = {
-                        plan.dimension_id: mock_extractor.run(plan, document)
-                        for plan in plans
-                    }
+                    if self._is_real():
+                        extraction_tpl = self._tpl("evidence_extraction")
+                        all_spans_by_dim = {
+                            plan.dimension_id: real_extractor.run(
+                                plan, document, rubric, self._provider, extraction_tpl
+                            )
+                            for plan in plans
+                        }
+                    else:
+                        all_spans_by_dim = {
+                            plan.dimension_id: mock_extractor.run(plan, document)
+                            for plan in plans
+                        }
                     total_spans = sum(len(s) for s in all_spans_by_dim.values())
                     ckpt = ckpt_mgr.create_checkpoint(
                         "node_extractor", "extract", document.document_id
@@ -206,11 +244,25 @@ class PipelineRunner:
                 if cs == PipelineState.OBSERVATION_BUILT:
                     store.record_node_start("node_scorer", "score",
                                             input_ref=f"obs:{len(observations)}")
-                    hypotheses = [
-                        mock_scorer.run(obs, rubric, rater_id)
-                        for obs in observations
-                        for rater_id in rater_ids
-                    ]
+                    if self._is_real():
+                        scoring_tpl = self._tpl("scoring")
+                        all_spans_flat = [
+                            s for spans in all_spans_by_dim.values() for s in spans
+                        ]
+                        hypotheses = [
+                            real_scorer.run(
+                                obs, all_spans_flat, rubric, document,
+                                self._provider, scoring_tpl, rater_id
+                            )
+                            for obs in observations
+                            for rater_id in rater_ids
+                        ]
+                    else:
+                        hypotheses = [
+                            mock_scorer.run(obs, rubric, rater_id)
+                            for obs in observations
+                            for rater_id in rater_ids
+                        ]
                     validate_hypotheses(hypotheses, plans, rater_ids)
                     ckpt = ckpt_mgr.create_checkpoint(
                         "node_scorer", "score", document.document_id
@@ -322,7 +374,15 @@ class PipelineRunner:
             validate_final_decisions(decisions, plans)
             store.record_node_start("node_feedback", "feedback",
                                     input_ref=f"decisions:{len(decisions)}")
-            feedback = mock_feedback.run(decisions, observations, rubric)
+            if self._is_real():
+                explanation_tpl = self._tpl("explanation")
+                all_spans_flat = [s for spans in all_spans_by_dim.values() for s in spans]
+                feedback = real_feedback.run(
+                    decisions, observations, rubric,
+                    all_spans_flat, self._provider, explanation_tpl
+                )
+            else:
+                feedback = mock_feedback.run(decisions, observations, rubric)
             store.record_node_success(
                 "node_feedback",
                 output_ref=f"dims:{len(feedback.get('dimensions', {}))}",
@@ -336,7 +396,7 @@ class PipelineRunner:
             run_trace = store.build_run_trace(
                 status=RunStatus.COMPLETED,
                 terminal_validation_passed=terminal_passed,
-                replay_metadata={"provider": "mock"},
+                replay_metadata={"provider": self._provider.name if self._is_real() else "mock"},
             )
             return run_trace, feedback
 

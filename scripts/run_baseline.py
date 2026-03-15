@@ -14,9 +14,14 @@ _PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
+import os
+from pathlib import Path as _Path
+
 from src.agents.mock_config_resolver import run as resolve_bundle
 from src.contracts.request_models import EvaluationRequest
 from src.pipeline.runner import PipelineRunner
+from src.providers.guards import GuardedProvider, RetryConfig
+from src.providers.prompt_loader import PromptLoader
 
 import typer
 
@@ -61,10 +66,10 @@ def main(
         help="Show detailed execution logs.",
     ),
 ) -> None:
-    """Run the MAS baseline evaluation pipeline in mock mode."""
-    if provider != "mock":
+    """Run the MAS baseline evaluation pipeline (mock or real provider)."""
+    if provider not in ("mock", "real"):
         typer.echo(
-            f"Error: provider '{provider}' is not supported yet. Use --provider mock.",
+            f"Error: provider '{provider}' is not supported. Use 'mock' or 'real'.",
             err=True,
         )
         raise typer.Exit(code=1)
@@ -101,10 +106,46 @@ def main(
         bundle_ref=f"{resolved.artifact_bundle.bundle_id}@{resolved.artifact_bundle.bundle_version}",
     )
 
+    # Configure provider
+    real_provider = None
+    prompt_templates = {}
+    if provider == "real":
+        from src.providers.openai_compatible import OpenAICompatibleProvider
+        api_key = os.environ.get("LLM_API_KEY", "")
+        if not api_key:
+            typer.echo("Error: LLM_API_KEY environment variable is not set.", err=True)
+            raise typer.Exit(code=1)
+        model_id = os.environ.get("LLM_MODEL", "gpt-4o-mini")
+        api_base = os.environ.get("LLM_API_BASE") or None
+        timeout = float(os.environ.get("LLM_TIMEOUT_SECONDS", "60"))
+        max_retries = int(os.environ.get("LLM_MAX_RETRIES", "3"))
+        inner = OpenAICompatibleProvider(
+            api_key=api_key,
+            model_id=model_id,
+            api_base=api_base,
+            timeout=timeout,
+            max_retries=0,
+        )
+        real_provider = GuardedProvider(inner, RetryConfig(max_retries=max_retries, retry_delay_seconds=1.0))
+        # Load prompt templates
+        loader = PromptLoader()
+        configs_prompts = _Path(__file__).parent.parent / "configs" / "prompts"
+        for name, filename in [
+            ("evidence_extraction", "evidence_extraction.yaml"),
+            ("scoring", "scoring.yaml"),
+            ("explanation", "explanation.yaml"),
+        ]:
+            tpl_path = configs_prompts / filename
+            if tpl_path.exists():
+                prompt_templates[name] = loader.load(tpl_path)
+        if verbose:
+            typer.echo(f"Real provider: {real_provider.name} / model={model_id}")
+            typer.echo(f"Loaded {len(prompt_templates)} prompt template(s)")
+
     # Run pipeline
     if verbose:
         typer.echo("Running pipeline...")
-    runner = PipelineRunner(resolved)
+    runner = PipelineRunner(resolved, provider=real_provider, prompt_templates=prompt_templates)
     run_trace, feedback = runner.run(request)
 
     if verbose:

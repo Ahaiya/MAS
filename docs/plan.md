@@ -233,37 +233,37 @@ MVP 成功标准：
 
 ## 8. Phase 5: Real Provider Adapter & Prompt Wiring
 
-- [ ] 定义 provider interface、adapter registry 与 capability 边界  
+- [x] 定义 provider interface、adapter registry 与 capability 边界
   输入: `Zen.md` 的 LLM-agnostic 约束、Phase 4 policy-aware pipeline  
   输出: `src/providers/base.py`、`src/providers/registry.py`，明确 provider 只负责调用能力、结构化输出和错误处理，不承载 rubric/adjudication 语义  
   验收: `python -m pytest tests/unit/providers/test_provider_interface.py`  
   依赖: Phase 4 完成
 
-- [ ] 实现 `MockProvider` 与至少一个真实 provider adapter  
+- [x] 实现 `MockProvider` 与至少一个真实 provider adapter
   输入: provider interface、`.env.example`、prompt 与结构化输出需求  
   输出: `src/providers/mock.py`、`src/providers/openai_compatible.py` 或等价真实 adapter、provider switch 逻辑  
   验收: `python -m pytest tests/integration/test_provider_switch.py`  
   依赖: provider interface
 
-- [ ] 实现 prompt template loading 与 node prompt wiring  
+- [x] 实现 prompt template loading 与 node prompt wiring
   输入: `configs/prompts/`、各 worker 所需输入 contract  
   输出: `src/providers/prompt_loader.py`、`src/agents/prompt_builders.py`、Jinja2 风格 prompt 模板文件  
   验收: `python -m pytest tests/unit/providers/test_prompt_loading.py`  
   依赖: provider interface、配置编译器
 
-- [ ] 实现 structured output normalization、retry、timeout 与 parse-failure guardrails  
+- [x] 实现 structured output normalization、retry、timeout 与 parse-failure guardrails
   输入: provider 返回体、Phase 2 contract schema  
   输出: `src/providers/structured_output.py`、`src/providers/guards.py`  
   验收: `python -m pytest tests/unit/providers/test_structured_output_normalization.py`  
   依赖: 真实 provider adapter、prompt wiring
 
-- [ ] 打通至少一条真实 provider smoke path  
+- [x] 打通至少一条真实 provider smoke path
   输入: 有效的 provider 凭据、`data/samples/sample_20716.txt`、baseline bundle  
   输出: `tests/e2e/test_real_provider_smoke.py`、真实调用产生的运行工件  
   验收: `python -m pytest tests/e2e/test_real_provider_smoke.py -m real && python scripts/run_baseline.py --bundle configs/bundles/asap_set8_baseline.bundle.yaml --provider real --input-file data/samples/sample_20716.txt --output-dir artifacts/provider_smoke/sample_20716_real`  
   依赖: structured output guardrails
 
-- [ ] 证明真实 provider 接入没有破坏 `mock` baseline  
+- [x] 证明真实 provider 接入没有破坏 `mock` baseline
   输入: 全量 `mock` tests、provider switch 逻辑  
   输出: 保持不变的 `mock` fixtures 与 `mock` snapshots  
   验收: `python -m pytest tests/unit tests/integration tests/e2e/test_mock_baseline_normal_path.py tests/integration/test_mock_fallback_paths.py -q`  
