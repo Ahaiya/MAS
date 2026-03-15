@@ -29,8 +29,8 @@ Before executing ANY task, read the relevant source documents in this priority o
 - [x] Phase 1: Constitutional Contracts & Config Compiler   
 - [x] Phase 2: Intermediate Data Contracts
 - [x] Phase 3: Mocked Orchestrator-StateGraph Baseline 
-- [ ] Phase 4: Policy-Aware MAS Wiring ← **CURRENT PHASE**
-- [ ] Phase 5: Real Provider Adapter & Prompt Wiring
+- [x] Phase 4: Policy-Aware MAS Wiring 
+- [ ] Phase 5: Real Provider Adapter & Prompt Wiring ← **CURRENT PHASE**
 - [ ] Phase 6: End-to-End Baseline Validation
 - [ ] Phase 7: Evaluation Harness & Iteration Guardrails
 
