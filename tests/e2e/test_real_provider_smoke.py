@@ -112,14 +112,19 @@ class TestRealProviderSmoke:
         assert len(content) > 0
 
     def test_provider_from_env(self):
-        """create_provider_from_env() creates the real provider when LLM_PROVIDER=real-compat."""
+        """create_provider_from_env() returns a provider; unregistered names fall back to mock."""
         _skip_if_no_credentials()
-        # The default registry has "mock"; real providers are used via direct instantiation
-        # For env-based switching: just verify the function returns a provider
+        import os
         from src.providers.switch import create_provider_from_env
-        # With LLM_PROVIDER not set to a real adapter name, defaults to mock
-        provider = create_provider_from_env()
-        assert provider is not None
+        # Temporarily remove LLM_PROVIDER so the function uses the "mock" default.
+        # (.env may set LLM_PROVIDER to a name not in the default registry.)
+        old = os.environ.pop("LLM_PROVIDER", None)
+        try:
+            provider = create_provider_from_env()
+            assert provider is not None
+        finally:
+            if old is not None:
+                os.environ["LLM_PROVIDER"] = old
 
 
 # ── Extraction prompt + real provider smoke ───────────────────────────────────

@@ -1,0 +1,157 @@
+{
+  "run_id": "run-d1ca86e2c2e8",
+  "bundle_version": "2026-03-12",
+  "bundle_id": "asap_set8_baseline",
+  "request_id": "req-8bcf9cb8eb67",
+  "status": "completed",
+  "started_at": "2026-03-15T12:19:59.198304+00:00",
+  "finished_at": "2026-03-15T12:19:59.198770+00:00",
+  "node_traces": [
+    {
+      "node_id": "node_preprocess",
+      "run_id": "run-d1ca86e2c2e8",
+      "node_type": "preprocess",
+      "status": "success",
+      "started_at": "2026-03-15T12:19:59.198308+00:00",
+      "finished_at": "2026-03-15T12:19:59.198480+00:00",
+      "input_ref": "req-8bcf9cb8eb67",
+      "output_ref": "doc-f34ce0393252",
+      "checkpoint": {
+        "checkpoint_id": "ckpt-591b5abec86a",
+        "node_id": "node_preprocess",
+        "run_id": "run-d1ca86e2c2e8",
+        "snapshot_key": "doc-f34ce0393252",
+        "created_at": "2026-03-15T12:19:59.198477+00:00"
+      },
+      "fallback_history": [],
+      "error_message": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "node_coverage",
+      "run_id": "run-d1ca86e2c2e8",
+      "node_type": "coverage",
+      "status": "success",
+      "started_at": "2026-03-15T12:19:59.198484+00:00",
+      "finished_at": "2026-03-15T12:19:59.198518+00:00",
+      "input_ref": "doc-f34ce0393252",
+      "output_ref": "plans:6",
+      "checkpoint": {
+        "checkpoint_id": "ckpt-e445ed240e31",
+        "node_id": "node_coverage",
+        "run_id": "run-d1ca86e2c2e8",
+        "snapshot_key": "doc-f34ce0393252",
+        "created_at": "2026-03-15T12:19:59.198516+00:00"
+      },
+      "fallback_history": [],
+      "error_message": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "node_extractor",
+      "run_id": "run-d1ca86e2c2e8",
+      "node_type": "extract",
+      "status": "success",
+      "started_at": "2026-03-15T12:19:59.198521+00:00",
+      "finished_at": "2026-03-15T12:19:59.198576+00:00",
+      "input_ref": "plans:6",
+      "output_ref": "spans:24",
+      "checkpoint": {
+        "checkpoint_id": "ckpt-2621bb65ece8",
+        "node_id": "node_extractor",
+        "run_id": "run-d1ca86e2c2e8",
+        "snapshot_key": "doc-f34ce0393252",
+        "created_at": "2026-03-15T12:19:59.198574+00:00"
+      },
+      "fallback_history": [],
+      "error_message": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "node_observer",
+      "run_id": "run-d1ca86e2c2e8",
+      "node_type": "observe",
+      "status": "success",
+      "started_at": "2026-03-15T12:19:59.198579+00:00",
+      "finished_at": "2026-03-15T12:19:59.198621+00:00",
+      "input_ref": "spans:24",
+      "output_ref": "obs:6",
+      "checkpoint": {
+        "checkpoint_id": "ckpt-164049306073",
+        "node_id": "node_observer",
+        "run_id": "run-d1ca86e2c2e8",
+        "snapshot_key": "doc-f34ce0393252",
+        "created_at": "2026-03-15T12:19:59.198619+00:00"
+      },
+      "fallback_history": [],
+      "error_message": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "node_scorer",
+      "run_id": "run-d1ca86e2c2e8",
+      "node_type": "score",
+      "status": "success",
+      "started_at": "2026-03-15T12:19:59.198623+00:00",
+      "finished_at": "2026-03-15T12:19:59.198685+00:00",
+      "input_ref": "obs:6",
+      "output_ref": "hyps:12",
+      "checkpoint": {
+        "checkpoint_id": "ckpt-da341f3f4561",
+        "node_id": "node_scorer",
+        "run_id": "run-d1ca86e2c2e8",
+        "snapshot_key": "doc-f34ce0393252",
+        "created_at": "2026-03-15T12:19:59.198684+00:00"
+      },
+      "fallback_history": [],
+      "error_message": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "node_consistency_checker",
+      "run_id": "run-d1ca86e2c2e8",
+      "node_type": "check_consistency",
+      "status": "success",
+      "started_at": "2026-03-15T12:19:59.198688+00:00",
+      "finished_at": "2026-03-15T12:19:59.198706+00:00",
+      "input_ref": "hyps:12",
+      "output_ref": "conflicts:4",
+      "checkpoint": null,
+      "fallback_history": [],
+      "error_message": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "node_adjudicator",
+      "run_id": "run-d1ca86e2c2e8",
+      "node_type": "adjudicate",
+      "status": "success",
+      "started_at": "2026-03-15T12:19:59.198711+00:00",
+      "finished_at": "2026-03-15T12:19:59.198749+00:00",
+      "input_ref": "conflicts:4",
+      "output_ref": "decisions:6",
+      "checkpoint": null,
+      "fallback_history": [],
+      "error_message": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "node_feedback",
+      "run_id": "run-d1ca86e2c2e8",
+      "node_type": "feedback",
+      "status": "success",
+      "started_at": "2026-03-15T12:19:59.198754+00:00",
+      "finished_at": "2026-03-15T12:19:59.198763+00:00",
+      "input_ref": "decisions:6",
+      "output_ref": "dims:6",
+      "checkpoint": null,
+      "fallback_history": [],
+      "error_message": null,
+      "metadata": {}
+    }
+  ],
+  "terminal_validation_passed": true,
+  "replay_metadata": {
+    "provider": "mock"
+  }
+}

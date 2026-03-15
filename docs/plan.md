@@ -274,31 +274,31 @@ MVP 成功标准：
 
 ## 9. Phase 6: End-to-End Baseline Validation
 
-- [ ] 用普通路径样例完整跑通 baseline  
+- [x] 用普通路径样例完整跑通 baseline
   输入: `data/samples/sample_20716.txt`、baseline bundle、`mock` provider  
   输出: `artifacts/baseline/20716/mock/` 下的结构化结果、trace、intermediate states、feedback  
   验收: `python scripts/run_baseline.py --bundle configs/bundles/asap_set8_baseline.bundle.yaml --provider mock --input-file data/samples/sample_20716.txt --output-dir artifacts/baseline/20716/mock`  
   依赖: Phase 5 完成
 
-- [ ] 用冲突样例触发 adjudication 路径  
+- [x] 用冲突样例触发 adjudication 路径
   输入: `data/samples/sample_20717.txt`、baseline bundle、`mock` provider  
   输出: `artifacts/baseline/20717/mock/` 下含 `ConflictRecord`、`AdjudicationRecord` 的结构化结果  
   验收: `python scripts/run_baseline.py --bundle configs/bundles/asap_set8_baseline.bundle.yaml --provider mock --input-file data/samples/sample_20717.txt --output-dir artifacts/baseline/20717/mock`  
   依赖: 普通路径样例已通过
 
-- [ ] 校验输出 schema、trace closure 与 terminal validation  
+- [x] 校验输出 schema、trace closure 与 terminal validation
   输入: Phase 6 运行产物、全部 contract schema  
   输出: `scripts/validate_run.py`、验证通过的 run 报告  
   验收: `python scripts/validate_run.py --run-dir artifacts/baseline/20716/mock && python scripts/validate_run.py --run-dir artifacts/baseline/20717/mock --require-adjudication`  
   依赖: 两条 baseline 运行产物
 
-- [ ] 导出 baseline golden snapshots  
+- [x] 导出 baseline golden snapshots
   输入: 已验证运行产物  
   输出: `tests/golden/sample_20716.mock.json`、`tests/golden/sample_20717.mock.json`、`tests/e2e/test_baseline_snapshots.py`  
   验收: `python -m pytest tests/e2e/test_baseline_snapshots.py`  
   依赖: 运行产物校验通过
 
-- [ ] 汇总单一 baseline 验收入口  
+- [x] 汇总单一 baseline 验收入口
   输入: baseline manifest、run validator、snapshot tests  
   输出: `scripts/accept_baseline.py`  
   验收: `python scripts/accept_baseline.py --bundle configs/bundles/asap_set8_baseline.bundle.yaml --manifest data/samples/baseline_manifest.yaml --provider mock`  

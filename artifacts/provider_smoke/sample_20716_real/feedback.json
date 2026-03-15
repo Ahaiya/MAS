@@ -1,0 +1,153 @@
+{
+  "dimensions": {
+    "ideas_content": {
+      "dimension_name": "Ideas and Content",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "difficulties moving from general observations to specifics",
+        "predictable or overly-obvious main ideas",
+        "support attempted but details are limited, uneven, somewhat off-topic, or too general"
+      ],
+      "evidence_span_ids": [
+        "span-real-333e1d167e00",
+        "span-real-57bd164c93ad",
+        "span-real-7d3b4f182dd2",
+        "span-real-aabd7ede1c88",
+        "span-real-d29ddca18cc7",
+        "span-real-db9e170f5dd6",
+        "span-real-f3a632cf1a7c"
+      ],
+      "feedback_text": "Your essay received a score of 3 for Ideas and Content. The main idea about using humor to help someone is clear but is **predictable or overly-obvious**. The **support attempted is limited and too general**, as shown when you state, \"I said <no I am not my jokes are horrible>\" and \"His mom told us that her mom had recently died,\" without adding deeper reflection or specific details about your attempts to make her laugh. This creates **difficulties moving from general observations to specifics**; for example, you note the mom \"never laughed\" but do not show a detailed scene of a failed joke. The evidence stays at a surface level, preventing the development from becoming more insightful.",
+      "confidence": 0.85
+    },
+    "organization": {
+      "dimension_name": "Organization",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "attempts at sequencing and paragraph breaks but order occasionally unclear",
+        "beginning and ending present but undeveloped or too obvious",
+        "structure is skeletal or too rigid",
+        "transitions sometimes work; same few devices overused"
+      ],
+      "evidence_span_ids": [
+        "span-real-10e38203dde8",
+        "span-real-49f4687e98b7",
+        "span-real-6b6e84455d31",
+        "span-real-71f847aa085d",
+        "span-real-7ffe3af84de3",
+        "span-real-a43eb22b3ad8",
+        "span-real-db6ab724dc81",
+        "span-real-e71930c2ae97"
+      ],
+      "feedback_text": "Your essay received a score of 3 for Organization. You have a clear beginning and ending, but they are underdeveloped, with the ending being too abrupt (\"all i could say was gosh darn it. FIN\"). The structure is sometimes skeletal, jumping between events like the sleepover and the school day without smooth connections. While you use paragraph breaks, the order is occasionally unclear, such as when you introduce the new student at school after the story's main resolution at the sleepover. This sequencing makes the timeline hard to follow. Furthermore, your transitions are limited, overusing simple chronological phrases like \"The next day\" and \"After dinner.\"",
+      "confidence": 0.85
+    },
+    "voice": {
+      "dimension_name": "Voice",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "Liveliness, sincerity, or humor when appropriate",
+        "Reader may glimpse writer and feel sense of interaction in places",
+        "Voice present; some expressiveness and sincerity.",
+        "liveliness, sincerity, or humor when appropriate",
+        "reader may glimpse writer and feel sense of interaction in places"
+      ],
+      "evidence_span_ids": [
+        "span-real-07e89888fa47",
+        "span-real-1543a38de20d",
+        "span-real-1ecd00e5e423",
+        "span-real-5872a5474e5d",
+        "span-real-9f8905bf3eeb",
+        "span-real-ac05e01ade29",
+        "span-real-be4c18765b00",
+        "span-real-f72bc4036a86"
+      ],
+      "feedback_text": "Your essay received a score of 4 for Voice. You show **some expressiveness and sincerity**, and the **reader may glimpse the writer and feel a sense of interaction in places**. This is evident in your use of lively dialogue, such as the playful \"knock-knock\" joke exchange where you wrote, \"oh don't cry I am right here,\" which adds humor. Your sincere reflection is also clear when you honestly confided to your friend, \"I thought his mom didn't like me,\" and later described the satisfying moment when \"his parents started to laugh and laugh.\" These specific moments let your personality and feelings show through, creating a genuine connection with the reader.",
+      "confidence": 0.85
+    },
+    "word_choice": {
+      "dimension_name": "Word Choice",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "expression seems mundane and general; slang not effective",
+        "words generally accurate but misused words may occasionally appear",
+        "words that work but rarely capture reader's interest"
+      ],
+      "evidence_span_ids": [
+        "span-real-366a6bae92ab",
+        "span-real-3f78e791651d",
+        "span-real-c6c809be243e",
+        "span-real-d892edef5962",
+        "span-real-e30b315a19b8",
+        "span-real-fallback-38d9ef57"
+      ],
+      "feedback_text": "Your essay received a Word Choice score of 3. The language is generally accurate but remains mundane and rarely captures the reader's interest. For example, phrases like \"she was in a bad mood\" and \"she never laughed and she never smiled\" are clear but very general. The attempted use of informal language, such as the slang \"gosh darn it\" and the simple knock-knock joke dialogue, is not effective in creating a vivid or engaging description. These choices make the expression feel ordinary, which aligns with the descriptors that the words \"work but rarely capture reader's interest\" and that any informal or slang elements are \"not effective.\"",
+      "confidence": 0.85
+    },
+    "sentence_fluency": {
+      "dimension_name": "Sentence Fluency",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "good control over simple sentences, little over complex",
+        "lapses in stylistic control; dialogue may sound stilted",
+        "sentences functional but lack energy",
+        "some passages invite fluid oral reading; others do not"
+      ],
+      "evidence_span_ids": [
+        "span-real-1b6359abc970",
+        "span-real-31cb15b05126",
+        "span-real-44b941a175d0",
+        "span-real-abf10f939ae8",
+        "span-real-cf07579034ab",
+        "span-real-faf71b6e7897"
+      ],
+      "feedback_text": "Your essay received a 3 in Sentence Fluency. You show **good control over simple sentences**, which makes many passages clear and functional. However, there are **lapses in stylistic control**, making some dialogue sound stilted and choppy, as seen in the run-on sentence: \"We sat in the back of the classroom its only @PERSON2 and I and anempty seat between us.\" This affects the overall flow, so while **some passages invite fluid oral reading, others do not**. For example, the joke dialogue is easy to follow, but the narration around it often lacks connecting words and varied rhythm, making the reading feel uneven.",
+      "confidence": 0.85
+    },
+    "conventions": {
+      "dimension_name": "Conventions",
+      "canonical_score": 2,
+      "display_score": "2",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
+        "errors in grammar and usage do not block meaning but distract reader",
+        "errors interfere with readability and meaning",
+        "little control over basic conventions",
+        "many end-of-sentence errors; frequent internal punctuation errors",
+        "significant need for editing",
+        "some control over basic conventions",
+        "spelling errors distract reader; common words misspelled"
+      ],
+      "evidence_span_ids": [
+        "span-real-58aca7566054",
+        "span-real-709a5a6c2b2f",
+        "span-real-7350b9ce2ee6",
+        "span-real-9b21e18d67fa",
+        "span-real-a06b239d29fa",
+        "span-real-a28d3b41d60e",
+        "span-real-a858c4277e75",
+        "span-real-aa03072c2cee",
+        "span-real-b9c35e689969",
+        "span-real-bdb047f3e98f",
+        "span-real-c1e610bb45cc",
+        "span-real-ca7ad017f169",
+        "span-real-dd28f9d6e246"
+      ],
+      "feedback_text": "Your essay received a score of 2 for Conventions. This score reflects that errors in grammar and usage \"interfere with readability and meaning,\" showing \"little control over basic conventions.\" Specifically, there are \"many end-of-sentence errors,\" as seen in run-on sentences like \"I asked mt mom if it was @CAPS1 if I could spend the night at @PERSON2 house she said <yeah just make sure its @CAPS1 with his mom>.\" Internal punctuation is also frequently missing, which distracts the reader, for example: \"At first I didn't know she was a grouch i just thought she didn't like me or something.\" These consistent errors create a significant need for editing throughout your work.",
+      "confidence": 0.85
+    }
+  },
+  "summary": "Real provider feedback for 6 dimension(s).",
+  "provider": "openai_compatible"
+}

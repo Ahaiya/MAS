@@ -9,6 +9,12 @@ import json
 import sys
 from pathlib import Path
 
+import os
+from dotenv import load_dotenv
+
+# 加载 .env 文件中的环境变量
+load_dotenv()
+
 # Ensure project root is on sys.path when run as `python scripts/run_baseline.py`
 _PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(_PROJECT_ROOT) not in sys.path:
