@@ -1,0 +1,143 @@
+{
+  "run_id": "run-c0f936543251",
+  "bundle_version": "2026-03-12",
+  "bundle_id": "asap_set8_baseline",
+  "request_id": "req-c1870befe511",
+  "status": "completed",
+  "started_at": "2026-03-16T11:41:30.164302+00:00",
+  "finished_at": "2026-03-16T11:49:49.468980+00:00",
+  "node_traces": [
+    {
+      "node_id": "node_preprocess",
+      "run_id": "run-c0f936543251",
+      "node_type": "preprocess",
+      "status": "success",
+      "started_at": "2026-03-16T11:41:30.164307+00:00",
+      "finished_at": "2026-03-16T11:41:30.164509+00:00",
+      "input_ref": "req-c1870befe511",
+      "output_ref": "doc-c1870befe511",
+      "checkpoint": {
+        "checkpoint_id": "ckpt-a62faf3f5b9d",
+        "node_id": "node_preprocess",
+        "run_id": "run-c0f936543251",
+        "snapshot_key": "doc-c1870befe511",
+        "created_at": "2026-03-16T11:41:30.164506+00:00"
+      },
+      "fallback_history": [],
+      "error_message": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "node_coverage",
+      "run_id": "run-c0f936543251",
+      "node_type": "coverage",
+      "status": "success",
+      "started_at": "2026-03-16T11:41:30.164513+00:00",
+      "finished_at": "2026-03-16T11:41:30.164547+00:00",
+      "input_ref": "doc-c1870befe511",
+      "output_ref": "plans:6",
+      "checkpoint": {
+        "checkpoint_id": "ckpt-7dd177856ea1",
+        "node_id": "node_coverage",
+        "run_id": "run-c0f936543251",
+        "snapshot_key": "doc-c1870befe511",
+        "created_at": "2026-03-16T11:41:30.164545+00:00"
+      },
+      "fallback_history": [],
+      "error_message": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "node_extractor",
+      "run_id": "run-c0f936543251",
+      "node_type": "extract",
+      "status": "success",
+      "started_at": "2026-03-16T11:41:30.164550+00:00",
+      "finished_at": "2026-03-16T11:46:05.045504+00:00",
+      "input_ref": "plans:6",
+      "output_ref": "spans:74",
+      "checkpoint": {
+        "checkpoint_id": "ckpt-cd9214e403c8",
+        "node_id": "node_extractor",
+        "run_id": "run-c0f936543251",
+        "snapshot_key": "doc-c1870befe511",
+        "created_at": "2026-03-16T11:46:05.045451+00:00"
+      },
+      "fallback_history": [],
+      "error_message": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "node_observer",
+      "run_id": "run-c0f936543251",
+      "node_type": "observe",
+      "status": "success",
+      "started_at": "2026-03-16T11:46:05.045536+00:00",
+      "finished_at": "2026-03-16T11:46:05.045729+00:00",
+      "input_ref": "spans:74",
+      "output_ref": "obs:6",
+      "checkpoint": {
+        "checkpoint_id": "ckpt-078ddf1d8e7a",
+        "node_id": "node_observer",
+        "run_id": "run-c0f936543251",
+        "snapshot_key": "doc-c1870befe511",
+        "created_at": "2026-03-16T11:46:05.045725+00:00"
+      },
+      "fallback_history": [],
+      "error_message": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "node_scorer",
+      "run_id": "run-c0f936543251",
+      "node_type": "score",
+      "status": "success",
+      "started_at": "2026-03-16T11:46:05.045735+00:00",
+      "finished_at": "2026-03-16T11:49:00.818255+00:00",
+      "input_ref": "obs:6",
+      "output_ref": "hyps:12",
+      "checkpoint": {
+        "checkpoint_id": "ckpt-320f1ac7e733",
+        "node_id": "node_scorer",
+        "run_id": "run-c0f936543251",
+        "snapshot_key": "doc-c1870befe511",
+        "created_at": "2026-03-16T11:49:00.818184+00:00"
+      },
+      "fallback_history": [],
+      "error_message": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "node_consistency_checker",
+      "run_id": "run-c0f936543251",
+      "node_type": "check_consistency",
+      "status": "success",
+      "started_at": "2026-03-16T11:49:00.818293+00:00",
+      "finished_at": "2026-03-16T11:49:00.818381+00:00",
+      "input_ref": "hyps:12",
+      "output_ref": "conflicts:0",
+      "checkpoint": null,
+      "fallback_history": [],
+      "error_message": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "node_feedback",
+      "run_id": "run-c0f936543251",
+      "node_type": "feedback",
+      "status": "success",
+      "started_at": "2026-03-16T11:49:00.818634+00:00",
+      "finished_at": "2026-03-16T11:49:49.468759+00:00",
+      "input_ref": "decisions:6",
+      "output_ref": "dims:6",
+      "checkpoint": null,
+      "fallback_history": [],
+      "error_message": null,
+      "metadata": {}
+    }
+  ],
+  "terminal_validation_passed": true,
+  "replay_metadata": {
+    "provider": "openai_compatible"
+  }
+}

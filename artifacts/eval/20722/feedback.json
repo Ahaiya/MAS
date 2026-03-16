@@ -1,0 +1,179 @@
+{
+  "dimensions": {
+    "ideas_content": {
+      "dimension_name": "Ideas and Content",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "clear main ideas",
+        "difficulties moving from general observations to specifics",
+        "easily identifiable purpose",
+        "predictable or overly-obvious main ideas",
+        "support attempted but details are limited, uneven, somewhat off-topic, or too general",
+        "supporting details are relevant but may be overly general or limited"
+      ],
+      "evidence_span_ids": [
+        "span-real-00971aeb26be",
+        "span-real-299637bd5fc5",
+        "span-real-bfc241ca1ab6",
+        "span-real-c25069e8150d",
+        "span-real-c8ac7e666841",
+        "span-real-d0511097f4be"
+      ],
+      "feedback_text": "Your essay received a score of 3 for Ideas and Content. You establish an **easily identifiable purpose** to show how laughter connects you and your cousin. Your main idea is **clear**, as seen in your concluding statement that \"this is one of the many times laughter brought cousin PERSON1 and I together.\" However, **support is attempted but details are limited, uneven, somewhat off-topic, or too general**. For example, you describe building a snowman's base but then shift to getting cold, a detail that does not develop your main idea about shared laughter. The strongest support comes from the chip-eating scene, which is **relevant but may be overly general or limited**, as you describe his look making you laugh but do not fully detail why it was so uniquely humorous.",
+      "confidence": 0.85
+    },
+    "organization": {
+      "dimension_name": "Organization",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "attempts at sequencing and paragraph breaks but order occasionally unclear",
+        "beginning and ending present but undeveloped or too obvious",
+        "transitions sometimes work; same few devices overused"
+      ],
+      "evidence_span_ids": [
+        "span-real-2036d4c11dc5",
+        "span-real-34f28b03424e",
+        "span-real-7bb797adc360",
+        "span-real-be310c6d36cc",
+        "span-real-ed374c1a4eb7"
+      ],
+      "feedback_text": "Your essay scored a 3 in Organization. You make clear attempts at sequencing and paragraph breaks, as shown when you describe building the snowman's base \"after about minutes.\" However, the order is occasionally unclear, such as when you jump from building the snowman to telling your mom \"it's the way looks at you\" without a clear connection. Your beginning and ending are present but too obvious, starting with \"I'm going to tell a little story\" and ending with a simple summary. While you use some transitions like \"then,\" you overuse this same device, as seen in \"I then to do the same thing\" and \"I then tell mom,\" which makes the flow feel repetitive.",
+      "confidence": 0.85
+    },
+    "voice": {
+      "dimension_name": "Voice",
+      "canonical_score": 5,
+      "display_score": "5",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "appropriate level of closeness to or distance from audience",
+        "reader may discern writer behind words and feel sense of interaction",
+        "strong sense of audience; writer seems aware of reader and how to communicate effectively",
+        "topic has come to life; shows originality, liveliness, honesty, conviction, excitement, humor, or suspense"
+      ],
+      "evidence_span_ids": [
+        "span-real-0f7dd3ad982a",
+        "span-real-1221b2ed3d5a",
+        "span-real-20c851963b76",
+        "span-real-26111f416779",
+        "span-real-3cec45c2413b",
+        "span-real-493fb943746a",
+        "span-real-5e5806db720c",
+        "span-real-5f77360d5009",
+        "span-real-645bf4991a6c",
+        "span-real-732503483933",
+        "span-real-836e26d26a15",
+        "span-real-83e0d872972b",
+        "span-real-8522deff42aa",
+        "span-real-8e37da9f19c9",
+        "span-real-8f9025d8ad82",
+        "span-real-920d369c5b57",
+        "span-real-99a9026ee633",
+        "span-real-99b620bf0e91",
+        "span-real-bebd08786bd3",
+        "span-real-d1d373fbe374",
+        "span-real-e615ea63e0d9",
+        "span-real-f58677684b8f"
+      ],
+      "feedback_text": "Your essay received a score of 5 for Voice. You achieve a **strong sense of audience** and the **reader can discern the writer behind the words**, feeling a sense of interaction. Your narrative comes to life with **honesty, excitement, and humor**, pulling the reader directly into your playful dynamic with your cousin. This is evident in your candid internal thoughts (\"I'm gonna keep at it until I get it right\") and in the lively, authentic dialogue where you squint while bringing a chip to your mouth and later fall off your chair in \"hysterical laughter.\" These specific moments create a vivid, engaging experience where your unique personality and connection to your audience are consistently clear.",
+      "confidence": 0.85
+    },
+    "word_choice": {
+      "dimension_name": "Word Choice",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "expression is functional; slang not purposeful or effective",
+        "rare experiments with language; avoids clichés",
+        "words that work but do not particularly energize writing"
+      ],
+      "evidence_span_ids": [
+        "span-real-1b4b1ef03b72",
+        "span-real-3278d55fc6aa",
+        "span-real-88ab7a367e67",
+        "span-real-9fea573fbdad",
+        "span-real-aaada6b1d01b",
+        "span-real-c1f51c8e881b",
+        "span-real-f9fc0599c425"
+      ],
+      "feedback_text": "Your essay earned a **4** in Word Choice. Your expression is **functional**, as seen in dialogue like “I’m bored, what do you want to do?” While you **avoid clichés** and sometimes experiment, as with “delectably warm hot chocolate,” many word choices **work but do not particularly energize the writing**. Phrases like “I’m gonna keep at it” and “busting up laughing” use casual slang that is not purposeful, and more vivid moments, such as “a fit of hysterical laughter,” are followed by more generic language like “laughing uncontrollably.” Overall, your words communicate clearly but often lack consistent energy.",
+      "confidence": 0.85
+    },
+    "sentence_fluency": {
+      "dimension_name": "Sentence Fluency",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "good control over simple sentences, little over complex",
+        "sentences functional but lack energy",
+        "some passages invite fluid oral reading; others do not"
+      ],
+      "evidence_span_ids": [
+        "span-real-16ab502465d7",
+        "span-real-4e0a71997b76",
+        "span-real-76287452e93e",
+        "span-real-7f6292de0032",
+        "span-real-bcda647367e5",
+        "span-real-f22dc3c8b56e"
+      ],
+      "feedback_text": "Your essay received a score of 3 for Sentence Fluency. You show **good control over simple sentences**, as seen in clear statements like, \"I'm going to tell you a little story.\" However, you have **little control over complex** ones, which often become long and awkward, such as, \"So off we go back inside hoping for some delectably warm hot chocolate.\" This mix creates a rhythm where **some passages invite fluid oral reading; others do not**. For example, the dialogue exchange (\"I say to him, 'I'm bored, do you want to do something?'\") flows naturally, but the description \"We start our snowman by building the base (The biggest piece for the bottom)\" is choppy and interrupts the reading pace.",
+      "confidence": 0.85
+    },
+    "conventions": {
+      "dimension_name": "Conventions",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "End-of-sentence punctuation usually correct; internal punctuation has frequent errors",
+        "Errors in grammar and usage do not block meaning but distract reader",
+        "Limited control; errors begin to impede readability.",
+        "Significant need for editing",
+        "Spelling errors distract reader; common words misspelled",
+        "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
+        "errors in grammar and usage do not block meaning but distract reader",
+        "spelling errors distract reader; common words misspelled"
+      ],
+      "evidence_span_ids": [
+        "span-real-0e3e1b55b4a6",
+        "span-real-267dda0ba666",
+        "span-real-29c272a07687",
+        "span-real-321f4e70edf6",
+        "span-real-38a9da25ccac",
+        "span-real-4237b303cd70",
+        "span-real-42786b670a05",
+        "span-real-44830bb31358",
+        "span-real-4e0d9c2cefda",
+        "span-real-53c4d4558bed",
+        "span-real-65661fc145ce",
+        "span-real-70ebd1581332",
+        "span-real-75510cdfb9bd",
+        "span-real-7876bcd61fad",
+        "span-real-8302ea7991ca",
+        "span-real-86511e4e19d7",
+        "span-real-89fa3a2af6a2",
+        "span-real-8fee6a960670",
+        "span-real-9d82c0288c73",
+        "span-real-c646166099cc",
+        "span-real-d0bc6eaf7aa0",
+        "span-real-d1c1aa6867df",
+        "span-real-dcee13f0415a",
+        "span-real-df79ad5be7df",
+        "span-real-e8c2863b7497",
+        "span-real-ee63938607fb",
+        "span-real-ef42ef65c777",
+        "span-real-fallback-d8866083"
+      ],
+      "feedback_text": "Your essay received a score of 3 for Conventions. The score reflects that while your end-of-sentence punctuation is usually correct, internal punctuation has frequent errors, and mistakes in grammar and spelling distract the reader. For example, you often omit necessary commas in compound sentences, as in \"I grab a chip @CAPS3 slowly bring @CAPS5 to @CAPS11 mouth,\" which impedes readability. Furthermore, errors in common word usage and spelling are distracting, such as using \"complies\" instead of \"complies,\" and writing \"@CAPS33't\" for \"don't.\" These patterns show a significant need for editing, as the errors, while not blocking meaning, frequently interrupt the flow for your reader.",
+      "confidence": 0.85
+    }
+  },
+  "summary": "Real provider feedback for 6 dimension(s).",
+  "provider": "openai_compatible"
+}

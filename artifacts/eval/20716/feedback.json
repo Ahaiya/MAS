@@ -1,0 +1,152 @@
+{
+  "dimensions": {
+    "ideas_content": {
+      "dimension_name": "Ideas and Content",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "clear main ideas",
+        "easily identifiable purpose",
+        "supporting details are relevant but may be overly general or limited"
+      ],
+      "evidence_span_ids": [
+        "span-real-00798a57318d",
+        "span-real-088a1408b267",
+        "span-real-126444377343",
+        "span-real-221ee5e0c8ab",
+        "span-real-28dd51f19860",
+        "span-real-3f4bde8729d3",
+        "span-real-ad24cf09be01",
+        "span-real-af6439623c4d",
+        "span-real-dd74d2d5a89a",
+        "span-real-e21f7e4052a3"
+      ],
+      "feedback_text": "Your essay received a score of 4 for Ideas and Content. You established a **clear main idea** about trying to make a friend's mother laugh, and your **purpose is easily identifiable** as a personal story about kindness. You included **relevant supporting details**, such as using the \"Boo who?\" joke at dinner and later learning the mother was grieving. However, these details are somewhat **limited**; for example, you state you \"made people laugh\" but only describe one joke, and the mother's change in mood after the joke is not shown, leaving the resolution a bit general.",
+      "confidence": 0.85
+    },
+    "organization": {
+      "dimension_name": "Organization",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "attempts at sequencing and paragraph breaks but order occasionally unclear",
+        "beginning and ending present but undeveloped or too obvious",
+        "structure is skeletal or too rigid"
+      ],
+      "evidence_span_ids": [
+        "span-real-1c79d365f8d9",
+        "span-real-2cb3e3a122bc",
+        "span-real-751437a7cf67",
+        "span-real-7dc051960e00",
+        "span-real-81d16c8f3a2e",
+        "span-real-8f6ffbb8ce1c",
+        "span-real-dcd74a4b60dd"
+      ],
+      "feedback_text": "Your essay received a score of 3 for Organization. You make attempts at sequencing and paragraph breaks, but the order is occasionally unclear, such as when you jump from laughing in class to a backstory in third grade without a clear transition. The structure is somewhat skeletal, relying heavily on a chain of events like planning a sleepover, eating dinner, and going to bed without deeper development. While you have a clear beginning and ending, they are too obvious and undeveloped; the conclusion abruptly shifts from a meaningful moment about grief to a joke about cleaning your room, which doesn't effectively resolve the narrative.",
+      "confidence": 0.85
+    },
+    "voice": {
+      "dimension_name": "Voice",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "Liveliness, sincerity, or humor when appropriate.",
+        "Reader may glimpse writer and feel sense of interaction in places.",
+        "Sense of audience; writer seems aware but has not consistently employed appropriate voice.",
+        "Voice present; some expressiveness and sincerity."
+      ],
+      "evidence_span_ids": [
+        "span-real-51fba6157b29",
+        "span-real-6492a1d7f231",
+        "span-real-64f3bb63f0cb",
+        "span-real-b387ee63323c",
+        "span-real-baab7d40ae7b",
+        "span-real-c4e4c359879c",
+        "span-real-f5d43fdafb0c"
+      ],
+      "feedback_text": "Your essay received a score of 4 for Voice. This score reflects that \"voice is present\" with \"some expressiveness and sincerity,\" and there is a developing \"sense of audience; writer seems aware but has not consistently employed appropriate voice.\" Your sincere and lively personality emerges in direct quotes like, \"I said hi I'm @CAPS4 do you want to hear a joke,\" and in your clear satisfaction when noting, \"I said it was fun I made people laugh.\" These moments create a \"sense of interaction\" and let the reader glimpse your genuine desire to connect. However, the voice remains more a collection of engaging moments than a fully sustained presence throughout the narrative.",
+      "confidence": 0.85
+    },
+    "word_choice": {
+      "dimension_name": "Word Choice",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "expression seems mundane and general; slang not effective",
+        "words generally accurate but misused words may occasionally appear",
+        "words that work but rarely capture reader's interest"
+      ],
+      "evidence_span_ids": [
+        "span-real-0a2f3e74440b",
+        "span-real-22aaab153a19",
+        "span-real-23638b3bf389",
+        "span-real-30504041cac5",
+        "span-real-48653cd80ae1",
+        "span-real-a6bb5daeb85e",
+        "span-real-e637291eea6c"
+      ],
+      "feedback_text": "Your essay received a score of 3 for Word Choice. Your language is generally accurate but often seems mundane and general, and it rarely captures a reader's interest. For example, phrases like \"a grouch,\" \"a bad mood,\" and \"this crazy idea\" are very common and do not create a vivid picture. Furthermore, some of your informal choices, such as \"cracking up,\" \"gosh darn it,\" and \"my jokesare horrible,\" function more as slang or casual expressions that are not effective in making your writing distinctive. While your words communicate the basic ideas, using more precise and engaging vocabulary would strengthen your expression.",
+      "confidence": 0.85
+    },
+    "sentence_fluency": {
+      "dimension_name": "Sentence Fluency",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "good control over simple sentences, little over complex",
+        "mechanical rather than fluid; occasional awkwardness",
+        "sentences functional but lack energy",
+        "some passages invite fluid oral reading; others do not"
+      ],
+      "evidence_span_ids": [
+        "span-real-5ea3dd042e6b",
+        "span-real-79ca95493bf7",
+        "span-real-97428f433ff5",
+        "span-real-9d732ab5950d",
+        "span-real-bb195c8162a3",
+        "span-real-cc2b994dd39a",
+        "span-real-e0373304791f"
+      ],
+      "feedback_text": "Your score for Sentence Fluency is 3. Your writing shows **\"good control over simple sentences\"** but can be **\"mechanical rather than fluid,\"** with **\"occasional awkwardness.\"** For example, you often connect ideas with \"and\" or \"so,\" creating long, run-on sentences like, \"we went around the whole school looking for a new student unfortunately we couldn't find one we heard the bell ring.\" This makes the reading choppy. However, other passages, like the setup of the joke (\"I said 'boo' she said 'boo who?'\"), have a more natural rhythm that **\"invite fluid oral reading.\"** Overall, your sentences are functional and clear but often lack varied connections for smoother flow.",
+      "confidence": 0.85
+    },
+    "conventions": {
+      "dimension_name": "Conventions",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
+        "errors in grammar and usage do not block meaning but distract reader",
+        "significant need for editing",
+        "some control over basic conventions",
+        "spelling errors distract reader; common words misspelled"
+      ],
+      "evidence_span_ids": [
+        "span-real-0057efc866c5",
+        "span-real-0852de83a92d",
+        "span-real-563d8cf8ade5",
+        "span-real-616b6218efe7",
+        "span-real-68cee56fbc01",
+        "span-real-99d17722dae0",
+        "span-real-bcdc83558b01",
+        "span-real-ca7e29b15925",
+        "span-real-cc3d7d5e4348",
+        "span-real-cf7a14efcf65",
+        "span-real-d937266a7f01",
+        "span-real-e285d3e59a6e",
+        "span-real-e87c231864ba",
+        "span-real-eabe1e5ca42a"
+      ],
+      "feedback_text": "Your essay received a score of 3 for Conventions. This score reflects that you have \"some control over basic conventions,\" but there is a \"significant need for editing\" as \"errors in grammar and usage do not block meaning but distract reader.\" For example, you frequently omit necessary internal punctuation, as seen in run-on sentences like “I asked mt mom if it was @CAPS1 if I could spend the night at @PERSON2 house she said <yeah just make sure its @CAPS1 with his mom>.” This lack of commas and periods makes your writing hard to follow. Furthermore, \"spelling errors distract reader,\" as shown with misspelled common words like \"mt\" (my) and \"its\" (it's).",
+      "confidence": 0.85
+    }
+  },
+  "summary": "Real provider feedback for 6 dimension(s).",
+  "provider": "openai_compatible"
+}

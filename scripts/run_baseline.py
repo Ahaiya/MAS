@@ -81,7 +81,7 @@ def main(
 
     if verbose:
         typer.echo("=" * 60)
-        typer.echo("MAS Baseline Evaluation Pipeline (mock mode)")
+        typer.echo("MAS Baseline Evaluation Pipeline ")
         typer.echo("=" * 60)
         typer.echo(f"Bundle:   {bundle}")
         typer.echo(f"Provider: {provider}")

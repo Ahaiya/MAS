@@ -77,7 +77,7 @@ artifact_bundle:
 
     stage_providers:
       evidence_extraction:
-        model: "deepseek-reasoner"
+        model: ""
         api_base: ""
         api_key_env: "EXTRACTOR_API_KEY"
       feedback:
