@@ -79,26 +79,65 @@ class PipelineRunner:
     """Drives the evaluation pipeline for one EvaluationRequest.
 
     Args:
-        bundle   : A frozen ResolvedArtifactBundle (from ConfigCompiler).
-        provider : Optional BaseProvider for real LLM calls.  When None (default)
-                   the pipeline uses deterministic mock workers.  When set, the
-                   extraction, scoring and feedback stages call the real LLM.
-        prompt_templates: Optional dict mapping template name to PromptTemplate
-                   for real provider mode.  Required when provider is not None.
+        bundle          : A frozen ResolvedArtifactBundle (from ConfigCompiler).
+        provider        : Default BaseProvider for real LLM calls (used by stages
+                          and raters that have no specific override).  When None,
+                          the pipeline uses deterministic mock workers.
+        rater_providers : Optional per-rater provider map {rater_id: BaseProvider}.
+                          Takes precedence over `provider` for the scoring stage.
+        stage_providers : Optional per-stage provider map {stage_name: BaseProvider}.
+                          Takes precedence over `provider` for named stages.
+                          Recognised stage names: "evidence_extraction", "feedback".
+        prompt_templates: Optional dict mapping template name to PromptTemplate.
+                          Required for real provider mode.
     """
 
     def __init__(
         self,
         bundle: ResolvedArtifactBundle,
         provider: Optional[BaseProvider] = None,
+        rater_providers: Optional[Dict[str, BaseProvider]] = None,
+        stage_providers: Optional[Dict[str, BaseProvider]] = None,
         prompt_templates: Optional[Dict[str, PromptTemplate]] = None,
     ) -> None:
         self._bundle = bundle
         self._provider = provider
+        self._rater_providers: Dict[str, BaseProvider] = rater_providers or {}
+        self._stage_providers: Dict[str, BaseProvider] = stage_providers or {}
         self._prompt_templates = prompt_templates or {}
 
     def _is_real(self) -> bool:
-        return self._provider is not None
+        return self._provider is not None or bool(self._rater_providers)
+
+    def _provider_for_rater(self, rater_id: str) -> BaseProvider:
+        """Return the provider to use for a specific rater.
+
+        Priority: explicit rater_providers > default provider.
+        Raises RuntimeError if no provider is available.
+        """
+        if rater_id in self._rater_providers:
+            return self._rater_providers[rater_id]
+        if self._provider is not None:
+            return self._provider
+        raise RuntimeError(
+            f"No provider configured for rater '{rater_id}'. "
+            "Pass a default provider or configure rater_providers."
+        )
+
+    def _provider_for_stage(self, stage: str) -> BaseProvider:
+        """Return the provider to use for a named pipeline stage.
+
+        Priority: explicit stage_providers > default provider.
+        Raises RuntimeError if no provider is available.
+        """
+        if stage in self._stage_providers:
+            return self._stage_providers[stage]
+        if self._provider is not None:
+            return self._provider
+        raise RuntimeError(
+            f"No provider configured for stage '{stage}'. "
+            "Pass a default provider or configure stage_providers."
+        )
 
     def _tpl(self, name: str) -> PromptTemplate:
         """Return a named PromptTemplate; raises KeyError if missing."""
@@ -190,9 +229,10 @@ class PipelineRunner:
                                             input_ref=f"plans:{len(plans)}")
                     if self._is_real():
                         extraction_tpl = self._tpl("evidence_extraction")
+                        extraction_provider = self._provider_for_stage("evidence_extraction")
                         all_spans_by_dim = {
                             plan.dimension_id: real_extractor.run(
-                                plan, document, rubric, self._provider, extraction_tpl
+                                plan, document, rubric, extraction_provider, extraction_tpl
                             )
                             for plan in plans
                         }
@@ -252,7 +292,7 @@ class PipelineRunner:
                         hypotheses = [
                             real_scorer.run(
                                 obs, all_spans_flat, rubric, document,
-                                self._provider, scoring_tpl, rater_id
+                                self._provider_for_rater(rater_id), scoring_tpl, rater_id
                             )
                             for obs in observations
                             for rater_id in rater_ids
@@ -379,7 +419,7 @@ class PipelineRunner:
                 all_spans_flat = [s for spans in all_spans_by_dim.values() for s in spans]
                 feedback = real_feedback.run(
                     decisions, observations, rubric,
-                    all_spans_flat, self._provider, explanation_tpl
+                    all_spans_flat, self._provider_for_stage("feedback"), explanation_tpl
                 )
             else:
                 feedback = mock_feedback.run(decisions, observations, rubric)

@@ -22,6 +22,35 @@ from typing import Optional, Dict, List, Any
 from enum import Enum
 
 
+@dataclass(frozen=True)
+class ProviderEntryConfig:
+    """Config for a single LLM provider endpoint.
+
+    Attributes:
+        api_key_env: Name of the environment variable that holds the API key.
+        model:       Model identifier (e.g. "deepseek-chat"). Empty string means
+                     read LLM_MODEL from env at build time.
+        api_base:    API base URL. Empty string means read LLM_API_BASE from env.
+    """
+    api_key_env: str
+    model: str = ""
+    api_base: str = ""
+
+
+@dataclass(frozen=True)
+class ProviderConfig:
+    """Per-rater and per-stage provider configuration loaded from the bundle.
+
+    Attributes:
+        default:         Fallback provider used when a rater/stage has no specific entry.
+        rater_providers: Maps rater_id (e.g. "rater_1") to its ProviderEntryConfig.
+        stage_providers: Maps stage name (e.g. "evidence_extraction") to its config.
+    """
+    default: ProviderEntryConfig
+    rater_providers: Dict[str, ProviderEntryConfig] = field(default_factory=dict)
+    stage_providers: Dict[str, ProviderEntryConfig] = field(default_factory=dict)
+
+
 class SchemaVersion(Enum):
     """Supported schema versions for artifact bundles."""
     V2_0 = "2.0"
@@ -91,6 +120,9 @@ class ArtifactBundle:
     # Validation
     validation_rules: List[Dict[str, Any]] = field(default_factory=list)
     metadata: Dict[str, Any] = field(default_factory=dict)
+
+    # Raw provider_config dict parsed from bundle YAML (structured by compiler)
+    provider_config_raw: Optional[Dict[str, Any]] = None
 
     def is_frozen(self) -> bool:
         """Check if this bundle has been resolved and frozen."""
@@ -208,6 +240,9 @@ class ResolvedArtifactBundle:
     resolved_at: datetime
     resolver_version: str
     total_hash: str
+
+    # Structured provider configuration (None if not declared in bundle)
+    provider_config: Optional[ProviderConfig] = None
 
     def get_version_info(self) -> str:
         """Get formatted version information for logging."""

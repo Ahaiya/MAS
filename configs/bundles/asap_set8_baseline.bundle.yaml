@@ -50,6 +50,41 @@ artifact_bundle:
       type: "cross_artifact_check"
       description: "Rubric scale must match adjudication and aggregation expectations"
 
+  # Provider Configuration (Path B: config-driven, per-rater and per-stage LLMs)
+  # Each entry specifies: model (direct value), api_base (direct value),
+  # api_key_env (name of env var holding the secret key).
+  # Empty model/api_base fall back to LLM_MODEL / LLM_API_BASE env vars.
+  # "default" is the fallback for any rater or stage not explicitly listed.
+  provider_config:
+    default:
+      model: ""                  # fallback: reads LLM_MODEL env var
+      api_base: ""               # fallback: reads LLM_API_BASE env var
+      api_key_env: "LLM_API_KEY"
+
+    rater_providers:
+      rater_1:
+        model: ""                # e.g. "deepseek-chat" or "gpt-4o-mini"
+        api_base: ""             # e.g. "https://api.deepseek.com/v1"
+        api_key_env: "RATER_1_API_KEY"
+      rater_2:
+        model: ""
+        api_base: ""
+        api_key_env: "RATER_2_API_KEY"
+      rater_3:
+        model: ""
+        api_base: ""
+        api_key_env: "RATER_3_API_KEY"
+
+    stage_providers:
+      evidence_extraction:
+        model: "deepseek-reasoner"
+        api_base: ""
+        api_key_env: "EXTRACTOR_API_KEY"
+      feedback:
+        model: ""
+        api_base: ""
+        api_key_env: "FEEDBACK_API_KEY"
+
   # Metadata
   metadata:
     created_by: "Phase 1 Task 1 execution"

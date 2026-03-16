@@ -28,6 +28,8 @@ from src.config.resolver import ConfigResolver, ResolverError
 from src.contracts.artifact_bundle import (
     ArtifactBundle,
     PolicySnapshot,
+    ProviderConfig,
+    ProviderEntryConfig,
     ResolvedArtifactBundle,
     RubricSnapshot,
 )
@@ -115,6 +117,9 @@ class ConfigCompiler:
         ]
         total_hash = compute_bundle_hash(all_content_hashes)
 
+        # Step 4b: Build ProviderConfig from raw dict (if present in bundle)
+        provider_config = _build_provider_config(bundle.provider_config_raw)
+
         # Step 5: Build frozen ArtifactBundle (with freeze_hash set)
         resolved_at = datetime.now(timezone.utc)
         frozen_bundle = ArtifactBundle(
@@ -133,6 +138,7 @@ class ConfigCompiler:
             freeze_timestamp=resolved_at,
             validation_rules=bundle.validation_rules,
             metadata=bundle.metadata,
+            provider_config_raw=bundle.provider_config_raw,
         )
 
         return ResolvedArtifactBundle(
@@ -140,10 +146,47 @@ class ConfigCompiler:
             rubric_snapshot=rubric_snapshot,
             policy_snapshot=policy_snapshot,
             prompt_templates=prompt_templates,
+            provider_config=provider_config,
             resolved_at=resolved_at,
             resolver_version=COMPILER_VERSION,
             total_hash=total_hash,
         )
+
+
+def _parse_provider_entry(raw: dict[str, Any]) -> ProviderEntryConfig:
+    """Parse a single provider entry dict into a ProviderEntryConfig."""
+    return ProviderEntryConfig(
+        api_key_env=raw["api_key_env"],
+        model=raw.get("model", "") or "",
+        api_base=raw.get("api_base", "") or "",
+    )
+
+
+def _build_provider_config(raw: dict[str, Any] | None) -> ProviderConfig | None:
+    """Parse the provider_config section of a bundle YAML into a ProviderConfig.
+
+    Returns None if no provider_config section is present.
+    Raises ConfigCompileError if the section is malformed.
+    """
+    if raw is None:
+        return None
+    try:
+        default = _parse_provider_entry(raw["default"])
+        rater_providers = {
+            rater_id: _parse_provider_entry(entry)
+            for rater_id, entry in (raw.get("rater_providers") or {}).items()
+        }
+        stage_providers = {
+            stage: _parse_provider_entry(entry)
+            for stage, entry in (raw.get("stage_providers") or {}).items()
+        }
+        return ProviderConfig(
+            default=default,
+            rater_providers=rater_providers,
+            stage_providers=stage_providers,
+        )
+    except (KeyError, TypeError) as exc:
+        raise ConfigCompileError(f"Malformed provider_config in bundle: {exc}") from exc
 
 
 def _build_rubric_snapshot(rubric_file_data: dict[str, Any]) -> RubricSnapshot:

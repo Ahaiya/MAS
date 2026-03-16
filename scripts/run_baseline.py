@@ -26,7 +26,6 @@ from pathlib import Path as _Path
 from src.agents.mock_config_resolver import run as resolve_bundle
 from src.contracts.request_models import EvaluationRequest
 from src.pipeline.runner import PipelineRunner
-from src.providers.guards import GuardedProvider, RetryConfig
 from src.providers.prompt_loader import PromptLoader
 
 import typer
@@ -112,27 +111,42 @@ def main(
         bundle_ref=f"{resolved.artifact_bundle.bundle_id}@{resolved.artifact_bundle.bundle_version}",
     )
 
-    # Configure provider
-    real_provider = None
+    # Configure provider(s)
+    default_provider = None
+    rater_providers: dict = {}
+    stage_providers: dict = {}
     prompt_templates = {}
+
     if provider == "real":
-        from src.providers.openai_compatible import OpenAICompatibleProvider
-        api_key = os.environ.get("LLM_API_KEY", "")
-        if not api_key:
-            typer.echo("Error: LLM_API_KEY environment variable is not set.", err=True)
-            raise typer.Exit(code=1)
-        model_id = os.environ.get("LLM_MODEL", "gpt-4o-mini")
-        api_base = os.environ.get("LLM_API_BASE") or None
-        timeout = float(os.environ.get("LLM_TIMEOUT_SECONDS", "60"))
-        max_retries = int(os.environ.get("LLM_MAX_RETRIES", "3"))
-        inner = OpenAICompatibleProvider(
-            api_key=api_key,
-            model_id=model_id,
-            api_base=api_base,
-            timeout=timeout,
-            max_retries=0,
-        )
-        real_provider = GuardedProvider(inner, RetryConfig(max_retries=max_retries, retry_delay_seconds=1.0))
+        from src.providers.factory import build_provider, build_provider_map
+
+        if resolved.provider_config is not None:
+            # Path B: bundle-driven — build per-rater and per-stage providers from config
+            try:
+                default_provider, rater_providers, stage_providers = build_provider_map(
+                    resolved.provider_config
+                )
+            except ValueError as exc:
+                typer.echo(f"Error: {exc}", err=True)
+                raise typer.Exit(code=1)
+            if verbose:
+                typer.echo(
+                    f"Bundle provider_config loaded: "
+                    f"{len(rater_providers)} rater(s), "
+                    f"{len(stage_providers)} stage(s)"
+                )
+        else:
+            # Legacy fallback: single provider from global LLM_* env vars
+            from src.contracts.artifact_bundle import ProviderEntryConfig
+            legacy_entry = ProviderEntryConfig(api_key_env="LLM_API_KEY")
+            try:
+                default_provider = build_provider(legacy_entry)
+            except ValueError as exc:
+                typer.echo(f"Error: {exc}", err=True)
+                raise typer.Exit(code=1)
+            if verbose:
+                typer.echo("No provider_config in bundle — using global LLM_* env vars.")
+
         # Load prompt templates
         loader = PromptLoader()
         configs_prompts = _Path(__file__).parent.parent / "configs" / "prompts"
@@ -145,13 +159,18 @@ def main(
             if tpl_path.exists():
                 prompt_templates[name] = loader.load(tpl_path)
         if verbose:
-            typer.echo(f"Real provider: {real_provider.name} / model={model_id}")
             typer.echo(f"Loaded {len(prompt_templates)} prompt template(s)")
 
     # Run pipeline
     if verbose:
         typer.echo("Running pipeline...")
-    runner = PipelineRunner(resolved, provider=real_provider, prompt_templates=prompt_templates)
+    runner = PipelineRunner(
+        resolved,
+        provider=default_provider,
+        rater_providers=rater_providers,
+        stage_providers=stage_providers,
+        prompt_templates=prompt_templates,
+    )
     run_trace, feedback = runner.run(request)
 
     if verbose:

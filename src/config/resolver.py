@@ -136,6 +136,7 @@ class ConfigResolver:
                 source_documents=ab.get("source_documents", []) or [],
                 validation_rules=ab.get("validation_rules", []) or [],
                 metadata=ab.get("metadata", {}) or {},
+                provider_config_raw=ab.get("provider_config") or None,
             )
         except (KeyError, ValueError) as exc:
             raise ResolverError(f"Malformed bundle file {bundle_path}: {exc}") from exc

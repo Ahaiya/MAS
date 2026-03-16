@@ -1,159 +1,50 @@
 # CLAUDE.md
 
-## Project Overview
+## 项目概述
 
-Multi-Agent System (MAS) for rubric-based automated text evaluation and feedback.
-System reads structured rubrics and unstructured text, outputs explainable scores and actionable feedback via multi-agent collaboration.
+本项目是一个基于量规（Rubric）的多智能体文本自动评价系统（MAS）。
+系统读取结构化评分标准和非结构化文本，通过多智能体协作输出可解释的分数与反馈。
 
-## Source of Truth — Read These First
+**当前状态：代码库已完成，进入探索与使用阶段。**
 
-Before executing ANY task, read the relevant source documents in this priority order:
+## 优先阅读文档
 
-| Priority | Document | Role | When to Read |
-|----------|----------|------|--------------|
-| **HIGHEST** | `docs/Zen.md` | Project constitution — overrides ALL conflicts | When making architectural decisions or resolving conflicts between docs |
-| HIGH | `docs/architecture.md` | Agent roles, state machine, data flow | Before implementing any agent, orchestrator, or pipeline code |
-| HIGH | `docs/research.md` | System invariants, data contracts, config meta-schema, evaluation harness | Before defining contracts, configs, or evaluation logic |
-| HIGH | `docs/plan.md` | Phased execution plan with per-task verification commands | Every session start; before starting any task |
-| HIGH | `docs/Rubric_Guidelines.md` | Rubric core definition (dimensions, levels, descriptors) | When writing config artifacts only — NOT for code logic |
-| HIGH | `docs/Adjudication_Rules.md` | Double/triple scoring, composite formula | When writing config artifacts only — NOT for code logic |
-| LOW | `docs/Example.md` | Output format examples ONLY — NOT a rule source | When implementing feedback/explanation rendering |
-| HIGH | `configs/**/*.yaml` | Runtime config artifacts — the actual data contracts consume | When implementing policy logic or debugging config-driven behavior |
+| 优先级 | 文件 | 用途 |
+|--------|------|------|
+| 最高 | `docs/Zen.md` | 项目宪法，架构决策的最终依据 |
+| 高 | `docs/architecture.md` | Agent 角色、状态机、数据流 |
+| 高 | `docs/research.md` | 数据契约、配置 schema、评测框架 |
+| 高 | `docs/plan.md` | 各阶段实现记录，理解代码背景时参考 |
+| 配置参考 | `docs/Rubric_Guidelines.md` | 量规维度与分档定义 |
+| 配置参考 | `docs/Adjudication_Rules.md` | 双评审、裁决与 composite 规则 |
+| 输出参考 | `docs/Example.md` | 解释输出的表现形态，不是规则来源 |
 
+## 当前工作模式：探索模式
 
-**CRITICAL**: Always go to the source document. Do NOT rely on summaries in this file as your basis for implementation decisions. This file provides behavioral rules and guardrails, not specifications.
+- 主要目标是帮助用户理解代码库、回答使用问题、指导配置修改。
+- 不主动寻找 plan.md 中的未完成任务。
+- 收到问题后，主动读取相关源文件再作答，不依赖记忆推测。
+- 所有回答默认使用中文。
+- 如需切回执行模式，由用户明确说明。
 
-## Current Progress
+## 核心使用场景
 
-- [x] Phase 0: Repository & Environment Setup
-- [x] Phase 1: Constitutional Contracts & Config Compiler   
-- [x] Phase 2: Intermediate Data Contracts
-- [x] Phase 3: Mocked Orchestrator-StateGraph Baseline 
-- [x] Phase 4: Policy-Aware MAS Wiring 
-- [x] Phase 5: Real Provider Adapter & Prompt Wiring 
-- [x] Phase 6: End-to-End Baseline Validation 
-- [ ] Phase 7: Evaluation Harness & Iteration Guardrails ← **CURRENT PHASE**
+用户主要关心以下四类问题，回答时优先围绕这些场景展开：
 
-## Session Start Protocol
+1. **系统效果**：真实 LLM 接入后评分质量如何，应关注哪些指标（QWK、inter-agent consistency 等）
+2. **配置修改**：如何更换量规、调整维度、修改裁决策略——改 `configs/` 而非 `src/`
+3. **系统使用**：如何触发一次完整评价，如何解读输出结果，如何追溯评分逻辑
+4. **结构理解**：各模块职责是什么，数据从哪来到哪去
 
-At the beginning of every session:
+## Provider 设置
 
-1. Read `docs/plan.md` to identify the current Phase and the next unchecked task.
-2. If the task involves contracts, configs, or pipeline code, read the relevant source docs per the Source of Truth table above.
-3. State the task you are about to execute and its verification command BEFORE writing any code.
-4. If this is the first task of a new Phase, run `python -m pytest tests/ -q --tb=no` to verify all prior tests still pass before proceeding.
+- 当前默认使用 `--provider real`（真实 LLM）。
+- Mock 模式仅用于回归验证，不用于日常使用。
+- Provider 配置在 `.env` 中，不在代码逻辑里。
 
-## Execution Discipline
+## 不可逾越的边界
 
-### Task Granularity
-- Execute ONE task at a time from `docs/plan.md` (one checkbox item, not an entire Phase).
-- After completing each task, IMMEDIATELY run its verification command from plan.md.
-- Do not proceed to the next task until verification passes.
-- Do not accumulate tasks and verify at Phase end.
-
-### Phase Gate
-- Do not start Phase N+1 until ALL exit conditions of Phase N are met.
-- After completing a Phase, run the full Phase integration verification.
-
-### Context Loading for Mid-Phase Tasks
-- When starting a task that depends on prior tasks within the same Phase, read the source files listed in the task's "依赖" field before writing any code.
-- For `src/` dependencies, read the actual implementation files, not just the contracts.
-- For `tests/` dependencies, read the passing test files to understand expected behavior.
-
-### Failure & Rollback Protocol
-- If a verification command fails, fix within the scope of the current task.
-- If the same verification command fails after 2 fix attempts with the same approach, STOP. Report the failure pattern to the human operator and wait for guidance before reverting or trying a different approach.
-- Never carry unverified temporary fields, scripts, or prompts into the next task.
-- If any previously-passing test breaks, revert ALL changes from the current Phase and restore the last green state.
-
-### Git Discipline
-- Claude Code MUST NOT execute any git commands (commit, push, pull, rebase, checkout, etc.).
-- After completing a task and passing its verification, Claude Code should report the result and prompt for manual commit.
-- The human operator owns all git operations: commit granularity, message authoring, branch management, and rollback decisions.
-
-### Task Completion Protocol
-- After verification passes, report: (a) what was done, (b) verification result, (c) files created or modified.
-- Update the checkbox in `docs/plan.md` for the completed task.
-- Do NOT update `CLAUDE.md` Current Progress — the human operator maintains this file.
-
-## The Zero-Hardcoding Firewall
-
-This is the single most important rule in this project. Violations require immediate Phase revert.
-
-### Self-Check Before Writing Any Code
-
-Before committing any file under `src/`, ask yourself:
-
-1. Does this code contain ANY specific trait name (e.g., "Ideas and Content", "Organization", "Voice", "Word Choice", "Sentence Fluency", "Conventions") or trait code (I, O, V, W, S, C)?
-2. Does this code contain ANY fixed score value (1, 2, 3, 4, 5, 6) or fixed scale range?
-3. Does this code contain ANY specific composite formula, dimension weight, or threshold number?
-4. Does this code contain ANY specific adjudication trigger pattern or cusp rule?
-5. Does this code contain ANY display annotation string ("High", "Medium", "Low", "4-", "3-")?
-6. Does this code reference or parse ANY `.md` rule source directly at runtime?
-
-**If ANY answer is YES → the code is invalid. Refactor to read from `configs/` instead.**
-
-### What Belongs Where
-
-| Information | Belongs In | Never In |
-|-------------|-----------|----------|
-| Trait names, codes, count | `configs/rubrics/*.yaml` | `src/**/*.py` |
-| Score scale, levels, descriptors | `configs/rubrics/*.yaml` | `src/**/*.py` |
-| Adjudication thresholds, triggers | `configs/policies/adjudication/*.yaml` | `src/**/*.py` |
-| Composite formula, weights | `configs/policies/aggregation/*.yaml` | `src/**/*.py` |
-| Explanation templates, citation rules | `configs/policies/explanation/*.yaml` | `src/**/*.py` |
-| Display annotations | `configs/` (display overlay config) | `src/**/*.py` |
-| Prompt text | `configs/prompts/*.yaml` (Jinja2 templates) | `src/**/*.py` |
-
-## Architectural Boundaries — Do Not Cross
-
-### Contract-First Data Flow
-- ALL data passed between agents/nodes MUST use types defined in `src/contracts/`.
-- Creating ad-hoc dicts, tuples, or undeclared fields to pass data between nodes is FORBIDDEN.
-- If a needed field does not exist in contracts, define it there first with a unit test, then use it.
-
-### Orchestrator Boundary
-- The orchestrator (`src/orchestrator/`) owns state transitions, dispatch, and routing.
-- Agents (`src/agents/`) are stateless workers that receive typed input and return typed output.
-- No agent may directly invoke another agent. All routing goes through the orchestrator.
-- No free-form conversational agent chains. The system is a state machine, not a chat.
-
-### Provider Boundary
-- `src/providers/` handles ONLY: LLM API calls, request formatting, response parsing, retry, timeout.
-- `src/providers/` must NOT contain: rubric semantics, adjudication logic, aggregation formulas, explanation policy, state machine routing.
-- `src/policies/` consumes provider output but never calls providers directly.
-
-### Config-Runtime Boundary
-- At runtime, the system reads ONLY from `configs/` artifacts (YAML/JSON).
-- `docs/*.md` files are human documentation. They are NEVER parsed or loaded at runtime.
-- `docs/Rubric_Guidelines.md` and `docs/Adjudication_Rules.md` inform what goes INTO `configs/`, but are not themselves config sources.
-
-## Mock-First Development
-
-- `mock` mode must be stable, deterministic, and reproducible BEFORE any real LLM provider is connected.
-- After real provider integration, ALL mock tests must continue to pass unchanged.
-- The `MockProvider` returns deterministic fixtures — it does not call any external API.
-- `--provider mock` and `--provider real` are the only two modes; switching between them must not require code changes in `src/agents/`, `src/policies/`, or `src/orchestrator/`.
-
-## Testing Requirements
-
-- Write test FIRST → implement → verify. Follow RED-GREEN-REFACTOR.
-- Every contract in `src/contracts/` must have:
-  - Schema validation test
-  - Roundtrip serialization/deserialization test
-  - No-extra-fields test (reject undeclared fields)
-- Integration tests must verify policy-aware pipeline behavior.
-- E2E tests must cover: normal path, adjudication path, fallback/re-extract path, terminal validation.
-- Golden snapshot tests protect baseline from regression.
-
-## Key Commands
-
-Verification commands are defined per-task in `docs/plan.md`. Do not duplicate them here.
-
-## Language Requirements
-
-Use **Simplified Chinese** as the primary language for all responses, explanations, and reasoning. English is used for code, identifiers, file paths, CLI output, and inline technical terms where appropriate.
-
-## Out of Scope for MVP
-
-UI, monitoring dashboards, caching layers, database persistence, async queues, multi-model routing optimization. Do not implement these.
+- `configs/` 是配置的唯一来源，`docs/*.md` 不在运行时被解析。
+- 代码中不得出现硬编码的维度名、分档范围、裁决阈值或 composite 公式。
+- Agent 之间的数据传递必须使用 `src/contracts/` 中定义的类型。
+- 如需修改 `src/` 代码，必须有明确的逻辑结构问题作为前提。
