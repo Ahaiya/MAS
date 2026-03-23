@@ -1,0 +1,370 @@
+{
+  "run_id": "run-2fd1ca5da2a3",
+  "hypotheses": [
+    {
+      "hypothesis_id": "hyp-real-176850a15309",
+      "observation_id": "obs-a944e158a225",
+      "dimension_id": "ideas_content",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 5,
+        "display_annotation": null,
+        "display_score": "5",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "clarity, focus, and control",
+        "main ideas stand out",
+        "supporting, relevant, carefully selected details",
+        "thorough, balanced explanation/exploration of topic"
+      ],
+      "evidence_span_ids": [
+        "span-real-e8e802e11280",
+        "span-real-a3b1059c4372",
+        "span-real-0a47a8115aad",
+        "span-real-f90ea2cf4aed",
+        "span-real-6296dba58138",
+        "span-real-5b67ceafed98",
+        "span-real-399c0923f122",
+        "span-real-a26763031894"
+      ],
+      "rationale": "The essay demonstrates exceptional clarity and focus on the central idea that laughter is essential for building and maintaining relationships, particularly illustrated through the mother-daughter bond. The main idea stands out strongly from the opening question through the concluding realization. Supporting details are carefully selected and relevant, including specific personal experiences (ages 10-13 emotional struggles, the dishes incident, the tickling/joking resolution) that provide thorough, balanced exploration of how laughter transformed the relationship. The essay moves effectively from general observations to specific examples and insights, showing control and intentionality throughout.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-dcd6c21d63d9",
+      "observation_id": "obs-a944e158a225",
+      "dimension_id": "ideas_content",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 5,
+        "display_annotation": null,
+        "display_score": "5",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "clarity, focus, and control",
+        "main ideas stand out",
+        "supporting, relevant, carefully selected details",
+        "thorough, balanced explanation/exploration of topic"
+      ],
+      "evidence_span_ids": [
+        "span-real-e8e802e11280",
+        "span-real-a3b1059c4372",
+        "span-real-0a47a8115aad",
+        "span-real-f90ea2cf4aed",
+        "span-real-6296dba58138",
+        "span-real-5b67ceafed98",
+        "span-real-399c0923f122",
+        "span-real-a26763031894"
+      ],
+      "rationale": "The essay demonstrates clear, focused, and interesting ideas with strong support. The main idea about laughter being essential to relationships stands out strongly from the introduction through the conclusion. Supporting details are relevant and carefully selected, including specific personal experiences (the dishwashing incident, the mother's childhood memories) that provide a thorough, balanced exploration of how laughter transformed the mother-daughter relationship. The essay moves effectively from general observations to specific examples and shows intentional development throughout.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-4de42ca9bd56",
+      "observation_id": "obs-fd3c05c83547",
+      "dimension_id": "organization",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "clear sequencing and paragraph breaks",
+        "recognizable, developed beginning not particularly inviting",
+        "developed conclusion may lack subtlety",
+        "body easy to follow with details fitting where placed",
+        "transitions may be stilted or formulaic"
+      ],
+      "evidence_span_ids": [
+        "span-real-a9a804f198b7",
+        "span-real-4e3cfe92f63e",
+        "span-real-4e9bf23b0b9e",
+        "span-real-80edfce8a0e4",
+        "span-real-c49335cc360e",
+        "span-real-f05c4f81930f",
+        "span-real-233a19b8eeea",
+        "span-real-3a1aa876d74b",
+        "span-real-a59581617d3b"
+      ],
+      "rationale": "The essay demonstrates clear and coherent organization with a predictable but functional structure. It has a recognizable beginning that introduces the theme of laughter in relationships, a chronological body that recounts a specific incident with the mother, and a conclusion that returns to the opening theme. Sequencing is clear throughout, with paragraph breaks that generally follow the narrative flow. However, the organization is somewhat formulaic - the beginning is functional but not particularly inviting, and the conclusion lacks subtlety as it explicitly restates the main idea. Transitions are present but occasionally stilted (e.g., 'One night after dinner...'). The body is easy to follow with details fitting where placed, such as the progression from the initial conflict to the resolution through laughter. This aligns with Score 4 descriptors: clear sequencing, predictable organization, and functional but not exceptional structure.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-771d3732f90a",
+      "observation_id": "obs-fd3c05c83547",
+      "dimension_id": "organization",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "clear sequencing and paragraph breaks",
+        "recognizable, developed beginning not particularly inviting",
+        "developed conclusion may lack subtlety",
+        "body easy to follow with details fitting where placed"
+      ],
+      "evidence_span_ids": [
+        "span-real-a9a804f198b7",
+        "span-real-4e3cfe92f63e",
+        "span-real-4e9bf23b0b9e",
+        "span-real-80edfce8a0e4",
+        "span-real-c49335cc360e",
+        "span-real-f05c4f81930f",
+        "span-real-233a19b8eeea",
+        "span-real-3a1aa876d74b",
+        "span-real-a59581617d3b"
+      ],
+      "rationale": "The essay demonstrates clear and coherent organization with a recognizable structure: it begins with a thesis about laughter in relationships, provides background about the writer's relationship with their mother, narrates a specific incident that illustrates the theme, and concludes by reinforcing the thesis. Sequencing is chronological and logical, with paragraph breaks that generally follow the narrative flow. The beginning introduces the topic but isn't particularly inviting ('A good relationship is built on trust, right?'), and the conclusion is developed but lacks subtlety as it explicitly restates the opening saying. Transitions are functional but somewhat formulaic (e.g., 'One night after dinner...', 'Now at fifteen years old...'). Details fit where placed, supporting the overall theme effectively. This matches the 'clear and coherent organization; may seem formulaic' description of Score 4, as seen in the 'Student Council' anchor essay.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-481d7ec5fc82",
+      "observation_id": "obs-c41f9ab7c36c",
+      "dimension_id": "voice",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "Voice present; some expressiveness and sincerity",
+        "Sense of audience; writer seems aware but has not consistently employed appropriate voice",
+        "Reader may glimpse writer and feel sense of interaction in places"
+      ],
+      "evidence_span_ids": [
+        "span-real-7215e75865a7",
+        "span-real-da224d347c1e",
+        "span-real-4f5a29a5daa2",
+        "span-real-ae362efc27d4",
+        "span-real-dce46b27b816",
+        "span-real-4eeec41cc969",
+        "span-real-c3eec962d424",
+        "span-real-0cd8bcf4b0a7",
+        "span-real-42eadecf7765"
+      ],
+      "rationale": "The essay demonstrates a clear voice with moments of sincerity and expressiveness, particularly in the personal reflections about the mother-daughter relationship. The writer shows audience awareness through conversational phrasing like 'if you will' and direct address. However, the voice is not consistently strong throughout - it becomes more mechanical in the narrative sections (e.g., 'One night after dinner my mom had informed me...') and the writer's presence fluctuates. While there are glimpses of the writer's personality and commitment to the topic, the voice doesn't sustain the exceptional engagement required for scores 5 or 6, nor is it as inconsistent as a score 3 would indicate.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-5c2343c5c6f2",
+      "observation_id": "obs-c41f9ab7c36c",
+      "dimension_id": "voice",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "suitable level of closeness to or distance from audience",
+        "sense of audience; writer seems aware but has not consistently employed appropriate voice",
+        "reader may glimpse writer and feel sense of interaction in places"
+      ],
+      "evidence_span_ids": [
+        "span-real-7215e75865a7",
+        "span-real-da224d347c1e",
+        "span-real-4f5a29a5daa2",
+        "span-real-ae362efc27d4",
+        "span-real-dce46b27b816",
+        "span-real-4eeec41cc969",
+        "span-real-c3eec962d424",
+        "span-real-0cd8bcf4b0a7",
+        "span-real-42eadecf7765"
+      ],
+      "rationale": "The essay demonstrates a consistent voice throughout with appropriate audience awareness (engaging the reader with rhetorical questions like 'right?' and direct address 'if you will'). The writer's personality and commitment to the topic are evident in personal reflections about their relationship with their mother, showing sincerity and liveliness in places. However, the voice occasionally becomes somewhat mechanical in narrative sections (e.g., the dishwashing incident), and while present, it doesn't consistently reach the strong, sustained originality required for a score of 5. The writer maintains a suitable casual first-person register appropriate for a personal narrative, with glimpses of interaction between reader and writer, but lacks the exceptional, deep commitment and consistent expressive flair needed for higher scores.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-2d81a73b8a2d",
+      "observation_id": "obs-d36cce1b752b",
+      "dimension_id": "word_choice",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "words that work but rarely capture reader's interest",
+        "expression seems mundane and general; slang not effective",
+        "words generally accurate but misused words may occasionally appear"
+      ],
+      "evidence_span_ids": [
+        "span-real-1c9be59a1784",
+        "span-real-e1fa056a3f86",
+        "span-real-a0a6dc50bb05",
+        "span-real-3b5c1ba580b0",
+        "span-real-629d965cb866",
+        "span-real-e559af49e25b",
+        "span-real-da153eac9391",
+        "span-real-794a85427705"
+      ],
+      "rationale": "The essay demonstrates functional word choice that communicates the narrative but lacks precision and variety. Words like 'quite' (for 'quiet'), 'to' (for 'too'), and 'fist' (for 'first') show occasional misuse. While there are attempts at figurative language ('rainbow without the rain,' 'light at the end of the tunnel'), these are clichéd expressions rather than fresh, vivid language. The vocabulary is generally accurate but mundane, rarely energizing the writing or creating striking images. This aligns with Score 3 descriptors where words work but don't capture interest, expression seems general, and misused words occasionally appear.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-8ce75232285e",
+      "observation_id": "obs-d36cce1b752b",
+      "dimension_id": "word_choice",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "words that work but rarely capture reader's interest",
+        "expression seems mundane and general; slang not effective",
+        "words generally accurate but misused words may occasionally appear"
+      ],
+      "evidence_span_ids": [
+        "span-real-1c9be59a1784",
+        "span-real-e1fa056a3f86",
+        "span-real-a0a6dc50bb05",
+        "span-real-3b5c1ba580b0",
+        "span-real-629d965cb866",
+        "span-real-e559af49e25b",
+        "span-real-da153eac9391",
+        "span-real-794a85427705"
+      ],
+      "rationale": "The essay's word choice is functional but lacks precision and variety, aligning with Score 3 descriptors. While the writer uses some figurative language ('no rainbow without the rain,' 'light at the end of the tunnel'), these are common clichés rather than fresh expressions. The vocabulary is generally accurate but includes misused words ('quite' instead of 'quiet,' 'to' instead of 'too,' 'fist' instead of 'first'), and the overall language is mundane without energizing the writing. The evidence shows basic communication but limited engagement through word choice.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-a52b61af3218",
+      "observation_id": "obs-4a5d4a912058",
+      "dimension_id": "sentence_fluency",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "natural sound; reader moves easily but lacks rhythm and grace",
+        "strong control over simple sentences, variable over complex",
+        "occasional lapses in stylistic control"
+      ],
+      "evidence_span_ids": [
+        "span-real-175705b93d29",
+        "span-real-77cfbed07659",
+        "span-real-16e4136db16a",
+        "span-real-5dd753c0e04c",
+        "span-real-4bdeae3c0cb7",
+        "span-real-2f2e99ae24d0",
+        "span-real-68d3c26f7690",
+        "span-real-12d428e3df3f"
+      ],
+      "rationale": "The essay demonstrates clear flow and natural sound throughout, with the reader moving easily through the narrative. There is strong control over simple sentence structures, and the writer effectively uses dialogue that sounds natural for the most part. However, there are occasional lapses in stylistic control (e.g., 'I just wanted to stay quite.Then seeing my mom...' lacks proper spacing after the period, and some sentences could be more gracefully connected). The sentence patterns show some variety but also some repetition that slightly detracts from impact. The writing is functional and coherent, meeting the criteria for a score of 4 where the writing flows but lacks the rhythm, grace, and extensive variation characteristic of scores 5-6.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-6e3402250a4f",
+      "observation_id": "obs-4a5d4a912058",
+      "dimension_id": "sentence_fluency",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "natural sound; reader moves easily but lacks rhythm and grace",
+        "strong control over simple sentences, variable over complex",
+        "occasional lapses in stylistic control"
+      ],
+      "evidence_span_ids": [
+        "span-real-175705b93d29",
+        "span-real-77cfbed07659",
+        "span-real-16e4136db16a",
+        "span-real-5dd753c0e04c",
+        "span-real-4bdeae3c0cb7",
+        "span-real-2f2e99ae24d0",
+        "span-real-68d3c26f7690",
+        "span-real-12d428e3df3f"
+      ],
+      "rationale": "The essay demonstrates clear flow and readability with natural-sounding sentences that move the reader through the narrative effectively. There is good control over simple sentence structures and some variety in patterns (e.g., dialogue interspersed with reflection, occasional longer descriptive sentences). However, the writing lacks consistent rhythm and grace - some sentences are choppy or run-on ('My mom and I have such a great bond and way of understanding with each other, other girls I know don't always have that with their mothers, I am very fortunate.'), and there are occasional awkward constructions ('For the fist time in my life I wasn't nervous...'). The essay flows better than mechanical writing (Score 3) but doesn't achieve the crafted rhythm and extensive variation of Score 5.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-511c568c2f58",
+      "observation_id": "obs-f12395e03d99",
+      "dimension_id": "conventions",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "some control over basic conventions",
+        "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
+        "spelling errors distract reader; common words misspelled",
+        "errors in grammar and usage do not block meaning but distract reader",
+        "significant need for editing"
+      ],
+      "evidence_span_ids": [
+        "span-real-9f5adf28e9cb",
+        "span-real-64c107ad1056",
+        "span-real-df49256d59e7",
+        "span-real-2094baaebb12",
+        "span-real-97fef771e9d9",
+        "span-real-73e8262fdc5f",
+        "span-real-d0a7e3075090",
+        "span-real-5d399c4e261a",
+        "span-real-d4f469463066",
+        "span-real-36aa4d9b533d"
+      ],
+      "rationale": "The essay demonstrates limited control of conventions with multiple distracting errors that require significant editing. Spelling errors in common words ('tolaugh' for 'to laugh', 'quite' for 'quiet', 'to' for 'too', 'fist' for 'first', 'chucked' for 'chuckled') and grammar/usage errors ('as I've grow', 'we have not always ran') are frequent enough to distract the reader. While end-of-sentence punctuation is generally correct, internal punctuation has issues (e.g., missing commas in compound sentences). The errors do not completely block meaning but consistently pull the reader's attention away from the content, placing this essay at score 3 according to the rubric.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-eb7b3b4159bc",
+      "observation_id": "obs-f12395e03d99",
+      "dimension_id": "conventions",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "some control over basic conventions",
+        "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
+        "spelling errors distract reader; common words misspelled",
+        "errors in grammar and usage do not block meaning but distract reader",
+        "significant need for editing"
+      ],
+      "evidence_span_ids": [
+        "span-real-9f5adf28e9cb",
+        "span-real-64c107ad1056",
+        "span-real-df49256d59e7",
+        "span-real-2094baaebb12",
+        "span-real-97fef771e9d9",
+        "span-real-73e8262fdc5f",
+        "span-real-d0a7e3075090",
+        "span-real-5d399c4e261a",
+        "span-real-d4f469463066",
+        "span-real-36aa4d9b533d"
+      ],
+      "rationale": "The essay demonstrates limited control of conventions with multiple distracting errors that begin to impede readability. While end-of-sentence punctuation is generally correct, there are frequent internal punctuation issues (e.g., missing commas in compound sentences). Multiple spelling errors of common words ('tolaugh' instead of 'to laugh', 'quite' instead of 'quiet', 'to' instead of 'too', 'fist' instead of 'first', 'chucked' instead of 'chuckled') distract the reader. Grammar/usage errors ('as I've grow', 'we have not always ran') are noticeable but don't block meaning. The essay requires significant editing to correct these issues, placing it at score 3 rather than 4, which requires control with only minor errors that don't impede readability.",
+      "confidence": 0.85
+    }
+  ]
+}

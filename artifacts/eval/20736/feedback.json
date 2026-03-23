@@ -1,0 +1,156 @@
+{
+  "dimensions": {
+    "ideas_content": {
+      "dimension_name": "Ideas and Content",
+      "canonical_score": 5,
+      "display_score": "5",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "clarity, focus, and control",
+        "main ideas stand out",
+        "supporting, relevant, carefully selected details",
+        "thorough, balanced explanation/exploration of topic"
+      ],
+      "evidence_span_ids": [
+        "span-real-0a47a8115aad",
+        "span-real-399c0923f122",
+        "span-real-5b67ceafed98",
+        "span-real-6296dba58138",
+        "span-real-a26763031894",
+        "span-real-a3b1059c4372",
+        "span-real-e8e802e11280",
+        "span-real-f90ea2cf4aed"
+      ],
+      "feedback_text": "Your essay earned a score of 5 for Ideas and Content. Your writing demonstrates **clarity, focus, and control**, with **main ideas that stand out** through a **thorough exploration of the topic**. You establish a clear focus on laughter as a relational tool, stating, \"I've truly realized the meaning of the saying, 'Laughter is the shortest distance between two people.'\" This main idea is then thoroughly explored with relevant, supporting details, such as when you explain how your mother’s story about laughing with her own mom became a model for your relationship. Your reflection that \"laughter is just as important... for keeping [a relationship] full of life\" provides a balanced and insightful conclusion, directly stemming from the personal evidence you provided.",
+      "confidence": 0.85
+    },
+    "organization": {
+      "dimension_name": "Organization",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "body easy to follow with details fitting where placed",
+        "clear sequencing and paragraph breaks",
+        "developed conclusion may lack subtlety",
+        "recognizable, developed beginning not particularly inviting",
+        "transitions may be stilted or formulaic"
+      ],
+      "evidence_span_ids": [
+        "span-real-233a19b8eeea",
+        "span-real-3a1aa876d74b",
+        "span-real-4e3cfe92f63e",
+        "span-real-4e9bf23b0b9e",
+        "span-real-80edfce8a0e4",
+        "span-real-a59581617d3b",
+        "span-real-a9a804f198b7",
+        "span-real-c49335cc360e",
+        "span-real-f05c4f81930f"
+      ],
+      "feedback_text": "Your essay earned a score of 4 for Organization. The body is easy to follow with a **clear sequencing and paragraph breaks**, moving from your general idea about laughter to a specific conflict with your mom and its resolution. Your **developed conclusion** effectively reinforces the theme, as seen when you reflect, \"Now at fifteen years old I can honestly say... my mom will always be my best... friend.\" However, some **transitions may be stilted or formulaic**, such as the abrupt shift introduced with \"One night after dinner...\" While the structure is solid and the narrative progression is logical, these connective phrases are somewhat mechanical.",
+      "confidence": 0.85
+    },
+    "voice": {
+      "dimension_name": "Voice",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "Reader may glimpse writer and feel sense of interaction in places",
+        "Sense of audience; writer seems aware but has not consistently employed appropriate voice",
+        "Voice present; some expressiveness and sincerity",
+        "reader may glimpse writer and feel sense of interaction in places",
+        "sense of audience; writer seems aware but has not consistently employed appropriate voice",
+        "suitable level of closeness to or distance from audience"
+      ],
+      "evidence_span_ids": [
+        "span-real-0cd8bcf4b0a7",
+        "span-real-42eadecf7765",
+        "span-real-4eeec41cc969",
+        "span-real-4f5a29a5daa2",
+        "span-real-7215e75865a7",
+        "span-real-ae362efc27d4",
+        "span-real-c3eec962d424",
+        "span-real-da224d347c1e",
+        "span-real-dce46b27b816"
+      ],
+      "feedback_text": "Your essay received a score of 4 for Voice. The reader can \"glimpse writer and feel a sense of interaction in places,\" and you show a \"sense of audience\" by directly addressing the reader with your personal \"survival guide\" to relationships. Your voice is present and sincere, as seen in reflective moments like realizing you were \"silly\" to fear your mom's judgment and that those struggles are \"part of what made us stronger.\" However, this expressiveness is not fully consistent, as some sections remain more general, like stating you have a \"great bond,\" rather than maintaining the direct, interactive tone you establish elsewhere.",
+      "confidence": 0.85
+    },
+    "word_choice": {
+      "dimension_name": "Word Choice",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "expression seems mundane and general; slang not effective",
+        "words generally accurate but misused words may occasionally appear",
+        "words that work but rarely capture reader's interest"
+      ],
+      "evidence_span_ids": [
+        "span-real-1c9be59a1784",
+        "span-real-3b5c1ba580b0",
+        "span-real-629d965cb866",
+        "span-real-794a85427705",
+        "span-real-a0a6dc50bb05",
+        "span-real-da153eac9391",
+        "span-real-e1fa056a3f86",
+        "span-real-e559af49e25b"
+      ],
+      "feedback_text": "Your essay received a score of 3 for Word Choice. Your expression often seems mundane and general, and while words are generally accurate, misused words occasionally appear. For example, the phrasing \"I just wanted to stay quite\" and \"For the fist time\" demonstrate these occasional inaccuracies. Furthermore, while you use familiar sayings like \"light at the end of the tunnel,\" they are common and rarely capture a reader's unique interest. Your attempt to use figurative language, such as \"no rainbow without the rain,\" is clear but relies on well-known idioms rather than fresh, specific word choices to make your personal story stand out.",
+      "confidence": 0.85
+    },
+    "sentence_fluency": {
+      "dimension_name": "Sentence Fluency",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "natural sound; reader moves easily but lacks rhythm and grace",
+        "occasional lapses in stylistic control",
+        "strong control over simple sentences, variable over complex"
+      ],
+      "evidence_span_ids": [
+        "span-real-12d428e3df3f",
+        "span-real-16e4136db16a",
+        "span-real-175705b93d29",
+        "span-real-2f2e99ae24d0",
+        "span-real-4bdeae3c0cb7",
+        "span-real-5dd753c0e04c",
+        "span-real-68d3c26f7690",
+        "span-real-77cfbed07659"
+      ],
+      "feedback_text": "Your essay received a score of 4 for Sentence Fluency. Your writing has a **natural sound** and the reader moves through it easily, but it shows **occasional lapses in stylistic control**. You demonstrate **strong control over simple sentences**, which are clear and effective, as in, \"My mother came in my room upset and frustrated.\" However, control becomes variable with more complex structures, leading to run-on sentences. For example, you write, \"From about age ten to thirteen I was a bit troubled... I just wanted to stay quite.Then seeing my mom...\" where ideas are fused without proper punctuation. Another instance is, \"Sure trust is important but @CAPS2 isn't the only key factor, I've learned laughter is just as important...\" where a comma splice interrupts the flow. These lapses prevent the writing from achieving a consistent rhythm and grace.",
+      "confidence": 0.85
+    },
+    "conventions": {
+      "dimension_name": "Conventions",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
+        "errors in grammar and usage do not block meaning but distract reader",
+        "significant need for editing",
+        "some control over basic conventions",
+        "spelling errors distract reader; common words misspelled"
+      ],
+      "evidence_span_ids": [
+        "span-real-2094baaebb12",
+        "span-real-36aa4d9b533d",
+        "span-real-5d399c4e261a",
+        "span-real-64c107ad1056",
+        "span-real-73e8262fdc5f",
+        "span-real-97fef771e9d9",
+        "span-real-9f5adf28e9cb",
+        "span-real-d0a7e3075090",
+        "span-real-d4f469463066",
+        "span-real-df49256d59e7"
+      ],
+      "feedback_text": "Your essay received a score of 3 in Conventions. While you show some control over basic conventions, there is a **significant need for editing**, as **errors in grammar and usage distract the reader**. For example, the sentence fragment \"I just wanted to stay quite\" contains a misspelling of \"quiet,\" and the grammatical error in \"we have not always ran so smoothly\" (should be \"run\") are both distracting. Furthermore, **end-of-sentence punctuation is usually correct, but internal punctuation has frequent errors**, as seen in the run-on sentence beginning \"I tried reading her face, @CAPS5 looked worried...\" These repeated issues with spelling, grammar, and punctuation require careful proofreading to improve clarity.",
+      "confidence": 0.85
+    }
+  },
+  "summary": "Real provider feedback for 6 dimension(s).",
+  "provider": "openai_compatible"
+}

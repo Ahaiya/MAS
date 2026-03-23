@@ -1,0 +1,181 @@
+{
+  "dimensions": {
+    "ideas_content": {
+      "dimension_name": "Ideas and Content",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "difficulties moving from general observations to specifics",
+        "predictable or overly-obvious main ideas",
+        "support attempted but details are limited, uneven, somewhat off-topic, or too general"
+      ],
+      "evidence_span_ids": [
+        "span-real-310333a187ff",
+        "span-real-47495a594a6e",
+        "span-real-47fcff6ed473",
+        "span-real-5a298240f557",
+        "span-real-8f986228d82c",
+        "span-real-fafb01daa875",
+        "span-real-ffd649babd88"
+      ],
+      "feedback_text": "Your essay received a score of 3 for Ideas and Content. The main ideas, such as wanting to share the world with animals and solve pollution, are **predictable or overly-obvious**. Your support is attempted but remains **too general**, as seen when you list broad concepts like \"love, laughter, new beginnings\" without specific development. Furthermore, you have **difficulties moving from general observations to specifics**; for instance, you mention a pivotal moment sitting \"on the side of an old road\" but do not provide the concrete details of what happened there to explain your change in perspective. This keeps your support limited and prevents your ideas from becoming more insightful.",
+      "confidence": 0.85
+    },
+    "organization": {
+      "dimension_name": "Organization",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "attempts at sequencing and paragraph breaks but order occasionally unclear",
+        "beginning and ending present but undeveloped or too obvious",
+        "structure is skeletal or too rigid",
+        "transitions sometimes work; same few devices overused"
+      ],
+      "evidence_span_ids": [
+        "span-real-1f778c8fb6d3",
+        "span-real-6e296e6bb329",
+        "span-real-744a0998a5e7",
+        "span-real-7669e2e9e3d7",
+        "span-real-7feefd94b131",
+        "span-real-990d3d77c885",
+        "span-real-b9ce779ac861",
+        "span-real-c1bede8c7f3a",
+        "span-real-c6927556eb59",
+        "span-real-d4bbff33cdc9"
+      ],
+      "feedback_text": "Your essay scored a 3 in Organization. The structure is present but skeletal, with a beginning and ending that are too obvious, such as opening with \"Its easy to find things to live for\" and closing with the advice to \"listen to your mother and father.\" Furthermore, the order of ideas is occasionally unclear, as seen when you jump from personal reflection to global goals like solving pollution and back to general joys in life without clear transitions. While you use some sequencing like \"after that fateful evening,\" you rely heavily on listing ideas, which makes the structure feel rigid and the connections between paragraphs weak.",
+      "confidence": 0.85
+    },
+    "voice": {
+      "dimension_name": "Voice",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "Reader may glimpse writer and feel sense of interaction in places",
+        "Sense of audience; writer seems aware but has not consistently employed appropriate voice",
+        "Voice present; some expressiveness and sincerity",
+        "reader may glimpse writer and feel sense of interaction in places",
+        "sense of audience; writer seems aware but has not consistently employed appropriate voice",
+        "suitable level of closeness to or distance from audience"
+      ],
+      "evidence_span_ids": [
+        "span-real-223802ff302a",
+        "span-real-5bd9071adbba",
+        "span-real-6adf6e1c562b",
+        "span-real-8f8841bc5356",
+        "span-real-af56442cc037",
+        "span-real-b6418dfd4734",
+        "span-real-c4be05108cc3",
+        "span-real-d9b6525a51ad",
+        "span-real-eda2eda857c2"
+      ],
+      "feedback_text": "Your essay received a score of 4 for Voice. This score reflects that a **voice is present with some expressiveness and sincerity**, and the **reader may glimpse the writer and feel a sense of interaction in places**. For example, your direct question, \"Have you ever just sat on your porch...\", creates a momentary sense of audience awareness. Furthermore, your sincere reflections, such as \"I remember when it was hard and I thought I would never ever be happy,\" allow the reader to glimpse your personal perspective. However, this voice is not yet fully consistent, as seen in sections that shift away from this personal engagement to more general statements.",
+      "confidence": 0.85
+    },
+    "word_choice": {
+      "dimension_name": "Word Choice",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "expression seems mundane and general; slang not effective",
+        "words generally accurate but misused words may occasionally appear",
+        "words that work but rarely capture reader's interest"
+      ],
+      "evidence_span_ids": [
+        "span-real-4796c54b3d3d",
+        "span-real-751027d1a2cb",
+        "span-real-84e4508f14dd",
+        "span-real-89e621519b38",
+        "span-real-a73a3dee9a89",
+        "span-real-b1019869bc0c",
+        "span-real-b2b57c51c80d",
+        "span-real-bf1f440d4550",
+        "span-real-eb4bf7247cca",
+        "span-real-fc86d97e13b9"
+      ],
+      "feedback_text": "Your essay received a Word Choice score of 3. The language is generally accurate but often seems mundane and rarely captures the reader's interest. For example, phrases like \"love, laughter, new beginnings and old endings\" rely on very general terms. Furthermore, misused words occasionally appear, as seen in \"you'd be stupid **no** to notice them,\" \"morning **due**,\" and \"you can never fully **plain** your life.\" These errors and the reliance on common expressions prevent your word choice from becoming more precise or engaging.",
+      "confidence": 0.85
+    },
+    "sentence_fluency": {
+      "dimension_name": "Sentence Fluency",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "good control over simple sentences, little over complex",
+        "sentences functional but lack energy",
+        "some passages invite fluid oral reading; others do not"
+      ],
+      "evidence_span_ids": [
+        "span-real-03971be03521",
+        "span-real-057ae0ab5277",
+        "span-real-14bfcf0d224b",
+        "span-real-460c3994e576",
+        "span-real-5e83f3e568d1",
+        "span-real-7027a9ea9e08",
+        "span-real-7726f4050437",
+        "span-real-77db5a48fb43",
+        "span-real-7f6e31ad91f2",
+        "span-real-906b64ec12fe",
+        "span-real-b630aad1121b",
+        "span-real-cb50766aa162",
+        "span-real-d1f778dc11e1",
+        "span-real-d37bfc10f0f0",
+        "span-real-de6c96f97b3e",
+        "span-real-ea49b5b5353f",
+        "span-real-ecf985157c50",
+        "span-real-fc5005e33396"
+      ],
+      "feedback_text": "Your essay received a **3** in Sentence Fluency. You show **\"good control over simple sentences\"**, as seen in clear statements like, \"I've learned that no matter how hard you try you can never fully plain your life.\" However, you have **\"little [control] over complex\"** sentences, leading to passages that **\"lack energy\"** and become tangled, such as the lengthy, winding question: \"I looked up at the stars and thought what would i miss out on if I ended my path now, what would I dare to name my child...\" This mix results in a rhythm where **\"some passages invite fluid oral reading; others do not,\"** creating an uneven flow throughout your writing.",
+      "confidence": 0.85
+    },
+    "conventions": {
+      "dimension_name": "Conventions",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
+        "errors in grammar and usage do not block meaning but distract reader",
+        "significant need for editing",
+        "some control over basic conventions",
+        "spelling errors distract reader; common words misspelled"
+      ],
+      "evidence_span_ids": [
+        "span-real-079c42362eba",
+        "span-real-2b1da92b86c1",
+        "span-real-36888aa560a4",
+        "span-real-375845eb2470",
+        "span-real-41f042b92e49",
+        "span-real-43f171c4633c",
+        "span-real-5743956cf423",
+        "span-real-58ae3f449422",
+        "span-real-62f689a542b9",
+        "span-real-674af526b7bb",
+        "span-real-6d786dbc9cb6",
+        "span-real-8580c5cdfa0b",
+        "span-real-87718f64a5cf",
+        "span-real-92d68d27cb1b",
+        "span-real-a7aa4724dfb4",
+        "span-real-ad64fe63c21a",
+        "span-real-b9ecb9181767",
+        "span-real-bf919eea67c9",
+        "span-real-c040761f678c",
+        "span-real-c08cf4abfb68",
+        "span-real-d5ee8432399b",
+        "span-real-d62319fc24c4",
+        "span-real-e8817cbf10fc",
+        "span-real-eb30b1d48035",
+        "span-real-ffdaf3350fdd"
+      ],
+      "feedback_text": "Your essay received a score of 3 for Conventions. This reflects **\"some control over basic conventions,\"** but **\"errors in grammar and usage do not block meaning but distract reader.\"** For example, frequent errors in internal punctuation are seen in lists like \"trust,**and** respect\" and \"all the pain **,**and all the love.\" Furthermore, **\"spelling errors distract reader,\"** as shown by the repeated use of \"i\" instead of \"I,\" and misspellings of common words like \"then\" for *than* (\"more then helped\"), \"form\" for *from*, and \"plain\" for *plan*. These consistent mistakes create a significant need for editing and interrupt the flow of your ideas.",
+      "confidence": 0.85
+    }
+  },
+  "summary": "Real provider feedback for 6 dimension(s).",
+  "provider": "openai_compatible"
+}

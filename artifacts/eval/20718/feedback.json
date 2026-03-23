@@ -1,0 +1,153 @@
+{
+  "dimensions": {
+    "ideas_content": {
+      "dimension_name": "Ideas and Content",
+      "canonical_score": 5,
+      "display_score": "5",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "clarity, focus, and control",
+        "main ideas stand out",
+        "supporting, relevant, carefully selected details",
+        "thorough, balanced explanation/exploration of topic"
+      ],
+      "evidence_span_ids": [
+        "span-real-43fa998579c7",
+        "span-real-4e9203900b14",
+        "span-real-84f6cfe75ba0",
+        "span-real-a41e5f4055e6",
+        "span-real-aba8c970879d",
+        "span-real-b15b98d9464d",
+        "span-real-bd2984f62509",
+        "span-real-dc07f26842d6",
+        "span-real-fb0dc94fbfbf"
+      ],
+      "feedback_text": "Your essay earned a score of 5 for Ideas and Content because it demonstrates **clarity, focus, and control**. Your **main idea stands out** from the beginning, as you establish that being \"special\" is your strength. You provide a **thorough, balanced explanation** of this topic by exploring both the pain and the value of your experiences. For example, you detail the kindergarten incident where you misunderstood laughter, then **support** this with **relevant details** about how it ultimately taught you to \"tell the difference of laughter\" and even make a \"forte\" of humor. This evidence shows a complete exploration of how a single, focused memory shaped your identity.",
+      "confidence": 0.85
+    },
+    "organization": {
+      "dimension_name": "Organization",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "body easy to follow with details fitting where placed",
+        "clear sequencing and paragraph breaks",
+        "developed conclusion may lack subtlety",
+        "organization helps reader despite some weaknesses",
+        "recognizable, developed beginning not particularly inviting",
+        "transitions may be stilted or formulaic"
+      ],
+      "evidence_span_ids": [
+        "span-real-084693923397",
+        "span-real-2a20fcffefed",
+        "span-real-335e21caf84b",
+        "span-real-34b8d6dff695",
+        "span-real-5192648e5c96",
+        "span-real-9d8ddfe9500a",
+        "span-real-c3fa8daf41f0",
+        "span-real-d8ed6275fef9",
+        "span-real-fd2e465d404f"
+      ],
+      "feedback_text": "Your essay received a score of 4 for Organization. Your writing has a **recognizable, developed beginning** and a **developed conclusion**, which effectively frames the story and reflects on its meaning. The **body is easy to follow** with details fitting where placed, as you clearly sequence events from your kindergarten routine to the pivotal story-time incident. However, your **transitions may be stilted or formulaic**, such as explicitly stating, \"Now that you know... I can get on with the story,\" and using \"*dramatic pause*\" to announce the main event. These choices provide clear structure but can feel somewhat mechanical. Overall, your organization successfully guides the reader through the narrative despite these minor weaknesses.",
+      "confidence": 0.85
+    },
+    "voice": {
+      "dimension_name": "Voice",
+      "canonical_score": 5,
+      "display_score": "5",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "appropriate level of closeness to or distance from audience",
+        "reader may discern writer behind words and feel sense of interaction",
+        "strong sense of audience; writer seems aware of reader and how to communicate effectively",
+        "topic has come to life; shows originality, liveliness, honesty, conviction, excitement, humor, or suspense"
+      ],
+      "evidence_span_ids": [
+        "span-real-0bdb3941b676",
+        "span-real-1847583dc453",
+        "span-real-1cb48d9f18df",
+        "span-real-7a621574d863",
+        "span-real-ac16b0e633f4",
+        "span-real-d450c4972f80",
+        "span-real-d6c0b66db894",
+        "span-real-f962d05c0b9d"
+      ],
+      "feedback_text": "Your essay received a score of 5 for Voice. You achieve a **strong sense of audience** and create a **liveliness** that makes the **topic come to life**. Your direct address, like “Now that you know... I can get on with the story,” shows a clear awareness of the reader and builds a sense of interaction. The essay’s **honesty and conviction** are evident as you reflect on a childhood incident, explaining how being “special” and loving to make people laugh shaped your identity. This is powerfully supported when you describe crying at the fountain, then realizing the other children were laughing *with* you, which you later call “a blessing in disguise.” This personal insight gives the reader a strong sense of the writer behind the words.",
+      "confidence": 0.85
+    },
+    "word_choice": {
+      "dimension_name": "Word Choice",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "expression is functional; slang not purposeful or effective",
+        "rare experiments with language; avoids clichés",
+        "words that work but do not particularly energize writing"
+      ],
+      "evidence_span_ids": [
+        "span-real-196495b0c12b",
+        "span-real-44ed2c563cb9",
+        "span-real-4b543a445f43",
+        "span-real-51d308a7c747",
+        "span-real-535da63b80ae",
+        "span-real-6666058ec86d",
+        "span-real-b4259c7abec5",
+        "span-real-d08dbfcdbe64",
+        "span-real-dc2769a04a41",
+        "span-real-fde7d14c944c"
+      ],
+      "feedback_text": "Your essay received a Word Choice score of 4. Your expression is functional, using clear words that work to tell your story, but they do not particularly energize the writing. You also show rare experiments with language, avoiding overused phrases. For example, you use specific, functional descriptions like \"fell head first on to the corner of the sidewalk\" and \"excruciatingly painful (for a five year old) wedgie.\" However, the repeated reliance on informal terms like \"spaz\" and \"special\" feels more like slang that is not purposeful or effective for the narrative, which holds back a more powerful impact.",
+      "confidence": 0.85
+    },
+    "sentence_fluency": {
+      "dimension_name": "Sentence Fluency",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "natural sound; reader moves easily but lacks rhythm and grace",
+        "occasional lapses in stylistic control",
+        "some repeated patterns that detract from impact",
+        "strong control over simple sentences, variable over complex"
+      ],
+      "evidence_span_ids": [
+        "span-real-022adc5ca58c",
+        "span-real-24fff1263c72",
+        "span-real-b9455bc68761",
+        "span-real-c7aebac8c176",
+        "span-real-c96d0fda99a0"
+      ],
+      "feedback_text": "Your essay received a **4 in Sentence Fluency**. Your writing has a **natural sound** and the reader moves through it easily, as shown in the smooth list, \"I woke up, did my daily routine, hopped in the car, and headed to school.\" However, there are **some repeated patterns that detract from impact**, particularly the frequent use of commas to join complete ideas instead of stronger punctuation or conjunctions. For example, \"Some people like making people laugh, I love it\" and \"It made me grow into a better person, I can tell the difference...\" demonstrate this **occasional lapse in stylistic control**. While your simple sentences are strong, this pattern in longer sentences creates a choppy rhythm.",
+      "confidence": 0.85
+    },
+    "conventions": {
+      "dimension_name": "Conventions",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
+        "errors in grammar and usage do not block meaning but distract reader",
+        "significant need for editing",
+        "some control over basic conventions",
+        "spelling errors distract reader; common words misspelled"
+      ],
+      "evidence_span_ids": [
+        "span-real-103707b3859e",
+        "span-real-522aee378f1a",
+        "span-real-5cd61014a58d",
+        "span-real-85b0aab47ea0",
+        "span-real-b4a4db1ace9f",
+        "span-real-c3c19453a09f",
+        "span-real-cdab6f201b82",
+        "span-real-e1f7af4acb8c"
+      ],
+      "feedback_text": "Your essay received a score of 3 for Conventions. You show **\"some control over basic conventions,\"** but **\"errors in grammar and usage... distract reader\"** and there is a **\"significant need for editing.\"** This is seen in frequent punctuation errors that run sentences together, such as combining the clauses \"That day is what this whole story is about, it's why I told you...\" with only a comma. Misspellings of common words like \"balling\" (for *bawling*), \"are\" (for *our*), and \"bully's\" (for *bullies*) also distract from your meaning. While these mistakes do not completely block understanding, they require careful editing to improve the clarity of your writing.",
+      "confidence": 0.85
+    }
+  },
+  "summary": "Real provider feedback for 6 dimension(s).",
+  "provider": "openai_compatible"
+}

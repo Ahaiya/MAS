@@ -492,11 +492,23 @@ def main(
     # Save artifacts
     trace_path = output_dir / "run_trace.json"
     feedback_path = output_dir / "feedback.json"
+    hypotheses_path = output_dir / "hypotheses.json"
     trace_path.write_text(
         json.dumps(run_trace.to_dict(), indent=2, ensure_ascii=False), encoding="utf-8"
     )
     feedback_path.write_text(
         json.dumps(feedback, indent=2, ensure_ascii=False), encoding="utf-8"
+    )
+    hypotheses_path.write_text(
+        json.dumps(
+            {
+                "run_id": run_trace.run_id,
+                "hypotheses": [h.to_dict() for h in runner.last_hypotheses],
+            },
+            indent=2,
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
     )
 
     if run_trace.status.value != "completed":
@@ -537,6 +549,7 @@ def main(
     typer.echo(f"产出文件：")
     typer.echo(f"  {trace_path}")
     typer.echo(f"  {feedback_path}")
+    typer.echo(f"  {hypotheses_path}")
     typer.echo(f"  {report_path}")
 
 

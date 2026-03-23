@@ -1,0 +1,151 @@
+{
+  "dimensions": {
+    "ideas_content": {
+      "dimension_name": "Ideas and Content",
+      "canonical_score": 5,
+      "display_score": "5",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "clarity, focus, and control",
+        "main ideas stand out",
+        "supporting, relevant, carefully selected details",
+        "thorough, balanced explanation/exploration of topic"
+      ],
+      "evidence_span_ids": [
+        "span-real-1f8c88e88f9c",
+        "span-real-364147f515e2",
+        "span-real-5024d552b976",
+        "span-real-6412556d4afe",
+        "span-real-a392dc31850e",
+        "span-real-a43012b35d71",
+        "span-real-ecf5e59ed17c"
+      ],
+      "feedback_text": "Your essay earned a score of 5 for Ideas and Content. You demonstrate strong **clarity, focus, and control** by consistently exploring how laughter strengthens friendship. Your **main idea stands out** in statements like, \"The fact that we can always laugh at each other and ourselves is why I love my friends.\" You support this with **relevant, carefully selected details**, such as the vivid description of laughing until \"no sound comes out\" and your sides cramp. These specific examples provide a **thorough explanation** of your topic, balancing the joy of shared laughter with its power to improve difficult days.",
+      "confidence": 0.85
+    },
+    "organization": {
+      "dimension_name": "Organization",
+      "canonical_score": 5,
+      "display_score": "5",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "details fit where placed",
+        "effective sequencing and paragraph breaks",
+        "inviting beginning draws reader in",
+        "organizational structure fits topic and is easy to follow",
+        "satisfying sense of resolution or closure",
+        "smooth, effective transitions among all elements"
+      ],
+      "evidence_span_ids": [
+        "span-real-069fff186e95",
+        "span-real-28f8271159e0",
+        "span-real-6539d5a0d090",
+        "span-real-aa5c3ba2f346",
+        "span-real-aba2b114df29",
+        "span-real-c57c28f621b6"
+      ],
+      "feedback_text": "Your essay earned a score of 5 for Organization. You create an **inviting beginning that draws the reader in** by introducing the universal idea that \"Laughter is the best medicine\" before sharing a personal story. The narrative has a **satisfying sense of resolution or closure**, moving from the specific hilarious incident of your friend's \"penguin-type run\" to a broader reflection on why you love friends you can laugh with. Furthermore, you use **effective sequencing and paragraph breaks**, smoothly transitioning from the setup (\"this time was way different\") to the chaotic action in the house and finally to the lasting memory (\"Now whenever one of us brings it up\"). This clear structure makes your story easy and enjoyable to follow.",
+      "confidence": 0.85
+    },
+    "voice": {
+      "dimension_name": "Voice",
+      "canonical_score": 5,
+      "display_score": "5",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "appropriate level of closeness to or distance from audience",
+        "reader may discern writer behind words and feel sense of interaction",
+        "strong sense of audience; writer seems aware of reader and how to communicate effectively",
+        "topic has come to life; shows originality, liveliness, honesty, conviction, excitement, humor, or suspense"
+      ],
+      "evidence_span_ids": [
+        "span-real-1f5bd1352ab3",
+        "span-real-47dce422da24",
+        "span-real-54115ebc14b2",
+        "span-real-60936a520e59",
+        "span-real-b1efb77d91c0",
+        "span-real-b6c7582c84f8",
+        "span-real-bacd9f876250"
+      ],
+      "feedback_text": "Your essay received a score of 5 for Voice. You achieve a **strong sense of audience**, writing as if you are aware of the reader and know how to communicate effectively. This creates a feeling of interaction, as when you directly ask, \"Who wouldn’t have?\" and invite the reader to imagine a shared feeling. Your **topic comes to life** with originality, liveliness, and humor, making the experience vivid. For example, you describe your friend as \"the freaking Leaning Tower of Pisa\" and note you developed \"a whole new set of abdominal muscles.\" These specific, energetic details pull the reader into your joyful, convivial world.",
+      "confidence": 0.85
+    },
+    "word_choice": {
+      "dimension_name": "Word Choice",
+      "canonical_score": 5,
+      "display_score": "5",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "accurate, specific words; word choices energize writing",
+        "fresh, vivid expression; slang purposeful and effective",
+        "words that evoke clear images; figurative language may be used"
+      ],
+      "evidence_span_ids": [
+        "span-real-5c0c24c84be8",
+        "span-real-71beb9783312",
+        "span-real-b025f973cebb",
+        "span-real-b73070fc7c0b",
+        "span-real-cbad72682c9e",
+        "span-real-dc20288ac8c8",
+        "span-real-de7917cccfa4"
+      ],
+      "feedback_text": "Your essay earns a **5** in Word Choice for its **fresh, vivid expression** and **words that evoke clear images**. Your specific, energetic descriptions bring the laughter to life, such as the friend doing a \"penguin-type run\" or the image of her as a \"comically delirious\" figure with eyes \"crinkling at the corners.\" Furthermore, your **purposeful and effective** figurative language, like developing \"a whole new set of abdominal muscles\" or the idea that a joke could rouse you from a coma, powerfully conveys the physical, overwhelming nature of your joy. These choices consistently create strong mental pictures and energize the entire narrative.",
+      "confidence": 0.85
+    },
+    "sentence_fluency": {
+      "dimension_name": "Sentence Fluency",
+      "canonical_score": 5,
+      "display_score": "5",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "natural, fluent sound; glides from sentence to sentence",
+        "sentence structure that enhances meaning",
+        "variation in structure, length, and beginnings that add interest"
+      ],
+      "evidence_span_ids": [
+        "span-real-173e3f9faab1",
+        "span-real-3e0479815a9d",
+        "span-real-7fce8f329b54",
+        "span-real-8821f41bfae0",
+        "span-real-af6d3ca55eb3",
+        "span-real-b5a1eaaab805",
+        "span-real-e2eaddeb8675",
+        "span-real-e40d3114cdf5",
+        "span-real-f8a87ca7e4eb"
+      ],
+      "feedback_text": "Your essay received a score of 5 for Sentence Fluency. Your writing has a **natural, fluent sound that glides from sentence to sentence**, and you use **variation in structure, length, and beginnings that add interest**. This is evident in how you skillfully extend sentences with descriptive details, as in, \"Her eyes were closed tight, crinkling at the corners, a few stray tears escaping...\" You also create a dynamic rhythm by varying short, punchy sentences (\"Still laughing, she did a penguin-type run...\") with longer, more complex ones. This intentional variety enhances the playful and breathless feeling of the narrative, directly supporting the essay's meaning about uncontrollable laughter.",
+      "confidence": 0.85
+    },
+    "conventions": {
+      "dimension_name": "Conventions",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "control over conventions used, though wide range not demonstrated",
+        "correct end-of-sentence punctuation; internal sometimes incorrect",
+        "occasional lapses in grammar and usage; not severe enough to distort meaning",
+        "spelling usually correct, especially on common words"
+      ],
+      "evidence_span_ids": [
+        "span-real-0c705ee41b4d",
+        "span-real-0e3c187bb21f",
+        "span-real-1602cbbdc72a",
+        "span-real-4a7a1c088686",
+        "span-real-57aafc017324",
+        "span-real-5f02845c45ab",
+        "span-real-6aa2e5dca3a3",
+        "span-real-7091891d3c20",
+        "span-real-7c70316eeb3e",
+        "span-real-8b61e8d400df",
+        "span-real-9a73889de79d",
+        "span-real-a6267077bf76",
+        "span-real-c4baeadd0fc3"
+      ],
+      "feedback_text": "Your essay received a score of 4 in Conventions. This score reflects your \"control over conventions used\" with \"occasional lapses in grammar and usage\" that do not distort meaning. For example, you correctly use end-of-sentence punctuation and apostrophes in contractions like \"don't\" and \"it's.\" However, internal punctuation is sometimes incorrect, as seen in the run-on phrase \"pointing and laughing @CAPS14 shoulder-shake laugh.\" Furthermore, while spelling is usually correct, a lapse occurs with the missing apostrophe in \"@CAPS1'@CAPS20 house\" (which should be \"friend's house\"). These specific errors are occasional and do not prevent understanding, aligning with the descriptors for this score.",
+      "confidence": 0.85
+    }
+  },
+  "summary": "Real provider feedback for 6 dimension(s).",
+  "provider": "openai_compatible"
+}

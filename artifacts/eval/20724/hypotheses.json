@@ -1,0 +1,361 @@
+{
+  "run_id": "run-61ef5700bd64",
+  "hypotheses": [
+    {
+      "hypothesis_id": "hyp-real-145575daec32",
+      "observation_id": "obs-a8d022edc361",
+      "dimension_id": "ideas_content",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "predictable or overly-obvious main ideas",
+        "support attempted but details are limited, uneven, somewhat off-topic, or too general",
+        "details may not be well-grounded in credible resources"
+      ],
+      "evidence_span_ids": [
+        "span-real-eba18b64a418",
+        "span-real-611656cbcafa",
+        "span-real-394bbf946dcc",
+        "span-real-fcc3f1901028",
+        "span-real-5abe961610fe",
+        "span-real-e6660aeaecee",
+        "span-real-a535ec4e0d32",
+        "span-real-d045db7e2933",
+        "span-real-575731a72c94",
+        "span-real-1dd70cb39e71",
+        "span-real-30363f8e5fa4",
+        "span-real-21bf95b31f69"
+      ],
+      "rationale": "The essay presents a clear but simplistic main idea about laughter being important in relationships and life. While the purpose is understandable, the development is limited and repetitive, with details that are overly general (e.g., 'it makes you feel happy,' 'it really feels good'). The mention of suicidal thoughts feels somewhat off-topic and not well-integrated into the overall argument. The ideas are predictable and lack specific examples or insights, aligning with Score 3 descriptors where support is attempted but limited and uneven.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-dc28b46e6f4b",
+      "observation_id": "obs-a8d022edc361",
+      "dimension_id": "ideas_content",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "predictable or overly-obvious main ideas",
+        "support attempted but details are limited, uneven, somewhat off-topic, or too general",
+        "difficulties moving from general observations to specifics"
+      ],
+      "evidence_span_ids": [
+        "span-real-eba18b64a418",
+        "span-real-611656cbcafa",
+        "span-real-394bbf946dcc",
+        "span-real-fcc3f1901028",
+        "span-real-5abe961610fe",
+        "span-real-e6660aeaecee",
+        "span-real-a535ec4e0d32",
+        "span-real-d045db7e2933",
+        "span-real-575731a72c94",
+        "span-real-1dd70cb39e71",
+        "span-real-30363f8e5fa4",
+        "span-real-21bf95b31f69"
+      ],
+      "rationale": "The essay presents a clear but simplistic main idea about laughter's importance in relationships and life. While the purpose is understandable, the development is limited and repetitive, with details that remain general rather than specific. The mention of suicidal feelings is somewhat off-topic and not well-integrated into the overall argument. The writing lacks the focused, well-supported exploration characteristic of higher scores, aligning with Score 3 descriptors about predictable ideas and limited, uneven support.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-db4a1d31b15d",
+      "observation_id": "obs-2d4a1c5a6d86",
+      "dimension_id": "organization",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "attempts at sequencing and paragraph breaks but order occasionally unclear",
+        "beginning and ending present but undeveloped or too obvious",
+        "structure is skeletal or too rigid"
+      ],
+      "evidence_span_ids": [
+        "span-real-4122e9f9533f",
+        "span-real-db214add421c",
+        "span-real-e374fddf398b",
+        "span-real-dc95b6bfd50d",
+        "span-real-286e0aa4b414",
+        "span-real-b1f8dcf54c24",
+        "span-real-0730e19d982a",
+        "span-real-75d74196c8f3"
+      ],
+      "rationale": "The essay shows an attempt at organization with a clear beginning and ending that both state the main point about laughter's importance in relationships. However, the structure is skeletal and rigid, consisting of a single paragraph with repetitive ideas presented in a somewhat circular fashion rather than progressive development. Sequencing exists but is occasionally unclear as the essay jumps between different benefits of laughter without clear transitions or paragraph breaks. The beginning and ending are present but underdeveloped and obvious, simply restating the thesis without deeper exploration. This matches the Score 3 descriptors of 'attempted organization; inconsistent or skeletal structure' and aligns with the Score 3 anchor's description of 'clear and coherent but almost skeletal' structure.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-e13afcb907ea",
+      "observation_id": "obs-2d4a1c5a6d86",
+      "dimension_id": "organization",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "attempts at sequencing and paragraph breaks but order occasionally unclear",
+        "beginning and ending present but undeveloped or too obvious",
+        "structure is skeletal or too rigid"
+      ],
+      "evidence_span_ids": [
+        "span-real-4122e9f9533f",
+        "span-real-db214add421c",
+        "span-real-e374fddf398b",
+        "span-real-dc95b6bfd50d",
+        "span-real-286e0aa4b414",
+        "span-real-b1f8dcf54c24",
+        "span-real-0730e19d982a",
+        "span-real-75d74196c8f3"
+      ],
+      "rationale": "The essay shows an attempt at organization with a clear beginning (introducing laughter in relationships) and ending (reiterating the importance of laughter), but the structure is skeletal and repetitive. Sequencing is attempted but becomes circular rather than progressive, with similar points repeated throughout. The essay lacks paragraph breaks entirely, making it a single block of text. While transitions like 'So' and 'Either way' are used, the overall structure is rigid and predictable, fitting the 'skeletal or too rigid' descriptor for score 3.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-6f02d1c740ba",
+      "observation_id": "obs-55c1f4765632",
+      "dimension_id": "voice",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "suitable level of closeness to or distance from audience",
+        "sense of audience; writer seems aware but has not consistently employed appropriate voice",
+        "reader may glimpse writer and feel sense of interaction in places"
+      ],
+      "evidence_span_ids": [
+        "span-real-952f4fd12eaa",
+        "span-real-e57485cfdf31",
+        "span-real-4c539cae4e5d",
+        "span-real-29b5994baa79",
+        "span-real-a2e43a0a71ba"
+      ],
+      "rationale": "The essay demonstrates a clear sense of audience awareness with direct appeals to the reader ('Come on, you know you want to laugh. Ha ha ha. I hope that at least made you smile a little bit.'), showing the writer is 'writing to be read.' There is genuine commitment to the topic, particularly in discussing serious emotional states ('When you are being suicidal...'), and moments of expressiveness ('laugh for once and be happy even if it is for a few seconds'). However, the voice is somewhat inconsistent, shifting between conversational ('crappy,' 'screwed up') and more formal tones, and the overall expression, while sincere, lacks the sustained originality, liveliness, or deep conviction characteristic of scores 5 or 6. The evidence aligns with Score 4 descriptors: a suitable closeness to the audience is established, the writer is aware of the reader, and the reader glimpses the writer and feels interaction in places, but the voice is not consistently or fully developed.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-0aca455fb203",
+      "observation_id": "obs-55c1f4765632",
+      "dimension_id": "voice",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "Voice present; some expressiveness and sincerity",
+        "Sense of audience; writer seems aware but has not consistently employed appropriate voice",
+        "Liveliness, sincerity, or humor when appropriate"
+      ],
+      "evidence_span_ids": [
+        "span-real-952f4fd12eaa",
+        "span-real-e57485cfdf31",
+        "span-real-4c539cae4e5d",
+        "span-real-29b5994baa79",
+        "span-real-a2e43a0a71ba"
+      ],
+      "rationale": "The essay demonstrates a clear voice with moments of expressiveness and sincerity, particularly in the direct appeals to the reader ('Come on, you know you want to laugh. Ha ha ha. I hope that at least made you smile a little bit.') and in the genuine commitment to the topic's importance. The writer shows awareness of audience through conversational tone and attempts to engage the reader. However, the voice is somewhat inconsistent, shifting between casual ('crappy,' 'screwed up') and more serious tones ('When you are being suicidal'), and the overall execution lacks the sustained, polished quality of a score 5 or 6. The evidence shows audience awareness, commitment, and expressiveness, aligning with the score 4 descriptors of a present but not consistently masterful voice.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-3982b6f8f292",
+      "observation_id": "obs-5a8494332abc",
+      "dimension_id": "word_choice",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "words that work but rarely capture reader's interest",
+        "expression seems mundane and general; slang not effective",
+        "words generally accurate but misused words may occasionally appear",
+        "reliance on cliches and overused expressions"
+      ],
+      "evidence_span_ids": [
+        "span-real-b5b00f935140",
+        "span-real-4731d109ed3a",
+        "span-real-94df2be8e158",
+        "span-real-3928b6dee7ed",
+        "span-real-ca1c08835a78",
+        "span-real-349c47d501a2",
+        "span-real-827c97832c61",
+        "span-real-d9c31c74fc39",
+        "span-real-5ee2fa3ca336",
+        "span-real-f73019b33611",
+        "span-real-0106cac336b5",
+        "span-real-be02d1e70c0c",
+        "span-real-1fd79c8619d9",
+        "span-real-d0315faea5b6"
+      ],
+      "rationale": "The essay demonstrates functional vocabulary that communicates the basic message about laughter's importance, but the word choice lacks precision, variety, and engagement. The language is predominantly general and mundane (e.g., 'really good thing,' 'really bad mood'), with slang that feels ineffective rather than purposeful ('crappy,' 'screwed up'). There is noticeable repetition of simple words ('laugh,' 'giggle,' 'smile') without fresh or vivid alternatives, and the expression relies on familiar phrases ('life gets you down,' 'do just fine in life') rather than striking or original language. While the words are generally accurate and convey the intended meaning, they rarely energize the writing or evoke clear images, aligning with the Score 3 descriptors of a 'generic paper' with limited precision and variety.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-e88215e14ef7",
+      "observation_id": "obs-5a8494332abc",
+      "dimension_id": "word_choice",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "words that work but rarely capture reader's interest",
+        "expression seems mundane and general; slang not effective",
+        "words generally accurate but misused words may occasionally appear"
+      ],
+      "evidence_span_ids": [
+        "span-real-b5b00f935140",
+        "span-real-4731d109ed3a",
+        "span-real-94df2be8e158",
+        "span-real-3928b6dee7ed",
+        "span-real-ca1c08835a78",
+        "span-real-349c47d501a2",
+        "span-real-827c97832c61",
+        "span-real-d9c31c74fc39",
+        "span-real-5ee2fa3ca336",
+        "span-real-f73019b33611",
+        "span-real-0106cac336b5",
+        "span-real-be02d1e70c0c",
+        "span-real-1fd79c8619d9",
+        "span-real-d0315faea5b6"
+      ],
+      "rationale": "The essay uses functional but generic vocabulary that rarely engages the reader. Words like 'really good thing,' 'really bad mood,' and 'crappy' are imprecise and mundane. Slang such as 'screwed up' and 'crappy' is not particularly effective or purposeful. While the words generally communicate the message, they lack the precision, variety, and energy needed for higher scores. The repetition of 'laugh,' 'smile,' and 'giggle' becomes monotonous rather than vivid. The language works but doesn't capture interest or create striking images, fitting the score 3 descriptors.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-d40c9ccf17f4",
+      "observation_id": "obs-177467716208",
+      "dimension_id": "sentence_fluency",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "mechanical rather than fluid; occasional awkwardness",
+        "some passages invite fluid oral reading; others do not",
+        "sentences functional but lack energy"
+      ],
+      "evidence_span_ids": [
+        "span-real-b533f9f8c8a7",
+        "span-real-9b2cce651ff8",
+        "span-real-0d9e71319187",
+        "span-real-a8c9cf319876",
+        "span-real-ab7d7005b9c1",
+        "span-real-fd30683bc393"
+      ],
+      "rationale": "The essay demonstrates basic sentence functionality with mostly simple sentence structures that communicate the message, but lacks the fluidity and rhythmic variation of higher scores. While some passages read naturally (e.g., 'Come on, you know you want to laugh. Ha ha ha.'), others contain awkward constructions ('whether its a friend ship, a love relation ship, or work relation ship'), repetitive patterns, and mechanical transitions. The writing shows good control over simple sentences but little variety in structure or length, and the overall effect is functional rather than engaging, aligning with the Score 3 descriptors.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-fa9c00a3a809",
+      "observation_id": "obs-177467716208",
+      "dimension_id": "sentence_fluency",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "mechanical rather than fluid; occasional awkwardness",
+        "some passages invite fluid oral reading; others do not",
+        "sentences functional but lack energy"
+      ],
+      "evidence_span_ids": [
+        "span-real-b533f9f8c8a7",
+        "span-real-9b2cce651ff8",
+        "span-real-0d9e71319187",
+        "span-real-a8c9cf319876",
+        "span-real-ab7d7005b9c1",
+        "span-real-fd30683bc393"
+      ],
+      "rationale": "The essay demonstrates functional sentence construction with some awkward phrasing ('whether its a friend ship, a love relation ship, or work relation ship'), repetitive patterns ('laugh' appears 16 times), and mechanical flow rather than natural rhythm. While the writing is generally understandable and some passages read smoothly, the sentence structure lacks variety and energy, with frequent simple declarative sentences and occasional choppy transitions between ideas.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-542ce82bcf61",
+      "observation_id": "obs-de48f4b3fadf",
+      "dimension_id": "conventions",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "Limited control; errors begin to impede readability.",
+        "End-of-sentence punctuation usually correct; internal punctuation has frequent errors",
+        "Spelling errors distract reader; common words misspelled"
+      ],
+      "evidence_span_ids": [
+        "span-real-f2bde6dcd74d",
+        "span-real-732ad283bb2e",
+        "span-real-14b20c790042",
+        "span-real-91792ad51308",
+        "span-real-b17dfbe0754e",
+        "span-real-79d6f5f483e5"
+      ],
+      "rationale": "The essay demonstrates limited control of conventions with errors that begin to distract the reader. While end-of-sentence punctuation is mostly correct (periods are used appropriately), there are frequent errors in internal punctuation (missing commas, run-on sentences, and incorrect spacing after periods). Spelling errors in common words are present and distracting ('its' for 'it's', 'friend ship', 'relation ship', 'some body', 'some one', 'ever ones', 'once in awhile'). Capitalization errors occur ('people' not capitalized at sentence start). Grammar and usage issues ('Its nice' instead of 'It's nice', awkward phrasing) don't block meaning but distract the reader. This aligns with Score 3 descriptors, showing more control than Score 2 but not reaching the consistent control of Score 4.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-940b898e2ff1",
+      "observation_id": "obs-de48f4b3fadf",
+      "dimension_id": "conventions",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "some control over basic conventions",
+        "spelling errors distract reader; common words misspelled",
+        "errors in grammar and usage do not block meaning but distract reader",
+        "significant need for editing"
+      ],
+      "evidence_span_ids": [
+        "span-real-f2bde6dcd74d",
+        "span-real-732ad283bb2e",
+        "span-real-14b20c790042",
+        "span-real-91792ad51308",
+        "span-real-b17dfbe0754e",
+        "span-real-79d6f5f483e5"
+      ],
+      "rationale": "The essay demonstrates limited control of conventions with frequent errors that begin to impede readability. Spelling errors in common words ('its' for 'it's', 'friend ship', 'relation ship', 'some body', 'some one', 'ever ones', 'once in awhile'), inconsistent capitalization ('people' at sentence start), and grammar/usage issues (run-on sentences, missing punctuation after 'mood.') distract the reader throughout. While the overall meaning remains understandable, the accumulation of errors requires significant editing to achieve standard conventions.",
+      "confidence": 0.85
+    }
+  ]
+}

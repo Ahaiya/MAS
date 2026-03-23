@@ -1,0 +1,418 @@
+{
+  "run_id": "run-bf21a5ccc934",
+  "hypotheses": [
+    {
+      "hypothesis_id": "hyp-real-4439341e5bc3",
+      "observation_id": "obs-53bc5a640cd7",
+      "dimension_id": "ideas_content",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "predictable or overly-obvious main ideas",
+        "support attempted but details are limited, uneven, somewhat off-topic, or too general",
+        "difficulties moving from general observations to specifics"
+      ],
+      "evidence_span_ids": [
+        "span-real-ffd649babd88",
+        "span-real-8f986228d82c",
+        "span-real-47fcff6ed473",
+        "span-real-310333a187ff",
+        "span-real-5a298240f557",
+        "span-real-47495a594a6e",
+        "span-real-fafb01daa875"
+      ],
+      "rationale": "The essay presents understandable but simplistic ideas about life's joys and challenges. While the main idea (finding meaning despite difficulties) is clear, it remains predictable and lacks depth. Support is attempted through personal reflection and aspirations, but details are limited and uneven—shifting from philosophical musings to specific goals without thorough development. The writer struggles to move from general observations ('there are many joys in life') to concrete, well-grounded specifics, resulting in a somewhat superficial exploration of the topic.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-daff2962ee70",
+      "observation_id": "obs-53bc5a640cd7",
+      "dimension_id": "ideas_content",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "predictable or overly-obvious main ideas",
+        "support attempted but details are limited, uneven, somewhat off-topic, or too general",
+        "difficulties moving from general observations to specifics"
+      ],
+      "evidence_span_ids": [
+        "span-real-ffd649babd88",
+        "span-real-8f986228d82c",
+        "span-real-47fcff6ed473",
+        "span-real-310333a187ff",
+        "span-real-5a298240f557",
+        "span-real-47495a594a6e",
+        "span-real-fafb01daa875"
+      ],
+      "rationale": "The essay presents understandable but simplistic ideas about finding joy and purpose in life. While the main ideas are clear (appreciating life's experiences, overcoming challenges, having goals), they are predictable and lack depth. Support is attempted through personal reflection and examples (boyfriend, love for animals, environmental concerns), but details remain limited and uneven—shifting abruptly from philosophical musings to specific aspirations without thorough development. The essay struggles to move from general observations ('there are many joys in life') to meaningful specifics, resulting in a surface-level exploration that aligns with Score 3 descriptors.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-2cfb074400a4",
+      "observation_id": "obs-da3ba2f1930b",
+      "dimension_id": "organization",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "attempts at sequencing and paragraph breaks but order occasionally unclear",
+        "beginning and ending present but undeveloped or too obvious",
+        "structure is skeletal or too rigid"
+      ],
+      "evidence_span_ids": [
+        "span-real-c1bede8c7f3a",
+        "span-real-d4bbff33cdc9",
+        "span-real-6e296e6bb329",
+        "span-real-7feefd94b131",
+        "span-real-b9ce779ac861",
+        "span-real-990d3d77c885",
+        "span-real-744a0998a5e7",
+        "span-real-7669e2e9e3d7",
+        "span-real-1f778c8fb6d3",
+        "span-real-c6927556eb59"
+      ],
+      "rationale": "The essay shows attempts at organization with a chronological sequence from general reflections to personal crisis to future aspirations, but the structure is skeletal and underdeveloped. The beginning introduces the theme of life reflection but lacks a compelling hook, while the ending circles back to making a difference but feels abrupt and underdeveloped. Paragraph breaks are missing entirely (single paragraph), making the sequencing occasionally unclear as ideas flow without clear separation. Transitions are attempted ('For all the tears...', 'I remember when...', 'after that fateful evening...') but are sometimes mechanical. The placement of details is not always effective, with philosophical reflections, personal crisis narrative, and future goals all blended together without clear structural progression. This matches the 'attempted organization; inconsistent or skeletal structure' description of a score 3.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-f8d2fbb46825",
+      "observation_id": "obs-da3ba2f1930b",
+      "dimension_id": "organization",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "attempts at sequencing and paragraph breaks but order occasionally unclear",
+        "beginning and ending present but undeveloped or too obvious",
+        "transitions sometimes work; same few devices overused"
+      ],
+      "evidence_span_ids": [
+        "span-real-c1bede8c7f3a",
+        "span-real-d4bbff33cdc9",
+        "span-real-6e296e6bb329",
+        "span-real-7feefd94b131",
+        "span-real-b9ce779ac861",
+        "span-real-990d3d77c885",
+        "span-real-744a0998a5e7",
+        "span-real-7669e2e9e3d7",
+        "span-real-1f778c8fb6d3",
+        "span-real-c6927556eb59"
+      ],
+      "rationale": "The essay shows attempts at organization with a chronological flow from general reflection to personal crisis to resolution, but the structure is inconsistent. The beginning introduces reflective themes but is somewhat disjointed, and the conclusion is present but underdeveloped. Transitions like 'For all the tears...' and 'I remember when...' work at times, but the essay relies heavily on stream-of-consciousness connections rather than clear structural devices. Paragraph breaks are absent (single paragraph), making the sequencing occasionally unclear as ideas shift without clear demarcation. This aligns with Score 3 descriptors: skeletal structure with attempts that are not fully effective.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-ddcf6309c366",
+      "observation_id": "obs-2a217d4622d9",
+      "dimension_id": "voice",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "suitable level of closeness to or distance from audience",
+        "sense of audience; writer seems aware but has not consistently employed appropriate voice",
+        "reader may glimpse writer and feel sense of interaction in places"
+      ],
+      "evidence_span_ids": [
+        "span-real-5bd9071adbba",
+        "span-real-c4be05108cc3",
+        "span-real-6adf6e1c562b",
+        "span-real-eda2eda857c2",
+        "span-real-d9b6525a51ad",
+        "span-real-af56442cc037",
+        "span-real-b6418dfd4734",
+        "span-real-223802ff302a",
+        "span-real-8f8841bc5356"
+      ],
+      "rationale": "The essay demonstrates a consistent personal voice with clear audience awareness through direct address ('Have you ever...', 'hopefully you look for things to live for') and sincere reflection on personal experiences. The writer's personality emerges through expressions of hope, vulnerability, and aspirations, creating moments of genuine interaction with the reader. However, the voice occasionally becomes somewhat generic or philosophical ('all you can do is hope for the best and prepare for the worst'), and there are minor inconsistencies in tone between conversational and more formal passages. The writer shows commitment to the topic and maintains appropriate closeness to the audience throughout, but lacks the sustained originality and deep, controlled voice required for scores 5 or 6.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-4a4df5f0c530",
+      "observation_id": "obs-2a217d4622d9",
+      "dimension_id": "voice",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "Voice present; some expressiveness and sincerity",
+        "Sense of audience; writer seems aware but has not consistently employed appropriate voice",
+        "Reader may glimpse writer and feel sense of interaction in places"
+      ],
+      "evidence_span_ids": [
+        "span-real-5bd9071adbba",
+        "span-real-c4be05108cc3",
+        "span-real-6adf6e1c562b",
+        "span-real-eda2eda857c2",
+        "span-real-d9b6525a51ad",
+        "span-real-af56442cc037",
+        "span-real-b6418dfd4734",
+        "span-real-223802ff302a",
+        "span-real-8f8841bc5356"
+      ],
+      "rationale": "The essay demonstrates a clear voice with moments of expressiveness and sincerity, particularly in personal reflections about overcoming hardship and aspirations for the future. The writer shows audience awareness through direct questions ('Have you ever...') and inclusive language ('we humans'), creating a sense of interaction. However, the voice is inconsistent—shifting between reflective, conversational, and somewhat mechanical tones—and lacks the sustained, intentional control required for a score of 5. The writer's personality is present but not consistently distinctive throughout the entire essay.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-f1fbb07d0f04",
+      "observation_id": "obs-331bedcb3428",
+      "dimension_id": "word_choice",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "words that work but rarely capture reader's interest",
+        "expression seems mundane and general; slang not effective",
+        "words generally accurate but misused words may occasionally appear"
+      ],
+      "evidence_span_ids": [
+        "span-real-bf1f440d4550",
+        "span-real-eb4bf7247cca",
+        "span-real-84e4508f14dd",
+        "span-real-fc86d97e13b9",
+        "span-real-a73a3dee9a89",
+        "span-real-b2b57c51c80d",
+        "span-real-751027d1a2cb",
+        "span-real-b1019869bc0c",
+        "span-real-4796c54b3d3d",
+        "span-real-89e621519b38"
+      ],
+      "rationale": "The essay demonstrates functional vocabulary that communicates the writer's ideas, but lacks precision and variety. Words are generally accurate but contain noticeable misuse ('their' vs 'there', 'then' vs 'than', 'plain' vs 'plan', 'due' vs 'dew'), and expression remains mundane with clichéd phrases ('hope for the best and prepare for the worst', 'bright future'). While there are occasional attempts at more vivid language ('fade like morning due', 'burning love story'), these are inconsistent and sometimes forced. The language rarely energizes the writing or captures sustained interest, aligning with Score 3 descriptors.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-6e07e42caa72",
+      "observation_id": "obs-331bedcb3428",
+      "dimension_id": "word_choice",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "words that work but rarely capture reader's interest",
+        "expression seems mundane and general; slang not effective",
+        "words generally accurate but misused words may occasionally appear"
+      ],
+      "evidence_span_ids": [
+        "span-real-bf1f440d4550",
+        "span-real-eb4bf7247cca",
+        "span-real-84e4508f14dd",
+        "span-real-fc86d97e13b9",
+        "span-real-a73a3dee9a89",
+        "span-real-b2b57c51c80d",
+        "span-real-751027d1a2cb",
+        "span-real-b1019869bc0c",
+        "span-real-4796c54b3d3d",
+        "span-real-89e621519b38"
+      ],
+      "rationale": "The essay demonstrates functional vocabulary that communicates the writer's message, but lacks precision and variety. Words like 'relevant then' (instead of 'than'), 'pander' (likely intended as 'ponder'), 'plain' (instead of 'plan'), 'due' (instead of 'dew'), and 'theirs' (instead of 'there's') show occasional misuse. The language is generally mundane with clichéd expressions ('hope for the best and prepare for the worst,' 'bright future,' 'peace of mind'). While there are attempts at more vivid language ('burning love story,' 'morning due'), these are inconsistent and sometimes forced. The overall word choice is generic and rarely energizes the writing, fitting the Score 3 descriptors.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-fc7086ab4016",
+      "observation_id": "obs-9f3754f3d11c",
+      "dimension_id": "sentence_fluency",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "some passages invite fluid oral reading; others do not",
+        "good control over simple sentences, little over complex",
+        "sentences functional but lack energy"
+      ],
+      "evidence_span_ids": [
+        "span-real-77db5a48fb43",
+        "span-real-ea49b5b5353f",
+        "span-real-057ae0ab5277",
+        "span-real-7726f4050437",
+        "span-real-b630aad1121b",
+        "span-real-7027a9ea9e08",
+        "span-real-d1f778dc11e1",
+        "span-real-de6c96f97b3e",
+        "span-real-03971be03521",
+        "span-real-906b64ec12fe",
+        "span-real-460c3994e576",
+        "span-real-ecf985157c50",
+        "span-real-5e83f3e568d1",
+        "span-real-fc5005e33396",
+        "span-real-7f6e31ad91f2",
+        "span-real-d37bfc10f0f0",
+        "span-real-14bfcf0d224b",
+        "span-real-cb50766aa162"
+      ],
+      "rationale": "The essay shows mechanical rather than fluid sentence fluency. While some passages flow naturally (e.g., 'For all the tears I have cried and all the pain I've been through there has always been a laugh to top the sadness'), others are awkward or disjointed, with run-on sentences, comma splices, and irregular word order that force the reader to slow down. The writer demonstrates good control over simple sentence structures but struggles with complex constructions, leading to repetitive patterns and occasional confusion. The writing is functional but lacks the rhythmic variation and crafted quality needed for higher scores.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-1793334997fd",
+      "observation_id": "obs-9f3754f3d11c",
+      "dimension_id": "sentence_fluency",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "some passages invite fluid oral reading; others do not",
+        "good control over simple sentences, little over complex",
+        "sentences functional but lack energy"
+      ],
+      "evidence_span_ids": [
+        "span-real-77db5a48fb43",
+        "span-real-ea49b5b5353f",
+        "span-real-057ae0ab5277",
+        "span-real-7726f4050437",
+        "span-real-b630aad1121b",
+        "span-real-7027a9ea9e08",
+        "span-real-d1f778dc11e1",
+        "span-real-de6c96f97b3e",
+        "span-real-03971be03521",
+        "span-real-906b64ec12fe",
+        "span-real-460c3994e576",
+        "span-real-ecf985157c50",
+        "span-real-5e83f3e568d1",
+        "span-real-fc5005e33396",
+        "span-real-7f6e31ad91f2",
+        "span-real-d37bfc10f0f0",
+        "span-real-14bfcf0d224b",
+        "span-real-cb50766aa162"
+      ],
+      "rationale": "The essay demonstrates mechanical rather than fluid sentence fluency. While some passages flow reasonably well (e.g., 'For all the tears I have cried...'), others are awkward or disjointed with run-on sentences, comma splices, and irregular word order ('Their are many joys...', 'some time I to sit and pander my life...'). The writer shows control over simple sentence structures but struggles with complex constructions, resulting in sentences that are functional but lack the rhythm, grace, and intentional variation characteristic of higher scores. The occasional fluid moments are outweighed by mechanical patterns that disrupt smooth oral reading.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-1fd02a4a5ed8",
+      "observation_id": "obs-5845a716a68b",
+      "dimension_id": "conventions",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
+        "spelling errors distract reader; common words misspelled",
+        "errors in grammar and usage do not block meaning but distract reader",
+        "significant need for editing"
+      ],
+      "evidence_span_ids": [
+        "span-real-d62319fc24c4",
+        "span-real-6d786dbc9cb6",
+        "span-real-87718f64a5cf",
+        "span-real-d5ee8432399b",
+        "span-real-674af526b7bb",
+        "span-real-ad64fe63c21a",
+        "span-real-c08cf4abfb68",
+        "span-real-bf919eea67c9",
+        "span-real-36888aa560a4",
+        "span-real-8580c5cdfa0b",
+        "span-real-c040761f678c",
+        "span-real-43f171c4633c",
+        "span-real-375845eb2470",
+        "span-real-b9ecb9181767",
+        "span-real-58ae3f449422",
+        "span-real-a7aa4724dfb4",
+        "span-real-41f042b92e49",
+        "span-real-eb30b1d48035",
+        "span-real-2b1da92b86c1",
+        "span-real-ffdaf3350fdd",
+        "span-real-e8817cbf10fc",
+        "span-real-92d68d27cb1b",
+        "span-real-079c42362eba",
+        "span-real-62f689a542b9",
+        "span-real-5743956cf423"
+      ],
+      "rationale": "The essay demonstrates limited control of conventions with frequent errors that distract the reader but do not completely block meaning. End-of-sentence punctuation is usually correct, but internal punctuation shows frequent errors (e.g., misplaced commas). Numerous spelling errors of common words ('their' for 'there', 'then' for 'than', 'form' for 'from', 'plain' for 'plan', 'due' for 'dew', 'to' for 'too') distract the reader. Capitalization is inconsistent with frequent lowercase 'i' and incorrect capitalization of 'Its'. Grammar and usage errors ('no to notice', 'filling their life is complete', 'I to sit and pander', 'their's always going to be') are noticeable and require significant editing, though the overall meaning remains understandable.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-cfe8c1a3aaa7",
+      "observation_id": "obs-5845a716a68b",
+      "dimension_id": "conventions",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "some control over basic conventions",
+        "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
+        "spelling errors distract reader; common words misspelled",
+        "errors in grammar and usage do not block meaning but distract reader",
+        "significant need for editing"
+      ],
+      "evidence_span_ids": [
+        "span-real-d62319fc24c4",
+        "span-real-6d786dbc9cb6",
+        "span-real-87718f64a5cf",
+        "span-real-d5ee8432399b",
+        "span-real-674af526b7bb",
+        "span-real-ad64fe63c21a",
+        "span-real-c08cf4abfb68",
+        "span-real-bf919eea67c9",
+        "span-real-36888aa560a4",
+        "span-real-8580c5cdfa0b",
+        "span-real-c040761f678c",
+        "span-real-43f171c4633c",
+        "span-real-375845eb2470",
+        "span-real-b9ecb9181767",
+        "span-real-58ae3f449422",
+        "span-real-a7aa4724dfb4",
+        "span-real-41f042b92e49",
+        "span-real-eb30b1d48035",
+        "span-real-2b1da92b86c1",
+        "span-real-ffdaf3350fdd",
+        "span-real-e8817cbf10fc",
+        "span-real-92d68d27cb1b",
+        "span-real-079c42362eba",
+        "span-real-62f689a542b9",
+        "span-real-5743956cf423"
+      ],
+      "rationale": "The essay demonstrates limited control of conventions with frequent errors that distract the reader but don't block meaning. End-of-sentence punctuation is generally correct, but internal punctuation has frequent errors (commas placed incorrectly or omitted). Spelling errors distract (their/there, then/than, plain/plan, form/from, due/dew, to/too). Capitalization is inconsistent with frequent lowercase 'i' and incorrect capitalization of 'Its' and other words. Grammar and usage errors are frequent (subject-verb agreement, word choice, sentence fragments) but don't prevent understanding. The essay requires significant editing, aligning with score 3 descriptors.",
+      "confidence": 0.85
+    }
+  ]
+}

@@ -1,0 +1,426 @@
+{
+  "run_id": "run-6dd146a17b63",
+  "hypotheses": [
+    {
+      "hypothesis_id": "hyp-real-d5ad7603b11c",
+      "observation_id": "obs-a81930598704",
+      "dimension_id": "ideas_content",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 5,
+        "display_annotation": null,
+        "display_score": "5",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "clarity, focus, and control",
+        "main ideas stand out",
+        "supporting, relevant, carefully selected details",
+        "thorough, balanced explanation/exploration of topic"
+      ],
+      "evidence_span_ids": [
+        "span-real-b71cf0e64f44",
+        "span-real-fd666096f153",
+        "span-real-1500dcca30d1",
+        "span-real-10c58c2720ef",
+        "span-real-5c09a8985dd9",
+        "span-real-a6bb194b5149",
+        "span-real-265cd2dbb220",
+        "span-real-d2c025c25a2a",
+        "span-real-052749c9c06a",
+        "span-real-94480035558d"
+      ],
+      "rationale": "The essay demonstrates exceptional clarity and focus on the central idea that laughter is essential for human connection and friendship. The main idea stands out strongly from the opening statement about laughter being universal to the specific personal narrative with @PERSON1. Supporting details are carefully selected and relevant, including the anecdote about their rocky friendship beginning, the specific example of the 'big bug in my ear' comment, and the broader philosophical reflections on laughter's importance. The exploration is thorough and balanced, moving seamlessly between personal experience and universal observations while maintaining consistent focus on the central theme.",
+      "confidence": 0.9
+    },
+    {
+      "hypothesis_id": "hyp-real-24fed9b94e0b",
+      "observation_id": "obs-a81930598704",
+      "dimension_id": "ideas_content",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 5,
+        "display_annotation": null,
+        "display_score": "5",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "clarity, focus, and control",
+        "main ideas stand out",
+        "supporting, relevant, carefully selected details",
+        "thorough, balanced explanation/exploration of topic"
+      ],
+      "evidence_span_ids": [
+        "span-real-b71cf0e64f44",
+        "span-real-fd666096f153",
+        "span-real-1500dcca30d1",
+        "span-real-10c58c2720ef",
+        "span-real-5c09a8985dd9",
+        "span-real-a6bb194b5149",
+        "span-real-265cd2dbb220",
+        "span-real-d2c025c25a2a",
+        "span-real-052749c9c06a",
+        "span-real-94480035558d"
+      ],
+      "rationale": "The essay demonstrates clear, focused, and interesting ideas about laughter's universal importance and role in friendship. The main idea stands out from the opening statement and is consistently maintained throughout. Supporting details are relevant and carefully selected, including specific personal anecdotes about @PERSON1 that illustrate laughter's bonding power. The exploration is thorough and balanced, moving from universal observations to personal examples to broader philosophical reflections. While not achieving the exceptional richness of a score 6, it exceeds the limited support typical of score 4 through its well-chosen details and thoughtful development.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-9cb29dcf14f7",
+      "observation_id": "obs-81fe4ab7220e",
+      "dimension_id": "organization",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "clear sequencing and paragraph breaks",
+        "recognizable, developed beginning not particularly inviting",
+        "developed conclusion may lack subtlety",
+        "body easy to follow with details fitting where placed",
+        "transitions may be stilted or formulaic"
+      ],
+      "evidence_span_ids": [
+        "span-real-6e7c45134b51",
+        "span-real-b25dbf0fc27b",
+        "span-real-f76a1f685e2a",
+        "span-real-5283d37c6297",
+        "span-real-b6e4e86ccf8e",
+        "span-real-66ef57b976ce"
+      ],
+      "rationale": "The essay demonstrates clear and coherent organization with a recognizable structure: it begins with a general statement about laughter's universal value, transitions to a personal anecdote about friendship with @PERSON1, and concludes by reflecting on laughter's broader importance. Sequencing is logical (general → personal → universal), and paragraph breaks help separate ideas. However, the organization is somewhat predictable/formulaic, with transitions that work but are occasionally stilted (e.g., 'I think of what the human race would be like...'). The beginning and conclusion are developed but not particularly inviting or subtle. Details fit where placed, supporting the main point effectively without confusion.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-1dbf51ab448b",
+      "observation_id": "obs-81fe4ab7220e",
+      "dimension_id": "organization",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "clear sequencing and paragraph breaks",
+        "recognizable, developed beginning not particularly inviting",
+        "developed conclusion may lack subtlety",
+        "body easy to follow with details fitting where placed"
+      ],
+      "evidence_span_ids": [
+        "span-real-6e7c45134b51",
+        "span-real-b25dbf0fc27b",
+        "span-real-f76a1f685e2a",
+        "span-real-5283d37c6297",
+        "span-real-b6e4e86ccf8e",
+        "span-real-66ef57b976ce"
+      ],
+      "rationale": "The essay demonstrates clear and coherent organization with a logical progression from general statements about laughter's universal value to specific personal examples with @PERSON1, then back to broader reflections. The structure includes a recognizable beginning (general claims about laughter), developed body (friendship narrative with chronological sequencing), and conclusion (philosophical reflection on laughter's importance). Paragraph breaks are present but could be more strategically placed. Transitions are functional but sometimes formulaic ('I think of what the human race would be like...'). The organization helps the reader follow the writer's ideas despite some weaknesses in paragraph structure and subtlety.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-651f67bfbbe5",
+      "observation_id": "obs-3c174c20f598",
+      "dimension_id": "voice",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 5,
+        "display_annotation": null,
+        "display_score": "5",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "appropriate level of closeness to or distance from audience",
+        "strong sense of audience; writer seems aware of reader and how to communicate effectively",
+        "reader may discern writer behind words and feel sense of interaction",
+        "topic has come to life; shows originality, liveliness, honesty, conviction, excitement, humor, or suspense"
+      ],
+      "evidence_span_ids": [
+        "span-real-e58042e0193a",
+        "span-real-5c51b1c06df5",
+        "span-real-0461974db54b",
+        "span-real-116fa6b44de3",
+        "span-real-60263d39077e"
+      ],
+      "rationale": "The essay demonstrates a strong, consistent voice with clear audience awareness and commitment to the topic. The writer engages the reader directly with personal anecdotes and reflective questions, creating a sense of interaction. The voice is appropriately personal yet maintains a conversational tone suitable for the audience. While not reaching the exceptional depth of a score 6, the writing shows clear intentionality in communicating effectively about laughter's importance in human connection.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-6f6a2d25535c",
+      "observation_id": "obs-3c174c20f598",
+      "dimension_id": "voice",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 5,
+        "display_annotation": null,
+        "display_score": "5",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "appropriate level of closeness to or distance from audience",
+        "strong sense of audience; writer seems aware of reader and how to communicate effectively",
+        "reader may discern writer behind words and feel sense of interaction",
+        "topic has come to life; shows originality, liveliness, honesty, conviction, excitement, humor, or suspense"
+      ],
+      "evidence_span_ids": [
+        "span-real-e58042e0193a",
+        "span-real-5c51b1c06df5",
+        "span-real-0461974db54b",
+        "span-real-116fa6b44de3",
+        "span-real-60263d39077e"
+      ],
+      "rationale": "The essay demonstrates a strong voice with clear commitment to the topic and effective audience awareness. The writer maintains an appropriate conversational tone throughout, directly addressing the reader with phrases like 'I believe,' 'We all know,' and 'Everyone knows,' creating a sense of interaction. The voice is consistently expressive, sincere, and lively, as seen in personal anecdotes about friendship with @PERSON1 and philosophical reflections on laughter's universal value. The writer's personality comes through clearly with conviction and occasional humor, making the topic come alive. While not reaching the exceptional depth of a score 6, this essay consistently meets all descriptors for score 5 with strong evidence of 'writing to be read' and effective communication with the audience.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-bbc885d7eb3c",
+      "observation_id": "obs-80cbb84f9e3e",
+      "dimension_id": "word_choice",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "words that work but do not particularly energize writing",
+        "expression is functional; slang not purposeful or effective",
+        "rare experiments with language; avoids clichés"
+      ],
+      "evidence_span_ids": [
+        "span-real-0d33a45bc623",
+        "span-real-a21c5fc3534e",
+        "span-real-5f5a2aaa5b2f",
+        "span-real-d6488cba7ddc",
+        "span-real-359e12f01980",
+        "span-real-2c435768e9b6",
+        "span-real-b8da99fde110",
+        "span-real-ab77fde9de98",
+        "span-real-95f238073c08",
+        "span-real-a76d3103e8cc",
+        "span-real-2e375bc38871"
+      ],
+      "rationale": "The essay demonstrates functional word choice that effectively conveys the message about laughter's importance. Words like 'infectious,' 'cajoling,' 'ecstatic,' and 'serendipitous' show some precision and variety, while phrases like 'wash away a person's worries' and 'band-aid in the beginning of our rickety friendship' create clear images. However, the language rarely energizes the writing or becomes particularly striking—it remains mostly functional and appropriate rather than fresh or vivid. The writer avoids clichés and maintains generally accurate word usage throughout.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-77406ad2ce78",
+      "observation_id": "obs-80cbb84f9e3e",
+      "dimension_id": "word_choice",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "words that work but do not particularly energize writing",
+        "expression is functional; slang not purposeful or effective",
+        "rare experiments with language; avoids clichés"
+      ],
+      "evidence_span_ids": [
+        "span-real-0d33a45bc623",
+        "span-real-a21c5fc3534e",
+        "span-real-5f5a2aaa5b2f",
+        "span-real-d6488cba7ddc",
+        "span-real-359e12f01980",
+        "span-real-2c435768e9b6",
+        "span-real-b8da99fde110",
+        "span-real-ab77fde9de98",
+        "span-real-95f238073c08",
+        "span-real-a76d3103e8cc",
+        "span-real-2e375bc38871"
+      ],
+      "rationale": "The essay demonstrates functional word choice that effectively conveys the message about laughter's importance. Words like 'infectious,' 'cajoling,' 'ecstatic,' and 'serendipitous' show some variety and precision, while phrases like 'wash away a person's worries' and 'band-aid in the beginning of our rickety friendship' create clear imagery. However, much of the vocabulary remains general ('wonderful,' 'strongest element,' 'good ole time') and doesn't consistently energize the writing. The expression is competent but rarely rises to the striking, vivid level required for a score of 5. The essay avoids clichés and misused words, fitting squarely within the 'functional but not energizing' description of a score 4.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-e25a304fc7bd",
+      "observation_id": "obs-3a90cb2acdbf",
+      "dimension_id": "sentence_fluency",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "natural sound; reader moves easily but lacks rhythm and grace",
+        "some repeated patterns that detract from impact",
+        "strong control over simple sentences, variable over complex"
+      ],
+      "evidence_span_ids": [
+        "span-real-f8b808b495d2",
+        "span-real-39c7eec866cd",
+        "span-real-6ef90d7a7c1f",
+        "span-real-8885b85135e3",
+        "span-real-6b4d5cae5ab8",
+        "span-real-7d2398f344e5",
+        "span-real-9a1fdaa2c40f",
+        "span-real-bb79fe713add",
+        "span-real-4b8b1ebea282",
+        "span-real-25a33b55338d",
+        "span-real-acf6bcd583a7",
+        "span-real-ef517b583c5f",
+        "span-real-90f8699d2afc",
+        "span-real-33326ec9cbc6",
+        "span-real-23f5f2a49025",
+        "span-real-181e841444b1",
+        "span-real-3d018372896a",
+        "span-real-5019aea2f9e9",
+        "span-real-36e731c2cd61",
+        "span-real-9a7009f18b14",
+        "span-real-869e51cfae92",
+        "span-real-a43bc69038c7",
+        "span-real-0c3a9464d5a6",
+        "span-real-b038ee1c21e2",
+        "span-real-5a44755a7d1d",
+        "span-real-203a0e4dcf49",
+        "span-real-2a232dfc558e",
+        "span-real-03cf9c610a8f",
+        "span-real-0bcde4387790"
+      ],
+      "rationale": "The essay demonstrates clear sentence fluency with natural flow that allows easy reading, aligning with Score 4 descriptors. The writer shows strong control over simple sentence structures and creates generally fluid connections between ideas, as seen in evidence like 'Even in poverty, depression, and oppression the simple joy of laughter can wash away a person's worries...' and the conversational transitions between personal anecdotes and broader reflections. However, there are some repetitive patterns (frequent use of 'laughter' as sentence subject, similar sentence lengths in places) and occasional awkward constructions ('it's somethings that brings humans together') that prevent it from achieving the effortless rhythm and extensive variation required for Score 5. The writing is more functional than artfully crafted, with dialogue sounding natural but overall lacking the sophisticated sentence patterning of higher scores.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-9840d54c9ff8",
+      "observation_id": "obs-3a90cb2acdbf",
+      "dimension_id": "sentence_fluency",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "natural sound; reader moves easily but lacks rhythm and grace",
+        "strong control over simple sentences, variable over complex",
+        "some repeated patterns that detract from impact"
+      ],
+      "evidence_span_ids": [
+        "span-real-f8b808b495d2",
+        "span-real-39c7eec866cd",
+        "span-real-6ef90d7a7c1f",
+        "span-real-8885b85135e3",
+        "span-real-6b4d5cae5ab8",
+        "span-real-7d2398f344e5",
+        "span-real-9a1fdaa2c40f",
+        "span-real-bb79fe713add",
+        "span-real-4b8b1ebea282",
+        "span-real-25a33b55338d",
+        "span-real-acf6bcd583a7",
+        "span-real-ef517b583c5f",
+        "span-real-90f8699d2afc",
+        "span-real-33326ec9cbc6",
+        "span-real-23f5f2a49025",
+        "span-real-181e841444b1",
+        "span-real-3d018372896a",
+        "span-real-5019aea2f9e9",
+        "span-real-36e731c2cd61",
+        "span-real-9a7009f18b14",
+        "span-real-869e51cfae92",
+        "span-real-a43bc69038c7",
+        "span-real-0c3a9464d5a6",
+        "span-real-b038ee1c21e2",
+        "span-real-5a44755a7d1d",
+        "span-real-203a0e4dcf49",
+        "span-real-2a232dfc558e",
+        "span-real-03cf9c610a8f",
+        "span-real-0bcde4387790"
+      ],
+      "rationale": "The essay demonstrates clear flow and natural sound throughout, with the reader moving easily through most passages. There is strong control over simple sentence structures and some effective variation in sentence beginnings and lengths (e.g., 'Even in poverty, depression, and oppression...' and 'What is a life without a diamond in the rough like laughter?'). However, the writing lacks the consistent rhythm, grace, and extensive variation characteristic of scores 5-6. Some repetitive patterns (e.g., frequent use of 'laughter' as sentence subject) and occasional awkward constructions ('it's somethings that brings humans together') prevent it from achieving the effortless glide of higher scores. The essay is clearly functional and coherent with only minor stylistic lapses, aligning well with the score 4 descriptors.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-307aee204a7f",
+      "observation_id": "obs-d1f85fbe126e",
+      "dimension_id": "conventions",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "control over conventions used, though wide range not demonstrated",
+        "correct end-of-sentence punctuation; internal sometimes incorrect",
+        "occasional lapses in grammar and usage; not severe enough to distort meaning"
+      ],
+      "evidence_span_ids": [
+        "span-real-c53a38250004",
+        "span-real-74fdf09460fb",
+        "span-real-e2ca7dc0d3c4",
+        "span-real-e48439e0a098",
+        "span-real-4a2afe2678d8",
+        "span-real-79d433716611",
+        "span-real-fd980a15d1df",
+        "span-real-bbeb909b5cdf",
+        "span-real-b20442e06d8f",
+        "span-real-0dc9f2f0d5a5",
+        "span-real-b9e1cfd4e161",
+        "span-real-d8a5f76d98a9",
+        "span-real-6db64e2549b9",
+        "span-real-fc8e641e39d8",
+        "span-real-6133f6af6918",
+        "span-real-536bbc4f5188",
+        "span-real-2f434d8a9ec2",
+        "span-real-7cd9abb7c5db",
+        "span-real-fallback-fb294b40",
+        "span-real-fallback-3cbffa2b"
+      ],
+      "rationale": "The essay demonstrates control of basic conventions with correct end-of-sentence punctuation throughout. However, there are several internal punctuation errors (comma splices in evidence 1 and 5, inconsistent comma usage in evidence 2), spelling errors ('somethings' in evidence 1, 'each others' in evidence 3, incorrect apostrophe in evidence 4), and minor grammar lapses. These errors are noticeable but do not impede readability or meaning, aligning with the score 4 descriptors. The writing communicates clearly with only moderate need for editing.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-fd671b567b58",
+      "observation_id": "obs-d1f85fbe126e",
+      "dimension_id": "conventions",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "control over conventions used, though wide range not demonstrated",
+        "correct end-of-sentence punctuation; internal sometimes incorrect",
+        "occasional lapses in grammar and usage; not severe enough to distort meaning"
+      ],
+      "evidence_span_ids": [
+        "span-real-c53a38250004",
+        "span-real-74fdf09460fb",
+        "span-real-e2ca7dc0d3c4",
+        "span-real-e48439e0a098",
+        "span-real-4a2afe2678d8",
+        "span-real-79d433716611",
+        "span-real-fd980a15d1df",
+        "span-real-bbeb909b5cdf",
+        "span-real-b20442e06d8f",
+        "span-real-0dc9f2f0d5a5",
+        "span-real-b9e1cfd4e161",
+        "span-real-d8a5f76d98a9",
+        "span-real-6db64e2549b9",
+        "span-real-fc8e641e39d8",
+        "span-real-6133f6af6918",
+        "span-real-536bbc4f5188",
+        "span-real-2f434d8a9ec2",
+        "span-real-7cd9abb7c5db",
+        "span-real-fallback-fb294b40",
+        "span-real-fallback-3cbffa2b"
+      ],
+      "rationale": "The essay demonstrates clear control of basic conventions with only minor errors that do not impede readability. End-of-sentence punctuation is consistently correct, but internal punctuation shows occasional issues (e.g., comma splices in evidence 1, 2, 12). Spelling is generally correct with a few minor errors ('somethings' in evidence 2, 'each others' in evidence 6). Grammar and usage have occasional lapses (e.g., 'reason of why' in evidence 7, awkward phrasing in evidence 14) but maintain clarity. The writing is functional and communicates effectively without significant editing needs, aligning with Score 4 descriptors.",
+      "confidence": 0.85
+    }
+  ]
+}

@@ -1,0 +1,147 @@
+{
+  "dimensions": {
+    "ideas_content": {
+      "dimension_name": "Ideas and Content",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "clear main ideas",
+        "easily identifiable purpose",
+        "supporting details are relevant but may be overly general or limited"
+      ],
+      "evidence_span_ids": [
+        "span-real-19f87c02499f",
+        "span-real-5994df27f3cb",
+        "span-real-abea270bdee4",
+        "span-real-e0f807206348",
+        "span-real-f60571f3b6fe"
+      ],
+      "feedback_text": "Your essay received a score of 4 for Ideas and Content. You established a **clear main idea** about balancing friendship and personal differences, and your **purpose** to recount a meaningful sleepover is easily identifiable. You support this with **relevant details**, such as planning the event to relax after finals and the scene of sharing junk food while watching TV. However, some supporting ideas remain **overly general or limited**, like stating you \"even each other out\" without deeper exploration, and the report card scene, while relevant, concludes quickly with a simple lesson about not stressing over small things.",
+      "confidence": 0.85
+    },
+    "organization": {
+      "dimension_name": "Organization",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "body easy to follow with details fitting where placed",
+        "clear sequencing and paragraph breaks",
+        "developed conclusion may lack subtlety",
+        "organization helps reader despite some weaknesses",
+        "recognizable, developed beginning not particularly inviting"
+      ],
+      "evidence_span_ids": [
+        "span-real-429f32d83ec3",
+        "span-real-6a7343efa03c",
+        "span-real-785f8ac1d11c",
+        "span-real-78c932cb8c84",
+        "span-real-9c29eb898399",
+        "span-real-b6eb93354976"
+      ],
+      "feedback_text": "Your essay scored a 4 in Organization. Your writing has a \"recognizable, developed beginning\" and \"clear sequencing,\" as shown when you detail packing your gear, being dropped off, and knocking on the door, which is easy to follow. The body is generally easy to follow with details fitting where placed, like the chronological shift from arriving to waking up late the next afternoon and then reminiscing about your friendship. However, the conclusion, while developed, \"may lack subtlety,\" as it directly states your thesis about balancing work and play rather than emerging more organically from the narrative. Overall, your organization helps the reader follow the story despite these minor weaknesses.",
+      "confidence": 0.85
+    },
+    "voice": {
+      "dimension_name": "Voice",
+      "canonical_score": 5,
+      "display_score": "5",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "Reader may glimpse writer and feel sense of interaction in places",
+        "Voice present; some expressiveness and sincerity",
+        "Writing may be inappropriately casual or inappropriately formal in places",
+        "appropriate level of closeness to or distance from audience",
+        "reader may discern writer behind words and feel sense of interaction",
+        "strong sense of audience; writer seems aware of reader and how to communicate effectively",
+        "topic has come to life; shows originality, liveliness, honesty, conviction, excitement, humor, or suspense"
+      ],
+      "evidence_span_ids": [
+        "span-real-51258f04bb1a",
+        "span-real-56b662d13f7a",
+        "span-real-8c71ec1d8cb2",
+        "span-real-9a492dce37a8",
+        "span-real-9dfa357684a6",
+        "span-real-d5f491d13025",
+        "span-real-f9ded6762d2e",
+        "span-real-fa23288ea72e"
+      ],
+      "feedback_text": "Your essay received a score of 5 for Voice. The writing shows a \"strong sense of audience\" and the \"reader may discern the writer behind the words,\" creating a genuine sense of interaction. This is achieved through candid dialogue and personal reflection, such as when you recount asking your crying friend, \"You got a B... and you're crying?\" and describe your contrasting personalities. These moments give the topic a sense of liveliness and honesty, letting your perspective and relationship with your friend come to life. However, the voice occasionally shifts toward a slightly casual or instructive tone, as in \"Sometimes you just gotta relax,\" which contrasts with the more narrative sincerity elsewhere.",
+      "confidence": 0.85
+    },
+    "word_choice": {
+      "dimension_name": "Word Choice",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "expression is functional; slang not purposeful or effective",
+        "rare experiments with language; avoids clichés",
+        "words that work but do not particularly energize writing"
+      ],
+      "evidence_span_ids": [
+        "span-real-1e6b1b9eaf5b",
+        "span-real-54039dbd1646",
+        "span-real-bc1a0ecc58d7",
+        "span-real-bf93bf5f86cb",
+        "span-real-cc7297f7efe8",
+        "span-real-dde15027c1e7"
+      ],
+      "feedback_text": "Your essay earned a Word Choice score of 4. Your expression is functional, using clear words that work but do not particularly energize the writing, such as in the basic lists: \"I grabbed my toothbrush, pillow, pajamas, and my blanket.\" You also avoid clichés and make rare experiments with language, which is shown in your use of casual phrases like \"@CAPS4 busted out laughing\" and describing someone as \"kinda amused.\" While these choices fit the narrative, the slang is not purposeful or effective in creating a more vivid or precise description, keeping the overall word choice straightforward.",
+      "confidence": 0.85
+    },
+    "sentence_fluency": {
+      "dimension_name": "Sentence Fluency",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "natural sound; reader moves easily but lacks rhythm and grace",
+        "some repeated patterns that detract from impact",
+        "strong control over simple sentences, variable over complex"
+      ],
+      "evidence_span_ids": [
+        "span-real-0526a953aa8f",
+        "span-real-08d77ea0ba5b",
+        "span-real-77da81ef8243",
+        "span-real-97e6a02645cb",
+        "span-real-d0579f3411a5",
+        "span-real-d0e8db1023bd",
+        "span-real-f4570d640739"
+      ],
+      "feedback_text": "Your essay received a 4 in Sentence Fluency. Your writing has a **natural sound and the reader moves easily** through it, as shown in the smooth sequence of actions like, \"I walked up her sidewalk to her door, knocked, and waited.\" However, there are **some repeated patterns that detract from impact**, particularly the frequent use of short, simple sentences starting with \"@CAPS4\" or \"I\" in succession. This is seen in paragraphs describing your friend's preparations: \"@CAPS4 lead me down... @CAPS4 had all the junk food... @CAPS4 had gone to the store...\" This pattern shows **strong control over simple sentences** but **variable control over complex** ones, limiting rhythm and grace.",
+      "confidence": 0.85
+    },
+    "conventions": {
+      "dimension_name": "Conventions",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "control over conventions used, though wide range not demonstrated",
+        "correct end-of-sentence punctuation; internal sometimes incorrect",
+        "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
+        "errors in grammar and usage do not block meaning but distract reader",
+        "occasional lapses in grammar and usage; not severe enough to distort meaning",
+        "significant need for editing",
+        "some control over basic conventions",
+        "spelling errors distract reader; common words misspelled",
+        "spelling usually correct, especially on common words"
+      ],
+      "evidence_span_ids": [
+        "span-real-194064c59c67",
+        "span-real-2c63a9d0d789",
+        "span-real-752807dbb61d",
+        "span-real-88712fafe048",
+        "span-real-9a0974df05d5",
+        "span-real-b90c978a3472",
+        "span-real-c42dbb286147"
+      ],
+      "feedback_text": "Your essay received a score of 3 for Conventions. This score reflects that you have **some control over basic conventions**, but there is a **significant need for editing** as **errors in grammar and usage do not block meaning but distract the reader**. For example, the grammar error in \"my grades we be far worse\" is distracting, and the misspelling of \"soo\" in \"soo good\" shows **common words misspelled**. Furthermore, while your end-of-sentence punctuation is usually correct, internal punctuation is often missing or incorrect, as seen in the run-on sentence \"I'm more out going, I like to speak my mind...\" These lapses are frequent but do not severely distort your meaning.",
+      "confidence": 0.85
+    }
+  },
+  "summary": "Real provider feedback for 6 dimension(s).",
+  "provider": "openai_compatible"
+}

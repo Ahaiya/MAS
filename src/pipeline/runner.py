@@ -105,6 +105,17 @@ class PipelineRunner:
         self._rater_providers: Dict[str, BaseProvider] = rater_providers or {}
         self._stage_providers: Dict[str, BaseProvider] = stage_providers or {}
         self._prompt_templates = prompt_templates or {}
+        self._last_hypotheses: List[ScoreHypothesis] = []
+
+    @property
+    def last_hypotheses(self) -> List[ScoreHypothesis]:
+        """ScoreHypotheses produced in the most recent run() call.
+
+        Contains one hypothesis per (rater, dimension) pair — e.g. 12 entries
+        for 6 dimensions × 2 raters. Empty if run() has not been called or if
+        the pipeline failed before the scoring stage.
+        """
+        return list(self._last_hypotheses)
 
     def _is_real(self) -> bool:
         return self._provider is not None or bool(self._rater_providers)
@@ -304,6 +315,7 @@ class PipelineRunner:
                             for rater_id in rater_ids
                         ]
                     validate_hypotheses(hypotheses, plans, rater_ids)
+                    self._last_hypotheses = list(hypotheses)
                     ckpt = ckpt_mgr.create_checkpoint(
                         "node_scorer", "score", document.document_id
                     )

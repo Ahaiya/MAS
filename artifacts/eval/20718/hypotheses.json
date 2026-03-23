@@ -1,0 +1,364 @@
+{
+  "run_id": "run-58389b74e0f4",
+  "hypotheses": [
+    {
+      "hypothesis_id": "hyp-real-b2f0939bcd4f",
+      "observation_id": "obs-fe730c97d62f",
+      "dimension_id": "ideas_content",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 5,
+        "display_annotation": null,
+        "display_score": "5",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "clarity, focus, and control",
+        "main ideas stand out",
+        "supporting, relevant, carefully selected details",
+        "thorough, balanced explanation/exploration of topic"
+      ],
+      "evidence_span_ids": [
+        "span-real-fb0dc94fbfbf",
+        "span-real-b15b98d9464d",
+        "span-real-4e9203900b14",
+        "span-real-84f6cfe75ba0",
+        "span-real-a41e5f4055e6",
+        "span-real-dc07f26842d6",
+        "span-real-43fa998579c7",
+        "span-real-bd2984f62509",
+        "span-real-aba8c970879d"
+      ],
+      "rationale": "The essay demonstrates clear, focused, and interesting ideas with strong support. The main idea about embracing one's 'special' qualities and the relationship with laughter stands out strongly throughout. Supporting details are carefully selected and relevant, including specific childhood anecdotes (hammer incident, pencil stabbing, sidewalk fall) that illustrate the writer's personality, and the central kindergarten story with the bully and crying incident that provides meaningful development. The exploration is thorough and balanced, moving from childhood experiences to present-day reflection and insight about personal growth. The essay maintains control and intentionality in connecting all elements to the central theme.",
+      "confidence": 0.9
+    },
+    {
+      "hypothesis_id": "hyp-real-7cfbc35a754f",
+      "observation_id": "obs-fe730c97d62f",
+      "dimension_id": "ideas_content",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 5,
+        "display_annotation": null,
+        "display_score": "5",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "clarity, focus, and control",
+        "main ideas stand out",
+        "supporting, relevant, carefully selected details",
+        "thorough, balanced explanation/exploration of topic"
+      ],
+      "evidence_span_ids": [
+        "span-real-fb0dc94fbfbf",
+        "span-real-b15b98d9464d",
+        "span-real-4e9203900b14",
+        "span-real-84f6cfe75ba0",
+        "span-real-a41e5f4055e6",
+        "span-real-dc07f26842d6",
+        "span-real-43fa998579c7",
+        "span-real-bd2984f62509",
+        "span-real-aba8c970879d"
+      ],
+      "rationale": "The essay demonstrates exceptional clarity and focus on the central theme of embracing one's 'special' qualities to bring laughter and personal growth. The main idea stands out strongly through explicit statements like 'being \"special\" could sometimes be the best thing about you' and the narrative consistently circles back to this theme. Supporting details are carefully selected and relevant, including specific childhood anecdotes (hitting head with hammer, pencil incident, sidewalk fall) that illustrate the writer's personality, and the pivotal kindergarten story with the bully and misunderstood laughter provides rich development. The exploration is thorough and balanced, moving from childhood experiences to present-day reflection and insight about personal growth. While not achieving the exceptional richness of a score 6, it clearly meets all descriptors for score 5 with strong control and intentionality throughout.",
+      "confidence": 0.9
+    },
+    {
+      "hypothesis_id": "hyp-real-9bb54eff7ff6",
+      "observation_id": "obs-fe2f36151815",
+      "dimension_id": "organization",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "clear sequencing and paragraph breaks",
+        "recognizable, developed beginning not particularly inviting",
+        "developed conclusion may lack subtlety",
+        "body easy to follow with details fitting where placed",
+        "transitions may be stilted or formulaic"
+      ],
+      "evidence_span_ids": [
+        "span-real-084693923397",
+        "span-real-c3fa8daf41f0",
+        "span-real-5192648e5c96",
+        "span-real-9d8ddfe9500a",
+        "span-real-2a20fcffefed",
+        "span-real-d8ed6275fef9",
+        "span-real-34b8d6dff695",
+        "span-real-335e21caf84b",
+        "span-real-fd2e465d404f"
+      ],
+      "rationale": "The essay demonstrates clear and coherent organization with a recognizable beginning, body, and conclusion. The sequencing is chronological and easy to follow, with paragraph breaks that generally work (though the essay is presented as one continuous block in the prompt). The beginning introduces the theme of loving to make people laugh and being 'special,' the body develops the kindergarten story with relevant details, and the conclusion reflects on the experience's impact. However, the organization is somewhat formulaic with transitions like 'Now that you know... I can get on with the story' and 'Anyways,' and the conclusion, while developed, lacks subtlety with its repetitive 'what makes you...' structure. This aligns with Score 4 descriptors: clear sequencing, recognizable beginning and conclusion (though not particularly inviting), body easy to follow, and transitions that may be stilted or formulaic.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-779b5b2c03ea",
+      "observation_id": "obs-fe2f36151815",
+      "dimension_id": "organization",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "clear sequencing and paragraph breaks",
+        "recognizable, developed beginning not particularly inviting",
+        "organization helps reader despite some weaknesses"
+      ],
+      "evidence_span_ids": [
+        "span-real-084693923397",
+        "span-real-c3fa8daf41f0",
+        "span-real-5192648e5c96",
+        "span-real-9d8ddfe9500a",
+        "span-real-2a20fcffefed",
+        "span-real-d8ed6275fef9",
+        "span-real-34b8d6dff695",
+        "span-real-335e21caf84b",
+        "span-real-fd2e465d404f"
+      ],
+      "rationale": "The essay demonstrates clear chronological sequencing with effective paragraph breaks that guide the reader through the narrative. The beginning establishes the writer's love for laughter and 'special' nature, though it's not particularly inviting or subtle. The organization is coherent and functional, with transitions like 'Now that you know...' and 'Anyways...' that maintain flow, though they can feel somewhat formulaic. The body is easy to follow with details fitting where placed, and the conclusion provides resolution by connecting the kindergarten experience to personal growth. However, the structure is somewhat predictable and lacks the inviting quality or creative sequencing of higher scores.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-3f26e58cf12d",
+      "observation_id": "obs-fb8c25d19897",
+      "dimension_id": "voice",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 5,
+        "display_annotation": null,
+        "display_score": "5",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "appropriate level of closeness to or distance from audience",
+        "strong sense of audience; writer seems aware of reader and how to communicate effectively",
+        "reader may discern writer behind words and feel sense of interaction",
+        "topic has come to life; shows originality, liveliness, honesty, conviction, excitement, humor, or suspense"
+      ],
+      "evidence_span_ids": [
+        "span-real-ac16b0e633f4",
+        "span-real-0bdb3941b676",
+        "span-real-f962d05c0b9d",
+        "span-real-d450c4972f80",
+        "span-real-1847583dc453",
+        "span-real-7a621574d863",
+        "span-real-1cb48d9f18df",
+        "span-real-d6c0b66db894"
+      ],
+      "rationale": "The essay demonstrates a strong, consistent voice with clear audience awareness and commitment to the topic. The writer directly addresses the reader (\"Now that you know...\", \"So remember...\"), creates a conversational tone with humor and self-deprecation, and shows deep personal investment in the narrative. The voice is appropriately informal yet sincere, making the topic come alive with liveliness and honesty. While not quite reaching the exceptional level of a score 6, it clearly meets all descriptors for score 5, particularly the strong sense of audience and the way the writer's personality shines through consistently.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-88876b18593d",
+      "observation_id": "obs-fb8c25d19897",
+      "dimension_id": "voice",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 5,
+        "display_annotation": null,
+        "display_score": "5",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "appropriate level of closeness to or distance from audience",
+        "strong sense of audience; writer seems aware of reader and how to communicate effectively",
+        "reader may discern writer behind words and feel sense of interaction",
+        "topic has come to life; shows originality, liveliness, honesty, conviction, excitement, humor, or suspense"
+      ],
+      "evidence_span_ids": [
+        "span-real-ac16b0e633f4",
+        "span-real-0bdb3941b676",
+        "span-real-f962d05c0b9d",
+        "span-real-d450c4972f80",
+        "span-real-1847583dc453",
+        "span-real-7a621574d863",
+        "span-real-1cb48d9f18df",
+        "span-real-d6c0b66db894"
+      ],
+      "rationale": "The essay demonstrates a strong, consistent voice with clear audience awareness and commitment. The writer directly addresses the reader (\"Now that you know...\", \"So remember...\"), creates a conversational tone with humor and self-deprecation, and shows deep personal investment in the topic. The voice is appropriately informal yet sincere, bringing the topic to life through vivid anecdotes and reflective insights. While not reaching the exceptional level of a score 6, it clearly meets all descriptors for score 5 with strong evidence of writer-reader interaction and expressive engagement.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-e723a94491f4",
+      "observation_id": "obs-cd6306df6caa",
+      "dimension_id": "word_choice",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "words that work but do not particularly energize writing",
+        "expression is functional; slang not purposeful or effective",
+        "rare experiments with language; avoids clichés"
+      ],
+      "evidence_span_ids": [
+        "span-real-d08dbfcdbe64",
+        "span-real-dc2769a04a41",
+        "span-real-fde7d14c944c",
+        "span-real-b4259c7abec5",
+        "span-real-44ed2c563cb9",
+        "span-real-4b543a445f43",
+        "span-real-6666058ec86d",
+        "span-real-51d308a7c747",
+        "span-real-535da63b80ae",
+        "span-real-196495b0c12b"
+      ],
+      "rationale": "The essay demonstrates functional word choice that effectively conveys the narrative, with specific examples like 'excruciatingly painful (for a five year old) wedgie' and 'erupted into laughter' showing adequate precision. However, the language rarely energizes the writing, with slang like 'spaz' and 'goody two shoes' feeling more casual than purposeful. The vocabulary is generally accurate and avoids clichés, but lacks the striking variety or fresh expression needed for higher scores. The word choice supports the story clearly but doesn't particularly engage or surprise the reader.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-addaceaeccd7",
+      "observation_id": "obs-cd6306df6caa",
+      "dimension_id": "word_choice",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "words that work but do not particularly energize writing",
+        "expression is functional; slang not purposeful or effective",
+        "rare experiments with language; avoids clichés"
+      ],
+      "evidence_span_ids": [
+        "span-real-d08dbfcdbe64",
+        "span-real-dc2769a04a41",
+        "span-real-fde7d14c944c",
+        "span-real-b4259c7abec5",
+        "span-real-44ed2c563cb9",
+        "span-real-4b543a445f43",
+        "span-real-6666058ec86d",
+        "span-real-51d308a7c747",
+        "span-real-535da63b80ae",
+        "span-real-196495b0c12b"
+      ],
+      "rationale": "The essay demonstrates functional word choice that effectively conveys the narrative. Words like 'spaz,' 'special,' 'excruciatingly painful,' and 'erupted into laughter' work to communicate meaning and create some imagery. However, the language rarely energizes the writing or feels particularly fresh or vivid. The slang ('spaz') is used but not with clear purpose or effectiveness beyond casual description. The essay avoids clichés and maintains generally accurate word usage throughout, aligning with the Score 4 descriptors of functional but not energizing language.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-a954e78eb6ec",
+      "observation_id": "obs-1326dd979eb6",
+      "dimension_id": "sentence_fluency",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "natural sound; reader moves easily but lacks rhythm and grace",
+        "some repeated patterns that detract from impact",
+        "strong control over simple sentences, variable over complex"
+      ],
+      "evidence_span_ids": [
+        "span-real-24fff1263c72",
+        "span-real-c96d0fda99a0",
+        "span-real-c7aebac8c176",
+        "span-real-b9455bc68761",
+        "span-real-022adc5ca58c"
+      ],
+      "rationale": "The essay demonstrates clear sentence fluency with a natural conversational tone that moves easily from sentence to sentence, as seen in the flowing narrative sections about childhood memories. However, it lacks the rhythmic grace and sophisticated variation of higher-scoring essays, with some repetitive patterns (e.g., frequent use of 'I' beginnings and similar sentence structures) and occasional awkward constructions that prevent it from reaching a score of 5. The writer shows strong control over simple sentences but variable control over more complex structures, aligning with the score 4 descriptors.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-709f88e130f6",
+      "observation_id": "obs-1326dd979eb6",
+      "dimension_id": "sentence_fluency",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "natural sound; reader moves easily but lacks rhythm and grace",
+        "some repeated patterns that detract from impact",
+        "strong control over simple sentences, variable over complex",
+        "occasional lapses in stylistic control"
+      ],
+      "evidence_span_ids": [
+        "span-real-24fff1263c72",
+        "span-real-c96d0fda99a0",
+        "span-real-c7aebac8c176",
+        "span-real-b9455bc68761",
+        "span-real-022adc5ca58c"
+      ],
+      "rationale": "The essay demonstrates clear sentence fluency with a natural, conversational flow that moves easily from idea to idea, as seen in the opening paragraph and narrative sections. The writer shows strong control over simple sentences and creates effective compound structures with coordinating conjunctions and commas. However, there are some repetitive patterns (multiple 'I was...' constructions) and occasional awkward phrasing ('me being a \"special\" spaz that can't tell... burst into tears') that prevent the writing from achieving the effortless rhythm and grace of a score 5. The sentence variety is present but not extensive enough for higher scores, and while dialogue sounds natural, the overall stylistic control has occasional lapses. The essay flows well enough to communicate clearly but lacks the crafted sophistication of higher-level writing.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-44f62dee123f",
+      "observation_id": "obs-3818c1bab20b",
+      "dimension_id": "conventions",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
+        "spelling errors distract reader; common words misspelled",
+        "errors in grammar and usage do not block meaning but distract reader"
+      ],
+      "evidence_span_ids": [
+        "span-real-e1f7af4acb8c",
+        "span-real-5cd61014a58d",
+        "span-real-cdab6f201b82",
+        "span-real-103707b3859e",
+        "span-real-c3c19453a09f",
+        "span-real-85b0aab47ea0",
+        "span-real-b4a4db1ace9f",
+        "span-real-522aee378f1a"
+      ],
+      "rationale": "The essay demonstrates limited control of conventions. While end-of-sentence punctuation is generally correct, there are frequent internal punctuation errors (e.g., 'bully's' instead of 'bullies', inconsistent comma usage in complex sentences). Spelling errors distract the reader with common words misspelled ('are' for 'our', 'balling' for 'bawling'). Grammar and usage errors ('could couldn't see', 'the were not laughing') are noticeable but don't completely block meaning. The writing requires significant editing, aligning with score 3 descriptors.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-fe6398f2b477",
+      "observation_id": "obs-3818c1bab20b",
+      "dimension_id": "conventions",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "some control over basic conventions",
+        "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
+        "spelling errors distract reader; common words misspelled",
+        "errors in grammar and usage do not block meaning but distract reader",
+        "significant need for editing"
+      ],
+      "evidence_span_ids": [
+        "span-real-e1f7af4acb8c",
+        "span-real-5cd61014a58d",
+        "span-real-cdab6f201b82",
+        "span-real-103707b3859e",
+        "span-real-c3c19453a09f",
+        "span-real-85b0aab47ea0",
+        "span-real-b4a4db1ace9f",
+        "span-real-522aee378f1a"
+      ],
+      "rationale": "The essay demonstrates limited control of conventions. While end-of-sentence punctuation is generally correct, internal punctuation errors are frequent (e.g., missing commas in compound sentences, inconsistent quotation mark usage). Spelling errors distract the reader with common words misspelled ('are' for 'our', 'balling' for 'bawling', 'bully's' for 'bullies'). Grammar and usage errors ('the teacher could couldn't see', 'the were not laughing at me') are noticeable but don't completely block meaning. The overall pattern aligns with Score 3 descriptors: some basic control but frequent errors that distract and require significant editing.",
+      "confidence": 0.85
+    }
+  ]
+}

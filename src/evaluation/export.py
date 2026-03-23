@@ -116,7 +116,11 @@ def export_run(run_dir: Path, essay_id: str = "") -> RunExport:
                 essay_id=essay_id,
                 dimension_id=dim_id,
                 dimension_name=dim_data.get("dimension_name", dim_id),
-                final_score=int(dim_data.get("final_score", 0)),
+                final_score=int(
+                    dim_data.get("canonical_score")
+                    or dim_data.get("final_score")
+                    or 0
+                ),
                 display_score=str(dim_data.get("display_score", "")),
                 confidence=float(dim_data.get("confidence", 0.0)),
                 evidence_count=int(dim_data.get("evidence_count", 0)),
@@ -160,7 +164,11 @@ def export_snapshot(snapshot_path: Path) -> RunExport:
                 essay_id=essay_id,
                 dimension_id=dim_id,
                 dimension_name=dim_data.get("dimension_name", dim_id),
-                final_score=int(dim_data.get("final_score", 0)),
+                final_score=int(
+                    dim_data.get("canonical_score")
+                    or dim_data.get("final_score")
+                    or 0
+                ),
                 display_score=str(dim_data.get("display_score", "")),
                 confidence=float(dim_data.get("confidence", 0.0)),
                 evidence_count=int(dim_data.get("evidence_count", 0)),

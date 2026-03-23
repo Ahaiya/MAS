@@ -1,0 +1,175 @@
+{
+  "dimensions": {
+    "ideas_content": {
+      "dimension_name": "Ideas and Content",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "clear main ideas",
+        "easily identifiable purpose",
+        "supporting details are relevant but may be overly general or limited"
+      ],
+      "evidence_span_ids": [
+        "span-real-0121442021d7",
+        "span-real-0d133e850d49",
+        "span-real-0d2cfdd5bfa5",
+        "span-real-1df24a3ba015",
+        "span-real-44f6cda136d5",
+        "span-real-46ac45055ebc",
+        "span-real-56ccc5eed033",
+        "span-real-67647a56583c",
+        "span-real-6fac58cffb26",
+        "span-real-78c06e20af19",
+        "span-real-7e95760a9506",
+        "span-real-9c79286a629c",
+        "span-real-d338ab5d7db7",
+        "span-real-d35324f9dac3"
+      ],
+      "feedback_text": "Your essay earned a score of 4 for Ideas and Content. You establish a **clear main idea** about the importance of laughter in relationships, stating, \"If I had a relationship that had no laughter in it, I would leave that person as fast as I could.\" Your **purpose is easily identifiable** as you support this idea with examples from friendships, family, and romantic relationships. However, your **supporting details are relevant but limited**, often staying general. For instance, you note your parents \"don't really laugh together\" and simply go to work, but you do not develop this example to deeply explore its impact. Similarly, while you list many people and animals who make you laugh, like your funny best friend @LOCATION1 or your cat @CAPS1, the explanations of these connections remain surface-level.",
+      "confidence": 0.85
+    },
+    "organization": {
+      "dimension_name": "Organization",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "attempts at sequencing and paragraph breaks but order occasionally unclear",
+        "beginning and ending present but undeveloped or too obvious",
+        "placement of details not always effective",
+        "structure is skeletal or too rigid"
+      ],
+      "evidence_span_ids": [
+        "span-real-01edbd68971f",
+        "span-real-15b319953501",
+        "span-real-176b3e46530f",
+        "span-real-3bd85d5d6537",
+        "span-real-b2b2f79aa1c0",
+        "span-real-c60264f9a800",
+        "span-real-e877b41df1cd"
+      ],
+      "feedback_text": "Your essay scored a 3 in Organization. You make clear attempts at sequencing and paragraph breaks, and your writing has a beginning and ending. However, the structure is somewhat skeletal, and the placement of details is not always effective. For example, you introduce the idea of laughing with animals in your opening, but the detailed examples about your horse and cat appear later in separate, disconnected paragraphs. This makes the order occasionally unclear. Furthermore, while you have a conclusion about laughter in relationships, it is undeveloped and too obvious, simply restating the importance of laughter without effectively tying together the various examples about your boyfriend, parents, friends, and pets that came before it.",
+      "confidence": 0.85
+    },
+    "voice": {
+      "dimension_name": "Voice",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "Voice present; some expressiveness and sincerity",
+        "liveliness, sincerity, or humor when appropriate",
+        "reader may glimpse writer and feel sense of interaction in places",
+        "sense of audience; writer seems aware but has not consistently employed appropriate voice"
+      ],
+      "evidence_span_ids": [
+        "span-real-22df2e47fedd",
+        "span-real-2c0d30771426",
+        "span-real-3fdc746550a2",
+        "span-real-4736bdd79d90",
+        "span-real-4b30e37fd607",
+        "span-real-798280f1dec5",
+        "span-real-86462ebcf63f",
+        "span-real-9d77c0ae2626",
+        "span-real-b4227f7b0fe9",
+        "span-real-bcc4e31b4138",
+        "span-real-e1fb6edd0c7b",
+        "span-real-ed3b82f2db0a",
+        "span-real-f1b9d75e09c8"
+      ],
+      "feedback_text": "Your essay received a score of 4 for Voice. This score reflects that your voice is present with \"some expressiveness and sincerity,\" and the reader can \"feel a sense of interaction in places.\" You create this interaction by sharing personal examples with sincerity, such as stating, \"Laughter is a big part in my relationship,\" and describing your cat's antics that \"make me laugh.\" However, the sense of audience is not fully consistent. While you often write with lively engagement, some statements are more general observations, like \"@LOCATION1's relationship was very bad,\" which briefly shifts to a more detached tone. Overall, your genuine and expressive personal stories give the reader a clear glimpse of your perspective.",
+      "confidence": 0.85
+    },
+    "word_choice": {
+      "dimension_name": "Word Choice",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "expression seems mundane and general; slang not effective",
+        "words generally accurate but misused words may occasionally appear",
+        "words that work but rarely capture reader's interest"
+      ],
+      "evidence_span_ids": [
+        "span-real-05cec456e935",
+        "span-real-37d4d6995b3c",
+        "span-real-3ff2c637f2ca",
+        "span-real-4821ac820731",
+        "span-real-5cb9d4febb49",
+        "span-real-7751a5ed7808",
+        "span-real-7eeea7289e21",
+        "span-real-7ff2e00d1e51",
+        "span-real-8baa1b332556",
+        "span-real-8f057746406f",
+        "span-real-acc1ba5da9a5",
+        "span-real-b14a819feef8",
+        "span-real-c666bb42450f",
+        "span-real-cd4ca00299ad",
+        "span-real-de0426544caf",
+        "span-real-f7e2930b6235"
+      ],
+      "feedback_text": "Your essay earned a **3** in Word Choice because your language is **generally accurate but occasionally misused words appear**, and the expression often **seems mundane and general**. For example, \"He try's to play with my other horses\" and \"She try's to make people laugh\" misuse the apostrophe in \"tries.\" Phrases like \"Animals are just like humans, but they cant talk\" and \"people now and days\" rely on common, general wording. While you use some engaging words like \"incessant\" and \"erg\" (likely for \"surge\"), these moments are rare, so your word choice **rarely captures the reader's interest** consistently.",
+      "confidence": 0.85
+    },
+    "sentence_fluency": {
+      "dimension_name": "Sentence Fluency",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "good control over simple sentences, little over complex",
+        "mechanical rather than fluid; occasional awkwardness",
+        "sentences functional but lack energy",
+        "some passages invite fluid oral reading; others do not"
+      ],
+      "evidence_span_ids": [
+        "span-real-3a58491ee4ea",
+        "span-real-61fa08acd15c",
+        "span-real-7f1a5c273e18",
+        "span-real-8600e470456e",
+        "span-real-951b55716ebe",
+        "span-real-a06db6e7cb9f",
+        "span-real-d24b2010dd8d",
+        "span-real-df4a3bdc1e23",
+        "span-real-e6342139dba2",
+        "span-real-fd5f178c691b"
+      ],
+      "feedback_text": "Your essay received a 3 in Sentence Fluency. You show **good control over simple sentences**, which creates **some passages that invite fluid oral reading**, such as the energetic description of your cat: \"After he eats, he gets an erg of energy and runs all over the house. It makes me laugh.\" However, other sentences become **mechanical rather than fluid**, leading to occasional awkwardness. For example, the choppy structure in \"Animals are just like humans, but they cant talk and they have fur\" and the repetitive pattern starting multiple sentences with \"My\" or a person's name make the pacing feel more functional than energetic. This mix of fluid and halting passages results in the overall score.",
+      "confidence": 0.85
+    },
+    "conventions": {
+      "dimension_name": "Conventions",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
+        "errors in grammar and usage do not block meaning but distract reader",
+        "spelling errors distract reader; common words misspelled"
+      ],
+      "evidence_span_ids": [
+        "span-real-24a80353e26f",
+        "span-real-25cbf7ee7af4",
+        "span-real-3cbc14934196",
+        "span-real-3e2cb881468c",
+        "span-real-42a4bb17bca5",
+        "span-real-431eef1b178d",
+        "span-real-8f1d78b1167a",
+        "span-real-a0666948029e",
+        "span-real-ccd8e4818114",
+        "span-real-ce91e18e6c17",
+        "span-real-d98ae8da3090",
+        "span-real-ddb5e4ebee7c",
+        "span-real-f42616a8ca9f",
+        "span-real-fa8040c3cd67",
+        "span-real-fallback-719efb53",
+        "span-real-fallback-c93fdec2"
+      ],
+      "feedback_text": "Your essay received a score of 3 in Conventions. This score reflects that while \"errors in grammar and usage do not block meaning but distract reader,\" there are frequent issues with punctuation and spelling. For example, the \"end-of-sentence punctuation usually correct; internal punctuation has frequent errors,\" as seen in the run-on sentence “Back in the old days people would die together, and even in death they would have there graves right by each other.” Furthermore, \"spelling errors distract reader,\" with common words misspelled, such as “there” for *their*, “where” for *were*, and “try’s” for *tries*. These repeated patterns of error pull the reader's attention away from your ideas.",
+      "confidence": 0.85
+    }
+  },
+  "summary": "Real provider feedback for 6 dimension(s).",
+  "provider": "openai_compatible"
+}

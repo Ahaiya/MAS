@@ -1,0 +1,383 @@
+{
+  "run_id": "run-f6c479ee11dc",
+  "hypotheses": [
+    {
+      "hypothesis_id": "hyp-real-69a1410e74c3",
+      "observation_id": "obs-4241888d5ded",
+      "dimension_id": "ideas_content",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "Understandable but simplistic; support often limited",
+        "predictable or overly-obvious main ideas",
+        "support attempted but details are limited, uneven, somewhat off-topic, or too general"
+      ],
+      "evidence_span_ids": [
+        "span-real-f0462869c9ee",
+        "span-real-c71e88abb977",
+        "span-real-b2c309e09f94",
+        "span-real-28da0949ab88",
+        "span-real-9fe5a13365dd",
+        "span-real-f433e99d6f5f",
+        "span-real-7814dfc8e060",
+        "span-real-1bf1881bad84",
+        "span-real-1de74df6ab98"
+      ],
+      "rationale": "The essay presents a clear main idea about friendship and laughter, which is understandable throughout. However, the ideas are simplistic and predictable (friends laugh together, have inside jokes). Supporting details are attempted through specific anecdotes (trash can incident, laundry story, dinner story), but they are uneven in development and somewhat repetitive in theme. The essay lacks depth, moving from one humorous incident to another without deeper exploration or insight into why these moments matter beyond surface-level fun. This aligns with Score 3 descriptors where main ideas are obvious and support is limited or uneven.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-edb37e4f17a3",
+      "observation_id": "obs-4241888d5ded",
+      "dimension_id": "ideas_content",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "predictable or overly-obvious main ideas",
+        "support attempted but details are limited, uneven, somewhat off-topic, or too general",
+        "difficulties moving from general observations to specifics"
+      ],
+      "evidence_span_ids": [
+        "span-real-f0462869c9ee",
+        "span-real-c71e88abb977",
+        "span-real-b2c309e09f94",
+        "span-real-28da0949ab88",
+        "span-real-9fe5a13365dd",
+        "span-real-f433e99d6f5f",
+        "span-real-7814dfc8e060",
+        "span-real-1bf1881bad84",
+        "span-real-1de74df6ab98"
+      ],
+      "rationale": "The essay presents a clear but simplistic main idea about friendship through laughter. While the writer attempts to support this with specific anecdotes (trash can incident, laundry joke, dinner story), the development is uneven - some details are tangential (like the frozen chicken description) and the progression from general observations to specifics is somewhat disjointed. The ideas are understandable but lack depth or insight, fitting the 'predictable or overly-obvious main ideas' descriptor. The support is attempted but limited in its effectiveness, aligning with score 3 characteristics more than the clearer focus and stronger development required for score 4.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-0f9bf5181ec2",
+      "observation_id": "obs-ecac62b25320",
+      "dimension_id": "organization",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "attempts at sequencing and paragraph breaks but order occasionally unclear",
+        "beginning and ending present but undeveloped or too obvious",
+        "structure is skeletal or too rigid"
+      ],
+      "evidence_span_ids": [
+        "span-real-cc72b47330c8",
+        "span-real-a58c72a048e2",
+        "span-real-967648844b71",
+        "span-real-19434202f475",
+        "span-real-64966ccd54cd",
+        "span-real-a7c81da717f3",
+        "span-real-62627f2d4f15",
+        "span-real-ad94246ccefe",
+        "span-real-f9954ab22a9c",
+        "span-real-909ccf83b74a",
+        "span-real-fe015e795033",
+        "span-real-95bff3b9bcd7",
+        "span-real-2544c6f64fd6"
+      ],
+      "rationale": "The essay shows attempted organization with a chronological structure that moves from general statements about laughing with friends to specific anecdotes (trash can, laundry, dinner). However, the sequencing is occasionally unclear with abrupt shifts between topics (e.g., 'Now about the food its sort of like the laundry but I guess better?'). The beginning and ending are present but underdeveloped - the opening introduces the theme of laughter, and the closing returns to friendship, but both lack sophistication. The structure is skeletal, essentially listing three examples without deeper development or smooth integration. While transitions like 'overall,' 'anyways,' and 'Now about' are attempted, they are basic and sometimes ineffective. This matches the Score 3 descriptor of 'attempted organization; inconsistent or skeletal structure' more closely than Score 4's 'clear and coherent organization.'",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-a5513950772d",
+      "observation_id": "obs-ecac62b25320",
+      "dimension_id": "organization",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "attempts at sequencing and paragraph breaks but order occasionally unclear",
+        "beginning and ending present but undeveloped or too obvious",
+        "transitions sometimes work; same few devices overused"
+      ],
+      "evidence_span_ids": [
+        "span-real-cc72b47330c8",
+        "span-real-a58c72a048e2",
+        "span-real-967648844b71",
+        "span-real-19434202f475",
+        "span-real-64966ccd54cd",
+        "span-real-a7c81da717f3",
+        "span-real-62627f2d4f15",
+        "span-real-ad94246ccefe",
+        "span-real-f9954ab22a9c",
+        "span-real-909ccf83b74a",
+        "span-real-fe015e795033",
+        "span-real-95bff3b9bcd7",
+        "span-real-2544c6f64fd6"
+      ],
+      "rationale": "The essay shows attempted organization with a chronological structure that moves from general statements about laughter with friends to specific anecdotes (trash can, laundry, dinner). However, the sequencing is occasionally unclear with abrupt topic shifts (e.g., 'Now about the food...'), and the single paragraph format makes the structure skeletal. Transitions like 'anyways,' 'Now about,' and 'So at the end of the day' are functional but repetitive. The beginning and ending are present but underdeveloped—the opening introduces the theme of laughter, and the closing restates it without deeper resolution. This aligns with Score 3's 'inconsistent or skeletal structure' where organization is attempted but limited.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-3e597324582a",
+      "observation_id": "obs-0ae1547bfb9e",
+      "dimension_id": "voice",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "Voice present; some expressiveness and sincerity",
+        "Reader may glimpse writer and feel sense of interaction in places",
+        "Liveliness, sincerity, or humor when appropriate"
+      ],
+      "evidence_span_ids": [
+        "span-real-9da0802e0b86",
+        "span-real-3063222ef571",
+        "span-real-172e257b9c73",
+        "span-real-52a8a4e33ffe",
+        "span-real-53a98bd597fd",
+        "span-real-77432b492b57",
+        "span-real-b114023401e5",
+        "span-real-cfd1d9a0b576",
+        "span-real-dcb6e96a3e8b"
+      ],
+      "rationale": "The essay demonstrates a clear voice with moments of liveliness and sincerity, particularly in humorous anecdotes about friends. The writer shows awareness of the reader through conversational tone and attempts to engage with personal stories. However, the voice is inconsistent, with some mechanical phrasing and occasional shifts that prevent it from achieving the strong, sustained commitment required for a score of 5. The humor and personal reflection are present but not consistently developed throughout.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-67a11545caf0",
+      "observation_id": "obs-0ae1547bfb9e",
+      "dimension_id": "voice",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "suitable level of closeness to or distance from audience",
+        "sense of audience; writer seems aware but has not consistently employed appropriate voice",
+        "reader may glimpse writer and feel sense of interaction in places",
+        "liveliness, sincerity, or humor when appropriate"
+      ],
+      "evidence_span_ids": [
+        "span-real-9da0802e0b86",
+        "span-real-3063222ef571",
+        "span-real-172e257b9c73",
+        "span-real-52a8a4e33ffe",
+        "span-real-53a98bd597fd",
+        "span-real-77432b492b57",
+        "span-real-b114023401e5",
+        "span-real-cfd1d9a0b576",
+        "span-real-dcb6e96a3e8b"
+      ],
+      "rationale": "The essay demonstrates a clear voice with moments of liveliness, sincerity, and humor, particularly in the anecdotes about the trash can incident, laundry apron joke, and unappetizing dinner. The writer shows awareness of the reader through conversational phrasing like 'yes we are weird' and direct address. However, the voice is inconsistent, with some sections feeling more mechanical or overly casual (e.g., 'anyways,' 'an' for 'and'), and the writer doesn't fully sustain the engaging tone throughout. This matches the Score 4 descriptors: voice is present with some expressiveness and sincerity, the writer seems aware of the audience but hasn't consistently employed appropriate voice, and the reader glimpses the writer in places.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-f71b62591dba",
+      "observation_id": "obs-f9df0e04d0a2",
+      "dimension_id": "word_choice",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "words that work but rarely capture reader's interest",
+        "expression seems mundane and general; slang not effective",
+        "words generally accurate but misused words may occasionally appear"
+      ],
+      "evidence_span_ids": [
+        "span-real-86b82b2c22f0",
+        "span-real-dd4bfc5260e1",
+        "span-real-17b4ab123934",
+        "span-real-d0cecfbeb105",
+        "span-real-577d0bc723a4",
+        "span-real-d6d468737e6d"
+      ],
+      "rationale": "The essay uses functional vocabulary that communicates the writer's experiences with friends, but the word choice is predominantly generic and lacks precision or variety. Words like 'thing,' 'stuff,' 'great,' 'funny,' and 'weird' appear repeatedly without specific or vivid alternatives. While some attempts at imagery exist (e.g., 'looked like somebody had eaten the food than puked it back up'), the language overall feels mundane and fails to energize the writing. Occasional misused words ('rouge' for 'rang,' 'site' for 'sit') and reliance on basic conversational phrases ('anyways,' 'so,' 'an' for 'and') further align with Score 3 descriptors. The essay communicates clearly but does not demonstrate the intentional, varied, or engaging word choice expected for higher scores.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-ac72b8d3297f",
+      "observation_id": "obs-f9df0e04d0a2",
+      "dimension_id": "word_choice",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "words that work but rarely capture reader's interest",
+        "expression seems mundane and general; slang not effective",
+        "words generally accurate but misused words may occasionally appear"
+      ],
+      "evidence_span_ids": [
+        "span-real-86b82b2c22f0",
+        "span-real-dd4bfc5260e1",
+        "span-real-17b4ab123934",
+        "span-real-d0cecfbeb105",
+        "span-real-577d0bc723a4",
+        "span-real-d6d468737e6d"
+      ],
+      "rationale": "The essay uses functional vocabulary that communicates the writer's experiences with friends, but the word choice is predominantly generic and lacks precision or variety. Words like 'thing,' 'stuff,' 'great,' 'funny,' and 'weird' are overused and fail to energize the writing. While some attempts at imagery exist (e.g., 'looked like somebody had eaten the food than puked it back up'), they are often undercut by vague language and occasional misused words (e.g., 'rouge' for 'rung,' 'site' for 'sit'). The slang and informal tone ('hell yeah') are present but not purposeful or effective in enhancing the narrative. Overall, the word choice is adequate for basic communication but does not engage the reader or demonstrate intentional variety, aligning with Score 3 descriptors.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-63d8016f3ce7",
+      "observation_id": "obs-37285ce6479f",
+      "dimension_id": "sentence_fluency",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "mechanical rather than fluid; occasional awkwardness",
+        "some passages invite fluid oral reading; others do not",
+        "good control over simple sentences, little over complex",
+        "sentences functional but lack energy"
+      ],
+      "evidence_span_ids": [
+        "span-real-d15c725fd576",
+        "span-real-a5fad8e00b78",
+        "span-real-2059d03897a3",
+        "span-real-f51ab388737c",
+        "span-real-a7097e0c708e",
+        "span-real-a2475f618151",
+        "span-real-5a76d551b520",
+        "span-real-cdb6b4090375",
+        "span-real-7b8f7dcd6a47",
+        "span-real-51d9cfafe598"
+      ],
+      "rationale": "The essay demonstrates basic sentence fluency with some conversational flow, but it frequently exhibits mechanical rather than fluid construction. While some passages read naturally (e.g., 'I hang out with my friends, the one thing we do best is laugh sometimes for no reason'), others are choppy or awkward with run-on sentences, unclear transitions, and grammatical issues that disrupt rhythm (e.g., 'I say trash can I really mean trash cans I remember this one time...'). The writer shows control over simple sentence structures but struggles with complex sentences and varied patterns, resulting in functional but unenergetic prose that aligns with score 3 descriptors.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-46429abe84ba",
+      "observation_id": "obs-37285ce6479f",
+      "dimension_id": "sentence_fluency",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "some passages invite fluid oral reading; others do not",
+        "good control over simple sentences, little over complex",
+        "sentences functional but lack energy"
+      ],
+      "evidence_span_ids": [
+        "span-real-d15c725fd576",
+        "span-real-a5fad8e00b78",
+        "span-real-2059d03897a3",
+        "span-real-f51ab388737c",
+        "span-real-a7097e0c708e",
+        "span-real-a2475f618151",
+        "span-real-5a76d551b520",
+        "span-real-cdb6b4090375",
+        "span-real-7b8f7dcd6a47",
+        "span-real-51d9cfafe598"
+      ],
+      "rationale": "The essay demonstrates mechanical rather than fluid sentence fluency. While some passages read naturally (e.g., 'I hang out with my friends, the one thing we do best is laugh sometimes for no reason'), others are choppy or awkward due to run-on sentences, missing punctuation, and irregular structure (e.g., 'I was just getting ready to cross the hall way an she said don't do it, so I did an nobody stopped!'). The writer shows control over simple sentences but struggles with complex constructions, leading to a functional but unenergetic flow overall, aligning with score 3 descriptors.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-690383b82c15",
+      "observation_id": "obs-408ba1329b9d",
+      "dimension_id": "conventions",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "Limited control; errors begin to impede readability.",
+        "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
+        "spelling errors distract reader; common words misspelled",
+        "errors in grammar and usage do not block meaning but distract reader",
+        "significant need for editing"
+      ],
+      "evidence_span_ids": [
+        "span-real-0f429c042ae1",
+        "span-real-98841d8a09d7",
+        "span-real-dd0e60af4773",
+        "span-real-1ad0f54395a9",
+        "span-real-5500ac868b37",
+        "span-real-a4d82efa8b11",
+        "span-real-ae5f06a913ef",
+        "span-real-0a90a8e80f27",
+        "span-real-fbabb27ca742",
+        "span-real-4efaf50e6b48",
+        "span-real-1147d972b1c4",
+        "span-real-4e5802cbf623",
+        "span-real-cf9016ff5ca1",
+        "span-real-3dd1270f238a"
+      ],
+      "rationale": "The essay demonstrates limited control of conventions with frequent errors that distract the reader. Spelling errors are common (loose/lose, rouge/rang, then/than, self's/selves, close/clothes, are/our, then/than, thing/things, where/were) and basic grammar/usage issues persist throughout (subject-verb agreement, pronoun case, verb tense, missing words). While end-of-sentence punctuation is usually correct, internal punctuation has frequent errors, and capitalization is inconsistent. The errors don't completely block meaning but significantly distract the reader and require substantial editing, aligning with score 3 descriptors.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-03982a5bac2f",
+      "observation_id": "obs-408ba1329b9d",
+      "dimension_id": "conventions",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
+        "spelling errors distract reader; common words misspelled",
+        "errors in grammar and usage do not block meaning but distract reader"
+      ],
+      "evidence_span_ids": [
+        "span-real-0f429c042ae1",
+        "span-real-98841d8a09d7",
+        "span-real-dd0e60af4773",
+        "span-real-1ad0f54395a9",
+        "span-real-5500ac868b37",
+        "span-real-a4d82efa8b11",
+        "span-real-ae5f06a913ef",
+        "span-real-0a90a8e80f27",
+        "span-real-fbabb27ca742",
+        "span-real-4efaf50e6b48",
+        "span-real-1147d972b1c4",
+        "span-real-4e5802cbf623",
+        "span-real-cf9016ff5ca1",
+        "span-real-3dd1270f238a"
+      ],
+      "rationale": "The essay demonstrates limited control of conventions with frequent errors that distract the reader but don't block meaning. End-of-sentence punctuation is generally correct (periods used), but internal punctuation has frequent errors (missing commas, inconsistent question marks). Spelling errors distract (loose/lose, rouge/rang, then/than, close/clothes, self's/selves). Grammar/usage errors are pervasive (subject-verb agreement, pronoun case, verb tense, missing words) but the narrative remains understandable. This aligns with Score 3 descriptors where errors begin to impede readability and significant editing is needed.",
+      "confidence": 0.85
+    }
+  ]
+}

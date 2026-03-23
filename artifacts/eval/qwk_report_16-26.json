@@ -1,0 +1,166 @@
+{
+  "n_essays_compared": 10,
+  "rater_baseline": "rater1",
+  "mas_vs_human": {
+    "dimensions": [
+      {
+        "dimension_id": "ideas_content",
+        "label": "Ideas & Content",
+        "n": 10,
+        "qwk": 0.2857,
+        "human_mean": 3.7,
+        "mas_mean": 3.8,
+        "mean_diff": 0.1
+      },
+      {
+        "dimension_id": "organization",
+        "label": "Organization",
+        "n": 10,
+        "qwk": 0.4444,
+        "human_mean": 3.6,
+        "mas_mean": 3.5,
+        "mean_diff": -0.1
+      },
+      {
+        "dimension_id": "voice",
+        "label": "Voice",
+        "n": 10,
+        "qwk": 0.1667,
+        "human_mean": 3.6,
+        "mas_mean": 4.6,
+        "mean_diff": 1.0
+      },
+      {
+        "dimension_id": "word_choice",
+        "label": "Word Choice",
+        "n": 10,
+        "qwk": 0.5556,
+        "human_mean": 3.7,
+        "mas_mean": 3.5,
+        "mean_diff": -0.2
+      },
+      {
+        "dimension_id": "sentence_fluency",
+        "label": "Sentence Fluency",
+        "n": 10,
+        "qwk": 0.4444,
+        "human_mean": 3.4,
+        "mas_mean": 3.5,
+        "mean_diff": 0.1
+      },
+      {
+        "dimension_id": "conventions",
+        "label": "Conventions",
+        "n": 10,
+        "qwk": 0.4444,
+        "human_mean": 3.3,
+        "mas_mean": 3.0,
+        "mean_diff": -0.3
+      }
+    ],
+    "macro_qwk": 0.3902
+  },
+  "agent_vs_agent": {
+    "n_essays_with_hypotheses": 7,
+    "dimensions": [
+      {
+        "dimension_id": "ideas_content",
+        "label": "Ideas & Content",
+        "n_pairs": 7,
+        "agent_qwk": 1.0,
+        "spread_mean": 0.0,
+        "agreement_ratio": 1.0
+      },
+      {
+        "dimension_id": "organization",
+        "label": "Organization",
+        "n_pairs": 7,
+        "agent_qwk": 1.0,
+        "spread_mean": 0.0,
+        "agreement_ratio": 1.0
+      },
+      {
+        "dimension_id": "voice",
+        "label": "Voice",
+        "n_pairs": 7,
+        "agent_qwk": 0.72,
+        "spread_mean": 0.14,
+        "agreement_ratio": 1.0
+      },
+      {
+        "dimension_id": "word_choice",
+        "label": "Word Choice",
+        "n_pairs": 7,
+        "agent_qwk": 0.8205,
+        "spread_mean": 0.14,
+        "agreement_ratio": 1.0
+      },
+      {
+        "dimension_id": "sentence_fluency",
+        "label": "Sentence Fluency",
+        "n_pairs": 7,
+        "agent_qwk": 0.8205,
+        "spread_mean": 0.14,
+        "agreement_ratio": 1.0
+      },
+      {
+        "dimension_id": "conventions",
+        "label": "Conventions",
+        "n_pairs": 7,
+        "agent_qwk": 0.8,
+        "spread_mean": 0.14,
+        "agreement_ratio": 1.0
+      }
+    ],
+    "macro_qwk": 0.8602
+  },
+  "consistency_summary": {
+    "n_essays": 7,
+    "n_no_conflict": 7,
+    "n_with_conflict": 0,
+    "per_essay": [
+      {
+        "essay_id": "20718",
+        "total_conflict_count": 0,
+        "dimensions_with_conflict": 0,
+        "overall_agreement_ratio": 1.0
+      },
+      {
+        "essay_id": "20719",
+        "total_conflict_count": 0,
+        "dimensions_with_conflict": 0,
+        "overall_agreement_ratio": 1.0
+      },
+      {
+        "essay_id": "20721",
+        "total_conflict_count": 0,
+        "dimensions_with_conflict": 0,
+        "overall_agreement_ratio": 1.0
+      },
+      {
+        "essay_id": "20723",
+        "total_conflict_count": 0,
+        "dimensions_with_conflict": 0,
+        "overall_agreement_ratio": 1.0
+      },
+      {
+        "essay_id": "20724",
+        "total_conflict_count": 0,
+        "dimensions_with_conflict": 0,
+        "overall_agreement_ratio": 1.0
+      },
+      {
+        "essay_id": "20725",
+        "total_conflict_count": 0,
+        "dimensions_with_conflict": 0,
+        "overall_agreement_ratio": 1.0
+      },
+      {
+        "essay_id": "20726",
+        "total_conflict_count": 0,
+        "dimensions_with_conflict": 0,
+        "overall_agreement_ratio": 1.0
+      }
+    ]
+  }
+}

@@ -19,6 +19,12 @@ prompt_template: |
   The following expert-scored examples illustrate what each score level looks like in practice.
   Use these as calibration anchors when selecting your score.
 
+  **Important — Voice scores in these anchors:** Each example essay happened to be
+  particularly strong in Voice relative to its other traits. Voice scores in the anchors
+  below are 1–2 levels above the overall anchor quality level. Do NOT treat this as a
+  general rule. When scoring the current essay, evaluate Voice independently on its own
+  rubric descriptors — do not add a bonus to Voice based on the overall essay quality.
+
   **Score 5 anchor — "The Jump" (narrative about peer pressure)**
   Ideas & Content 5: Writing is clear, focused, and interesting; supporting details are relevant and carefully
     selected; makes connections and shares insights (friend's death reveals cost of peer pressure).
@@ -102,6 +108,23 @@ prompt_template: |
   - If the essay is functional and communicates clearly with only minor weaknesses, lean toward 4.
   - If you are deciding between two adjacent scores, ask: "Does this essay show control and
     intentionality?" If yes, choose the higher score.
+
+  **Voice (V) — Calibration guard-rails (apply only when scoring this trait):**
+  All essays in this dataset are personal narratives; a casual first-person register is
+  the baseline, not evidence of strong voice. Use these thresholds:
+  - Score 3: Voice appears in isolated moments but is inconsistent — the writer's
+    personality surfaces occasionally then shifts, fades, or disappears. This is the
+    correct score for most typical student essays in this set.
+  - Score 4: Voice is consistently present throughout most of the essay; the reader can
+    reliably sense the writer's presence, not just in one or two sentences. Requires
+    evidence of consistent audience awareness.
+  - Score 5: Strong, sustained voice with clear, intentional audience awareness
+    throughout — originality or liveliness that stands out consistently, not just in
+    a few lively phrases.
+  - Score 6: Exceptional, deep commitment; every paragraph reflects a distinctive,
+    controlled voice aimed directly at the reader.
+  Do NOT inflate Voice simply because the essay uses informal tone, humor in one passage,
+  or energetic language in a few lines. Verify consistency across the whole essay.
 
   ## Essay Text
   {{ essay_text }}

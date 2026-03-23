@@ -1,0 +1,479 @@
+{
+  "run_id": "run-057f0f222bed",
+  "hypotheses": [
+    {
+      "hypothesis_id": "hyp-real-d6cdf21f9038",
+      "observation_id": "obs-371c01bdc5b8",
+      "dimension_id": "ideas_content",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "easily identifiable purpose",
+        "clear main ideas",
+        "supporting details are relevant but may be overly general or limited"
+      ],
+      "evidence_span_ids": [
+        "span-real-2fc5ed5abbcb",
+        "span-real-d579ce2c9479",
+        "span-real-1ce8c6628ebd",
+        "span-real-1c85f52efe9e",
+        "span-real-b69e52abb45b",
+        "span-real-e9d392f126be",
+        "span-real-ce2afbe29cac",
+        "span-real-efb047a79a38",
+        "span-real-a09b761d2808",
+        "span-real-607765f2ae81"
+      ],
+      "rationale": "The essay has an easily identifiable purpose (choosing between softball teams) and clear main ideas (softball memories matter most, facing a dilemma, taking a chance). Supporting details are relevant to the narrative but remain somewhat general and limited in depth. The essay explores the topic with functional development but lacks the rich, insightful connections and thorough exploration characteristic of scores 5-6. The evidence shows clear focus and relevant details, aligning with score 4 descriptors.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-1705d460a0b0",
+      "observation_id": "obs-371c01bdc5b8",
+      "dimension_id": "ideas_content",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "easily identifiable purpose",
+        "clear main ideas",
+        "supporting details are relevant but may be overly general or limited"
+      ],
+      "evidence_span_ids": [
+        "span-real-2fc5ed5abbcb",
+        "span-real-d579ce2c9479",
+        "span-real-1ce8c6628ebd",
+        "span-real-1c85f52efe9e",
+        "span-real-b69e52abb45b",
+        "span-real-e9d392f126be",
+        "span-real-ce2afbe29cac",
+        "span-real-efb047a79a38",
+        "span-real-a09b761d2808",
+        "span-real-607765f2ae81"
+      ],
+      "rationale": "The essay has an easily identifiable purpose (choosing between comfort and challenge in softball) and clear main ideas about memories, friendship, and personal growth. Supporting details are relevant but somewhat general (describing nervousness, laughter, friendships) rather than specific, vivid examples. The development is present but limited in depth, aligning with Score 4 descriptors where content is relevant but not consistently well-chosen for maximum impact.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-2596e1983f02",
+      "observation_id": "obs-83c5c28be91d",
+      "dimension_id": "organization",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "clear sequencing and paragraph breaks",
+        "recognizable, developed beginning not particularly inviting",
+        "developed conclusion may lack subtlety",
+        "body easy to follow with details fitting where placed",
+        "transitions may be stilted or formulaic"
+      ],
+      "evidence_span_ids": [
+        "span-real-79135eb5cc4f",
+        "span-real-a68d07a5c535",
+        "span-real-ac85baaea6f1",
+        "span-real-3bca491042b5",
+        "span-real-8ab7215b2ef9",
+        "span-real-6a5f9371c04b",
+        "span-real-1ac95006a568",
+        "span-real-d14f7487ea1d",
+        "span-real-0c0345df7144",
+        "span-real-9b12c75a6e1d",
+        "span-real-73b7eeb55490",
+        "span-real-ec66c54d28ce",
+        "span-real-f3f1bfdbd2f5",
+        "span-real-74cd219ce70b",
+        "span-real-d14171e68492",
+        "span-real-4011fb138e5a",
+        "span-real-8fd90f60fd35",
+        "span-real-0d208e198701",
+        "span-real-30b243ebfce8"
+      ],
+      "rationale": "The essay demonstrates clear chronological organization with effective paragraph breaks that follow the narrative arc: introduction to softball passion, background with original team, dilemma, decision process, tryout experience, and reflective conclusion. The beginning establishes context effectively though not particularly inviting, and the conclusion provides closure by connecting back to the theme of memories and friendships. Transitions like 'Although,' 'As my fifth year now approached,' 'At that point,' and 'Then' work functionally but sometimes feel formulaic. Details are placed logically throughout the narrative, making the body easy to follow despite some minor organizational weaknesses like occasional run-on sentences. This matches the 'clear and coherent organization; may seem formulaic' description of a score 4.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-af42a9ee0980",
+      "observation_id": "obs-83c5c28be91d",
+      "dimension_id": "organization",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "clear sequencing and paragraph breaks",
+        "recognizable, developed beginning not particularly inviting",
+        "developed conclusion may lack subtlety",
+        "body easy to follow with details fitting where placed"
+      ],
+      "evidence_span_ids": [
+        "span-real-79135eb5cc4f",
+        "span-real-a68d07a5c535",
+        "span-real-ac85baaea6f1",
+        "span-real-3bca491042b5",
+        "span-real-8ab7215b2ef9",
+        "span-real-6a5f9371c04b",
+        "span-real-1ac95006a568",
+        "span-real-d14f7487ea1d",
+        "span-real-0c0345df7144",
+        "span-real-9b12c75a6e1d",
+        "span-real-73b7eeb55490",
+        "span-real-ec66c54d28ce",
+        "span-real-f3f1bfdbd2f5",
+        "span-real-74cd219ce70b",
+        "span-real-d14171e68492",
+        "span-real-4011fb138e5a",
+        "span-real-8fd90f60fd35",
+        "span-real-0d208e198701",
+        "span-real-30b243ebfce8"
+      ],
+      "rationale": "The essay demonstrates clear chronological sequencing with effective paragraph breaks that guide the reader through the narrative. The beginning introduces the topic and establishes context, though it's not particularly inviting. The conclusion provides resolution by reflecting on the decision's outcome, though it lacks subtlety. The body is easy to follow with details fitting logically where placed (e.g., describing the dilemma, tryout nerves, positive outcome). Transitions are functional but occasionally formulaic ('As my fifth year now approached,' 'At that point,' 'I then decided'). The organization is coherent and helps the reader follow the story despite some minor weaknesses in transition sophistication.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-8a318f81f391",
+      "observation_id": "obs-1a5c34f94f13",
+      "dimension_id": "voice",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "Voice present; some expressiveness and sincerity.",
+        "Reader may glimpse writer and feel sense of interaction in places",
+        "Liveliness, sincerity, or humor when appropriate"
+      ],
+      "evidence_span_ids": [
+        "span-real-8cf134542da3",
+        "span-real-17bc7b402143",
+        "span-real-7ed95afb1052",
+        "span-real-ed113e286f4c",
+        "span-real-23ade9869314",
+        "span-real-d0954e56be67",
+        "span-real-c608a8925c39",
+        "span-real-b22d8f9d2692",
+        "span-real-957e8ae52e9b",
+        "span-real-59454430f326"
+      ],
+      "rationale": "The essay demonstrates consistent voice throughout with moments of expressiveness and sincerity, particularly in describing nervousness during tryouts and emotional connections to teammates. The writer shows audience awareness by sharing personal experiences and emotions, allowing the reader to glimpse the writer behind the words. However, the voice remains at a functional level without the sustained originality, deep commitment, or exceptional audience awareness required for scores 5-6. The evidence shows liveliness and sincerity in appropriate places, but the voice doesn't consistently rise to the level of strong, intentional audience awareness throughout the entire essay.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-088be017f603",
+      "observation_id": "obs-1a5c34f94f13",
+      "dimension_id": "voice",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "Voice present; some expressiveness and sincerity",
+        "Sense of audience; writer seems aware but has not consistently employed appropriate voice",
+        "Reader may glimpse writer and feel sense of interaction in places"
+      ],
+      "evidence_span_ids": [
+        "span-real-8cf134542da3",
+        "span-real-17bc7b402143",
+        "span-real-7ed95afb1052",
+        "span-real-ed113e286f4c",
+        "span-real-23ade9869314",
+        "span-real-d0954e56be67",
+        "span-real-c608a8925c39",
+        "span-real-b22d8f9d2692",
+        "span-real-957e8ae52e9b",
+        "span-real-59454430f326"
+      ],
+      "rationale": "The essay demonstrates a clear, consistent voice throughout with moments of genuine expressiveness and sincerity, particularly in describing nervousness and excitement. The writer shows audience awareness by sharing personal experiences and emotions, creating a sense of interaction in places. However, the voice remains at a functional level without the sustained originality, liveliness, or deep commitment required for scores 5-6. The writer's personality is reliably present but doesn't consistently rise to the level of strong, intentional audience awareness throughout every paragraph.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-233838d6cdad",
+      "observation_id": "obs-1435bd95ab04",
+      "dimension_id": "word_choice",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "words that work but do not particularly energize writing",
+        "expression is functional; slang not purposeful or effective",
+        "rare experiments with language; avoids clichés"
+      ],
+      "evidence_span_ids": [
+        "span-real-85cc539c4dba",
+        "span-real-119370138391",
+        "span-real-fc1fb6d93244",
+        "span-real-dbfd3eee521a",
+        "span-real-b5304dc0bd61",
+        "span-real-8811daa031b1",
+        "span-real-52496ae3d6d1",
+        "span-real-0f2c401250c7",
+        "span-real-467d8727e194",
+        "span-real-4d92e494f99e",
+        "span-real-26fd7a4de433"
+      ],
+      "rationale": "The essay demonstrates functional word choice that effectively conveys the narrative. Words like 'blistering @CAPS2,' 'stomach was in knots,' and 'bone dry' create clear images and show some precision. However, the language rarely energizes the writing or becomes particularly vivid or striking. There are occasional attempts at colorful language ('gallons and gallons,' 'a million times per second'), but these feel somewhat overdone rather than naturally energizing. The vocabulary is generally accurate and avoids clichés, but it lacks the consistent freshness and specificity that would characterize a score of 5. The evidence supports a functional, clear level of word choice that meets but does not exceed the expectations for a 4.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-b8ebf6f9e5b6",
+      "observation_id": "obs-1435bd95ab04",
+      "dimension_id": "word_choice",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "words that work but do not particularly energize writing",
+        "expression is functional; slang not purposeful or effective",
+        "words effectively convey message; functional but not energizing"
+      ],
+      "evidence_span_ids": [
+        "span-real-85cc539c4dba",
+        "span-real-119370138391",
+        "span-real-fc1fb6d93244",
+        "span-real-dbfd3eee521a",
+        "span-real-b5304dc0bd61",
+        "span-real-8811daa031b1",
+        "span-real-52496ae3d6d1",
+        "span-real-0f2c401250c7",
+        "span-real-467d8727e194",
+        "span-real-4d92e494f99e",
+        "span-real-26fd7a4de433"
+      ],
+      "rationale": "The essay demonstrates functional word choice that effectively conveys the narrative. Words like 'blistering @CAPS2,' 'stomach was in knots,' and 'bone dry' create clear images and show some precision. However, the language rarely energizes the writing or feels particularly fresh. Some expressions are clichéd ('top notch team,' 'pros and cons'), and attempts at vivid language occasionally seem overdone ('gallons and gallons of water you poor'). The vocabulary is generally accurate and communicates the message clearly but lacks the striking variety and natural precision of higher scores.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-e18430c4b3f5",
+      "observation_id": "obs-6df3c13541e6",
+      "dimension_id": "sentence_fluency",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "natural sound; reader moves easily but lacks rhythm and grace",
+        "some repeated patterns that detract from impact",
+        "strong control over simple sentences, variable over complex",
+        "occasional lapses in stylistic control"
+      ],
+      "evidence_span_ids": [
+        "span-real-7f7a6a840a01",
+        "span-real-42c7d827080d",
+        "span-real-e52a31c895d8",
+        "span-real-1dcbab9d10ff",
+        "span-real-813bb00b7ba1",
+        "span-real-f9a5f853da1a",
+        "span-real-f0ccdd677f39",
+        "span-real-3d51d8a05ded",
+        "span-real-72be54b23b73",
+        "span-real-e4586a4d01cf",
+        "span-real-10a054870966",
+        "span-real-6aa15671272f",
+        "span-real-a62d9ed8984a",
+        "span-real-acae5fef255d",
+        "span-real-b899e81e632a",
+        "span-real-9aa0540be704",
+        "span-real-e3b2ee97f116",
+        "span-real-7eb442c0998c",
+        "span-real-e8564319cb3e",
+        "span-real-3f7bdcfabb1f",
+        "span-real-84245bca34ff",
+        "span-real-3ae09af4e1f4"
+      ],
+      "rationale": "The essay demonstrates natural flow and is easy to read aloud, with varied sentence structures including compound sentences, fragments, and questions that add interest. However, there are noticeable patterns of comma splices and run-on sentences (e.g., 'Hood @CAPS1 @CAPS2 was my team name, I had played almost four years...') that detract from grace. The writer shows strong control over simple sentences but variable control over complex constructions, with occasional awkward phrasing ('water you poor all over yourself'). Overall, the writing moves easily but lacks the polished rhythm and craftsmanship of higher scores.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-60c65deef619",
+      "observation_id": "obs-6df3c13541e6",
+      "dimension_id": "sentence_fluency",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "natural sound; reader moves easily but lacks rhythm and grace",
+        "strong control over simple sentences, variable over complex",
+        "some repeated patterns that detract from impact"
+      ],
+      "evidence_span_ids": [
+        "span-real-7f7a6a840a01",
+        "span-real-42c7d827080d",
+        "span-real-e52a31c895d8",
+        "span-real-1dcbab9d10ff",
+        "span-real-813bb00b7ba1",
+        "span-real-f9a5f853da1a",
+        "span-real-f0ccdd677f39",
+        "span-real-3d51d8a05ded",
+        "span-real-72be54b23b73",
+        "span-real-e4586a4d01cf",
+        "span-real-10a054870966",
+        "span-real-6aa15671272f",
+        "span-real-a62d9ed8984a",
+        "span-real-acae5fef255d",
+        "span-real-b899e81e632a",
+        "span-real-9aa0540be704",
+        "span-real-e3b2ee97f116",
+        "span-real-7eb442c0998c",
+        "span-real-e8564319cb3e",
+        "span-real-3f7bdcfabb1f",
+        "span-real-84245bca34ff",
+        "span-real-3ae09af4e1f4"
+      ],
+      "rationale": "The essay demonstrates clear sentence fluency with natural flow that allows for easy reading, aligning with the 'natural sound; reader moves easily' descriptor for score 4. There is strong control over simple sentence structures throughout, and the writer effectively uses varied sentence beginnings and lengths in places (e.g., 'I now faced a big dilemma either stay...' and 'My first thought was to run; that was it...'). However, the writing lacks the consistent rhythm and grace of higher scores, with some repetitive patterns (multiple sentences starting with 'I' constructions) and occasional awkwardness in complex sentences (e.g., 'Although I love softball I feel that the memories you acquire...'). The essay flows well overall but doesn't achieve the effortless glide or extensive variation characteristic of scores 5-6.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-30b1c5763d49",
+      "observation_id": "obs-96e27e809672",
+      "dimension_id": "conventions",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
+        "spelling errors distract reader; common words misspelled",
+        "errors in grammar and usage do not block meaning but distract reader"
+      ],
+      "evidence_span_ids": [
+        "span-real-9f124816b4cb",
+        "span-real-de3e03426774",
+        "span-real-05591b2ee27f",
+        "span-real-a97f70e30e5f",
+        "span-real-facf4c2ed25e",
+        "span-real-a2d85e972aa9",
+        "span-real-8f7092f2d50f",
+        "span-real-dba7a2f3c2bb",
+        "span-real-36fa2ee36f59",
+        "span-real-e56b519bbc57",
+        "span-real-ef14e8cfacd6",
+        "span-real-16ae5a925d74",
+        "span-real-f6a138a57252",
+        "span-real-2f5dd8699be5",
+        "span-real-1f4b9ddc041f",
+        "span-real-7cb68af1a6ec",
+        "span-real-17e4cb2d9b54",
+        "span-real-bec5b465c213",
+        "span-real-d8352e1d72cd",
+        "span-real-484aa5ce3880",
+        "span-real-63273a9a1701",
+        "span-real-02f227c2abe3",
+        "span-real-959ea1aadec9",
+        "span-real-2ff24af96fb3",
+        "span-real-6cad603bc593",
+        "span-real-688568015c87",
+        "span-real-31f24b37860f",
+        "span-real-cb03db081bd6",
+        "span-real-4b97ac0562da",
+        "span-real-936538359770",
+        "span-real-b8de0ce35cf1",
+        "span-real-03eb89655616",
+        "span-real-948cebde026d",
+        "span-real-75b634a1dd6e",
+        "span-real-6d108c513888",
+        "span-real-6a30f664db8e",
+        "span-real-dd859ab96f17"
+      ],
+      "rationale": "The essay demonstrates limited control of conventions. While end-of-sentence punctuation is generally correct, there are frequent internal punctuation errors including comma splices and run-on sentences that disrupt flow. Multiple spelling errors with common words ('poor' for 'pour', 'through out' for 'throughout', 'then' for 'than') distract the reader. Grammar/usage errors ('there' for 'their', 'maybe i' without capitalization) are noticeable but don't block overall meaning. The writing requires significant editing to correct these persistent issues, aligning with score 3 descriptors.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-3c22d2146615",
+      "observation_id": "obs-96e27e809672",
+      "dimension_id": "conventions",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
+        "spelling errors distract reader; common words misspelled",
+        "errors in grammar and usage do not block meaning but distract reader"
+      ],
+      "evidence_span_ids": [
+        "span-real-9f124816b4cb",
+        "span-real-de3e03426774",
+        "span-real-05591b2ee27f",
+        "span-real-a97f70e30e5f",
+        "span-real-facf4c2ed25e",
+        "span-real-a2d85e972aa9",
+        "span-real-8f7092f2d50f",
+        "span-real-dba7a2f3c2bb",
+        "span-real-36fa2ee36f59",
+        "span-real-e56b519bbc57",
+        "span-real-ef14e8cfacd6",
+        "span-real-16ae5a925d74",
+        "span-real-f6a138a57252",
+        "span-real-2f5dd8699be5",
+        "span-real-1f4b9ddc041f",
+        "span-real-7cb68af1a6ec",
+        "span-real-17e4cb2d9b54",
+        "span-real-bec5b465c213",
+        "span-real-d8352e1d72cd",
+        "span-real-484aa5ce3880",
+        "span-real-63273a9a1701",
+        "span-real-02f227c2abe3",
+        "span-real-959ea1aadec9",
+        "span-real-2ff24af96fb3",
+        "span-real-6cad603bc593",
+        "span-real-688568015c87",
+        "span-real-31f24b37860f",
+        "span-real-cb03db081bd6",
+        "span-real-4b97ac0562da",
+        "span-real-936538359770",
+        "span-real-b8de0ce35cf1",
+        "span-real-03eb89655616",
+        "span-real-948cebde026d",
+        "span-real-75b634a1dd6e",
+        "span-real-6d108c513888",
+        "span-real-6a30f664db8e",
+        "span-real-dd859ab96f17"
+      ],
+      "rationale": "The essay demonstrates limited control of conventions. While end-of-sentence punctuation is generally correct, there are frequent internal punctuation errors (run-on sentences, comma splices, and inconsistent semicolon use). Multiple spelling errors distract the reader ('poor' for 'pour', 'through out' for 'throughout', 'then' for 'than'). Grammar/usage errors include incorrect pronoun usage ('there' for 'their') and inconsistent capitalization ('i' instead of 'I'). These errors are noticeable and distracting but do not fundamentally block understanding of the narrative.",
+      "confidence": 0.85
+    }
+  ]
+}

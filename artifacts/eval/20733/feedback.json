@@ -1,0 +1,175 @@
+{
+  "dimensions": {
+    "ideas_content": {
+      "dimension_name": "Ideas and Content",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "clear main ideas",
+        "easily identifiable purpose",
+        "supporting details are relevant but may be overly general or limited"
+      ],
+      "evidence_span_ids": [
+        "span-real-177409a026b2",
+        "span-real-25069b6a5ed2",
+        "span-real-2a8e1761e34a",
+        "span-real-2da5667908dd",
+        "span-real-462890388eaf",
+        "span-real-4b9924c3dfae",
+        "span-real-58d9a03266d8",
+        "span-real-a4b72a68c435",
+        "span-real-a81db072e6db",
+        "span-real-c9f6c5dd46ce"
+      ],
+      "feedback_text": "Your essay received a score of 4 for Ideas and Content. You establish a **clear main idea** about the importance of laughter in relationships, and your **purpose is easily identifiable** as you explore your grandmother's perspective. You support this idea with **relevant details**, such as noting your grandpa \"knew how to make jokes\" and that arguments \"never last to long because my grandpa always knows how to make her laugh.\" However, these supporting details are somewhat **limited** and repetitive, circling the same point about making each other laugh without deeper development or varied examples. This keeps your ideas clear and focused, but prevents them from becoming more thorough or specific.",
+      "confidence": 0.85
+    },
+    "organization": {
+      "dimension_name": "Organization",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "attempts at sequencing and paragraph breaks but order occasionally unclear",
+        "beginning and ending present but undeveloped or too obvious",
+        "body easy to follow with details fitting where placed",
+        "clear sequencing and paragraph breaks",
+        "recognizable, developed beginning not particularly inviting",
+        "structure is skeletal or too rigid",
+        "transitions may be stilted or formulaic"
+      ],
+      "evidence_span_ids": [
+        "span-real-09c0421b94ae",
+        "span-real-6199275c56d2",
+        "span-real-6456508ebdab",
+        "span-real-80c29b47c34c",
+        "span-real-8100b24eb974",
+        "span-real-c019f820908c",
+        "span-real-c721dd39afbd",
+        "span-real-cf9b34d1e1bb"
+      ],
+      "feedback_text": "Your essay received a score of 3 for Organization. You establish a **recognizable, developed beginning** by opening with a question about laughter in relationships, and your **body is easy to follow** as you use your grandmother's advice to structure your explanation. However, the **transitions may be stilted or formulaic**, often relying on repetitive phrases like \"My grandmother says\" to move between ideas, as seen when shifting from her general advice to the specific story of her first meeting with your grandfather. This creates a structure that is somewhat rigid, following a simple pattern of stating an idea and then illustrating it, which limits the flow between paragraphs.",
+      "confidence": 0.85
+    },
+    "voice": {
+      "dimension_name": "Voice",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "Reader may glimpse writer and feel sense of interaction in places.",
+        "Sense of audience; writer seems aware but has not consistently employed appropriate voice.",
+        "Voice present; some expressiveness and sincerity",
+        "Voice present; some expressiveness and sincerity.",
+        "reader may glimpse writer and feel sense of interaction in places",
+        "sense of audience; writer seems aware but has not consistently employed appropriate voice"
+      ],
+      "evidence_span_ids": [
+        "span-real-2fe7b8fd9d7e",
+        "span-real-64452772cae6",
+        "span-real-8e9a4e556ffa",
+        "span-real-9491a2c2d11d",
+        "span-real-9ab20805af43",
+        "span-real-dc34ae76c99b",
+        "span-real-de080b8ef182",
+        "span-real-ea84127211dd",
+        "span-real-eded36ebcd7b"
+      ],
+      "feedback_text": "Your essay received a score of 4 for Voice. The reader can \"glimpse writer and feel sense of interaction in places,\" and you show a \"sense of audience\" by directly engaging with questions like, \"Have you ever been walking around a store...?\" and \"Is it true? In my opinion I am not so sure.\" This creates a conversational tone. Furthermore, your voice shows \"expressiveness and sincerity\" when you warmly describe your grandmother, citing how \"a really huge smile\" appears when she talks about her partner. However, this engaging and personal voice is not fully sustained throughout, as the essay sometimes shifts to more general observations without the same consistent, interactive feel.",
+      "confidence": 0.85
+    },
+    "word_choice": {
+      "dimension_name": "Word Choice",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "expression seems mundane and general; slang not effective",
+        "words generally accurate but misused words may occasionally appear",
+        "words that work but rarely capture reader's interest"
+      ],
+      "evidence_span_ids": [
+        "span-real-075b535d3e27",
+        "span-real-0b43f43b87f9",
+        "span-real-204779abb17c",
+        "span-real-29ede8b2440e",
+        "span-real-392ffef56230",
+        "span-real-410668222edd",
+        "span-real-b24b8f490caf",
+        "span-real-c02172b8cc24",
+        "span-real-e4d4b421e8ff"
+      ],
+      "feedback_text": "Your essay received a 3 in Word Choice. The expression often seems mundane and general, using words that work but rarely capture a reader's interest. For example, you repeatedly use common phrases like \"know how to have fun,\" \"make everything better,\" and \"put a smile on\" the other person, which lack specificity. While your words are generally accurate, misused words occasionally appear, such as \"doesnt let anything get in their ways\" and \"I finally get it laughter is a big part in a relationship,\" where awkward phrasing disrupts the flow. These choices keep the language serviceable but prevent it from becoming engaging or vivid.",
+      "confidence": 0.85
+    },
+    "sentence_fluency": {
+      "dimension_name": "Sentence Fluency",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "good control over simple sentences, little over complex",
+        "mechanical rather than fluid; occasional awkwardness",
+        "sentences functional but lack energy",
+        "some passages invite fluid oral reading; others do not"
+      ],
+      "evidence_span_ids": [
+        "span-real-0f018b622865",
+        "span-real-1298bd09c72c",
+        "span-real-13bbf763e445",
+        "span-real-4395ac29a450",
+        "span-real-502b5e0481fc",
+        "span-real-510c2d1188bb",
+        "span-real-537de16406c1",
+        "span-real-58237dc82cbb",
+        "span-real-857a714ab31f",
+        "span-real-9917bdc061cc",
+        "span-real-aedf65215436",
+        "span-real-bd1fd101f1d6",
+        "span-real-cf721ff49253",
+        "span-real-dbe863853c03"
+      ],
+      "feedback_text": "Your essay received a **3 in Sentence Fluency**. You show **good control over simple sentences**, which creates **some passages that invite fluid oral reading**, such as \"She felt like all her problems would go away, everytime she had the chance to hang out with him.\" However, the overall rhythm is often **mechanical rather than fluid**, with **occasional awkwardness** that breaks the flow. This is seen in repetitive structures like \"Everytime she could think about him she would smile and laugh. Thats how happy she felt about him,\" and in tangled phrasing such as \"A question she asked me once... The first thing that pops to your head is...\" These moments make other sections feel functional but lacking in consistent energy.",
+      "confidence": 0.85
+    },
+    "conventions": {
+      "dimension_name": "Conventions",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
+        "errors in grammar and usage do not block meaning but distract reader",
+        "significant need for editing",
+        "some control over basic conventions",
+        "spelling errors distract reader; common words misspelled"
+      ],
+      "evidence_span_ids": [
+        "span-real-03000d0c2952",
+        "span-real-05a587ef5622",
+        "span-real-105ea281279e",
+        "span-real-138775fdf1eb",
+        "span-real-15c80f53677f",
+        "span-real-3711b30eed6c",
+        "span-real-3d91c52181e6",
+        "span-real-411771c4089f",
+        "span-real-5db317a37e76",
+        "span-real-622489190619",
+        "span-real-629fdf218208",
+        "span-real-934bc6ff801a",
+        "span-real-9703322f7e4d",
+        "span-real-a42ab522111b",
+        "span-real-b55e071dfc77",
+        "span-real-b7e4081f812a",
+        "span-real-da47551e03f5",
+        "span-real-f43cb0dc0ffb",
+        "span-real-fea0678f6961"
+      ],
+      "feedback_text": "Your essay received a score of 3 for Conventions. This score reflects **\"some control over basic conventions,\"** but there is a **\"significant need for editing\"** as **\"errors in grammar and usage do not block meaning but distract reader.\"** For example, you frequently omit apostrophes in contractions, as seen in \"Thats\" and \"wouldnt,\" and make errors in subject-verb agreement, such as \"things...will not work out\" and \"the first thing...doesnt let.\" These patterns of error, along with misspellings like \"everytime\" and \"alwasy,\" are distracting and show inconsistent application of standard writing conventions.",
+      "confidence": 0.85
+    }
+  },
+  "summary": "Real provider feedback for 6 dimension(s).",
+  "provider": "openai_compatible"
+}

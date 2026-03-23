@@ -1,0 +1,195 @@
+{
+  "dimensions": {
+    "ideas_content": {
+      "dimension_name": "Ideas and Content",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "clear main ideas",
+        "easily identifiable purpose",
+        "supporting details are relevant but may be overly general or limited"
+      ],
+      "evidence_span_ids": [
+        "span-real-3152f3027542",
+        "span-real-4ea3def20d4e",
+        "span-real-50fd7d61eb15",
+        "span-real-a7cf5708c0c2",
+        "span-real-b5eea8359110",
+        "span-real-d8305551bd79",
+        "span-real-e50274b8a689",
+        "span-real-f8740c778dbc"
+      ],
+      "feedback_text": "Your essay earned a score of 4 for Ideas and Content. You establish a **clear main idea** that laughter is central to friendship, and your **purpose is easily identifiable** throughout. You support this with **relevant details**, such as describing how a shared laughing fit with a new friend made you \"couldnt breath and she almost peed,\" which illustrates a bonding moment. However, some supporting points remain **overly general**, like stating \"every friendship what braught it together was a smile or laughter,\" without more varied or specific examples to deepen the analysis. Your personal story about feeling like a \"criminal\" at @ORGANIZATION1 effectively sets up the need for connection, but the development of ideas stays at a familiar, surface level.",
+      "confidence": 0.85
+    },
+    "organization": {
+      "dimension_name": "Organization",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "body easy to follow with details fitting where placed",
+        "clear sequencing and paragraph breaks",
+        "recognizable, developed beginning not particularly inviting",
+        "transitions may be stilted or formulaic"
+      ],
+      "evidence_span_ids": [
+        "span-real-0065722dc961",
+        "span-real-14622c9ac8c6",
+        "span-real-16ab68e90835",
+        "span-real-1ef0ccb97f04",
+        "span-real-2c5a58e4d105",
+        "span-real-473a5350d4c1",
+        "span-real-623a7df234bc",
+        "span-real-63c29ad0da9c",
+        "span-real-6b26ed2db679",
+        "span-real-8c9a08f9ff65",
+        "span-real-99117f9ed868",
+        "span-real-adbb5456da08",
+        "span-real-b01cdba8351a",
+        "span-real-cabccf4b94ed",
+        "span-real-d19bc587d2b2"
+      ],
+      "feedback_text": "Your essay scored a 4 in Organization. The body is generally easy to follow with a clear sequence of events, using paragraph breaks to separate key moments, such as moving from the anxiety in homeroom to the first gym class. The beginning is recognizable and developed, starting with a general reflection on friendship before introducing the specific story of being new to **@ORGANIZATION1**. However, some transitions are formulaic, like the abrupt shift from \"I was a loner that period\" to the next meeting where \"We started practicing.\" This sequencing is clear, but the connection between these events relies on simple time markers rather than smoother transitions.",
+      "confidence": 0.85
+    },
+    "voice": {
+      "dimension_name": "Voice",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "Liveliness, sincerity, or humor when appropriate",
+        "Reader may glimpse writer and feel sense of interaction in places",
+        "Sense of audience; writer seems aware but has not consistently employed appropriate voice",
+        "Voice present; some expressiveness and sincerity"
+      ],
+      "evidence_span_ids": [
+        "span-real-104b576c9d38",
+        "span-real-14cbbaa90250",
+        "span-real-240affd6bea3",
+        "span-real-251eacf9e475",
+        "span-real-26eafa31d38f",
+        "span-real-33c21a98d805",
+        "span-real-4193257b0e07",
+        "span-real-6c6a7d36d242",
+        "span-real-745eec7df515",
+        "span-real-87100c727c22",
+        "span-real-9056ed3c7d59"
+      ],
+      "feedback_text": "Your essay received a score of 4 for Voice. The writing shows a clear \"sense of audience\" and \"voice present; some expressiveness and sincerity.\" The reader gets a strong \"glimpse of the writer\" through your lively, personal examples. For instance, your sincere reflection that friendship is \"so simple but so special and it really marks your heart\" reveals your genuine feelings. Furthermore, your use of specific, humorous details—like laughing until you \"almost peed\" or until \"milk came out of your friends nose\"—creates a sense of interaction and appropriate liveliness, making your personal voice engaging and relatable.",
+      "confidence": 0.85
+    },
+    "word_choice": {
+      "dimension_name": "Word Choice",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "expression seems mundane and general; slang not effective",
+        "words generally accurate but misused words may occasionally appear",
+        "words that work but rarely capture reader's interest"
+      ],
+      "evidence_span_ids": [
+        "span-real-1d0d76ea2218",
+        "span-real-1d3d2200a950",
+        "span-real-1d936fdc7cc7",
+        "span-real-27ec456b5f07",
+        "span-real-30a7a70abf24",
+        "span-real-3388abfc5063",
+        "span-real-593cb9affa30",
+        "span-real-6337d8ddae40",
+        "span-real-7d51841424b9",
+        "span-real-8bb2a6553a4f",
+        "span-real-a7df1b8d1697",
+        "span-real-a87b44072683",
+        "span-real-bf35130c2c01",
+        "span-real-c24278b71293",
+        "span-real-c4f8bc524fd7",
+        "span-real-d394b7cc9870",
+        "span-real-edfc19c35c56",
+        "span-real-f41477167b2e",
+        "span-real-fb6043af1cfb"
+      ],
+      "feedback_text": "Your essay received a **score of 3** for Word Choice. The language is generally accurate but often seems **mundane and general**, and while the words work, they **rarely capture the reader's interest**. For example, phrases like \"it's a great time\" and \"it really marks your heart\" are broad and lack specificity. Furthermore, **misused words occasionally appear**, as seen in \"I was to emberrassed\" and \"It braught my friendship.\" These errors and the reliance on common expressions prevent your word choice from becoming more engaging or precise.",
+      "confidence": 0.85
+    },
+    "sentence_fluency": {
+      "dimension_name": "Sentence Fluency",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "good control over simple sentences, little over complex",
+        "mechanical rather than fluid; occasional awkwardness",
+        "sentences functional but lack energy",
+        "some passages invite fluid oral reading; others do not"
+      ],
+      "evidence_span_ids": [
+        "span-real-22a61024df97",
+        "span-real-2833fd9001a3",
+        "span-real-363692b9f81d",
+        "span-real-4b8faf902657",
+        "span-real-7f9490fc7be1",
+        "span-real-dda6544a4d78"
+      ],
+      "feedback_text": "Your essay received a **3** in Sentence Fluency. You demonstrate **\"good control over simple sentences\"** and create **\"some passages [that] invite fluid oral reading,\"** as shown in the rhythmic, conversational flow of your description of laughing until you \"can't breath.\" However, other sections become **\"mechanical rather than fluid,\"** with choppy progression. For example, the series of simple sentences beginning with \"I turned... I walked... I laughed...\" feels functional but lacks connective energy. This pattern leads to **\"occasional awkwardness,\"** such as in the final sentence where the clauses are strung together without clear punctuation: \"Friends are'nt always what we want them to be they arent always easy to find.\"",
+      "confidence": 0.85
+    },
+    "conventions": {
+      "dimension_name": "Conventions",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "capitalization errors",
+        "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
+        "errors in grammar and usage do not block meaning but distract reader",
+        "significant need for editing",
+        "spelling errors distract reader; common words misspelled"
+      ],
+      "evidence_span_ids": [
+        "span-real-07bedf03b515",
+        "span-real-139393ec426e",
+        "span-real-1876a903805b",
+        "span-real-1c8ef118691e",
+        "span-real-270b96fe2199",
+        "span-real-32a9ce31002b",
+        "span-real-3b58616eff8c",
+        "span-real-3b6c9adcbcb2",
+        "span-real-3e30f32ad9d7",
+        "span-real-47eea64e6ac2",
+        "span-real-4abca779363d",
+        "span-real-5601d295ce39",
+        "span-real-5688265e387d",
+        "span-real-6966a4dd0578",
+        "span-real-7758be4c8f0f",
+        "span-real-7b6bf028333b",
+        "span-real-8b7d0f032c7b",
+        "span-real-8cff9805509c",
+        "span-real-8d90db544fac",
+        "span-real-8e32b59f85ad",
+        "span-real-96def7700881",
+        "span-real-9f7affc5e665",
+        "span-real-a272fe136d89",
+        "span-real-c3c778646f8b",
+        "span-real-d6f39cf7921c",
+        "span-real-d995f9212f19",
+        "span-real-e10ec8da3fe8",
+        "span-real-e2d6972babbd",
+        "span-real-e380b2d6a353",
+        "span-real-e8cdd1dc7b32",
+        "span-real-efa3d920d348",
+        "span-real-f1c4c2f4862c",
+        "span-real-f5d4bb175965",
+        "span-real-fe1dd5a578a2",
+        "span-real-fed0768ca406"
+      ],
+      "feedback_text": "Your essay received a score of 3 for Conventions. The writing has a **significant need for editing**, with **errors in grammar and usage** and **spelling errors** that distract the reader. For example, you frequently misspell common words like \"braught\" (for \"brought\"), \"tolde\" (for \"told\"), and \"experianced\" (for \"experienced\"). Grammatical issues are also frequent, such as the run-on sentence, \"We love to laugh we believe that the more you laugh the younger you look,\" and the incorrect \"I had'nt practiced.\" While these errors do not completely block meaning, they create consistent distractions from your otherwise engaging story.",
+      "confidence": 0.85
+    }
+  },
+  "summary": "Real provider feedback for 6 dimension(s).",
+  "provider": "openai_compatible"
+}

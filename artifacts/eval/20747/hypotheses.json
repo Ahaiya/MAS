@@ -1,0 +1,341 @@
+{
+  "run_id": "run-f01eb6c6d343",
+  "hypotheses": [
+    {
+      "hypothesis_id": "hyp-real-103185e08afc",
+      "observation_id": "obs-ce95232c1ec0",
+      "dimension_id": "ideas_content",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "easily identifiable purpose",
+        "clear main ideas",
+        "supporting details are relevant but may be overly general or limited"
+      ],
+      "evidence_span_ids": [
+        "span-real-4e7eb3cabca0",
+        "span-real-c2d97c97cf07",
+        "span-real-48b86332c543",
+        "span-real-92c1b81702d6",
+        "span-real-3a0329d1f1f7",
+        "span-real-0c04de756a71",
+        "span-real-658947b5acfc"
+      ],
+      "rationale": "The essay has an easily identifiable purpose (laughter's healing power) and clear main ideas (laughter transforms situations, friendship enables laughter). Supporting details are relevant to the narrative but somewhat limited in depth—the conflict with the 'friend' is described but not fully explored, and the resolution feels somewhat abrupt. The essay explores the topic but developmental details are out of balance, with more emphasis on the emotional reaction than on the laughter's specific role in resolution. This aligns with Score 4 descriptors where content is relevant but not consistently well-chosen for maximum impact.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-b8a65bd23066",
+      "observation_id": "obs-ce95232c1ec0",
+      "dimension_id": "ideas_content",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "easily identifiable purpose",
+        "clear main ideas",
+        "supporting details are relevant but may be overly general or limited"
+      ],
+      "evidence_span_ids": [
+        "span-real-4e7eb3cabca0",
+        "span-real-c2d97c97cf07",
+        "span-real-48b86332c543",
+        "span-real-92c1b81702d6",
+        "span-real-3a0329d1f1f7",
+        "span-real-0c04de756a71",
+        "span-real-658947b5acfc"
+      ],
+      "rationale": "The essay presents a clear, focused main idea about laughter's healing power and friendship, with an easily identifiable purpose. Supporting details are relevant to the narrative (the conflict with a friend, @PERSON1's intervention, reconciliation), but they remain somewhat general and lack deeper insight or rich elaboration. The development is functional but limited, aligning with Score 4 descriptors where the topic is explored but details are not consistently well-chosen or in-depth.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-e4561bbc62b9",
+      "observation_id": "obs-270a85585838",
+      "dimension_id": "organization",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "clear sequencing and paragraph breaks",
+        "recognizable, developed beginning not particularly inviting",
+        "developed conclusion may lack subtlety",
+        "body easy to follow with details fitting where placed"
+      ],
+      "evidence_span_ids": [
+        "span-real-ad62ed92106d",
+        "span-real-602418b6145c",
+        "span-real-28294f0aa497",
+        "span-real-112cbf708b1d",
+        "span-real-907c987bc384",
+        "span-real-08c1a49ee9a9"
+      ],
+      "rationale": "The essay demonstrates clear and coherent organization with a functional structure. It has a recognizable beginning that introduces the theme of laughter and friendship, a body that narrates a specific incident with chronological sequencing, and a conclusion that returns to the opening theme. Paragraph breaks are present and logical, though the essay could benefit from more sophisticated transitions. The placement of details is effective, with the narrative moving from general statement to specific example to resolution. However, the organization is somewhat predictable and formulaic, lacking the inviting quality or creative structure of higher scores. The conclusion, while developed, lacks subtlety with its direct restatement of the theme. This aligns with Score 4 descriptors: clear sequencing, recognizable beginning and conclusion (though not particularly inviting), body easy to follow, and organization that helps the reader despite some weaknesses.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-5a865c32562b",
+      "observation_id": "obs-270a85585838",
+      "dimension_id": "organization",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "clear sequencing and paragraph breaks",
+        "recognizable, developed beginning not particularly inviting",
+        "developed conclusion may lack subtlety",
+        "body easy to follow with details fitting where placed"
+      ],
+      "evidence_span_ids": [
+        "span-real-ad62ed92106d",
+        "span-real-602418b6145c",
+        "span-real-28294f0aa497",
+        "span-real-112cbf708b1d",
+        "span-real-907c987bc384",
+        "span-real-08c1a49ee9a9"
+      ],
+      "rationale": "The essay demonstrates clear and coherent organization with a recognizable structure: it begins with a general statement about laughter, transitions to a specific personal example, narrates the incident chronologically, and concludes by reinforcing the initial theme. The sequencing is logical and easy to follow, with effective paragraph breaks separating the introduction, narrative body, and conclusion. However, the organization is somewhat predictable and formulaic—the beginning and conclusion are functional but not particularly inviting or subtle, and transitions like 'One of my most recent examples' and 'Eventually' work adequately but are straightforward. Details are placed effectively to support the narrative progression, and the overall structure helps the reader understand the main point without significant confusion. This aligns with the Score 4 descriptors of clear, coherent organization that may seem formulaic, rather than the stronger, more inviting structure required for Score 5.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-8a368a6173f4",
+      "observation_id": "obs-2abde1dfa6bd",
+      "dimension_id": "voice",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "Voice present; some expressiveness and sincerity",
+        "Reader may glimpse writer and feel sense of interaction in places",
+        "Liveliness, sincerity, or humor when appropriate"
+      ],
+      "evidence_span_ids": [
+        "span-real-f57ec5fa6504",
+        "span-real-d11c5ea00fa0",
+        "span-real-30626f9de9be",
+        "span-real-04bb74ea5243",
+        "span-real-26939f6da3b7",
+        "span-real-4543cb4d6fe2"
+      ],
+      "rationale": "The essay demonstrates a consistent first-person voice with moments of sincerity and expressiveness, such as the emotional vulnerability in 'I actually considered attacking this girl' and the heartfelt reflection on friendship. The writer shows audience awareness through direct statements like 'I believe that everyone has someone they can laugh with' and maintains a conversational tone throughout. However, the voice remains mostly functional rather than exceptionally distinctive or deeply committed across all paragraphs, aligning with Score 4 descriptors where voice is present but not consistently strong or original enough for higher scores.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-30216cc080db",
+      "observation_id": "obs-2abde1dfa6bd",
+      "dimension_id": "voice",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "Voice present; some expressiveness and sincerity",
+        "reader may glimpse writer and feel sense of interaction in places",
+        "writing may be inappropriately casual or inappropriately formal in places"
+      ],
+      "evidence_span_ids": [
+        "span-real-f57ec5fa6504",
+        "span-real-d11c5ea00fa0",
+        "span-real-30626f9de9be",
+        "span-real-04bb74ea5243",
+        "span-real-26939f6da3b7",
+        "span-real-4543cb4d6fe2"
+      ],
+      "rationale": "The essay demonstrates a consistent voice throughout with clear audience awareness ('I believe that everyone...', 'One of my most recent examples...'), expressiveness ('I actually considered attacking this girl...'), and sincerity ('Her just being there for me...'). However, the voice remains at a functional level without the sustained originality, liveliness, or deep commitment required for scores 5-6. The writer's presence is reliably sensed, but the voice doesn't consistently rise to the level of strong, intentional audience awareness throughout. The occasional awkward phrasing ('remonis' for 'reminisce') and inconsistent quotation mark usage around 'friends' show some lack of polish, but the overall voice is present and appropriate for a personal narrative.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-20e307392535",
+      "observation_id": "obs-c9fc17c4120b",
+      "dimension_id": "word_choice",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "words that work but do not particularly energize writing",
+        "expression is functional; slang not purposeful or effective",
+        "rare experiments with language; avoids clichés"
+      ],
+      "evidence_span_ids": [
+        "span-real-8c58a938061b",
+        "span-real-303124be0eee",
+        "span-real-6dd03ff8cfe8",
+        "span-real-0bf1e3bc39d2",
+        "span-real-ab822396d79f",
+        "span-real-b2012dbf929d",
+        "span-real-a0ea23e762dd",
+        "span-real-30d8aa8869de"
+      ],
+      "rationale": "The essay demonstrates functional word choice that effectively conveys the message. Words like 'radiates,' 'overwhelmed,' and 'confront' are precise and appropriate, while phrases like 'laughter is the best medicine' and 'Every body has to have a somebody' show some imagery and variety. However, the language rarely energizes the writing or feels particularly vivid or striking. The expression remains mostly functional without sustained experiments with fresh or original language. The evidence supports that words work accurately but do not consistently capture reader's interest or energize the writing, aligning with Score 4 descriptors.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-ff001c1c9d9c",
+      "observation_id": "obs-c9fc17c4120b",
+      "dimension_id": "word_choice",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "words that work but do not particularly energize writing",
+        "expression is functional; slang not purposeful or effective",
+        "rare experiments with language; avoids clichés"
+      ],
+      "evidence_span_ids": [
+        "span-real-8c58a938061b",
+        "span-real-303124be0eee",
+        "span-real-6dd03ff8cfe8",
+        "span-real-0bf1e3bc39d2",
+        "span-real-ab822396d79f",
+        "span-real-b2012dbf929d",
+        "span-real-a0ea23e762dd",
+        "span-real-30d8aa8869de"
+      ],
+      "rationale": "The essay demonstrates functional word choice that effectively conveys the message without energizing the writing. Phrases like 'laughter just radiates out of some people as frequent as a breath of air' and 'laughter is the best medicine' show attempts at imagery, but they rely on familiar expressions rather than fresh language. Words are generally accurate and appropriate ('overwhelmed with my emotions,' 'calmed down and my tears stopped'), but the vocabulary remains mostly ordinary and predictable. The essay avoids major misuse of words (though 'remonis' appears to be a misspelling of 'reminisce') and clichés beyond the common 'laughter is the best medicine.' Compared to the Score 5 anchor with its 'striking and varied' vocabulary and 'words that evoke clear images,' this essay's word choice is competent but not particularly engaging or precise.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-cf892156a098",
+      "observation_id": "obs-f2ae7f4853e8",
+      "dimension_id": "sentence_fluency",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "natural sound; reader moves easily but lacks rhythm and grace",
+        "strong control over simple sentences, variable over complex",
+        "occasional lapses in stylistic control"
+      ],
+      "evidence_span_ids": [
+        "span-real-d1b388349125",
+        "span-real-c01abcc26152",
+        "span-real-4adf9bdc6059",
+        "span-real-2c7fa146c24e",
+        "span-real-93ad385fd342",
+        "span-real-0a904357299d"
+      ],
+      "rationale": "The essay demonstrates clear sentence fluency with natural sound and easy readability throughout most passages. The writer shows strong control over simple sentence structures, creating functional communication. However, there are occasional awkward constructions ('remonis' for 'reminisce', unusual comma placement around 'friends'), some repetitive patterns (multiple sentences starting with 'I' or 'She'), and limited variation in sentence length and beginnings that prevents achieving the effortless flow and rhythm of higher scores. The writing moves the reader along effectively but lacks the crafted variation and grace of scores 5-6.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-2e4fa467e23e",
+      "observation_id": "obs-f2ae7f4853e8",
+      "dimension_id": "sentence_fluency",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "natural sound; reader moves easily but lacks rhythm and grace",
+        "strong control over simple sentences, variable over complex",
+        "some repeated patterns that detract from impact"
+      ],
+      "evidence_span_ids": [
+        "span-real-d1b388349125",
+        "span-real-c01abcc26152",
+        "span-real-4adf9bdc6059",
+        "span-real-2c7fa146c24e",
+        "span-real-93ad385fd342",
+        "span-real-0a904357299d"
+      ],
+      "rationale": "The essay demonstrates clear sentence fluency with a natural sound that allows the reader to move easily through the narrative. There is strong control over simple sentence structures, and the writing flows coherently with logical progression between ideas (e.g., 'Half of the class period progressed... So there I stayed safe...'). However, the essay lacks the rhythm, grace, and extensive variation characteristic of scores 5-6. Some sentence patterns become repetitive (multiple sentences starting with 'I' or 'She'), and there are occasional awkward constructions ('remonis' instead of 'reminisce', comma placement issues like 'run away from her, and hide'). The essay is functional and communicates clearly, fitting the 'flows but less than fluid' description of score 4 rather than the mechanical quality of score 3 or the effortless flow of score 5.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-2feac32b57dc",
+      "observation_id": "obs-acf34bf2909c",
+      "dimension_id": "conventions",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "some control over basic conventions",
+        "spelling errors distract reader; common words misspelled",
+        "errors in grammar and usage do not block meaning but distract reader"
+      ],
+      "evidence_span_ids": [
+        "span-real-08b6ff4f179f",
+        "span-real-8d34e8f69ca2",
+        "span-real-f4db3ddf17a3",
+        "span-real-625f1c1d4762",
+        "span-real-d9d880646ecb",
+        "span-real-d396182712ce",
+        "span-real-3d50e1229ce7",
+        "span-real-38e32ba952f6"
+      ],
+      "rationale": "The essay demonstrates limited control of conventions with several noticeable errors that distract the reader. Spelling errors like 'remonis' (for 'reminisce') and 'Every body' (for 'Everybody') are distracting. Punctuation is problematic with incorrect comma placement around quoted words (e.g., 'my, \"friends\",' and 'my,\"friend\",'), though end-of-sentence punctuation is generally correct. Grammar issues like 'as frequent as a breath of air' (awkward comparison) and run-on sentences ('She talked to me until I calmed down and my tears stopped. She made me feel much better.') are present but don't block meaning. The errors create a significant need for editing, aligning with Score 3 descriptors.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-50ba80e1c1f7",
+      "observation_id": "obs-acf34bf2909c",
+      "dimension_id": "conventions",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
+        "spelling errors distract reader; common words misspelled",
+        "errors in grammar and usage do not block meaning but distract reader"
+      ],
+      "evidence_span_ids": [
+        "span-real-08b6ff4f179f",
+        "span-real-8d34e8f69ca2",
+        "span-real-f4db3ddf17a3",
+        "span-real-625f1c1d4762",
+        "span-real-d9d880646ecb",
+        "span-real-d396182712ce",
+        "span-real-3d50e1229ce7",
+        "span-real-38e32ba952f6"
+      ],
+      "rationale": "The essay demonstrates limited control of conventions. While end-of-sentence punctuation is generally correct, there are frequent internal punctuation errors, particularly with comma placement around quoted words like 'friends' and 'friend' (evidence IDs 1, 2). Spelling errors distract the reader, including misspelling 'reminisce' as 'remonis' and writing 'Every body' instead of 'Everybody' (evidence IDs 3, 4). Grammar and usage issues, such as the awkward comparison 'as frequent as a breath of air' (evidence ID 5), are noticeable but do not block overall meaning. The errors collectively create a significant need for editing, aligning with Score 3 descriptors.",
+      "confidence": 0.85
+    }
+  ]
+}

@@ -1,0 +1,166 @@
+{
+  "dimensions": {
+    "ideas_content": {
+      "dimension_name": "Ideas and Content",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "Understandable but simplistic; support often limited",
+        "difficulties moving from general observations to specifics",
+        "predictable or overly-obvious main ideas",
+        "support attempted but details are limited, uneven, somewhat off-topic, or too general"
+      ],
+      "evidence_span_ids": [
+        "span-real-1bf1881bad84",
+        "span-real-1de74df6ab98",
+        "span-real-28da0949ab88",
+        "span-real-7814dfc8e060",
+        "span-real-9fe5a13365dd",
+        "span-real-b2c309e09f94",
+        "span-real-c71e88abb977",
+        "span-real-f0462869c9ee",
+        "span-real-f433e99d6f5f"
+      ],
+      "feedback_text": "Your essay received a score of 3 for Ideas and Content. The main idea—that friendship is about having fun—is clear but **predictable or overly-obvious**. While you **attempt support, the details are limited, uneven, or too general**. For example, you state that laughing is the best thing you do, but the story about the hallway and trash can lacks specific, focused development to make the moment vivid. Similarly, the extended anecdote about the frozen dinner and the laundry mat fantasy are **understandable but simplistic**; they list events and silly ideas without deepening the reader's understanding of your friendship beyond the general claim of having fun. This keeps the support from moving effectively from general observations to meaningful specifics.",
+      "confidence": 0.85
+    },
+    "organization": {
+      "dimension_name": "Organization",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "attempts at sequencing and paragraph breaks but order occasionally unclear",
+        "beginning and ending present but undeveloped or too obvious",
+        "structure is skeletal or too rigid",
+        "transitions sometimes work; same few devices overused"
+      ],
+      "evidence_span_ids": [
+        "span-real-19434202f475",
+        "span-real-2544c6f64fd6",
+        "span-real-62627f2d4f15",
+        "span-real-64966ccd54cd",
+        "span-real-909ccf83b74a",
+        "span-real-95bff3b9bcd7",
+        "span-real-967648844b71",
+        "span-real-a58c72a048e2",
+        "span-real-a7c81da717f3",
+        "span-real-ad94246ccefe",
+        "span-real-cc72b47330c8",
+        "span-real-f9954ab22a9c",
+        "span-real-fe015e795033"
+      ],
+      "feedback_text": "Your essay received a score of 3 for Organization. The structure is skeletal, with a clear but underdeveloped beginning and ending, as seen in the opening statement about laughing with friends and the brief \"overall\" conclusion. The order of ideas is occasionally unclear, such as when you jump from talking about laundry to food with only the phrase \"Now about the food its sort of like the laundry but I guess better?\" This attempt at a transition is overused and sometimes awkward, like the abrupt shift introduced with \"anyways the class bell had just rouge.\" These moments make the sequencing feel uncertain, supporting the score.",
+      "confidence": 0.85
+    },
+    "voice": {
+      "dimension_name": "Voice",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "Liveliness, sincerity, or humor when appropriate",
+        "Reader may glimpse writer and feel sense of interaction in places",
+        "Voice present; some expressiveness and sincerity",
+        "liveliness, sincerity, or humor when appropriate",
+        "reader may glimpse writer and feel sense of interaction in places",
+        "sense of audience; writer seems aware but has not consistently employed appropriate voice",
+        "suitable level of closeness to or distance from audience"
+      ],
+      "evidence_span_ids": [
+        "span-real-172e257b9c73",
+        "span-real-3063222ef571",
+        "span-real-52a8a4e33ffe",
+        "span-real-53a98bd597fd",
+        "span-real-77432b492b57",
+        "span-real-9da0802e0b86",
+        "span-real-b114023401e5",
+        "span-real-cfd1d9a0b576",
+        "span-real-dcb6e96a3e8b"
+      ],
+      "feedback_text": "Your essay received a score of 4 for Voice. The writing shows **\"liveliness, sincerity, or humor when appropriate,\"** and the **\"reader may glimpse writer and feel a sense of interaction in places.\"** For example, your sincere reflection that friends \"take your mind off things\" and your lively, humorous story about your friend sliding into a hallway trash can create a genuine sense of your personality. This allows the reader to glimpse your perspective and feel a connection. However, the voice is not fully sustained, as seen in sections with more general statements, leading to a **\"sense of audience; writer seems aware but has not consistently employed appropriate voice.\"**",
+      "confidence": 0.85
+    },
+    "word_choice": {
+      "dimension_name": "Word Choice",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "expression seems mundane and general; slang not effective",
+        "words generally accurate but misused words may occasionally appear",
+        "words that work but rarely capture reader's interest"
+      ],
+      "evidence_span_ids": [
+        "span-real-17b4ab123934",
+        "span-real-577d0bc723a4",
+        "span-real-86b82b2c22f0",
+        "span-real-d0cecfbeb105",
+        "span-real-d6d468737e6d",
+        "span-real-dd4bfc5260e1"
+      ],
+      "feedback_text": "Your essay received a score of 3 for Word Choice. Your expression often seems mundane and general, and while your words are generally accurate, misused words occasionally appear. For example, you write \"laundry mate\" and \"minds went crazy,\" and misuse \"an\" for \"and\" and \"self's\" for \"selves.\" These choices make the language feel informal and sometimes unclear. Furthermore, your words work but rarely capture the reader's interest, relying on simple descriptions like \"it was that great looking\" and \"the sound effects were so funny.\" While these phrases communicate your ideas, they are ordinary and do not create a vivid or engaging picture for the reader.",
+      "confidence": 0.85
+    },
+    "sentence_fluency": {
+      "dimension_name": "Sentence Fluency",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "good control over simple sentences, little over complex",
+        "mechanical rather than fluid; occasional awkwardness",
+        "sentences functional but lack energy",
+        "some passages invite fluid oral reading; others do not"
+      ],
+      "evidence_span_ids": [
+        "span-real-2059d03897a3",
+        "span-real-51d9cfafe598",
+        "span-real-5a76d551b520",
+        "span-real-7b8f7dcd6a47",
+        "span-real-a2475f618151",
+        "span-real-a5fad8e00b78",
+        "span-real-a7097e0c708e",
+        "span-real-cdb6b4090375",
+        "span-real-d15c725fd576",
+        "span-real-f51ab388737c"
+      ],
+      "feedback_text": "Your essay received a score of 3 for Sentence Fluency. You show **good control over simple sentences, but little over complex** ones, leading to a rhythm that is **mechanical rather than fluid; occasional awkwardness** occurs. For example, the long, run-on sentence about the hallway and the bell creates a breathless, awkward passage that is hard to read fluidly. In contrast, some simpler sentences like, \"I hang out with my friends, the one thing we do best is laugh sometimes for no reason,\" are functional and clear. This mix means **some passages invite fluid oral reading; others do not**, as the frequent use of \"an\" for \"and\" and inconsistent punctuation often break the natural flow.",
+      "confidence": 0.85
+    },
+    "conventions": {
+      "dimension_name": "Conventions",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "Limited control; errors begin to impede readability.",
+        "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
+        "errors in grammar and usage do not block meaning but distract reader",
+        "significant need for editing",
+        "spelling errors distract reader; common words misspelled"
+      ],
+      "evidence_span_ids": [
+        "span-real-0a90a8e80f27",
+        "span-real-0f429c042ae1",
+        "span-real-1147d972b1c4",
+        "span-real-1ad0f54395a9",
+        "span-real-3dd1270f238a",
+        "span-real-4e5802cbf623",
+        "span-real-4efaf50e6b48",
+        "span-real-5500ac868b37",
+        "span-real-98841d8a09d7",
+        "span-real-a4d82efa8b11",
+        "span-real-ae5f06a913ef",
+        "span-real-cf9016ff5ca1",
+        "span-real-dd0e60af4773",
+        "span-real-fbabb27ca742"
+      ],
+      "feedback_text": "Your essay received a score of 3 in Conventions. The writing shows a **significant need for editing**, as **errors in grammar and usage distract the reader**. For example, you consistently use \"an\" instead of \"and,\" and misspell common words like \"then\" as \"than\" and \"clothes\" as \"close.\" These spelling errors and incorrect word choices are frequent distractions. Furthermore, while end-of-sentence punctuation is usually correct, **internal punctuation has frequent errors**, which impedes readability. This is seen in long, unpunctuated sentences like \"i came to school the next day i just started talking about what i had for dinner,\" where commas are needed to separate ideas. These patterns of error limit your control of writing conventions.",
+      "confidence": 0.85
+    }
+  },
+  "summary": "Real provider feedback for 6 dimension(s).",
+  "provider": "openai_compatible"
+}

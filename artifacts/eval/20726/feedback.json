@@ -1,0 +1,157 @@
+{
+  "dimensions": {
+    "ideas_content": {
+      "dimension_name": "Ideas and Content",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "clear main ideas",
+        "easily identifiable purpose",
+        "supporting details are relevant but may be overly general or limited"
+      ],
+      "evidence_span_ids": [
+        "span-real-00cb8f66c326",
+        "span-real-2dd0a1760b9a",
+        "span-real-4224abc7d0dd",
+        "span-real-866d520b7458",
+        "span-real-9f7f73c11ea6",
+        "span-real-a79e0d808bce"
+      ],
+      "feedback_text": "Your essay received a score of 4 for Ideas and Content. You establish a **clear main idea** about the importance of laughter, stating it is \"very important and beneficial for a relationship.\" Your purpose is **easily identifiable** from the start, as you describe laughter as \"amazing\" and \"contagious.\" However, your **supporting details are relevant but limited**. For example, your personal anecdote about staying up late with friends shows laughter building bonds, but the details like drinking soda and dancing remain overly general. Similarly, while you ask the reader to \"imagine the world without laughter,\" this support is broad rather than specific. Your core idea is strong, but deeper, more developed examples would strengthen your content.",
+      "confidence": 0.85
+    },
+    "organization": {
+      "dimension_name": "Organization",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "body easy to follow with details fitting where placed",
+        "clear sequencing and paragraph breaks",
+        "developed conclusion may lack subtlety",
+        "recognizable, developed beginning not particularly inviting",
+        "transitions may be stilted or formulaic"
+      ],
+      "evidence_span_ids": [
+        "span-real-1042678d452e",
+        "span-real-4bec99c73894",
+        "span-real-7d7ff67ec779",
+        "span-real-e80e8fe7eeb5"
+      ],
+      "feedback_text": "Your essay earned a score of 4 for Organization. The body is generally easy to follow with details fitting where placed, as shown in your clear sequencing from describing types of laughter to a specific personal anecdote. You have a recognizable, developed beginning and conclusion, though the conclusion may lack subtlety by repeating the central idea without deeper insight. Your transitions, however, can be stilted or formulaic, such as the abrupt shift from your story to the generalized statement, \"It's so great when you and a friend, or group of friends can sit back and enjoy the laughter you share.\" This creates a structure that is solid but not fluid.",
+      "confidence": 0.85
+    },
+    "voice": {
+      "dimension_name": "Voice",
+      "canonical_score": 5,
+      "display_score": "5",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "appropriate level of closeness to or distance from audience",
+        "reader may discern writer behind words and feel sense of interaction",
+        "strong sense of audience; writer seems aware of reader and how to communicate effectively",
+        "topic has come to life; shows originality, liveliness, honesty, conviction, excitement, humor, or suspense"
+      ],
+      "evidence_span_ids": [
+        "span-real-1c1a4874f580",
+        "span-real-7d41fec45ac7",
+        "span-real-856fc935ec62",
+        "span-real-8a99d7105472",
+        "span-real-8c2977cae0bc",
+        "span-real-a3700aa4de05",
+        "span-real-be8182bacdec",
+        "span-real-c50b58e0f795",
+        "span-real-c89a967de912"
+      ],
+      "feedback_text": "Your essay received a 5 in Voice. You achieve a **strong sense of audience** by directly engaging the reader with questions like, \"Have you ever just laughed for what feels like a lifetime?\" This creates a **sense of interaction**, making the reader feel you are speaking to them personally. Furthermore, your **topic comes to life** through vivid, original descriptions of your own experiences, such as laughing until \"tears were flowing\" or depicting silent laughter with \"this silly expression upon their face.\" These personal, lively details allow the reader to clearly **discern the writer behind the words** and share in your genuine excitement about the subject.",
+      "confidence": 0.85
+    },
+    "word_choice": {
+      "dimension_name": "Word Choice",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "expression is functional; slang not purposeful or effective",
+        "rare experiments with language; avoids clichés",
+        "words that work but do not particularly energize writing"
+      ],
+      "evidence_span_ids": [
+        "span-real-0384d9dc3ce3",
+        "span-real-0624ad637833",
+        "span-real-1a008bfd310a",
+        "span-real-2399e3ff215e",
+        "span-real-24593360370d",
+        "span-real-6ecd1791ee77",
+        "span-real-6fb29dd991e8",
+        "span-real-8db9a02a35a8",
+        "span-real-93a961f024e3",
+        "span-real-b52c1a087941"
+      ],
+      "feedback_text": "Your essay received a Word Choice score of 4. Your expression is functional, using words that work but do not particularly energize the writing. For example, phrases like “boring, right?” and “brightens my mood and also my day” are clear but commonplace. You also avoid clichés and make rare experiments with language, creating some engaging descriptions. This is shown when you characterize silent laughter as causing “this silly expression upon their face” and describe a laugh as “that tear-induced, hard to breath, silent but oh-so therapeutic” experience. These moments show a functional and occasionally inventive approach to word choice.",
+      "confidence": 0.85
+    },
+    "sentence_fluency": {
+      "dimension_name": "Sentence Fluency",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "natural sound; reader moves easily but lacks rhythm and grace",
+        "occasional lapses in stylistic control",
+        "some repeated patterns that detract from impact",
+        "strong control over simple sentences, variable over complex"
+      ],
+      "evidence_span_ids": [
+        "span-real-177e1d99e522",
+        "span-real-1835c61d6252",
+        "span-real-235924d87539",
+        "span-real-25cfbe6f4c64",
+        "span-real-80bfd4fcd2e4",
+        "span-real-cfbbe4d63a01",
+        "span-real-d2558728c7c9"
+      ],
+      "feedback_text": "Your essay received a **4** in Sentence Fluency. Your writing has a **natural sound** and the reader moves through it easily, as shown in your conversational questions like, \"Have you ever laughed so hard that you cried?\" However, there are **some repeated patterns that detract from impact**, such as frequently starting sentences with \"@CAPS1\" (e.g., \"@CAPS1's one of the greatest feelings... @CAPS1's so great...\"). You also show **strong control over simple sentences** but have **occasional lapses in stylistic control** in more complex ones, like the long, comma-heavy sentence about silent laughing that becomes difficult to follow.",
+      "confidence": 0.85
+    },
+    "conventions": {
+      "dimension_name": "Conventions",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
+        "errors in grammar and usage do not block meaning but distract reader",
+        "significant need for editing",
+        "some control over basic conventions",
+        "spelling errors distract reader; common words misspelled"
+      ],
+      "evidence_span_ids": [
+        "span-real-020bb4fc30d5",
+        "span-real-081f98c8747a",
+        "span-real-1bcf57dd8be7",
+        "span-real-1ead89a0ace9",
+        "span-real-2c72b7ea1ffd",
+        "span-real-3121e4c3954d",
+        "span-real-363b71a7e9cf",
+        "span-real-4ea31e26352b",
+        "span-real-607830eb1499",
+        "span-real-878116a1afc1",
+        "span-real-9c48de9281e1",
+        "span-real-a2c9dbcc7c95",
+        "span-real-b3d3b38a900e",
+        "span-real-d62b7d224641",
+        "span-real-dbe56dd15471",
+        "span-real-ee0e959b077b",
+        "span-real-effcf97857b5",
+        "span-real-f0ff39393600",
+        "span-real-f32618fd3c40"
+      ],
+      "feedback_text": "Your essay received a score of 3 for Conventions. This score reflects **\"some control over basic conventions,\"** but there is a **\"significant need for editing\"** as **\"errors in grammar and usage do not block meaning but distract reader.\"** For example, you correctly use end punctuation in many places, but internal punctuation is inconsistent, as seen in the run-on sentence, \"We made up songs, we danced around @CAPS2 house, and @CAPS1 felt like we laughed for hours!\" Frequent errors in spelling and word choice also distract, such as using \"breath\" instead of \"breathe\" (\"you can't breath\") and \"life's\" instead of \"lives\" (\"our everyday life's\"). These patterns show your ideas are clear, but careful proofreading is needed.",
+      "confidence": 0.85
+    }
+  },
+  "summary": "Real provider feedback for 6 dimension(s).",
+  "provider": "openai_compatible"
+}

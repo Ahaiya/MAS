@@ -1,0 +1,209 @@
+{
+  "dimensions": {
+    "ideas_content": {
+      "dimension_name": "Ideas and Content",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "Understandable but simplistic; support often limited",
+        "difficulties moving from general observations to specifics",
+        "predictable or overly-obvious main ideas",
+        "support attempted but details are limited, uneven, somewhat off-topic, or too general"
+      ],
+      "evidence_span_ids": [
+        "span-real-01ca345de9e9",
+        "span-real-057ec76eb10a",
+        "span-real-29a6d3cfcaa5",
+        "span-real-3649b3f9c869",
+        "span-real-47b8f81ac2bf",
+        "span-real-4801cc1b2c63",
+        "span-real-4bc57d48ab7b",
+        "span-real-5022b44816d6",
+        "span-real-8b674a2906f3",
+        "span-real-9976350fbc14",
+        "span-real-9dfd11102422",
+        "span-real-a1935a0e9a02",
+        "span-real-aabae328f1b1",
+        "span-real-c9837072f179",
+        "span-real-ddae214bb2c0",
+        "span-real-f32a2d056296",
+        "span-real-f8897f2ab993",
+        "span-real-fbd701b1106d"
+      ],
+      "feedback_text": "Your essay received a score of 3 for Ideas and Content. The main idea is **understandable but simplistic**, focusing on getting lost downtown. However, you have **difficulties moving from general observations to specifics**. For example, you state \"that hole night was about me getting losted\" but provide only general actions like \"i just started to walk.\" Your **support is attempted but details are limited or too general**, as seen when you ask for directions and the response is simply \"the man said your down town i said i know just never mind,\" which does not develop the scene or your confusion. These general and repetitive details prevent the story from becoming specific or insightful.",
+      "confidence": 0.85
+    },
+    "organization": {
+      "dimension_name": "Organization",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "attempts at sequencing and paragraph breaks but order occasionally unclear",
+        "beginning and ending present but undeveloped or too obvious",
+        "structure is skeletal or too rigid"
+      ],
+      "evidence_span_ids": [
+        "span-real-18bf85636ccd",
+        "span-real-3fda224fa2cc",
+        "span-real-428a0911712d",
+        "span-real-44c8b1f9fbcf",
+        "span-real-462273449163",
+        "span-real-4850b1db51b3",
+        "span-real-506d992a9914",
+        "span-real-5a7f9aa58f26",
+        "span-real-62204ea25802",
+        "span-real-73f64e9683a4",
+        "span-real-79c919a8ec8b",
+        "span-real-829ddd3dfe14",
+        "span-real-89ab80982653",
+        "span-real-a5123ac44a9e",
+        "span-real-cf633dc953a7"
+      ],
+      "feedback_text": "Your essay received a score of 3 for Organization. You provide a clear beginning and ending, and you use paragraph breaks, but the **structure is skeletal** and the **order is occasionally unclear**. For example, the sequence of events becomes hard to follow when you jump from being on the bus to suddenly asking someone \"were am i at\" downtown without a clear transition. Furthermore, the **beginning and ending are present but too obvious**, starting with \"Well ima tell a story about...\" and ending with a simple summary: \"Then that hole night was about me getting losted... and yeah thats it.\" This undeveloped framing makes the essay's structure feel more like a bare list of events than a shaped narrative.",
+      "confidence": 0.85
+    },
+    "voice": {
+      "dimension_name": "Voice",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "Liveliness, sincerity, or humor when appropriate",
+        "Reader may glimpse writer and feel sense of interaction in places",
+        "Voice present; some expressiveness and sincerity",
+        "reader may glimpse writer and feel sense of interaction in places",
+        "voice present; some expressiveness and sincerity",
+        "writing may be inappropriately casual or inappropriately formal in places"
+      ],
+      "evidence_span_ids": [
+        "span-real-11e5684a6975",
+        "span-real-15ceceae5aa4",
+        "span-real-17cc9220b62e",
+        "span-real-21048675f0a8",
+        "span-real-214d9a2564bb",
+        "span-real-2697778509a4",
+        "span-real-2bab1b0e0202",
+        "span-real-4531608e65d2",
+        "span-real-4823308cf05e",
+        "span-real-555147001814",
+        "span-real-576e505cec1b",
+        "span-real-606feabe4676",
+        "span-real-6769dfdadb3c",
+        "span-real-7c554f10cc2c",
+        "span-real-90030ea6d12b",
+        "span-real-95d72028f518",
+        "span-real-9fc17fe8f4f9",
+        "span-real-af082f354059",
+        "span-real-af4469f66a95",
+        "span-real-b1d98cc40424",
+        "span-real-cb34f9f40e9b",
+        "span-real-cda3d01a167f",
+        "span-real-d9622ca1a0b4",
+        "span-real-e96328368edc",
+        "span-real-fcb8b40d3878"
+      ],
+      "feedback_text": "Your essay received a score of 4 for Voice. The writing has a present and expressive voice, allowing the reader to \"glimpse writer and feel sense of interaction in places.\" This is shown through your sincere and lively internal monologue, like \"i was like gosh im @CAPS3 again? yeah i am.\" However, the voice is sometimes \"inappropriately casual,\" as seen in conversational fragments such as \"i was like okay i closed the window back\" and \"yeah thats it.\" While this creates a genuine sense of your personality, the informal style occasionally distracts from the overall narrative flow.",
+      "confidence": 0.85
+    },
+    "word_choice": {
+      "dimension_name": "Word Choice",
+      "canonical_score": 2,
+      "display_score": "2",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "expression seems mundane and general; slang not effective",
+        "images that are fuzzy or absent altogether",
+        "monotonous repetition or overwhelming reliance on worn expressions",
+        "words generally accurate but misused words may occasionally appear",
+        "words that are colorless, flat, or imprecise",
+        "words that work but rarely capture reader's interest"
+      ],
+      "evidence_span_ids": [
+        "span-real-0658d6bf925a",
+        "span-real-116ef2400d63",
+        "span-real-11b9e545ab72",
+        "span-real-13f8d9245bf0",
+        "span-real-1b6feffcfb15",
+        "span-real-2157323394a0",
+        "span-real-41e77b3777ce",
+        "span-real-4a99a5e212e3",
+        "span-real-7195b611a432",
+        "span-real-a6f04c58649b",
+        "span-real-b3c65de5a125",
+        "span-real-c817cd5d3947",
+        "span-real-d983ac1dc50f",
+        "span-real-f46c4cbc866f",
+        "span-real-fe78ef9d0c30"
+      ],
+      "feedback_text": "Your Word Choice score is 2. The language is often **colorless, flat, or imprecise**, relying on vague, general terms like \"it was cold, dark and just creepy\" to describe a setting, which creates **images that are fuzzy or absent altogether**. Furthermore, the word choice features **monotonous repetition or overwhelming reliance on worn expressions**, as seen in the repeated use of informal phrases like \"i was like\" and \"what the heck.\" This repetitive and imprecise language, while generally understandable, fails to create vivid images or engage the reader's interest.",
+      "confidence": 0.85
+    },
+    "sentence_fluency": {
+      "dimension_name": "Sentence Fluency",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "good control over simple sentences, little over complex",
+        "sentences functional but lack energy",
+        "significant number of awkward, choppy, or rambling constructions",
+        "significant portions difficult to follow or read aloud",
+        "some passages invite fluid oral reading; others do not"
+      ],
+      "evidence_span_ids": [
+        "span-real-1ed9ed6bf7a7",
+        "span-real-231e08f9e185",
+        "span-real-4785ef02c899",
+        "span-real-5a327bf12cb2",
+        "span-real-5c0066a647c9",
+        "span-real-6cbfb318c5ca",
+        "span-real-93ad406f8472",
+        "span-real-a66a91c853a1"
+      ],
+      "feedback_text": "Your score for Sentence Fluency is 3. Your writing shows you have good control over simple sentences, but there are significant portions that are difficult to follow or read aloud. For example, sentences often become rambling and awkward, as in: \"So on my way there i thought i went to far so i got the bus and was like were am i? I was counfused and like what the heck.\" This choppy construction makes the passage hard to follow. While some parts invite fluid reading, others are disrupted by unclear phrasing and run-on sentences, such as \"i was like oh no not this again i just started to walk the way i came from,\" which lacks the energy and clarity needed for smooth oral reading.",
+      "confidence": 0.85
+    },
+    "conventions": {
+      "dimension_name": "Conventions",
+      "canonical_score": 2,
+      "display_score": "2",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "errors interfere with readability and meaning",
+        "little control over basic conventions",
+        "many end-of-sentence errors; frequent internal punctuation errors",
+        "spelling errors that frequently distract reader; common words misspelled"
+      ],
+      "evidence_span_ids": [
+        "span-real-10e38bc02e90",
+        "span-real-2690e751dfc6",
+        "span-real-4e0e54c6d21a",
+        "span-real-52b5a278eee9",
+        "span-real-582421855835",
+        "span-real-583ba23372f7",
+        "span-real-5c584539abfd",
+        "span-real-5cbe1f04efa1",
+        "span-real-6680311407d8",
+        "span-real-78aac3271406",
+        "span-real-8226bd5aeda5",
+        "span-real-930018c390a4",
+        "span-real-99b6a66f5dba",
+        "span-real-bcbff6d44206",
+        "span-real-c7118f73560f",
+        "span-real-c827346957c6",
+        "span-real-c97de21b86f0",
+        "span-real-d0e47a0420b4",
+        "span-real-d3a113c5822a",
+        "span-real-d4cb9d7e6509",
+        "span-real-d62ca22966f9",
+        "span-real-e220474b215e"
+      ],
+      "feedback_text": "Your essay received a score of 2 for Conventions. This score reflects that errors frequently \"interfere with readability and meaning\" and show \"little control over basic conventions.\" For example, consistent errors in end-of-sentence punctuation are evident, as many sentences run together without correct separation: \"So i just called thenm and see were she was at the phone rings then she pick up.\" Furthermore, frequent spelling errors distract the reader and include misspelling common words, such as \"thenm\" (them), \"were\" (where), \"wont\" (want), and \"losted\" (lost). These patterns of error make the text challenging to follow and directly support the score.",
+      "confidence": 0.85
+    }
+  },
+  "summary": "Real provider feedback for 6 dimension(s).",
+  "provider": "openai_compatible"
+}

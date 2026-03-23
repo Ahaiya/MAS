@@ -1,0 +1,322 @@
+{
+  "run_id": "run-8210080f9777",
+  "hypotheses": [
+    {
+      "hypothesis_id": "hyp-real-f7e9c2616af2",
+      "observation_id": "obs-ba6c320eb70c",
+      "dimension_id": "ideas_content",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "Understandable but simplistic; support often limited.",
+        "predictable or overly-obvious main ideas",
+        "support attempted but details are limited, uneven, somewhat off-topic, or too general"
+      ],
+      "evidence_span_ids": [
+        "span-real-f587936e2054",
+        "span-real-ac19ab085027",
+        "span-real-1a34fb754c07"
+      ],
+      "rationale": "The essay presents an understandable main idea about skateboarding persistence, but it is simplistic and predictable. The narrative portion about the friend's mother provides some relevant support, but development is limited and uneven—the essay shifts abruptly to general observations about skateboarding types and purposes without deepening the initial story. Details like 'people have there ways of skating' and 'i laugh at because the way they skate' are overly general and somewhat off-topic, failing to provide specific, well-grounded support. While the purpose is discernible, the ideas lack depth and the support is insufficient for a score of 4.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-7786d6b8d664",
+      "observation_id": "obs-ba6c320eb70c",
+      "dimension_id": "ideas_content",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "predictable or overly-obvious main ideas",
+        "support attempted but details are limited, uneven, somewhat off-topic, or too general",
+        "difficulties moving from general observations to specifics"
+      ],
+      "evidence_span_ids": [
+        "span-real-f587936e2054",
+        "span-real-ac19ab085027",
+        "span-real-1a34fb754c07"
+      ],
+      "rationale": "The essay presents a clear but simplistic main idea about skateboarding experiences. The first paragraph provides a personal anecdote with some relevant details, but the second paragraph shifts to overly general observations about skating ('People can skate for fun and for compaction') that lack specific development. The final sentence about laughing at other skaters feels somewhat off-topic and doesn't meaningfully connect to the earlier narrative. While the purpose is understandable, the support is limited and uneven, with difficulties moving from the specific anecdote to meaningful generalizations about skateboarding.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-1358a0990de7",
+      "observation_id": "obs-8cbb9bbcced5",
+      "dimension_id": "organization",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 2,
+        "display_annotation": null,
+        "display_score": "2",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "some attempts at sequencing but order frequently unclear",
+        "missing or extremely undeveloped beginning, body, and/or ending",
+        "details seem randomly placed, leaving reader confused"
+      ],
+      "evidence_span_ids": [
+        "span-real-50ccaf58e0bf",
+        "span-real-68002ff0dbe5",
+        "span-real-c7073035d000"
+      ],
+      "rationale": "The essay shows some attempt at organization with a chronological sequence about a specific incident, but the structure is unclear and difficult to follow. The beginning introduces a personal story, but the body shifts abruptly to general statements about skating without clear connection, and the ending is missing or extremely undeveloped. Details about different skateboards and laughing at other skaters seem randomly placed without clear purpose, leaving the reader confused about the essay's main point. The essay lacks effective paragraph breaks and transitions between ideas, making it difficult to follow the organizational structure.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-80e81eada3c9",
+      "observation_id": "obs-8cbb9bbcced5",
+      "dimension_id": "organization",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 2,
+        "display_annotation": null,
+        "display_score": "2",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "some attempts at sequencing but order frequently unclear",
+        "missing or extremely undeveloped beginning, body, and/or ending",
+        "details seem randomly placed, leaving reader confused"
+      ],
+      "evidence_span_ids": [
+        "span-real-50ccaf58e0bf",
+        "span-real-68002ff0dbe5",
+        "span-real-c7073035d000"
+      ],
+      "rationale": "The essay shows some attempt at organization with a chronological sequence about a skateboarding experience, but the structure is unclear and difficult to follow. The beginning introduces a narrative but the body shifts abruptly to general statements about skateboarding without clear development. The conclusion is missing or extremely undeveloped, and details seem randomly placed (jumping from personal story to general observations about skateboarding types and people). The lack of effective organizational structure leaves the reader confused about the essay's main point.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-b4d6beebe50c",
+      "observation_id": "obs-d23ff9e00dab",
+      "dimension_id": "voice",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "limited sense of audience; writer's awareness unclear",
+        "occasional sense of writer but voice may shift or disappear",
+        "voice either inappropriately personal or inappropriately impersonal"
+      ],
+      "evidence_span_ids": [
+        "span-real-aa271b1ab44e",
+        "span-real-85249229d623",
+        "span-real-a1cd2a3de3e5",
+        "span-real-7d688aaaf88b",
+        "span-real-fb2e300b8876",
+        "span-real-3a27445fb55a"
+      ],
+      "rationale": "The essay shows occasional moments of personal expression ('i got relay mad', 'i still laugh') that hint at the writer's presence, but these are inconsistent. The voice shifts from personal narrative to general observations about skating, and there's limited audience awareness—the writer doesn't consistently employ an appropriate voice for the reader. While there are glimpses of the writer's personality, the overall voice is inconsistent and doesn't sustain engagement throughout the essay.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-f78f88fc8004",
+      "observation_id": "obs-d23ff9e00dab",
+      "dimension_id": "voice",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "limited sense of audience; writer's awareness unclear",
+        "occasional sense of writer but voice may shift or disappear",
+        "voice either inappropriately personal or inappropriately impersonal"
+      ],
+      "evidence_span_ids": [
+        "span-real-aa271b1ab44e",
+        "span-real-85249229d623",
+        "span-real-a1cd2a3de3e5",
+        "span-real-7d688aaaf88b",
+        "span-real-fb2e300b8876",
+        "span-real-3a27445fb55a"
+      ],
+      "rationale": "The essay shows occasional moments of personal expression (e.g., 'i got relay mad,' 'i still laugh'), but the voice is inconsistent and shifts between personal reflection and impersonal general statements about skating. There's limited audience awareness—the writer seems to be recounting events rather than intentionally engaging the reader. The voice appears in isolated moments but doesn't sustain throughout the essay, aligning with the rubric's description of Score 3: 'occasional sense of writer but voice may shift or disappear' and 'limited sense of audience.'",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-78f98235a443",
+      "observation_id": "obs-7ec0e0ad016b",
+      "dimension_id": "word_choice",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 2,
+        "display_annotation": null,
+        "display_score": "2",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "monotonous repetition or overwhelming reliance on worn expressions",
+        "words that are colorless, flat, or imprecise",
+        "images that are fuzzy or absent altogether"
+      ],
+      "evidence_span_ids": [
+        "span-real-a33db380ccb9",
+        "span-real-3c988dbc480d",
+        "span-real-a93fa1643a68",
+        "span-real-01ea68099a9a",
+        "span-real-daa575e19783",
+        "span-real-35cd300cc88d",
+        "span-real-7de4d90a1e35",
+        "span-real-3e89d11ca8e7",
+        "span-real-f08ff52d3251",
+        "span-real-a222413abc09"
+      ],
+      "rationale": "The essay demonstrates monotonous language with repetitive use of 'skate' variations (skateboarding, skating, skateboards) and imprecise word choices like 'relay mad' (likely meaning 'really mad') and 'seed' (likely meaning 'said'). The vocabulary is limited and flat, failing to create clear images or engage the reader. While the essay communicates a basic message, the word choice actively impedes effectiveness through repetition and misuse, aligning with Score 2 descriptors.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-9cfaf78f6033",
+      "observation_id": "obs-7ec0e0ad016b",
+      "dimension_id": "word_choice",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 2,
+        "display_annotation": null,
+        "display_score": "2",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "monotonous repetition or overwhelming reliance on worn expressions",
+        "words that are colorless, flat, or imprecise",
+        "images that are fuzzy or absent altogether"
+      ],
+      "evidence_span_ids": [
+        "span-real-a33db380ccb9",
+        "span-real-3c988dbc480d",
+        "span-real-a93fa1643a68",
+        "span-real-01ea68099a9a",
+        "span-real-daa575e19783",
+        "span-real-35cd300cc88d",
+        "span-real-7de4d90a1e35",
+        "span-real-3e89d11ca8e7",
+        "span-real-f08ff52d3251",
+        "span-real-a222413abc09"
+      ],
+      "rationale": "The essay demonstrates Score 2 characteristics: vocabulary is monotonous with repetitive use of 'skateboarding/skating/skateboards' (7 instances) and basic words like 'mad,' 'fun,' 'people.' Words are imprecise ('relay mad' for 'really mad,' 'seed' for 'said,' 'skate boarding' as two words). Language is flat and colorless without vivid expression or clear imagery. The attempt at imagery ('i laugh at because the way they skate') is fuzzy and underdeveloped. While the message is understandable, the word choice lacks precision, variety, and fails to energize the writing.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-6afe9559a546",
+      "observation_id": "obs-c49c999b6d3d",
+      "dimension_id": "sentence_fluency",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 2,
+        "display_annotation": null,
+        "display_score": "2",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "significant portions difficult to follow or read aloud",
+        "significant number of awkward, choppy, or rambling constructions"
+      ],
+      "evidence_span_ids": [
+        "span-real-6c183b744a75",
+        "span-real-c0452adf857d",
+        "span-real-08d4e7f7be05"
+      ],
+      "rationale": "The essay demonstrates significant issues with sentence fluency. Reading aloud is choppy due to frequent run-on sentences, missing punctuation, and awkward constructions (e.g., 'Laughed and seed i will never be good enough to skate and she seed that i have improved than some of the people that she knows'). Sentence patterns are monotonous with repetitive simple structures, and meaning is sometimes obscured by grammatical errors and unclear connections between ideas. While the narrative is understandable, the sentence-level execution meets the criteria for Score 2 with 'significant portions difficult to follow or read aloud' and 'significant number of awkward, choppy, or rambling constructions.'",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-98f132be632a",
+      "observation_id": "obs-c49c999b6d3d",
+      "dimension_id": "sentence_fluency",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 2,
+        "display_annotation": null,
+        "display_score": "2",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "significant portions difficult to follow or read aloud",
+        "significant number of awkward, choppy, or rambling constructions",
+        "sentence patterns that are monotonous"
+      ],
+      "evidence_span_ids": [
+        "span-real-6c183b744a75",
+        "span-real-c0452adf857d",
+        "span-real-08d4e7f7be05"
+      ],
+      "rationale": "The essay demonstrates significant issues with sentence fluency. Multiple run-on sentences and awkward constructions (e.g., 'Laughed and seed i will never be good enough to skate and she seed that i have improved than some of the people that she knows') make reading difficult and disjointed. Sentence patterns are monotonous with repetitive subject-verb structures, and the essay lacks natural flow between ideas. While the meaning is generally understandable, the sentence construction frequently forces the reader to slow down or reread, aligning with Score 2 descriptors.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-b761a98cc343",
+      "observation_id": "obs-1fea18b48676",
+      "dimension_id": "conventions",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 2,
+        "display_annotation": null,
+        "display_score": "2",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "little control over basic conventions",
+        "many end-of-sentence errors; frequent internal punctuation errors",
+        "spelling errors that frequently distract reader; common words misspelled",
+        "errors interfere with readability and meaning"
+      ],
+      "evidence_span_ids": [
+        "span-real-ddaa7f7f8f8d",
+        "span-real-59d5d5f8d945",
+        "span-real-1cf9a1140965",
+        "span-real-7ec683cc7985",
+        "span-real-69815474dd1e",
+        "span-real-6d91c04a9e1f",
+        "span-real-73591c860c4b"
+      ],
+      "rationale": "The essay demonstrates little control over basic conventions with numerous errors that impede readability. There are multiple end-of-sentence punctuation errors (e.g., 'keep skateboarding.Laughed' without a space after period, 'laugh.skating' without proper punctuation). Spelling errors distract the reader ('relay' for 'really', 'seed' for 'said', 'compaction' for 'competition', 'there' for 'their'). Capitalization is inconsistent ('i' not capitalized, 'Laughed' capitalized mid-sentence). Grammar and usage errors ('i have improved than some of the people') interfere with meaning. The errors require substantial editing and make the text difficult to follow, aligning with Score 2 descriptors.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-e498d85e77d2",
+      "observation_id": "obs-1fea18b48676",
+      "dimension_id": "conventions",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
+        "spelling errors distract reader; common words misspelled",
+        "errors in grammar and usage do not block meaning but distract reader",
+        "significant need for editing"
+      ],
+      "evidence_span_ids": [
+        "span-real-ddaa7f7f8f8d",
+        "span-real-59d5d5f8d945",
+        "span-real-1cf9a1140965",
+        "span-real-7ec683cc7985",
+        "span-real-69815474dd1e",
+        "span-real-6d91c04a9e1f",
+        "span-real-73591c860c4b"
+      ],
+      "rationale": "The essay demonstrates limited control of conventions. While end-of-sentence punctuation is mostly present (periods at sentence ends), there are significant internal punctuation errors (missing commas, run-on sentences like 'skating can be fun in many ways.People can skate for fun and for compaction.'). Spelling errors distract the reader ('relay' for 'really', 'seed' for 'said', 'compaction' for 'competition', 'there' for 'their'). Grammar and usage errors are frequent ('i' not capitalized, 'improved than' instead of 'improved more than', 'ride them different' instead of 'ride them differently') but do not completely block meaning. The overall pattern matches the Score 3 descriptor of 'limited control' with 'significant need for editing'.",
+      "confidence": 0.85
+    }
+  ]
+}

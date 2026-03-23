@@ -1,0 +1,181 @@
+{
+  "dimensions": {
+    "ideas_content": {
+      "dimension_name": "Ideas and Content",
+      "canonical_score": 5,
+      "display_score": "5",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "clarity, focus, and control",
+        "main ideas stand out",
+        "supporting, relevant, carefully selected details",
+        "thorough, balanced explanation/exploration of topic"
+      ],
+      "evidence_span_ids": [
+        "span-real-052749c9c06a",
+        "span-real-10c58c2720ef",
+        "span-real-1500dcca30d1",
+        "span-real-265cd2dbb220",
+        "span-real-5c09a8985dd9",
+        "span-real-94480035558d",
+        "span-real-a6bb194b5149",
+        "span-real-b71cf0e64f44",
+        "span-real-d2c025c25a2a",
+        "span-real-fd666096f153"
+      ],
+      "feedback_text": "Your essay earned a score of 5 for Ideas and Content. You demonstrate strong **clarity, focus, and control** by consistently exploring laughter’s role in friendship and human connection. Your **main ideas stand out**, particularly the argument that laughter is a \"necessity\" and \"shelter on the pursuit of happiness.\" You support this with **relevant, carefully selected details** from personal experience, such as noting how laughter acted as a \"band-aid\" in your friendship and is the element that keeps it strong, preventing you from being \"different people.\" This specific evidence provides a **thorough exploration** of how laughter functions as a universal bond, moving from a personal example to a broader reflection on its essential role for the \"human race.\"",
+      "confidence": 0.85
+    },
+    "organization": {
+      "dimension_name": "Organization",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "body easy to follow with details fitting where placed",
+        "clear sequencing and paragraph breaks",
+        "developed conclusion may lack subtlety",
+        "recognizable, developed beginning not particularly inviting",
+        "transitions may be stilted or formulaic"
+      ],
+      "evidence_span_ids": [
+        "span-real-5283d37c6297",
+        "span-real-66ef57b976ce",
+        "span-real-6e7c45134b51",
+        "span-real-b25dbf0fc27b",
+        "span-real-b6e4e86ccf8e",
+        "span-real-f76a1f685e2a"
+      ],
+      "feedback_text": "Your essay scored a 4 in Organization. Your writing has a **recognizable, developed beginning** and a **body easy to follow with details fitting where placed**, as seen in the clear chronological story of your friendship with @PERSON1. The essay moves logically from a personal anecdote to broader reflections on laughter's universal value. However, **transitions may be stilted or formulaic**, such as the abrupt shift from \"I think of what the human race...\" into the concluding paragraph, which feels somewhat tacked on. While your **developed conclusion may lack subtlety**, it successfully returns to your core idea that laughter is essential to friendship and life.",
+      "confidence": 0.85
+    },
+    "voice": {
+      "dimension_name": "Voice",
+      "canonical_score": 5,
+      "display_score": "5",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "appropriate level of closeness to or distance from audience",
+        "reader may discern writer behind words and feel sense of interaction",
+        "strong sense of audience; writer seems aware of reader and how to communicate effectively",
+        "topic has come to life; shows originality, liveliness, honesty, conviction, excitement, humor, or suspense"
+      ],
+      "evidence_span_ids": [
+        "span-real-0461974db54b",
+        "span-real-116fa6b44de3",
+        "span-real-5c51b1c06df5",
+        "span-real-60263d39077e",
+        "span-real-e58042e0193a"
+      ],
+      "feedback_text": "Your essay received a score of 5 for Voice. This score reflects a **strong sense of audience** and a tone that makes the **topic come to life** with conviction and honesty. Your direct engagement with the reader, using statements like \"Everyone knows that it wasn't a good day if you haven't laughed,\" creates a sense of shared understanding and interaction. Furthermore, your personal conviction gives the topic vitality, as seen when you declare, \"I strive to laugh every single day,\" and when you powerfully conclude that a life without laughter \"is no life at all, for laughter will always be your shelter.\" This blend of audience awareness and sincere belief allows your distinctive perspective to shine through effectively.",
+      "confidence": 0.85
+    },
+    "word_choice": {
+      "dimension_name": "Word Choice",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "expression is functional; slang not purposeful or effective",
+        "rare experiments with language; avoids clichés",
+        "words that work but do not particularly energize writing"
+      ],
+      "evidence_span_ids": [
+        "span-real-0d33a45bc623",
+        "span-real-2c435768e9b6",
+        "span-real-2e375bc38871",
+        "span-real-359e12f01980",
+        "span-real-5f5a2aaa5b2f",
+        "span-real-95f238073c08",
+        "span-real-a21c5fc3534e",
+        "span-real-a76d3103e8cc",
+        "span-real-ab77fde9de98",
+        "span-real-b8da99fde110",
+        "span-real-d6488cba7ddc"
+      ],
+      "feedback_text": "Your essay earned a Word Choice score of 4. Your expression is functional, and you avoid clichés, using some original phrases like \"laughter was definitely the band-aid\" and \"childish kind of cajoling.\" These rare experiments with language show good intent. However, much of your word choice works but does not particularly energize the writing. For example, describing laughter as bringing \"an ecstatic, and serendipitous feeling\" uses strong vocabulary, but other sections rely on more common phrasing like \"the purest kind of joy\" and \"brings humans together.\" This mix results in a capable but uneven level of verbal energy.",
+      "confidence": 0.85
+    },
+    "sentence_fluency": {
+      "dimension_name": "Sentence Fluency",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "natural sound; reader moves easily but lacks rhythm and grace",
+        "some repeated patterns that detract from impact",
+        "strong control over simple sentences, variable over complex"
+      ],
+      "evidence_span_ids": [
+        "span-real-03cf9c610a8f",
+        "span-real-0bcde4387790",
+        "span-real-0c3a9464d5a6",
+        "span-real-181e841444b1",
+        "span-real-203a0e4dcf49",
+        "span-real-23f5f2a49025",
+        "span-real-25a33b55338d",
+        "span-real-2a232dfc558e",
+        "span-real-33326ec9cbc6",
+        "span-real-36e731c2cd61",
+        "span-real-39c7eec866cd",
+        "span-real-3d018372896a",
+        "span-real-4b8b1ebea282",
+        "span-real-5019aea2f9e9",
+        "span-real-5a44755a7d1d",
+        "span-real-6b4d5cae5ab8",
+        "span-real-6ef90d7a7c1f",
+        "span-real-7d2398f344e5",
+        "span-real-869e51cfae92",
+        "span-real-8885b85135e3",
+        "span-real-90f8699d2afc",
+        "span-real-9a1fdaa2c40f",
+        "span-real-9a7009f18b14",
+        "span-real-a43bc69038c7",
+        "span-real-acf6bcd583a7",
+        "span-real-b038ee1c21e2",
+        "span-real-bb79fe713add",
+        "span-real-ef517b583c5f",
+        "span-real-f8b808b495d2"
+      ],
+      "feedback_text": "Your essay received a score of 4 for Sentence Fluency. Your writing has a **natural sound** and the reader moves through it easily, but it shows **some repeated patterns that detract from impact**, such as frequently starting sentences with \"I think...\" or \"We...\" (\"I think of those poor and miserable people...\", \"I think of what the human race...\"). You also demonstrate **strong control over simple sentences**, which are clear and effective (\"I strive to laugh every single day...\"). However, your control is more variable with complex structures, as seen in the run-on sentence: \"Laughter is now a necessity between us, it's what keeps our friendship so strong.\" This mix of fluent patterns and occasional errors places your work firmly in this score range.",
+      "confidence": 0.85
+    },
+    "conventions": {
+      "dimension_name": "Conventions",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "control over conventions used, though wide range not demonstrated",
+        "correct end-of-sentence punctuation; internal sometimes incorrect",
+        "occasional lapses in grammar and usage; not severe enough to distort meaning"
+      ],
+      "evidence_span_ids": [
+        "span-real-0dc9f2f0d5a5",
+        "span-real-2f434d8a9ec2",
+        "span-real-4a2afe2678d8",
+        "span-real-536bbc4f5188",
+        "span-real-6133f6af6918",
+        "span-real-6db64e2549b9",
+        "span-real-74fdf09460fb",
+        "span-real-79d433716611",
+        "span-real-7cd9abb7c5db",
+        "span-real-b20442e06d8f",
+        "span-real-b9e1cfd4e161",
+        "span-real-bbeb909b5cdf",
+        "span-real-c53a38250004",
+        "span-real-d8a5f76d98a9",
+        "span-real-e2ca7dc0d3c4",
+        "span-real-e48439e0a098",
+        "span-real-fallback-3cbffa2b",
+        "span-real-fallback-fb294b40",
+        "span-real-fc8e641e39d8",
+        "span-real-fd980a15d1df"
+      ],
+      "feedback_text": "Your essay received a score of 4 for Conventions. You demonstrate control over conventions, though a wide range is not yet demonstrated. This is shown through generally correct end-of-sentence punctuation, with internal punctuation sometimes being incorrect, as in the comma splice: \"It's the purest kind of joy we have, it's somethings that brings humans together.\" Furthermore, there are occasional lapses in grammar and usage, such as the possessive error in \"ten-year-old's\" and the pluralization error in \"each others guts,\" but these are not severe enough to distort your meaning. Overall, your command of standard conventions supports clear communication throughout the essay.",
+      "confidence": 0.85
+    }
+  },
+  "summary": "Real provider feedback for 6 dimension(s).",
+  "provider": "openai_compatible"
+}

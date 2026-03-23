@@ -1,0 +1,187 @@
+{
+  "dimensions": {
+    "ideas_content": {
+      "dimension_name": "Ideas and Content",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "clear main ideas",
+        "easily identifiable purpose",
+        "supporting details are relevant but may be overly general or limited"
+      ],
+      "evidence_span_ids": [
+        "span-real-00cedc1ea9ca",
+        "span-real-131470335d47",
+        "span-real-2060e502c31a",
+        "span-real-3a311ee64382",
+        "span-real-a4d8c811ff76",
+        "span-real-b4e9e3f6aecd",
+        "span-real-de473b17f7b7",
+        "span-real-fb4e23b8228e"
+      ],
+      "feedback_text": "Your essay earned a score of 4 for Ideas and Content. You establish a **clear main idea** about the importance of laughter in relationships, and your **purpose is easily identifiable**. You support this with **relevant details**, such as your friend explaining he chooses not to laugh due to being teased and your own reflection that a relationship without laughter was \"boring and sad.\" However, some supporting points remain **overly general or limited**, like stating you spent \"tremendous hours\" trying to make him laugh without providing a specific, detailed example of your attempts. This keeps the development from being fully thorough.",
+      "confidence": 0.85
+    },
+    "organization": {
+      "dimension_name": "Organization",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "body easy to follow with details fitting where placed",
+        "clear sequencing and paragraph breaks",
+        "developed conclusion may lack subtlety",
+        "recognizable, developed beginning not particularly inviting"
+      ],
+      "evidence_span_ids": [
+        "span-real-09aafc944be4",
+        "span-real-20f34acf03a2",
+        "span-real-35882330127e",
+        "span-real-4a9e560bfcd8",
+        "span-real-9deb29608772",
+        "span-real-b7a083cfa28b",
+        "span-real-bf984f421d94",
+        "span-real-d21b70f829c8"
+      ],
+      "feedback_text": "Your essay received a score of 4 for Organization. The **body is easy to follow with details fitting where placed**, as shown by the clear sequence of events from noticing the moving truck to confronting your friend and his eventual explanation at the park. You also use **clear sequencing and paragraph breaks** to separate key moments, like the initial statement about relationships without laughter and the concluding reflection on its importance. However, the **developed conclusion may lack subtlety**, as the final line directly states the essay's theme (\"laughter is the shortest distance\") rather than implying it through the narrative's details.",
+      "confidence": 0.85
+    },
+    "voice": {
+      "dimension_name": "Voice",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "Reader may glimpse writer and feel sense of interaction in places",
+        "Sense of audience; writer seems aware but has not consistently employed appropriate voice",
+        "Voice present; some expressiveness and sincerity",
+        "Voice present; some expressiveness and sincerity."
+      ],
+      "evidence_span_ids": [
+        "span-real-1ec66aebb665",
+        "span-real-27497ce13824",
+        "span-real-31d0dc92eb9d",
+        "span-real-8c07b5acdaad",
+        "span-real-ec816d2b985d",
+        "span-real-f7311d3dda01"
+      ],
+      "feedback_text": "Your essay received a score of 4 for Voice. The reader can glimpse the writer and feel a sense of interaction, and while a sense of audience is present, the voice is not yet consistently employed. Your sincere and expressive voice emerges in specific moments, such as when you reflect, \"I am so glad that I had that one night to see his smile,\" and in the heartfelt dialogue where your friend says, \"your about the only person that makes me want to smile.\" These passages show expressiveness and create a genuine sense of the relationship. However, the voice occasionally shifts, preventing a fully sustained connection with the audience throughout the entire essay.",
+      "confidence": 0.85
+    },
+    "word_choice": {
+      "dimension_name": "Word Choice",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "expression seems mundane and general; slang not effective",
+        "words generally accurate but misused words may occasionally appear",
+        "words that work but rarely capture reader's interest"
+      ],
+      "evidence_span_ids": [
+        "span-real-0a6b287168f6",
+        "span-real-262b1843dda8",
+        "span-real-318f505c6f2c",
+        "span-real-3cbee3a00961",
+        "span-real-5540045d692c",
+        "span-real-62e5274b11dd",
+        "span-real-64086a0b1dcc",
+        "span-real-6a3e4f8db06f",
+        "span-real-73ef9601d5e1",
+        "span-real-73f04fc31eb4",
+        "span-real-778128d03717",
+        "span-real-7f183c9188dc",
+        "span-real-80eab90da25e",
+        "span-real-874a2ecd0851",
+        "span-real-9495c5ddd616",
+        "span-real-96c9bb9fdece",
+        "span-real-9d0afa94b12a",
+        "span-real-b31a735d14f7",
+        "span-real-b4a98bc35ba2",
+        "span-real-ba7933fe0f8f",
+        "span-real-c814665b95e6",
+        "span-real-d49be2b6539b",
+        "span-real-da9ab7607358",
+        "span-real-dafdfae7c14e",
+        "span-real-e25a2c9cdcf0",
+        "span-real-ebce18e047f0",
+        "span-real-ed341c1e7d32",
+        "span-real-f099677fe159",
+        "span-real-fdb1d06abd10"
+      ],
+      "feedback_text": "Your essay scored a 3 in Word Choice. The language is often **mundane and general**, as shown by common phrases like \"sighed and huffed,\" \"big moving rental truck,\" and \"sour face.\" While your words are **generally accurate, misused words occasionally appear**, which distracts the reader. For example, you use \"lefted\" multiple times instead of \"left,\" and \"troumendous\" and \"complacations\" are misspelled and imprecise. These errors, along with others like \"becuase\" and \"gental,\" prevent your **words from capturing the reader's interest** consistently, keeping the expression ordinary rather than engaging.",
+      "confidence": 0.85
+    },
+    "sentence_fluency": {
+      "dimension_name": "Sentence Fluency",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "Good control over simple sentences, little over complex",
+        "Lapses in stylistic control; dialogue may sound stilted",
+        "Mechanical rather than fluid; occasional awkwardness",
+        "good control over simple sentences, little over complex",
+        "mechanical rather than fluid; occasional awkwardness",
+        "some passages invite fluid oral reading; others do not"
+      ],
+      "evidence_span_ids": [
+        "span-real-07c072fceece",
+        "span-real-0e9668a85db5",
+        "span-real-6f588dc90d09",
+        "span-real-9c1b5958fea8"
+      ],
+      "feedback_text": "Your essay received a 3 in Sentence Fluency. You show **good control over simple sentences**, but **lapses in stylistic control** make the prose feel **mechanical rather than fluid**. For example, your dialogue often sounds stilted, as in the repetitive question-and-answer exchange: \"then why cant you not laugh?\" and \"its not that I can't laugh its that I choose not to.\" This creates **occasional awkwardness**. However, some passages are stronger, like your introspective conclusion, which **invites fluid oral reading**: \"I once heard that laughter is the shortest distance between two people... our friendship grew even further.\"",
+      "confidence": 0.85
+    },
+    "conventions": {
+      "dimension_name": "Conventions",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
+        "errors in grammar and usage do not block meaning but distract reader",
+        "significant need for editing",
+        "spelling errors distract reader; common words misspelled"
+      ],
+      "evidence_span_ids": [
+        "span-real-163adbf04ff0",
+        "span-real-175c8dfe74ca",
+        "span-real-2a15c3ffcca7",
+        "span-real-3012262a666c",
+        "span-real-4c4c646804a2",
+        "span-real-4c9018f3ac25",
+        "span-real-50acd97efdfc",
+        "span-real-6cc4fbb18283",
+        "span-real-7a9f94fba607",
+        "span-real-8247aa762fa2",
+        "span-real-8501981d7db6",
+        "span-real-8a4bf31ce3d9",
+        "span-real-a104126c134f",
+        "span-real-a261fba5969c",
+        "span-real-afe9702714ab",
+        "span-real-b02e221b4c07",
+        "span-real-b2e92baefcfd",
+        "span-real-b881b3298d85",
+        "span-real-be373b84f89a",
+        "span-real-c8c33198ac5c",
+        "span-real-ce6ddf4e32d9",
+        "span-real-cf06a588ae33",
+        "span-real-cfdbc4b2a0ce",
+        "span-real-d2cffc12bd89",
+        "span-real-e01b26876b18",
+        "span-real-e1f83071a599",
+        "span-real-e2ff9f7ff0b8",
+        "span-real-e72a161987cb",
+        "span-real-fcd6df092c23",
+        "span-real-ff8707f6e82a"
+      ],
+      "feedback_text": "Your essay received a score of 3 for Conventions. The score reflects that while errors \"do not block meaning but distract the reader,\" there is a \"significant need for editing,\" especially with \"spelling errors\" and internal punctuation. For example, misspellings like \"lefted,\" \"gental,\" and \"becuase\" distract from your message. Furthermore, internal punctuation errors are frequent, as seen in run-on sentences like “your about the only person... your always so happy,” where commas are missing and words like \"your\" are used incorrectly. These consistent patterns in spelling and punctuation show the need for careful proofreading to improve clarity.",
+      "confidence": 0.85
+    }
+  },
+  "summary": "Real provider feedback for 6 dimension(s).",
+  "provider": "openai_compatible"
+}

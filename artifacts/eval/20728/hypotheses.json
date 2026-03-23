@@ -1,0 +1,352 @@
+{
+  "run_id": "run-77723843363c",
+  "hypotheses": [
+    {
+      "hypothesis_id": "hyp-real-47d50552acd8",
+      "observation_id": "obs-50cc01a74241",
+      "dimension_id": "ideas_content",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "easily identifiable purpose",
+        "clear main ideas",
+        "supporting details are relevant but may be overly general or limited"
+      ],
+      "evidence_span_ids": [
+        "span-real-1adc9c78e2d5",
+        "span-real-7bdebe6a84d9",
+        "span-real-e07570e74eef",
+        "span-real-e338c9b88ce7",
+        "span-real-5c272976f51d",
+        "span-real-4ce09a187ba5",
+        "span-real-f4da5930a611",
+        "span-real-2ecfae705d63"
+      ],
+      "rationale": "The essay has an easily identifiable purpose (sharing a humorous family story about twin cousins) and clear main ideas (the twins' antics provide comic relief in a tense household, culminating in an embarrassing store incident). Supporting details are relevant to the narrative, such as the twins' comments about the large woman and their reaction to the ladder beeping, but they remain somewhat general and lack deeper insight or exceptional richness. The essay explores the topic adequately but doesn't achieve the thorough, balanced explanation or strong, carefully selected details required for a score of 5.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-d3dee8952082",
+      "observation_id": "obs-50cc01a74241",
+      "dimension_id": "ideas_content",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "easily identifiable purpose",
+        "clear main ideas",
+        "supporting details are relevant but may be overly general or limited"
+      ],
+      "evidence_span_ids": [
+        "span-real-1adc9c78e2d5",
+        "span-real-7bdebe6a84d9",
+        "span-real-e07570e74eef",
+        "span-real-e338c9b88ce7",
+        "span-real-5c272976f51d",
+        "span-real-4ce09a187ba5",
+        "span-real-f4da5930a611",
+        "span-real-2ecfae705d63"
+      ],
+      "rationale": "The essay has an easily identifiable purpose (sharing a humorous family story about twin cousins) and clear main ideas (the twins' disruptive but funny behavior, the shopping trip incident). Supporting details are relevant to the narrative, such as the twins' comments about the large woman and their reaction to the ladder beeping. However, the development is somewhat limited - while the events are described, the exploration lacks deeper insights or connections, and some details remain general rather than specific. This aligns with the Score 4 descriptors: clear main ideas with relevant but limited support, where the topic is explored but developmental details may be out of balance.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-715813324db0",
+      "observation_id": "obs-ec46d8471d9b",
+      "dimension_id": "organization",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "clear sequencing and paragraph breaks",
+        "recognizable, developed beginning not particularly inviting",
+        "body easy to follow with details fitting where placed",
+        "transitions may be stilted or formulaic"
+      ],
+      "evidence_span_ids": [
+        "span-real-5a7f271a4492",
+        "span-real-24090d2b3480",
+        "span-real-dbf07bee1104",
+        "span-real-0d43ad42adb6",
+        "span-real-6cf6e00e4d76",
+        "span-real-f665cb9756d2",
+        "span-real-804866a35849",
+        "span-real-cf3ff8789cfe"
+      ],
+      "rationale": "The essay demonstrates clear chronological sequencing with a recognizable beginning (introducing the twins and family situation), body (trip to the store with specific incidents), and ending (return home and reflection). Paragraph breaks are present but could be more strategic. Transitions are functional but sometimes rely on simple connectors like '@ORGANIZATION1' and 'when.' Details generally fit where placed (e.g., explaining family tension before the store trip, describing the store encounter sequentially). The organization is coherent and helps the reader follow the narrative, though it lacks the inviting beginning or smooth transitions of higher scores.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-58f068db4f66",
+      "observation_id": "obs-ec46d8471d9b",
+      "dimension_id": "organization",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "attempts at sequencing and paragraph breaks but order occasionally unclear",
+        "beginning and ending present but undeveloped or too obvious",
+        "structure is skeletal or too rigid"
+      ],
+      "evidence_span_ids": [
+        "span-real-5a7f271a4492",
+        "span-real-24090d2b3480",
+        "span-real-dbf07bee1104",
+        "span-real-0d43ad42adb6",
+        "span-real-6cf6e00e4d76",
+        "span-real-f665cb9756d2",
+        "span-real-804866a35849",
+        "span-real-cf3ff8789cfe"
+      ],
+      "rationale": "The essay shows attempted organization with a chronological sequence and identifiable beginning/ending, but the structure is skeletal with no paragraph breaks, making the order occasionally unclear. The beginning introduces the twins but lacks development, and the ending is present but obvious. Transitions are functional but basic, and details fit the sequence but the rigid structure limits effectiveness.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-56aaf7251acb",
+      "observation_id": "obs-dc8ff3c04d1b",
+      "dimension_id": "voice",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "Voice present; some expressiveness and sincerity",
+        "Sense of audience; writer seems aware but has not consistently employed appropriate voice",
+        "Reader may glimpse writer and feel sense of interaction in places"
+      ],
+      "evidence_span_ids": [
+        "span-real-da6113607620",
+        "span-real-f96fc55044a7",
+        "span-real-fafad072c242",
+        "span-real-a4c77fe24bd5",
+        "span-real-70d3bcddb571",
+        "span-real-25ba89b425ad"
+      ],
+      "rationale": "The essay demonstrates a consistent first-person voice with moments of expressiveness and sincerity, particularly in describing family dynamics and the humorous store incident. The writer shows audience awareness through conversational tone and attempts to engage the reader with personal reflections. However, the voice remains at a functional level without sustained originality or deep commitment that would characterize higher scores. The evidence shows glimpses of the writer's personality and interaction, but lacks the consistent, intentional audience awareness required for score 5.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-1eedafd5e699",
+      "observation_id": "obs-dc8ff3c04d1b",
+      "dimension_id": "voice",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "Voice present; some expressiveness and sincerity.",
+        "Sense of audience; writer seems aware but has not consistently employed appropriate voice.",
+        "Reader may glimpse writer and feel sense of interaction in places."
+      ],
+      "evidence_span_ids": [
+        "span-real-da6113607620",
+        "span-real-f96fc55044a7",
+        "span-real-fafad072c242",
+        "span-real-a4c77fe24bd5",
+        "span-real-70d3bcddb571",
+        "span-real-25ba89b425ad"
+      ],
+      "rationale": "The essay demonstrates a clear, consistent voice throughout with expressive moments (e.g., describing the twins' behavior, the mother's frustration, and the embarrassing store incident). The writer shows audience awareness by explaining family dynamics and motivations. However, the voice remains at a functional, conversational level without the sustained originality, deep commitment, or exceptional audience awareness required for scores 5-6. The writing is appropriately casual for a personal narrative but doesn't consistently rise to the level of strong, intentional voice control throughout.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-4a724ed538c4",
+      "observation_id": "obs-1071aa1b6bcd",
+      "dimension_id": "word_choice",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "words that work but do not particularly energize writing",
+        "expression is functional; slang not purposeful or effective",
+        "rare experiments with language; avoids clichés"
+      ],
+      "evidence_span_ids": [
+        "span-real-c1e2ab11141e",
+        "span-real-8c28b88636d6",
+        "span-real-ec5b91ce556b",
+        "span-real-dad8ac547ca7",
+        "span-real-a347441e32fb",
+        "span-real-4084b6caa962",
+        "span-real-29e5475e4374",
+        "span-real-546ac1668b72"
+      ],
+      "rationale": "The essay demonstrates functional word choice that effectively conveys the narrative. Words like 'insanely high energy levels,' 'on the verge of ripping out all her hair,' 'holding them as captives,' and 'squish you on the floor' create clear images and communicate the story effectively. However, the language rarely rises above functional to become particularly energizing or striking. The vocabulary is generally accurate and avoids clichés, but lacks the precision, variety, and natural energy characteristic of scores 5-6. The evidence shows moments of effective description but not sustained, interesting word choice throughout.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-9d745a40e201",
+      "observation_id": "obs-1071aa1b6bcd",
+      "dimension_id": "word_choice",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "words that work but do not particularly energize writing",
+        "expression is functional; slang not purposeful or effective",
+        "rare experiments with language; avoids clichés"
+      ],
+      "evidence_span_ids": [
+        "span-real-c1e2ab11141e",
+        "span-real-8c28b88636d6",
+        "span-real-ec5b91ce556b",
+        "span-real-dad8ac547ca7",
+        "span-real-a347441e32fb",
+        "span-real-4084b6caa962",
+        "span-real-29e5475e4374",
+        "span-real-546ac1668b72"
+      ],
+      "rationale": "The essay demonstrates functional word choice that effectively conveys the narrative. Words like 'furious,' 'insanely high energy levels,' 'on the verge of ripping out all her hair,' 'captives,' and 'squish' work well to communicate meaning and create some imagery. However, the language rarely rises above functional to become particularly energizing or vivid. The vocabulary is generally accurate and avoids clichés, but lacks the precision, variety, and striking quality needed for a score of 5. The essay is comparable to the 'Student Council' anchor (score 4) in its functional effectiveness without consistently energizing the writing.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-dfed07f5ca48",
+      "observation_id": "obs-71ba62143c11",
+      "dimension_id": "sentence_fluency",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "natural sound; reader moves easily but lacks rhythm and grace",
+        "strong control over simple sentences, variable over complex",
+        "some repeated patterns that detract from impact"
+      ],
+      "evidence_span_ids": [
+        "span-real-7befdf0fd64a",
+        "span-real-7a534b568b6d",
+        "span-real-f7bf9d6bceff",
+        "span-real-ff54c29c9fcb",
+        "span-real-5c56fb0cfe74",
+        "span-real-f5fb49f35eee"
+      ],
+      "rationale": "The essay demonstrates clear, functional sentence fluency with natural flow that allows for easy reading. The writer shows strong control over simple sentence structures, creating a coherent narrative that moves logically from one event to the next. However, there is limited variation in sentence patterns and beginnings, with some repetitive use of 'and' conjunctions and similar sentence lengths throughout. While the writing is generally fluid, it lacks the rhythmic grace and intentional craftsmanship that would characterize higher scores. The evidence shows competent but not exceptional sentence construction that aligns with the 'flows but less than fluid' descriptor of a score 4.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-23c00031184e",
+      "observation_id": "obs-71ba62143c11",
+      "dimension_id": "sentence_fluency",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "some passages invite fluid oral reading; others do not",
+        "good control over simple sentences, little over complex",
+        "sentences functional but lack energy"
+      ],
+      "evidence_span_ids": [
+        "span-real-7befdf0fd64a",
+        "span-real-7a534b568b6d",
+        "span-real-f7bf9d6bceff",
+        "span-real-ff54c29c9fcb",
+        "span-real-5c56fb0cfe74",
+        "span-real-f5fb49f35eee"
+      ],
+      "rationale": "The essay demonstrates basic sentence fluency with generally functional sentence structure, but exhibits mechanical rather than fluid qualities. While some passages flow reasonably well (e.g., 'We loaded up the car @ORGANIZATION1 I drove down the highway...'), others show awkward constructions and limited variety. The writer maintains good control over simple sentences but struggles with complex structures, resulting in occasional run-on sentences and repetitive patterns. The writing communicates clearly but lacks the rhythm, grace, and intentional variation characteristic of higher scores.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-e36137df2e14",
+      "observation_id": "obs-2607dd55b678",
+      "dimension_id": "conventions",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
+        "spelling errors distract reader; common words misspelled",
+        "capitalization errors",
+        "errors in grammar and usage do not block meaning but distract reader"
+      ],
+      "evidence_span_ids": [
+        "span-real-fc87821d2c59",
+        "span-real-dd6c7ffa4a49",
+        "span-real-38c35b26fde7",
+        "span-real-10b892fb8afb",
+        "span-real-e38b6bcc79a1",
+        "span-real-e53a31a0f234",
+        "span-real-1943ae617052",
+        "span-real-d37e5d6803c0",
+        "span-real-1eaeea37cd42",
+        "span-real-1b5b103a50aa"
+      ],
+      "rationale": "The essay demonstrates limited control of conventions. While end-of-sentence punctuation is usually correct, there are frequent internal punctuation errors (comma splices, missing commas in compound sentences). Spelling errors distract the reader ('whom' for 'who', 'die' for 'dye', 'isle' for 'aisle', inconsistent capitalization of 'I'). These errors do not block meaning but frequently distract the reader, requiring significant editing. This aligns with the Score 3 descriptors of limited control where errors begin to impede readability.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-cfd724268292",
+      "observation_id": "obs-2607dd55b678",
+      "dimension_id": "conventions",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
+        "spelling errors distract reader; common words misspelled",
+        "capitalization errors",
+        "errors in grammar and usage do not block meaning but distract reader"
+      ],
+      "evidence_span_ids": [
+        "span-real-fc87821d2c59",
+        "span-real-dd6c7ffa4a49",
+        "span-real-38c35b26fde7",
+        "span-real-10b892fb8afb",
+        "span-real-e38b6bcc79a1",
+        "span-real-e53a31a0f234",
+        "span-real-1943ae617052",
+        "span-real-d37e5d6803c0",
+        "span-real-1eaeea37cd42",
+        "span-real-1b5b103a50aa"
+      ],
+      "rationale": "The essay demonstrates limited control of conventions with frequent errors that distract the reader but do not block meaning. End-of-sentence punctuation is generally correct, but internal punctuation errors are frequent (comma splices, missing commas). Spelling errors distract ('isle' for 'aisle', 'die' for 'dye', 'twinkle twinkle little star' not capitalized). Capitalization is inconsistent ('i' instead of 'I' in multiple instances). Grammar/usage errors ('whom' misused, awkward constructions) are noticeable but don't prevent understanding. The overall readability is affected by these recurring issues, placing it at score 3 rather than 4, which requires more consistent control with only minor errors.",
+      "confidence": 0.85
+    }
+  ]
+}

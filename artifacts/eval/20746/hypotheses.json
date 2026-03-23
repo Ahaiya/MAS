@@ -1,0 +1,430 @@
+{
+  "run_id": "run-4eee91fc205a",
+  "hypotheses": [
+    {
+      "hypothesis_id": "hyp-real-9dc6799d0829",
+      "observation_id": "obs-3e2ea608e721",
+      "dimension_id": "ideas_content",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "easily identifiable purpose",
+        "clear main ideas",
+        "supporting details are relevant but may be overly general or limited"
+      ],
+      "evidence_span_ids": [
+        "span-real-b4e9e3f6aecd",
+        "span-real-3a311ee64382",
+        "span-real-131470335d47",
+        "span-real-fb4e23b8228e",
+        "span-real-a4d8c811ff76",
+        "span-real-00cedc1ea9ca",
+        "span-real-2060e502c31a",
+        "span-real-de473b17f7b7"
+      ],
+      "rationale": "The essay has an easily identifiable purpose (exploring a friendship where laughter was absent and then discovered) and clear main ideas (the narrator's persistence in understanding why the friend doesn't laugh, the revelation about past teasing, and the eventual breakthrough). Supporting details are relevant to this narrative but remain somewhat limited and general—the dialogue and events illustrate the central idea but lack deeper insight or rich elaboration. The topic is explored with relevant content, though developmental details are somewhat imbalanced (more focus on the initial questioning than on the emotional impact of the move or the resolution). This aligns with Score 4 descriptors: clear main ideas with relevant but limited support.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-fa22d6a4e90f",
+      "observation_id": "obs-3e2ea608e721",
+      "dimension_id": "ideas_content",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "easily identifiable purpose",
+        "clear main ideas",
+        "supporting details are relevant but may be overly general or limited"
+      ],
+      "evidence_span_ids": [
+        "span-real-b4e9e3f6aecd",
+        "span-real-3a311ee64382",
+        "span-real-131470335d47",
+        "span-real-fb4e23b8228e",
+        "span-real-a4d8c811ff76",
+        "span-real-00cedc1ea9ca",
+        "span-real-2060e502c31a",
+        "span-real-de473b17f7b7"
+      ],
+      "rationale": "The essay has a clear, focused purpose exploring a friendship where one person doesn't laugh. Main ideas about friendship, acceptance, and the meaning of laughter are easily identifiable. Supporting details are relevant to the narrative (attempts to make him laugh, the revelation about teasing, the moving away), but development is somewhat limited - the friend's backstory about teasing is briefly mentioned rather than deeply explored, and some details feel general rather than specific. The essay successfully explores the topic but lacks the thorough, balanced explanation and rich details characteristic of scores 5-6.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-efba55db8125",
+      "observation_id": "obs-c31ab5c1e5a5",
+      "dimension_id": "organization",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "clear sequencing and paragraph breaks",
+        "recognizable, developed beginning not particularly inviting",
+        "developed conclusion may lack subtlety",
+        "body easy to follow with details fitting where placed"
+      ],
+      "evidence_span_ids": [
+        "span-real-bf984f421d94",
+        "span-real-35882330127e",
+        "span-real-9deb29608772",
+        "span-real-20f34acf03a2",
+        "span-real-b7a083cfa28b",
+        "span-real-4a9e560bfcd8",
+        "span-real-09aafc944be4",
+        "span-real-d21b70f829c8"
+      ],
+      "rationale": "The essay demonstrates clear chronological sequencing from the initial problem (friend doesn't laugh) through discovery of moving, confrontation, park conversation, and reflection. Paragraph breaks are present but could be more strategic. The beginning establishes the central conflict, and the conclusion ties back to the opening theme of laughter, though both are somewhat obvious. Details generally fit where placed (e.g., the moving truck discovery leads logically to confrontation, which leads to the park revelation). Transitions like 'The topic was dropped... until' and 'That night at the park' move the narrative forward, though they are functional rather than sophisticated. The organization is coherent and helps the reader follow the story despite some mechanical aspects.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-0b7d2316735c",
+      "observation_id": "obs-c31ab5c1e5a5",
+      "dimension_id": "organization",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "clear sequencing and paragraph breaks",
+        "recognizable, developed beginning not particularly inviting",
+        "developed conclusion may lack subtlety",
+        "body easy to follow with details fitting where placed"
+      ],
+      "evidence_span_ids": [
+        "span-real-bf984f421d94",
+        "span-real-35882330127e",
+        "span-real-9deb29608772",
+        "span-real-20f34acf03a2",
+        "span-real-b7a083cfa28b",
+        "span-real-4a9e560bfcd8",
+        "span-real-09aafc944be4",
+        "span-real-d21b70f829c8"
+      ],
+      "rationale": "The essay demonstrates clear chronological sequencing with a recognizable beginning (introducing the friend who doesn't laugh), body (the discovery of his moving and the park conversation), and conclusion (reflection on laughter's importance). Paragraph breaks are present but could be more strategic. The organization is functional and coherent, helping the reader follow the narrative despite some mechanical aspects. The beginning establishes the central conflict, and the conclusion provides resolution, though both are somewhat straightforward rather than particularly inviting or subtle. Details are placed logically to advance the story, and transitions like 'The topic was dropped and never brought up again until...' and 'That night at the park...' maintain coherence. The structure is clear but somewhat predictable/formulaic, aligning with score 4 descriptors.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-00812a9ff1be",
+      "observation_id": "obs-ea970ec98722",
+      "dimension_id": "voice",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "Voice present; some expressiveness and sincerity.",
+        "Sense of audience; writer seems aware but has not consistently employed appropriate voice",
+        "Reader may glimpse writer and feel sense of interaction in places"
+      ],
+      "evidence_span_ids": [
+        "span-real-31d0dc92eb9d",
+        "span-real-f7311d3dda01",
+        "span-real-ec816d2b985d",
+        "span-real-8c07b5acdaad",
+        "span-real-1ec66aebb665",
+        "span-real-27497ce13824"
+      ],
+      "rationale": "The essay demonstrates a consistent voice with moments of expressiveness and sincerity, particularly in dialogue and emotional reflection. The writer shows audience awareness through conversational tone and attempts to engage the reader with personal experiences. However, the voice remains somewhat casual and inconsistent in places, lacking the sustained originality and deep commitment required for higher scores. The evidence shows glimpses of the writer's personality and interaction with the reader, but not the exceptional, controlled voice needed for scores 5-6.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-f5f7f1b96785",
+      "observation_id": "obs-ea970ec98722",
+      "dimension_id": "voice",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "Voice present; some expressiveness and sincerity",
+        "Sense of audience; writer seems aware but has not consistently employed appropriate voice",
+        "Reader may glimpse writer and feel sense of interaction in places"
+      ],
+      "evidence_span_ids": [
+        "span-real-31d0dc92eb9d",
+        "span-real-f7311d3dda01",
+        "span-real-ec816d2b985d",
+        "span-real-8c07b5acdaad",
+        "span-real-1ec66aebb665",
+        "span-real-27497ce13824"
+      ],
+      "rationale": "The essay demonstrates a consistent personal voice throughout, with the writer's personality and emotional investment clearly present. The writer shows audience awareness through conversational dialogue and personal reflections, creating moments of genuine interaction between reader and writer. However, the voice lacks the sustained originality, deep commitment, and exceptional audience awareness required for scores 5-6, and while present, it doesn't consistently employ the most effective voice for all parts of the narrative. The writer's sincerity and expressiveness are evident in emotional moments (crying, excitement about the smile), but the voice remains at a functional rather than exceptional level.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-c9196ce340bd",
+      "observation_id": "obs-0198f3d06897",
+      "dimension_id": "word_choice",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "words that work but rarely capture reader's interest",
+        "expression seems mundane and general; slang not effective",
+        "words generally accurate but misused words may occasionally appear"
+      ],
+      "evidence_span_ids": [
+        "span-real-778128d03717",
+        "span-real-80eab90da25e",
+        "span-real-f099677fe159",
+        "span-real-62e5274b11dd",
+        "span-real-73ef9601d5e1",
+        "span-real-7f183c9188dc",
+        "span-real-c814665b95e6",
+        "span-real-ebce18e047f0",
+        "span-real-d49be2b6539b",
+        "span-real-874a2ecd0851",
+        "span-real-96c9bb9fdece",
+        "span-real-5540045d692c",
+        "span-real-fdb1d06abd10",
+        "span-real-b31a735d14f7",
+        "span-real-ba7933fe0f8f",
+        "span-real-3cbee3a00961",
+        "span-real-6a3e4f8db06f",
+        "span-real-dafdfae7c14e",
+        "span-real-73f04fc31eb4",
+        "span-real-262b1843dda8",
+        "span-real-9495c5ddd616",
+        "span-real-0a6b287168f6",
+        "span-real-da9ab7607358",
+        "span-real-318f505c6f2c",
+        "span-real-ed341c1e7d32",
+        "span-real-e25a2c9cdcf0",
+        "span-real-b4a98bc35ba2",
+        "span-real-64086a0b1dcc",
+        "span-real-9d0afa94b12a"
+      ],
+      "rationale": "The essay's word choice is functional but limited, aligning with Score 3 descriptors. While some imagery attempts exist ('sour face,' 'drowsy voice'), the vocabulary is predominantly mundane and general, rarely energizing the narrative. Frequent misspellings ('complacations,' 'troumendous,' 'gental,' 'lefted') and imprecise usage ('troumendous hours') detract from precision, though meaning remains generally clear. The language lacks the striking variety or natural precision required for higher scores, fitting the 'generic paper' description of Score 3.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-b1106cb3c1b6",
+      "observation_id": "obs-0198f3d06897",
+      "dimension_id": "word_choice",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "words that work but rarely capture reader's interest",
+        "expression seems mundane and general; slang not effective",
+        "words generally accurate but misused words may occasionally appear"
+      ],
+      "evidence_span_ids": [
+        "span-real-778128d03717",
+        "span-real-80eab90da25e",
+        "span-real-f099677fe159",
+        "span-real-62e5274b11dd",
+        "span-real-73ef9601d5e1",
+        "span-real-7f183c9188dc",
+        "span-real-c814665b95e6",
+        "span-real-ebce18e047f0",
+        "span-real-d49be2b6539b",
+        "span-real-874a2ecd0851",
+        "span-real-96c9bb9fdece",
+        "span-real-5540045d692c",
+        "span-real-fdb1d06abd10",
+        "span-real-b31a735d14f7",
+        "span-real-ba7933fe0f8f",
+        "span-real-3cbee3a00961",
+        "span-real-6a3e4f8db06f",
+        "span-real-dafdfae7c14e",
+        "span-real-73f04fc31eb4",
+        "span-real-262b1843dda8",
+        "span-real-9495c5ddd616",
+        "span-real-0a6b287168f6",
+        "span-real-da9ab7607358",
+        "span-real-318f505c6f2c",
+        "span-real-ed341c1e7d32",
+        "span-real-e25a2c9cdcf0",
+        "span-real-b4a98bc35ba2",
+        "span-real-64086a0b1dcc",
+        "span-real-9d0afa94b12a"
+      ],
+      "rationale": "The essay demonstrates functional communication but lacks precision and variety. Multiple spelling errors (e.g., 'complacations,' 'gental,' 'lefted,' 'absoultyl') and misused words ('troumendous hours' is awkward) detract from precision. While some imagery exists ('sour face,' 'drowsy voice,' 'big moving rental truck'), the language is generally mundane and fails to consistently engage the reader. The vocabulary is limited and repetitive, with few attempts at fresh or vivid expression. This aligns with Score 3 descriptors: words work but rarely capture interest, expression seems mundane, and misused words appear occasionally.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-80f55ae47ea4",
+      "observation_id": "obs-644b9294b8d3",
+      "dimension_id": "sentence_fluency",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "Mechanical rather than fluid; occasional awkwardness",
+        "Good control over simple sentences, little over complex",
+        "Lapses in stylistic control; dialogue may sound stilted"
+      ],
+      "evidence_span_ids": [
+        "span-real-9c1b5958fea8",
+        "span-real-6f588dc90d09",
+        "span-real-07c072fceece",
+        "span-real-0e9668a85db5"
+      ],
+      "rationale": "The essay demonstrates mechanical rather than fluid sentence fluency with noticeable awkward constructions. While simple sentences are generally functional, complex sentences often become convoluted (e.g., 'I would ask many times over and over...' with repetitive phrasing). Dialogue frequently sounds stilted and unnatural ('he replyed back in a drowsy voice because he was gettig tired of the same topic everyday'). The writing lacks rhythmic variation and energy, with some passages inviting oral reading while others are choppy. This aligns with Score 3 descriptors: the essay shows basic control but lacks the fluidity, variety, and stylistic control required for higher scores.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-5df2b913aab7",
+      "observation_id": "obs-644b9294b8d3",
+      "dimension_id": "sentence_fluency",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "mechanical rather than fluid; occasional awkwardness",
+        "some passages invite fluid oral reading; others do not",
+        "good control over simple sentences, little over complex"
+      ],
+      "evidence_span_ids": [
+        "span-real-9c1b5958fea8",
+        "span-real-6f588dc90d09",
+        "span-real-07c072fceece",
+        "span-real-0e9668a85db5"
+      ],
+      "rationale": "The essay demonstrates functional sentence construction with clear chronological progression, but lacks consistent fluidity. While some passages read naturally (e.g., dialogue sections), others contain awkward constructions ('I would spend troumendous hours', 'I had to figure out why he was leaving. Once I got to the porch'), repetitive patterns, and grammatical errors that disrupt flow. The writer shows control over simple sentences but struggles with complex structures, resulting in mechanical rather than fluid reading overall.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-c3ed82f342c5",
+      "observation_id": "obs-d2dd8d402144",
+      "dimension_id": "conventions",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
+        "spelling errors distract reader; common words misspelled",
+        "errors in grammar and usage do not block meaning but distract reader"
+      ],
+      "evidence_span_ids": [
+        "span-real-e72a161987cb",
+        "span-real-a261fba5969c",
+        "span-real-b881b3298d85",
+        "span-real-2a15c3ffcca7",
+        "span-real-cfdbc4b2a0ce",
+        "span-real-7a9f94fba607",
+        "span-real-8a4bf31ce3d9",
+        "span-real-b2e92baefcfd",
+        "span-real-d2cffc12bd89",
+        "span-real-a104126c134f",
+        "span-real-fcd6df092c23",
+        "span-real-4c4c646804a2",
+        "span-real-4c9018f3ac25",
+        "span-real-ff8707f6e82a",
+        "span-real-8501981d7db6",
+        "span-real-50acd97efdfc",
+        "span-real-6cc4fbb18283",
+        "span-real-163adbf04ff0",
+        "span-real-c8c33198ac5c",
+        "span-real-e01b26876b18",
+        "span-real-8247aa762fa2",
+        "span-real-cf06a588ae33",
+        "span-real-3012262a666c",
+        "span-real-e2ff9f7ff0b8",
+        "span-real-175c8dfe74ca",
+        "span-real-b02e221b4c07",
+        "span-real-ce6ddf4e32d9",
+        "span-real-afe9702714ab",
+        "span-real-e1f83071a599",
+        "span-real-be373b84f89a"
+      ],
+      "rationale": "This essay demonstrates limited control over conventions. While end-of-sentence punctuation is generally correct, internal punctuation has frequent errors (e.g., missing commas in compound sentences, inconsistent dialogue punctuation). Multiple spelling errors distract the reader, including misspellings of common words like 'although,' 'tremendous,' 'gentle,' 'replied,' 'excitement,' 'absolutely,' and 'because.' Grammar and usage errors are present (e.g., 'your' instead of 'you're,' double negatives like 'why cant you not laugh,' incorrect verb forms like 'lefted'), which distract but do not block meaning. The errors collectively create a significant need for editing, aligning with Score 3 descriptors.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-0980ad32d910",
+      "observation_id": "obs-d2dd8d402144",
+      "dimension_id": "conventions",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
+        "spelling errors distract reader; common words misspelled",
+        "errors in grammar and usage do not block meaning but distract reader",
+        "significant need for editing"
+      ],
+      "evidence_span_ids": [
+        "span-real-e72a161987cb",
+        "span-real-a261fba5969c",
+        "span-real-b881b3298d85",
+        "span-real-2a15c3ffcca7",
+        "span-real-cfdbc4b2a0ce",
+        "span-real-7a9f94fba607",
+        "span-real-8a4bf31ce3d9",
+        "span-real-b2e92baefcfd",
+        "span-real-d2cffc12bd89",
+        "span-real-a104126c134f",
+        "span-real-fcd6df092c23",
+        "span-real-4c4c646804a2",
+        "span-real-4c9018f3ac25",
+        "span-real-ff8707f6e82a",
+        "span-real-8501981d7db6",
+        "span-real-50acd97efdfc",
+        "span-real-6cc4fbb18283",
+        "span-real-163adbf04ff0",
+        "span-real-c8c33198ac5c",
+        "span-real-e01b26876b18",
+        "span-real-8247aa762fa2",
+        "span-real-cf06a588ae33",
+        "span-real-3012262a666c",
+        "span-real-e2ff9f7ff0b8",
+        "span-real-175c8dfe74ca",
+        "span-real-b02e221b4c07",
+        "span-real-ce6ddf4e32d9",
+        "span-real-afe9702714ab",
+        "span-real-e1f83071a599",
+        "span-real-be373b84f89a"
+      ],
+      "rationale": "This essay demonstrates limited control of conventions. While end-of-sentence punctuation is generally correct, internal punctuation has frequent errors, particularly with dialogue formatting and comma usage. Multiple spelling errors distract the reader (e.g., 'complacations,' 'troumendous,' 'gental,' 'replyed,' 'instandtly,' 'absoultyl'). Grammar and usage issues are present (e.g., 'your' vs. 'you're,' double negatives like 'why cant you not laugh,' irregular verb forms like 'lefted'), though they don't block meaning. The essay requires significant editing to correct these persistent errors, aligning with Score 3 descriptors.",
+      "confidence": 0.85
+    }
+  ]
+}

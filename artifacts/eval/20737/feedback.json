@@ -1,0 +1,155 @@
+{
+  "dimensions": {
+    "ideas_content": {
+      "dimension_name": "Ideas and Content",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "clear main ideas",
+        "difficulties moving from general observations to specifics",
+        "easily identifiable purpose",
+        "predictable or overly-obvious main ideas",
+        "support attempted but details are limited, uneven, somewhat off-topic, or too general",
+        "supporting details are relevant but may be overly general or limited"
+      ],
+      "evidence_span_ids": [
+        "span-real-04fa13398e54",
+        "span-real-2256588e2996",
+        "span-real-298d55e4f5ae",
+        "span-real-62cc57901276",
+        "span-real-7726ae5b376e",
+        "span-real-7ea983585d8f",
+        "span-real-81ba168392ba",
+        "span-real-8dfe99e78dc8"
+      ],
+      "feedback_text": "Your essay received a score of 4 for Ideas and Content. You establish an **easily identifiable purpose** about the value of friendship and laughter. Your main story about searching for a shoe in the dark field provides **relevant but overly general or limited** support, as it shows a shared moment but focuses more on describing the event than on exploring why the laughter was meaningful. The essay has **difficulties moving from general observations to specifics**; you make broad claims like \"We always have fun times\" and \"he is so amazing,\" but these are not developed with concrete, varied examples. This reliance on predictable observations prevents the ideas from becoming more insightful.",
+      "confidence": 0.85
+    },
+    "organization": {
+      "dimension_name": "Organization",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "attempts at sequencing and paragraph breaks but order occasionally unclear",
+        "beginning and ending present but undeveloped or too obvious",
+        "structure is skeletal or too rigid",
+        "transitions sometimes work; same few devices overused"
+      ],
+      "evidence_span_ids": [
+        "span-real-0229998c170a",
+        "span-real-111b7469f0af",
+        "span-real-1417a84f9386",
+        "span-real-481dfcfc4e30",
+        "span-real-ba904a05a79c",
+        "span-real-db11adf79459",
+        "span-real-e31cda4ffa2b"
+      ],
+      "feedback_text": "Your essay scored a 3 in Organization. You make clear attempts at sequencing and paragraphing, and you include a beginning and ending. However, the structure is somewhat skeletal, and the order of events is occasionally unclear. For example, you begin by stating \"This one time my boyfriend and I were laughing so hard,\" but then interrupt the story with general praise for him before describing the incident of the lost shoe. This jump makes the sequence feel disjointed. Your conclusion is present but too obvious, as it broadly states the importance of friendship and laughter without being developed from the specific story. While you use some transitions like \"All of a sudden\" and \"After we found the shoe,\" you rely heavily on a simple chronological chain of events.",
+      "confidence": 0.85
+    },
+    "voice": {
+      "dimension_name": "Voice",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "Voice present; some expressiveness and sincerity",
+        "liveliness, sincerity, or humor when appropriate",
+        "reader may glimpse writer and feel sense of interaction in places",
+        "sense of audience; writer seems aware but has not consistently employed appropriate voice",
+        "voice present; some expressiveness and sincerity"
+      ],
+      "evidence_span_ids": [
+        "span-real-06be2ef0ba80",
+        "span-real-0983b37ea967",
+        "span-real-58b46b7d0ffa",
+        "span-real-6b9379e41024",
+        "span-real-9307a577feec",
+        "span-real-9d1f6f1802d7",
+        "span-real-9f0b967e48d3",
+        "span-real-e2cdea41fb72",
+        "span-real-f820eaf66c8d"
+      ],
+      "feedback_text": "Your essay received a score of 4 for Voice. This score reflects that your voice is present with \"some expressiveness and sincerity,\" and the reader can \"feel a sense of interaction in places.\" For example, your direct address in \"Have you ever stopped to think...\" shows a clear \"sense of audience.\" Your lively and sincere tone comes through in specific anecdotes, such as when you and your friend spent two hours on a joke and ended up \"cracking up with laughter because of how ridiculous it was.\" These moments provide glimpses of your personality and create a genuine connection with your reader.",
+      "confidence": 0.85
+    },
+    "word_choice": {
+      "dimension_name": "Word Choice",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "expression seems mundane and general; slang not effective",
+        "words generally accurate but misused words may occasionally appear",
+        "words that work but rarely capture reader's interest"
+      ],
+      "evidence_span_ids": [
+        "span-real-4b39c5d1492f",
+        "span-real-4d912ffeb09f",
+        "span-real-562b66d5f239",
+        "span-real-576cd4ef4e07",
+        "span-real-58cb26af2a79",
+        "span-real-5ee5ddacb17e",
+        "span-real-6d94c275258b",
+        "span-real-79760d399402",
+        "span-real-8fc691318338",
+        "span-real-dfe4a9438909"
+      ],
+      "feedback_text": "Your essay received a Word Choice score of 3. The language is generally accurate but often seems mundane and rarely captures the reader's interest. For example, phrases like \"our bellies hurt so bad and were very sore\" and \"we always have fun times\" are understandable but lack descriptive energy. Furthermore, some word choices are ineffective or slightly misused, such as the informal interjection \"Crazy I know!\" and the error in \"something that was suppose to be a little joke.\" These moments make the expression feel more general rather than precise or engaging.",
+      "confidence": 0.85
+    },
+    "sentence_fluency": {
+      "dimension_name": "Sentence Fluency",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "good control over simple sentences, little over complex",
+        "sentences functional but lack energy",
+        "some passages invite fluid oral reading; others do not"
+      ],
+      "evidence_span_ids": [
+        "span-real-0468cf61ad91",
+        "span-real-42c25bc68958",
+        "span-real-6c20a7f337b4",
+        "span-real-7e9fc7c9cc43",
+        "span-real-9905df868daf",
+        "span-real-a417da8a81e2",
+        "span-real-b10dcab0089b",
+        "span-real-b8c0f49b3d25",
+        "span-real-fc235df501ad"
+      ],
+      "feedback_text": "Your essay received a **3 in Sentence Fluency**. You show **good control over simple sentences**, which creates some passages that **invite fluid oral reading**, like the energetic sequence, \"We were so tired we laid down in the grass... and we both started cracking up with laughter.\" However, your control over more complex structures is limited, leading to choppy moments where **sentences are functional but lack energy**. For example, the series of simple statements, \"My boyfriend is my best friend... My boyfriend is my life... He is very close to me,\" feels repetitive and halts the flow. This mix of fluid and fragmented passages results in an uneven rhythm overall.",
+      "confidence": 0.85
+    },
+    "conventions": {
+      "dimension_name": "Conventions",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
+        "errors in grammar and usage do not block meaning but distract reader",
+        "significant need for editing",
+        "some control over basic conventions",
+        "spelling errors distract reader; common words misspelled"
+      ],
+      "evidence_span_ids": [
+        "span-real-0bf0c03d0c4c",
+        "span-real-5569a9c6a339",
+        "span-real-7a65bb22b1f3",
+        "span-real-828b41a3d656",
+        "span-real-c26ff93a2795",
+        "span-real-d91effcdb63c",
+        "span-real-ec1358b3c436",
+        "span-real-f60f25f72b51"
+      ],
+      "feedback_text": "Your essay received a score of 3 for Conventions. This score reflects **\"some control over basic conventions,\"** but there is a **\"significant need for editing\"** as **\"errors in grammar and usage do not block meaning but distract reader.\"** For example, the grammatical errors in \"Me and him well we do everything together\" and \"Me and @PERSON1 we are always laughing, at each other\" are distracting. Furthermore, the misspelling of common words, like \"suppose\" instead of \"supposed\" and \"no where\" instead of \"nowhere,\" also fits the descriptor that **\"spelling errors distract reader; common words misspelled.\"** These frequent errors require careful proofreading.",
+      "confidence": 0.85
+    }
+  },
+  "summary": "Real provider feedback for 6 dimension(s).",
+  "provider": "openai_compatible"
+}
