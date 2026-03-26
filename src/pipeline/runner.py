@@ -1,21 +1,37 @@
 """
-Pipeline Runner — drives the mock evaluation pipeline state machine.
+流水线执行器 — 驱动评价流水线状态机。
 
-PipelineRunner is the single point of orchestration. It:
-1. Advances the StateGraph through legal transitions.
-2. Calls mock worker run() functions in order.
-3. Records node lifecycle events in TraceStore.
-4. Manages fallback retry counts via CheckpointManager.
-5. Routes decisions using router functions (no inline routing logic here).
-6. Returns a (RunTrace, feedback) tuple when the pipeline reaches a terminal state.
+PipelineRunner 是系统唯一的编排入口。职责如下：
+1. 按合法转换矩阵推进 StateGraph 状态。
+2. 按阶段顺序调用各 Worker（真实 LLM 模式或确定性 Mock 模式）。
+3. 通过 TraceStore 记录每个节点的生命周期事件。
+4. 通过 CheckpointManager 管理 RE_EXTRACT / RE_SCORE 回退重试次数。
+5. 使用 router 函数做路由决策，本文件不内联任何路由逻辑。
+6. 流水线到达终止状态后，返回 (RunTrace, feedback) 元组。
 
-Design invariants:
-- All data flows via Phase 2 contracts — no ad-hoc dicts between stages.
-- No business logic (trait names, thresholds, formulas) is embedded here.
-  All such values are read from RubricSnapshot / PolicySnapshot.
-- RE_EXTRACT / RE_SCORE loops are guarded by CheckpointManager.record_fallback().
-  Exceeding max_retries forces the pipeline to FAILED.
-- HUMAN_REVIEW is a terminal path — the runner returns immediately with that status.
+运行模式：
+- 真实 LLM 模式：provider 不为 None 时生效。证据抽取、评分、一致性检查、反馈生成
+  均调用真实 Agent（real_extractor / real_scorer / consistency_checker / real_feedback）。
+- Mock 模式：未配置 provider 时使用确定性 Mock Worker，用于回归测试与管道联调。
+
+设计不变量：
+- 所有阶段间数据流均通过 contracts 层定义的类型传递，不使用临时 dict。
+- 本文件不内联任何业务逻辑（维度名、阈值、公式），所有值从 RubricSnapshot /
+  PolicySnapshot 读取。
+- RE_EXTRACT / RE_SCORE 回退循环由 CheckpointManager.record_fallback() 保护，
+  超过最大重试次数后强制进入 FAILED 状态。
+- HUMAN_REVIEW 是终止路径，runner 收到后立即返回，不继续执行。
+
+修正记录：
+- [2026-03-26] 真实 LLM 模式下一致性检查改用 consistency_checker（支持全量触发器，
+  包括 Cusp Rule），Mock 模式保留 mock_consistency_checker。
+- [2026-03-26] 真实 LLM 模式下检测到冲突后，自动触发 resolution rater（默认 rater_3）
+  对全部维度重新评分（ASAP Set 8 "resolution read" 规则），再交由 real_adjudicator
+  以 rater_3 分数为权威进行裁决。Mock 模式保留 mock_adjudicator。
+- [2026-03-26] feedback 阶段前新增 compute_composite 调用，composite 总分写入
+  feedback_dict["composite"]；adj_records 提升为 carry-forward 变量供聚合阶段使用。
+- [2026-03-26] real_adjudicator 兜底路径（rater_3 缺失）的 resolution_path 改为
+  HUMAN_REVIEW，避免 route_after_adjudication 路由到 ADJUDICATED 触发非法状态转换。
 """
 
 from __future__ import annotations
@@ -25,6 +41,7 @@ from typing import Any, Dict, List, Optional, Tuple
 from uuid import uuid4
 
 from src.agents import (
+    consistency_checker,
     mock_adjudicator,
     mock_consistency_checker,
     mock_coverage,
@@ -33,6 +50,7 @@ from src.agents import (
     mock_observer,
     mock_preprocess,
     mock_scorer,
+    real_adjudicator,
     real_extractor,
     real_feedback,
     real_scorer,
@@ -64,6 +82,7 @@ from src.pipeline.validators import (
     validate_hypotheses,
     validate_observations,
 )
+from src.policies.aggregation import compute_composite
 
 
 def _get_rater_ids(bundle: ResolvedArtifactBundle) -> List[str]:
@@ -190,6 +209,7 @@ class PipelineRunner:
         all_spans_by_dim: Dict[str, List[EvidenceSpan]] = {}
         observations: List[DimensionObservation] = []
         hypotheses: List[ScoreHypothesis] = []
+        adj_records: List[AdjudicationRecord] = []
         decisions: Optional[List[FinalDimensionDecision]] = None
 
         try:
@@ -332,7 +352,10 @@ class PipelineRunner:
                     store.record_node_start("node_consistency_checker",
                                             "check_consistency",
                                             input_ref=f"hyps:{len(hypotheses)}")
-                    conflicts = mock_consistency_checker.run(hypotheses, policy)
+                    if self._is_real():
+                        conflicts = consistency_checker.run(hypotheses, policy)
+                    else:
+                        conflicts = mock_consistency_checker.run(hypotheses, policy)
                     store.record_node_success(
                         "node_consistency_checker",
                         output_ref=f"conflicts:{len(conflicts)}",
@@ -348,12 +371,46 @@ class PipelineRunner:
                         break
 
                     elif next_state == PipelineState.ADJUDICATED:
+                        # 真实 LLM 模式：冲突存在时按 ASAP Set 8 规则触发 rater_3 全文重评
+                        if self._is_real():
+                            resolution_rater = (
+                                policy.adjudication_policy
+                                .get("raters", {})
+                                .get("resolution_rater_label", "rater_3")
+                            )
+                            store.record_node_start(
+                                "node_rater3_scorer", "score_resolution",
+                                input_ref=f"obs:{len(observations)}",
+                            )
+                            scoring_tpl = self._tpl("scoring")
+                            all_spans_flat = [
+                                s for spans in all_spans_by_dim.values() for s in spans
+                            ]
+                            rater3_hypotheses = [
+                                real_scorer.run(
+                                    obs, all_spans_flat, rubric, document,
+                                    self._provider_for_rater(resolution_rater),
+                                    scoring_tpl, resolution_rater,
+                                )
+                                for obs in observations
+                            ]
+                            hypotheses = hypotheses + rater3_hypotheses
+                            store.record_node_success(
+                                "node_rater3_scorer",
+                                output_ref=f"r3_hyps:{len(rater3_hypotheses)}",
+                            )
+
                         graph.advance(PipelineState.ADJUDICATED)
                         store.record_node_start("node_adjudicator", "adjudicate",
                                                 input_ref=f"conflicts:{len(conflicts)}")
-                        adj_records, decisions = mock_adjudicator.run(
-                            conflicts, hypotheses, policy
-                        )
+                        if self._is_real():
+                            adj_records, decisions = real_adjudicator.run(
+                                conflicts, hypotheses, policy
+                            )
+                        else:
+                            adj_records, decisions = mock_adjudicator.run(
+                                conflicts, hypotheses, policy
+                            )
                         store.record_node_success(
                             "node_adjudicator",
                             output_ref=f"decisions:{len(decisions)}",
@@ -422,8 +479,19 @@ class PipelineRunner:
                 graph.force_fail()
                 return store.build_run_trace(RunStatus.FAILED), {}
 
-            # ── Stage: Feedback ──────────────────────────────────────────────
+            # ── Stage: Composite Score ───────────────────────────────────────
+            # 计算 composite 总分（由 aggregation policy 配置驱动）。
+            # 无裁决时使用 without_resolution 变体（平均 R1+R2）；
+            # 有裁决时使用 with_resolution 变体（直接使用 FinalDimensionDecision 分数）。
             validate_final_decisions(decisions, plans)
+            composite = compute_composite(
+                decisions=decisions,
+                hypotheses=hypotheses,
+                adjudications=adj_records,
+                policy=policy,
+            )
+
+            # ── Stage: Feedback ──────────────────────────────────────────────
             store.record_node_start("node_feedback", "feedback",
                                     input_ref=f"decisions:{len(decisions)}")
             if self._is_real():
@@ -435,6 +503,10 @@ class PipelineRunner:
                 )
             else:
                 feedback = mock_feedback.run(decisions, observations, rubric)
+
+            # 将 composite 总分写入 feedback，保持输出结构统一
+            feedback["composite"] = composite.to_dict() if composite is not None else None
+
             store.record_node_success(
                 "node_feedback",
                 output_ref=f"dims:{len(feedback.get('dimensions', {}))}",

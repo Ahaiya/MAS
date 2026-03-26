@@ -40,11 +40,15 @@ aggregation_policy:
       formula_representation: "(I_R1+I_R2)/2*2 + (O_R1+O_R2)/2*2 + (S_R1+S_R2)/2*2 + 2*(C_R1+C_R2)/2"
 
     # Variant for essays WITH resolution (use Rater 3)
+    # aggregation_method 必须使用 average_per_trait_then_weighted_sum，
+    # 这样 source_raters: ["rater_3"] 才会生效，从 hypotheses 列表中按
+    # rater_id 查找 R3 分数。direct_weighted_sum 使用 FinalDimensionDecision.final_score，
+    # 无法保证非冲突维度使用 R3 分数，不符合 ASAP Set 8 规定。
     - variant_id: "with_resolution"
       applies_when: "resolution_used"
-      description: "Use Rater 3 scores exclusively"
+      description: "Use Rater 3 scores exclusively for all composite dimensions"
       source_raters: ["rater_3"]
-      aggregation_method: "direct_weighted_sum"
+      aggregation_method: "average_per_trait_then_weighted_sum"
       weights:
         ideas_content: 2
         organization: 2

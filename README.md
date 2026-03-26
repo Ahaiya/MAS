@@ -57,7 +57,7 @@ LLM_API_BASE=https://api.deepseek.com/v1
 
 ```bash
 # 评估样本 20722（默认输出到 artifacts/eval/20722）
-python scripts/eval.py --essay-id 20722
+python scripts/eval.py --essay-id 20760
 
 # 写入自定义目录
 python scripts/eval.py --essay-id 20722 --output-dir artifacts/my_run

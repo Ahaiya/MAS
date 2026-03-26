@@ -2,12 +2,18 @@
 """Compute QWK and inter-agent consistency for batch MAS evaluation results.
 
 Reads MAS scores from artifacts/eval/*/feedback.json, pairs them with human
-scores from the TSV, then computes two sets of metrics:
+scores from the TSV, then computes three sets of metrics:
 
+  0. Composite QWK      — MAS ASAP加权总分 vs TSV domain1_score（量程 10–60）
   1. MAS vs human QWK  — how well MAS agrees with a human rater (per dimension)
   2. Agent vs agent QWK — how well rater_1 and rater_2 agree with each other
                           (requires hypotheses.json produced by run_batch_eval.py
                           or evaluate_essay.py)
+
+人工总分来源（TSV）：
+  domain1_score — ASAP 官方裁决后总分
+    无裁决时 = rater1_domain1 + rater2_domain1
+    有裁决时 = rater3_domain1（= 2*I3 + 2*O3 + 2*S3 + 4*C3）
 
 Usage:
   # Default: compare MAS against rater1
@@ -67,7 +73,7 @@ _DIM_LABELS = {
 def _load_human_scores(
     tsv_path: Path,
 ) -> dict[str, dict[str, tuple[int | None, int | None]]]:
-    """Return {essay_id: {dimension_id: (rater1_score, rater2_score)}}.
+    """Return {essay_id: {dimension_id: (rater1_score, rater2_score), "_total": (domain1_score, None)}}.
 
     Trait column mapping (ASAP Set 8):
       rater{1,2}_trait1 → ideas_content
@@ -76,6 +82,10 @@ def _load_human_scores(
       rater{1,2}_trait4 → word_choice
       rater{1,2}_trait5 → sentence_fluency
       rater{1,2}_trait6 → conventions
+
+    "_total" key stores the official adjudicated domain1_score (量程 10–60):
+      无裁决时 = rater1_domain1 + rater2_domain1
+      有裁决时 = rater3_domain1
     """
     result: dict[str, dict[str, tuple[int | None, int | None]]] = {}
     with open(tsv_path, encoding="latin-1") as f:
@@ -91,7 +101,39 @@ def _load_human_scores(
                 r1: int | None = int(v1) if v1.isdigit() else None
                 r2: int | None = int(v2) if v2.isdigit() else None
                 scores[dim_id] = (r1, r2)
+            # 官方裁决后总分（domain1_score）作为 composite QWK 的 y_true
+            d1 = row.get("domain1_score", "").strip()
+            scores["_total"] = (int(d1) if d1.isdigit() else None, None)
             result[eid] = scores
+    return result
+
+
+def _load_mas_composites(eval_dir: Path) -> dict[str, int]:
+    """Return {essay_id: composite_score} from feedback.json files.
+
+    读取 feedback["composite"]["composite_score"]["canonical_score"]，
+    即 compute_composite() 产出的 ASAP 加权总分（量程 10–60）。
+    未产出 composite 的 essay 不会出现在返回值中。
+    """
+    result: dict[str, int] = {}
+    for essay_dir in sorted(eval_dir.iterdir()):
+        if not essay_dir.is_dir():
+            continue
+        fb_path = essay_dir / "feedback.json"
+        trace_path = essay_dir / "run_trace.json"
+        if not fb_path.exists() or not trace_path.exists():
+            continue
+        try:
+            trace = json.loads(trace_path.read_text(encoding="utf-8"))
+            if trace.get("status") != "completed":
+                continue
+            fb = json.loads(fb_path.read_text(encoding="utf-8"))
+            composite = fb.get("composite") or {}
+            score = composite.get("composite_score", {}).get("canonical_score")
+            if score is not None:
+                result[essay_dir.name] = int(score)
+        except Exception as exc:
+            typer.echo(f"  [warn] composite {essay_dir.name}: {exc}", err=True)
     return result
 
 
@@ -213,7 +255,7 @@ def main(
         help="Optional path to write full JSON report.",
     ),
 ) -> None:
-    """Compute per-dimension QWK (MAS vs human) and inter-agent QWK (rater_1 vs rater_2)."""
+    """Compute composite + per-dimension QWK (MAS vs human) and inter-agent QWK."""
 
     if rater not in ("rater1", "rater2", "average"):
         typer.echo("错误：--rater 必须是 rater1 / rater2 / average", err=True)
@@ -222,7 +264,9 @@ def main(
     # ── Load data ─────────────────────────────────────────────────────────────
     typer.echo(f"[1/4] 加载 MAS 评分结果: {eval_dir}")
     mas_scores = _load_mas_scores(eval_dir)
+    mas_composites = _load_mas_composites(eval_dir)
     typer.echo(f"      找到 {len(mas_scores)} 篇有效 MAS 结果（status=completed）")
+    typer.echo(f"      其中含 composite 总分: {len(mas_composites)} 篇")
 
     typer.echo(f"[2/4] 加载人工评分: {source}")
     human_scores = _load_human_scores(source)
@@ -239,8 +283,34 @@ def main(
         typer.echo("错误：没有可对比的样本，请先运行 run_batch_eval.py", err=True)
         raise typer.Exit(code=1)
 
-    # ── Section 1: MAS vs human QWK ──────────────────────────────────────────
+    # ── Section 0: Composite QWK (ASAP加权总分 vs domain1_score) ─────────────
     typer.echo(f"[4/4] 计算 QWK ...")
+    composite_qwk_result: dict | None = None
+    composite_ids = sorted(set(mas_composites) & set(human_scores))
+    cy_true: list[int] = []
+    cy_pred: list[int] = []
+    for eid in composite_ids:
+        h_total, _ = human_scores[eid].get("_total", (None, None))
+        m_total = mas_composites.get(eid)
+        if h_total is not None and m_total is not None:
+            cy_true.append(h_total)
+            cy_pred.append(m_total)
+
+    if len(cy_true) >= 1:
+        # ASAP Set 8 composite 量程：min=10（全1分）, max=60（全6分）
+        qwk_val = None
+        if len(cy_true) >= 2:
+            res_c = qwk_for_dimension("composite", cy_true, cy_pred, min_score=10, max_score=60)
+            qwk_val = round(res_c.qwk, 4)
+        composite_qwk_result = {
+            "n": len(cy_true),
+            "qwk": qwk_val,
+            "human_mean": round(sum(cy_true) / len(cy_true), 2),
+            "mas_mean": round(sum(cy_pred) / len(cy_pred), 2),
+            "mean_diff": round(sum(cy_pred) / len(cy_pred) - sum(cy_true) / len(cy_true), 2),
+        }
+
+    # ── Section 1: MAS vs human QWK ──────────────────────────────────────────
     qwk_rows: list[dict] = []
 
     for dim_id in _DIM_ORDER:
@@ -342,6 +412,27 @@ def main(
     n_clean = sum(1 for c in consistency_summaries if c["total_conflict_count"] == 0)
     n_conflict = len(consistency_summaries) - n_clean
 
+    # ── Print Section 0: Composite QWK ───────────────────────────────────────
+    typer.echo("")
+    typer.echo("=" * 72)
+    typer.echo(f"  ASAP 加权总分 QWK  (y_true=domain1_score, 量程 10–60)")
+    typer.echo("=" * 72)
+    if composite_qwk_result:
+        c = composite_qwk_result
+        typer.echo(
+            f"  {'':20}  {'N':>4}  {'QWK':>7}  {'人类均值':>6}  {'MAS均值':>6}  {'偏差':>5}"
+        )
+        typer.echo("  " + "-" * 60)
+        typer.echo(
+            f"  {'总分（10–60）':<20}  {c['n']:>4}  "
+            f"{_fmt(c['qwk']):>7}  "
+            f"{_fmt(c['human_mean'], 2):>6}  "
+            f"{_fmt(c['mas_mean'], 2):>6}  "
+            f"{('+' if (c['mean_diff'] or 0) >= 0 else '') + _fmt(c['mean_diff'], 2):>5}"
+        )
+    else:
+        typer.echo("  （尚无含 composite 的已完成样本）")
+
     # ── Print Section 1: MAS vs human ────────────────────────────────────────
     typer.echo("")
     typer.echo("=" * 72)
@@ -407,6 +498,14 @@ def main(
     report_data = {
         "n_essays_compared": len(common_ids),
         "rater_baseline": rater,
+        "composite_qwk": {
+            "description": "ASAP加权总分 QWK：MAS composite vs TSV domain1_score（量程 10–60）",
+            "n": composite_qwk_result["n"] if composite_qwk_result else 0,
+            "qwk": composite_qwk_result["qwk"] if composite_qwk_result else None,
+            "human_mean": composite_qwk_result["human_mean"] if composite_qwk_result else None,
+            "mas_mean": composite_qwk_result["mas_mean"] if composite_qwk_result else None,
+            "mean_diff": composite_qwk_result["mean_diff"] if composite_qwk_result else None,
+        },
         "mas_vs_human": {
             "dimensions": qwk_rows,
             "macro_qwk": macro_qwk,

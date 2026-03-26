@@ -139,8 +139,14 @@ class LoggingProvider(BaseProvider):
 
     @property
     def model_id(self) -> str:
-        """Model identifier of the wrapped provider."""
-        return getattr(self._inner, "_model_id", None) or "?"
+        """Model identifier of the wrapped provider (穿透嵌套包装层查找 _model_id)。"""
+        p = self._inner
+        while p is not None:
+            mid = getattr(p, "_model_id", None)
+            if mid:
+                return mid
+            p = getattr(p, "_inner", None)
+        return "?"
 
     @property
     def call_count(self) -> int:

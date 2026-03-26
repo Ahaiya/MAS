@@ -102,6 +102,36 @@ def _score(dim: dict) -> int:
     return dim.get("canonical_score") or dim.get("final_score") or 0
 
 
+def _get_composite_info(feedback: dict):
+    """从 feedback['composite'] 提取 (score, max_score, weights)，无 composite 时返回 None。"""
+    c = feedback.get("composite")
+    if not c:
+        return None
+    score = c.get("composite_score", {}).get("canonical_score")
+    weights = c.get("aggregation_detail", {}).get("weights", {})
+    if score is None or not weights:
+        return None
+    max_score = 6 * sum(w for w in weights.values() if w > 0)
+    return score, max_score, weights
+
+
+def _human_composite(human_r1: dict, human_r2: dict | None, weights: dict) -> float | None:
+    """用 weights 计算人类评审员加权总分（avg(R1,R2) * weight）。"""
+    if not human_r1:
+        return None
+    total = 0.0
+    for dim_id, w in weights.items():
+        if w == 0:
+            continue
+        h1 = human_r1.get(dim_id)
+        h2 = human_r2.get(dim_id) if human_r2 else None
+        if isinstance(h1, int) and isinstance(h2, int):
+            total += (h1 + h2) / 2 * w
+        elif isinstance(h1, int):
+            total += h1 * w
+    return total
+
+
 def _load_tsv(tsv_path: Path) -> dict[str, dict]:
     """返回 {essay_id: row_dict}"""
     result = {}
@@ -248,6 +278,7 @@ def _print_score_table(trace: dict, feedback: dict, tsv_row: dict | None) -> Non
     total_mas = sum(_score(dims[k]) for k, _, _ in _DIM_ORDER if k in dims)
     human_r1, human_r2 = _get_human_scores(tsv_row)
     has_human = bool(human_r1)
+    cinfo = _get_composite_info(feedback)
 
     typer.echo("")
     typer.echo("  ── 综合评分 " + "─" * 52)
@@ -281,9 +312,20 @@ def _print_score_table(trace: dict, feedback: dict, tsv_row: dict | None) -> Non
         total_avg = (total_h1 + total_h2) / 2
         diff_total = f"{total_mas - total_avg:+.1f}"
         typer.echo(f"  {'合计':<18} {total_mas:>4}  {'':12}  {'':5}  {total_h1:>4}  {total_h2:>4}  {diff_total:>5}")
-        typer.echo(f"  满分: 36  |  MAS: {total_mas} ({total_mas/36*100:.0f}%)  |  人类均值: {total_avg:.1f} ({total_avg/36*100:.0f}%)")
+        if cinfo:
+            c_score, c_max, c_weights = cinfo
+            h_comp = _human_composite(human_r1, human_r2, c_weights)
+            if h_comp is not None:
+                typer.echo(f"  ASAP加权总分: {c_score}/{c_max} ({c_score/c_max*100:.0f}%)  |  人类均值: {h_comp:.1f}/{c_max} ({h_comp/c_max*100:.0f}%)")
+            else:
+                typer.echo(f"  ASAP加权总分: {c_score}/{c_max} ({c_score/c_max*100:.0f}%)")
+        else:
+            typer.echo(f"  满分: 36  |  MAS: {total_mas} ({total_mas/36*100:.0f}%)  |  人类均值: {total_avg:.1f} ({total_avg/36*100:.0f}%)")
     else:
         typer.echo(f"  {'合计':<18} {total_mas:>4}  满分 36 分（{total_mas/36*100:.0f}%）")
+        if cinfo:
+            c_score, c_max, _ = cinfo
+            typer.echo(f"  ASAP加权总分: {c_score}/{c_max} ({c_score/c_max*100:.0f}%)")
 
 
 def _print_dimension_feedback(feedback: dict) -> None:
@@ -307,6 +349,7 @@ def _print_dimension_feedback(feedback: dict) -> None:
 def _save_report_md(essay_id, trace: dict, feedback: dict, tsv_row: dict | None, output_dir: Path) -> Path:
     dims = feedback.get("dimensions", {})
     total_mas = sum(_score(dims[k]) for k, _, _ in _DIM_ORDER if k in dims)
+    cinfo = _get_composite_info(feedback)
     started = trace.get("started_at", "")
     finished = trace.get("finished_at", "")
     human_r1, human_r2 = _get_human_scores(tsv_row)
@@ -365,10 +408,22 @@ def _save_report_md(essay_id, trace: dict, feedback: dict, tsv_row: dict | None,
     if has_human:
         total_avg = (total_h1 + total_h2) / 2
         lines.append(f"| **合计** | **{total_mas}** | | {total_h1} | {total_h2} | {total_mas - total_avg:+.1f} |")
-        lines += ["", f"**满分：36 分** | MAS：{total_mas} 分（{total_mas/36*100:.0f}%）| 人类均值：{total_avg:.1f} 分（{total_avg/36*100:.0f}%）", ""]
+        if cinfo:
+            c_score, c_max, c_weights = cinfo
+            h_comp = _human_composite(human_r1, human_r2, c_weights)
+            if h_comp is not None:
+                lines += ["", f"**ASAP加权总分：{c_score}/{c_max}（{c_score/c_max*100:.0f}%）** | 人类均值：{h_comp:.1f}/{c_max}（{h_comp/c_max*100:.0f}%）", ""]
+            else:
+                lines += ["", f"**ASAP加权总分：{c_score}/{c_max}（{c_score/c_max*100:.0f}%）**", ""]
+        else:
+            lines += ["", f"**满分：36 分** | MAS：{total_mas} 分（{total_mas/36*100:.0f}%）| 人类均值：{total_avg:.1f} 分（{total_avg/36*100:.0f}%）", ""]
     else:
         lines.append(f"| **合计** | **{total_mas}** | 满分 36 分（{total_mas/36*100:.0f}%） |")
-        lines.append("")
+        if cinfo:
+            c_score, c_max, _ = cinfo
+            lines += ["", f"**ASAP加权总分：{c_score}/{c_max}（{c_score/c_max*100:.0f}%）**", ""]
+        else:
+            lines.append("")
 
     lines.append("## 各维度详细反馈")
     for key, name, icon in _DIM_ORDER:
@@ -535,9 +590,14 @@ def _run_single(
         # 非 verbose：仅打印分数一行
         dims = feedback_dict.get("dimensions", {})
         scores = " ".join(str(_score(dims[k])) if k in dims else "?" for k, _, _ in _DIM_ORDER)
-        total = sum(_score(dims[k]) for k, _, _ in _DIM_ORDER if k in dims)
+        cinfo = _get_composite_info(feedback_dict)
+        if cinfo:
+            c_score, c_max, _ = cinfo
+            total_str = f"{c_score}/{c_max}"
+        else:
+            total_str = f"{sum(_score(dims[k]) for k, _, _ in _DIM_ORDER if k in dims)}/36"
         status = "✅" if ok else "❌"
-        typer.echo(f"  {status}  [{scores}]  合计={total}/36")
+        typer.echo(f"  {status}  [{scores}]  合计={total_str}")
 
     if ok and verbose:
         report_path = _save_report_md(essay_id, trace_dict, feedback_dict, tsv_row, output_dir)
