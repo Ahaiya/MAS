@@ -1,0 +1,408 @@
+{
+  "run_id": "run-23bfdcdb255a",
+  "hypotheses": [
+    {
+      "hypothesis_id": "hyp-real-3b6e828ee97c",
+      "observation_id": "obs-5f22ce881ca0",
+      "dimension_id": "ideas_content",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "predictable or overly-obvious main ideas",
+        "support attempted but details are limited, uneven, somewhat off-topic, or too general",
+        "difficulties moving from general observations to specifics"
+      ],
+      "evidence_span_ids": [
+        "span-real-0d9a538069a8",
+        "span-real-7dc0fd46172d",
+        "span-real-fcea386c4281",
+        "span-real-70741402ad99",
+        "span-real-ed2898d4d7e1",
+        "span-real-732a0f8224bb",
+        "span-real-e58ce440c825",
+        "span-real-911109e30da4"
+      ],
+      "rationale": "The essay presents a clear but simplistic narrative about two friends bonding over theater participation. While the main idea is understandable (friendship through shared laughter and activities), the development is limited and uneven. Details about the plays, school bullying, and age difference are mentioned but remain general without specific examples or deeper exploration. The essay attempts support but struggles to move beyond basic observations to meaningful specifics, with some repetitive phrasing and uneven pacing in the storytelling.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-f3c8eed99b39",
+      "observation_id": "obs-5f22ce881ca0",
+      "dimension_id": "ideas_content",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "Understandable but simplistic; support often limited.",
+        "predictable or overly-obvious main ideas",
+        "support attempted but details are limited, uneven, somewhat off-topic, or too general"
+      ],
+      "evidence_span_ids": [
+        "span-real-0d9a538069a8",
+        "span-real-7dc0fd46172d",
+        "span-real-fcea386c4281",
+        "span-real-70741402ad99",
+        "span-real-ed2898d4d7e1",
+        "span-real-732a0f8224bb",
+        "span-real-e58ce440c825",
+        "span-real-911109e30da4"
+      ],
+      "rationale": "The essay presents a clear central idea regarding friendship formed through theater, but the development is simplistic and repetitive. The narrative follows a predictable path ('boy meets girl, age gap prevents romance, stay friends') without deep insight, aligning with the Score 3 descriptor 'predictable or overly-obvious main ideas.' Supporting details are present but often general ('enjoyed each others laughter') or circular, particularly in the conclusion where the writer repeats the same points about talking and future plans multiple times without adding depth. This fits the Score 3 criterion that 'support attempted but details are limited... or too general.' While the story is understandable and functional, the lack of engagement and repetitive development prevents it from reaching Score 4.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-50a15033abc6",
+      "observation_id": "obs-9a2d14f4c0fc",
+      "dimension_id": "organization",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "attempts at sequencing and paragraph breaks but order occasionally unclear",
+        "beginning and ending present but undeveloped or too obvious",
+        "structure is skeletal or too rigid"
+      ],
+      "evidence_span_ids": [
+        "span-real-424d239f9f17",
+        "span-real-d6bd9d8516e1",
+        "span-real-20a1ed4344bf",
+        "span-real-d22830c3aa45",
+        "span-real-9eb83602a364",
+        "span-real-f1b3ba00a7ac"
+      ],
+      "rationale": "The essay shows attempted organization with chronological sequencing and a recognizable beginning/ending, but the structure is skeletal and rigid. The narrative follows a basic timeline but lacks paragraph breaks, making the order occasionally unclear. The beginning introduces the characters and situation, and the ending provides closure with future speculation, but both are undeveloped. Transitions are attempted but simplistic ('So,' 'As,' 'This is when'), and the placement of details about @ORGANIZATION1's background feels somewhat tacked on rather than integrated smoothly. This aligns with Score 3 descriptors where organization is inconsistent and skeletal.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-81d32e6fe7b8",
+      "observation_id": "obs-9a2d14f4c0fc",
+      "dimension_id": "organization",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "beginning and ending present but undeveloped or too obvious",
+        "structure is skeletal or too rigid",
+        "transitions sometimes work; same few devices overused"
+      ],
+      "evidence_span_ids": [
+        "span-real-424d239f9f17",
+        "span-real-d6bd9d8516e1",
+        "span-real-20a1ed4344bf",
+        "span-real-d22830c3aa45",
+        "span-real-9eb83602a364",
+        "span-real-f1b3ba00a7ac"
+      ],
+      "rationale": "The essay follows a clear chronological sequence, which prevents a Score 2 ('order frequently unclear'), but the complete absence of paragraph breaks creates a 'skeletal' structure that fails the Score 4 requirement for 'clear... paragraph breaks.' The beginning ('A true story...') and ending ('End the end...') are identifiable but generic, fitting 'present but undeveloped or too obvious.' Transitions are functional but repetitive ('So', 'stared', 'vary'), matching 'same few devices overused.' The logical flow saves it from a lower score, but the lack of visual organization caps it at 3.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-d3c808288ab2",
+      "observation_id": "obs-2dd9647a9aff",
+      "dimension_id": "voice",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "limited sense of audience; writer's awareness unclear",
+        "occasional sense of writer but voice may shift or disappear",
+        "voice either inappropriately personal or inappropriately impersonal"
+      ],
+      "evidence_span_ids": [
+        "span-real-cb3e1d67b3e1",
+        "span-real-85a8e296671d",
+        "span-real-88e98721b0c3",
+        "span-real-462d7a44e1fc"
+      ],
+      "rationale": "The essay shows occasional glimpses of the writer's presence and some audience awareness in reflective moments (e.g., discussing age differences and future friendship), but the voice is inconsistent—shifting between personal storytelling and mechanical reporting. While there is sincerity in parts, the overall tone lacks sustained engagement and appropriate closeness to the audience, aligning with Score 3 descriptors of limited audience sense and inconsistent voice.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-ce3daf74924a",
+      "observation_id": "obs-2dd9647a9aff",
+      "dimension_id": "voice",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "occasional sense of writer but voice may shift or disappear",
+        "voice either inappropriately personal or inappropriately impersonal",
+        "limited sense of audience; writer's awareness unclear"
+      ],
+      "evidence_span_ids": [
+        "span-real-cb3e1d67b3e1",
+        "span-real-85a8e296671d",
+        "span-real-88e98721b0c3",
+        "span-real-462d7a44e1fc"
+      ],
+      "rationale": "The essay demonstrates an inconsistent voice that aligns with Score 3 descriptors. It begins with a detached, third-person summary ('One year their is a boy...') which feels impersonal for a 'true story', then shifts to a first-person conclusion ('End the end I think...'). This supports the descriptor 'voice may shift or disappear' and 'inappropriately personal or inappropriately impersonal'. While there is an 'occasional sense of writer' at the beginning and end, the middle section is mechanical and repetitive ('So he...', '@PERSON1 found...'), lacking the consistent expressiveness or audience awareness required for a Score 4 ('Voice is consistently present throughout most of the essay').",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-408f2346adff",
+      "observation_id": "obs-b37493a2f760",
+      "dimension_id": "word_choice",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 2,
+        "display_annotation": null,
+        "display_score": "2",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "words that are colorless, flat, or imprecise",
+        "monotonous repetition or overwhelming reliance on worn expressions",
+        "images that are fuzzy or absent altogether"
+      ],
+      "evidence_span_ids": [
+        "span-real-47b022c98b8a",
+        "span-real-c7d98e2c40e5",
+        "span-real-11d940cce97b",
+        "span-real-8fddb383ca39",
+        "span-real-b27624964b43",
+        "span-real-7528dc521dc2",
+        "span-real-ab0324b1213b",
+        "span-real-513453013dde",
+        "span-real-61f02fb381c6",
+        "span-real-9409d76c8c54",
+        "span-real-f3fe613c0787",
+        "span-real-85fc0a33d00d",
+        "span-real-fb71229145f3",
+        "span-real-5d43ba221614",
+        "span-real-64d26fdf943f",
+        "span-real-254e62e4a217",
+        "span-real-7d2ba32e4361",
+        "span-real-71f8f31f3c11",
+        "span-real-2b0bec53e123",
+        "span-real-31d9a69117dc",
+        "span-real-7f946e9e1284",
+        "span-real-4a16b3075d38",
+        "span-real-51a3f13093bc",
+        "span-real-708d565d0ac8",
+        "span-real-1687ade98d0d",
+        "span-real-ae7f5f957f22"
+      ],
+      "rationale": "The essay demonstrates monotonous and misused language consistent with a score 2. Words are frequently imprecise (e.g., 'their' for 'there,' 'so' for 'do,' 'vary' for 'very,' 'stared' for 'started'), creating a flat, colorless tone. There is monotonous repetition of basic words like 'fun,' 'friends,' 'play,' and 'liked' without variation. Attempts at imagery ('the joy of laughter,' 'good times') remain fuzzy and underdeveloped, failing to create vivid pictures. The language rarely moves beyond worn expressions and basic vocabulary, obscuring meaning through frequent errors in word choice and usage.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-63f233c7ad70",
+      "observation_id": "obs-b37493a2f760",
+      "dimension_id": "word_choice",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 2,
+        "display_annotation": null,
+        "display_score": "2",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "Monotonous and/or misused language.",
+        "words that are colorless, flat, or imprecise",
+        "images that are fuzzy or absent altogether"
+      ],
+      "evidence_span_ids": [
+        "span-real-47b022c98b8a",
+        "span-real-c7d98e2c40e5",
+        "span-real-11d940cce97b",
+        "span-real-8fddb383ca39",
+        "span-real-b27624964b43",
+        "span-real-7528dc521dc2",
+        "span-real-ab0324b1213b",
+        "span-real-513453013dde",
+        "span-real-61f02fb381c6",
+        "span-real-9409d76c8c54",
+        "span-real-f3fe613c0787",
+        "span-real-85fc0a33d00d",
+        "span-real-fb71229145f3",
+        "span-real-5d43ba221614",
+        "span-real-64d26fdf943f",
+        "span-real-254e62e4a217",
+        "span-real-7d2ba32e4361",
+        "span-real-71f8f31f3c11",
+        "span-real-2b0bec53e123",
+        "span-real-31d9a69117dc",
+        "span-real-7f946e9e1284",
+        "span-real-4a16b3075d38",
+        "span-real-51a3f13093bc",
+        "span-real-708d565d0ac8",
+        "span-real-1687ade98d0d",
+        "span-real-ae7f5f957f22"
+      ],
+      "rationale": "The essay demonstrates frequent misuse of common words (e.g., 'stared' for 'started', 'vary' for 'very', 'their' for 'there', 'lining' for 'lying'), which aligns with the Score 2 descriptor 'misused language.' The vocabulary is repetitive and basic ('fun', 'friends', 'play'), fitting 'monotonous.' Imagery is generic ('good times', 'great and fun'), matching 'images that are fuzzy or absent altogether.' It does not reach Score 3 because the words are not 'generally accurate'; the errors are pervasive enough to classify as systemic misuse rather than occasional slips.",
+      "confidence": 0.9
+    },
+    {
+      "hypothesis_id": "hyp-real-8c53dd8d19ea",
+      "observation_id": "obs-fb4f6d6bfee6",
+      "dimension_id": "sentence_fluency",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "mechanical rather than fluid; occasional awkwardness",
+        "some passages invite fluid oral reading; others do not",
+        "good control over simple sentences, little over complex",
+        "sentences functional but lack energy"
+      ],
+      "evidence_span_ids": [
+        "span-real-0de8a477b5f0",
+        "span-real-7a21f0713f1c",
+        "span-real-5e94d18707bf",
+        "span-real-57a846f6490b",
+        "span-real-85aa58c9f4ce",
+        "span-real-e612126fce6d",
+        "span-real-fd0e55f0d78a",
+        "span-real-11bf03ea3d91",
+        "span-real-784fe36c6069",
+        "span-real-e27902ad0740",
+        "span-real-fallback-83bfec56"
+      ],
+      "rationale": "The essay demonstrates basic sentence functionality with mostly simple sentence structures, but lacks fluidity and rhythm. While the narrative is generally understandable, there are frequent awkward constructions (e.g., 'their is a boy,' 'ins ted of,' 'vary close friends,' 'the used every minute'), repetitive sentence beginnings ('So he...', 'So they...'), and run-on sentences that force the reader to slow down. The writing has a mechanical quality rather than natural flow, with limited variation in sentence patterns and length. The essay meets the descriptors for Score 3: it's functional but lacks the energy and fluidity required for higher scores.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-344ac7bfc240",
+      "observation_id": "obs-fb4f6d6bfee6",
+      "dimension_id": "sentence_fluency",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 2,
+        "display_annotation": null,
+        "display_score": "2",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "Choppy or rambling; awkward constructions.",
+        "significant portions difficult to follow or read aloud",
+        "sentence patterns that are monotonous"
+      ],
+      "evidence_span_ids": [
+        "span-real-0de8a477b5f0",
+        "span-real-7a21f0713f1c",
+        "span-real-5e94d18707bf",
+        "span-real-57a846f6490b",
+        "span-real-85aa58c9f4ce",
+        "span-real-e612126fce6d",
+        "span-real-fd0e55f0d78a",
+        "span-real-11bf03ea3d91",
+        "span-real-784fe36c6069",
+        "span-real-e27902ad0740",
+        "span-real-fallback-83bfec56"
+      ],
+      "rationale": "The essay demonstrates significant awkwardness and rambling constructions that disrupt the reading flow, aligning with Score 2 descriptors. Sentences are frequently monotonous, relying heavily on 'and' or 'so' to string together clauses (Evidence_7). Pervasive spelling and grammatical errors (e.g., 'their is', 'stared', 'vary', 'lining', 'End the end') force the reader to pause and decode meaning, making significant portions difficult to read aloud smoothly (Evidence_1, Evidence_6, Evidence_10). While the narrative is generally understandable, the lack of control over simple sentence structures prevents it from reaching Score 3, which requires 'good control over simple sentences' and only 'occasional awkwardness'.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-960119c86172",
+      "observation_id": "obs-d87c14f360ea",
+      "dimension_id": "conventions",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
+        "spelling errors distract reader; common words misspelled",
+        "errors in grammar and usage do not block meaning but distract reader"
+      ],
+      "evidence_span_ids": [
+        "span-real-b98a10f8a298",
+        "span-real-1207353ab153",
+        "span-real-66ba69800abd",
+        "span-real-a5958848c484",
+        "span-real-4841d93b93e8",
+        "span-real-efa4f1d17f82",
+        "span-real-fb160411f15e",
+        "span-real-320bf15b5e98",
+        "span-real-e4137f31ced7",
+        "span-real-99006cfc1a90",
+        "span-real-2f3ea802a16d",
+        "span-real-9040901dfb45",
+        "span-real-22fc19bbc1bf",
+        "span-real-ce9631272fd2",
+        "span-real-863faf09f355",
+        "span-real-252061201409",
+        "span-real-2a9f85e60d8c",
+        "span-real-14efc08072a2",
+        "span-real-66a1120d0f9e",
+        "span-real-331f2bb28bd9"
+      ],
+      "rationale": "The essay demonstrates limited control of conventions with frequent errors that distract the reader but do not block meaning. End-of-sentence punctuation is generally correct, but internal punctuation is inconsistent. Numerous spelling errors (their/there, stared/started, vary/very, ins ted/instead, lining/lying) and grammar/usage issues (subject-verb agreement, verb tense errors, double words) occur throughout, requiring significant editing. The errors are frequent enough to impede readability but not to the point where meaning is completely lost.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-d4c5f953bacd",
+      "observation_id": "obs-d87c14f360ea",
+      "dimension_id": "conventions",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "some control over basic conventions",
+        "spelling errors distract reader; common words misspelled",
+        "errors in grammar and usage do not block meaning but distract reader"
+      ],
+      "evidence_span_ids": [
+        "span-real-b98a10f8a298",
+        "span-real-1207353ab153",
+        "span-real-66ba69800abd",
+        "span-real-a5958848c484",
+        "span-real-4841d93b93e8",
+        "span-real-efa4f1d17f82",
+        "span-real-fb160411f15e",
+        "span-real-320bf15b5e98",
+        "span-real-e4137f31ced7",
+        "span-real-99006cfc1a90",
+        "span-real-2f3ea802a16d",
+        "span-real-9040901dfb45",
+        "span-real-22fc19bbc1bf",
+        "span-real-ce9631272fd2",
+        "span-real-863faf09f355",
+        "span-real-252061201409",
+        "span-real-2a9f85e60d8c",
+        "span-real-14efc08072a2",
+        "span-real-66a1120d0f9e",
+        "span-real-331f2bb28bd9"
+      ],
+      "rationale": "The essay demonstrates limited control over conventions, aligning with Score 3. There are frequent spelling errors of common words (e.g., 'vary' for 'very', 'ins ted' for 'instead', 'their' for 'there') and grammar usage errors (e.g., 'didn't knew', 'have became') that distract the reader but do not block meaning. End-of-sentence punctuation is usually correct and capitalization is mostly consistent (only a few sentence starters are lowercase), which distinguishes it from Score 2 ('capitalization inconsistent or often incorrect'). However, the frequency of errors prevents it from reaching Score 4 ('spelling usually correct').",
+      "confidence": 0.9
+    }
+  ]
+}

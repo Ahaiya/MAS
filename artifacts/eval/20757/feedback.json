@@ -1,0 +1,179 @@
+{
+  "dimensions": {
+    "ideas_content": {
+      "dimension_name": "Ideas and Content",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "Understandable but simplistic; support often limited.",
+        "difficulties moving from general observations to specifics",
+        "predictable or overly-obvious main ideas",
+        "support attempted but details are limited, uneven, somewhat off-topic, or too general"
+      ],
+      "evidence_span_ids": [
+        "span-real-0d9a538069a8",
+        "span-real-70741402ad99",
+        "span-real-732a0f8224bb",
+        "span-real-7dc0fd46172d",
+        "span-real-911109e30da4",
+        "span-real-e58ce440c825",
+        "span-real-ed2898d4d7e1",
+        "span-real-fcea386c4281"
+      ],
+      "feedback_text": "Your essay earned a score of 3 for Ideas and Content. The main idea about friendship is **understandable but simplistic** and **predictable**. Your **support is attempted but details are limited, uneven, and too general**. For example, you state that the friends bonded over \"the joy of laughter\" but do not provide a specific, detailed story of a shared moment that shows this. Instead, support becomes uneven and off-topic, shifting to explanations about age differences, homeschooling, and romantic speculation, which do not develop the core idea. This shows a **difficulty moving from general observations to specifics**.",
+      "confidence": 0.85
+    },
+    "organization": {
+      "dimension_name": "Organization",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "attempts at sequencing and paragraph breaks but order occasionally unclear",
+        "beginning and ending present but undeveloped or too obvious",
+        "structure is skeletal or too rigid",
+        "transitions sometimes work; same few devices overused"
+      ],
+      "evidence_span_ids": [
+        "span-real-20a1ed4344bf",
+        "span-real-424d239f9f17",
+        "span-real-9eb83602a364",
+        "span-real-d22830c3aa45",
+        "span-real-d6bd9d8516e1",
+        "span-real-f1b3ba00a7ac"
+      ],
+      "feedback_text": "Your essay received a score of 3 for Organization. You have a clear beginning and ending, but they are too obvious, such as stating \"One year...\" to start and \"End the end...\" to conclude. The structure is skeletal, moving rigidly from one event to the next without developed connections. Your sequencing is occasionally unclear, as seen when you jump between events like when @PERSON1 \"already knew\" @ORGANIZATION1 liked him and later when he asked her and she initially said \"no,\" which makes the order of these discoveries confusing.",
+      "confidence": 0.85
+    },
+    "voice": {
+      "dimension_name": "Voice",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "limited sense of audience; writer's awareness unclear",
+        "occasional sense of writer but voice may shift or disappear",
+        "voice either inappropriately personal or inappropriately impersonal"
+      ],
+      "evidence_span_ids": [
+        "span-real-462d7a44e1fc",
+        "span-real-85a8e296671d",
+        "span-real-88e98721b0c3",
+        "span-real-cb3e1d67b3e1"
+      ],
+      "feedback_text": "Your essay received a score of 3 for Voice. This score reflects a **limited sense of audience** and an **occasional sense of the writer that may shift or disappear**. The voice often becomes inappropriately personal, as when you speculate that the characters' friendship might go \"to the next level... only time will tell,\" which feels more like informal conversation than essay writing. Elsewhere, the voice shifts to a simple, impersonal narration, such as stating, \"One year their is a boy named @PERSON1 who wanted to do something fun.\" This inconsistency shows an unclear awareness of how to maintain a steady, appropriate voice for the task.",
+      "confidence": 0.85
+    },
+    "word_choice": {
+      "dimension_name": "Word Choice",
+      "canonical_score": 2,
+      "display_score": "2",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "Monotonous and/or misused language.",
+        "images that are fuzzy or absent altogether",
+        "monotonous repetition or overwhelming reliance on worn expressions",
+        "words that are colorless, flat, or imprecise"
+      ],
+      "evidence_span_ids": [
+        "span-real-11d940cce97b",
+        "span-real-1687ade98d0d",
+        "span-real-254e62e4a217",
+        "span-real-2b0bec53e123",
+        "span-real-31d9a69117dc",
+        "span-real-47b022c98b8a",
+        "span-real-4a16b3075d38",
+        "span-real-513453013dde",
+        "span-real-51a3f13093bc",
+        "span-real-5d43ba221614",
+        "span-real-61f02fb381c6",
+        "span-real-64d26fdf943f",
+        "span-real-708d565d0ac8",
+        "span-real-71f8f31f3c11",
+        "span-real-7528dc521dc2",
+        "span-real-7d2ba32e4361",
+        "span-real-7f946e9e1284",
+        "span-real-85fc0a33d00d",
+        "span-real-8fddb383ca39",
+        "span-real-9409d76c8c54",
+        "span-real-ab0324b1213b",
+        "span-real-ae7f5f957f22",
+        "span-real-b27624964b43",
+        "span-real-c7d98e2c40e5",
+        "span-real-f3fe613c0787",
+        "span-real-fb71229145f3"
+      ],
+      "feedback_text": "Your essay received a score of 2 for Word Choice. The language is often **monotonous and misused**, relying on **colorless, flat, or imprecise** words. This is shown through vague, repetitive phrasing like \"thing that they will have to talk about\" and \"the joy of laughter, good times, great and fun.\" Furthermore, frequent word-level errors such as \"ins ted of,\" \"their is a boy,\" \"more then friends,\" and \"vary close\" demonstrate imprecise and often incorrect word choice, which contributes to fuzzy or unclear images throughout the essay.",
+      "confidence": 0.85
+    },
+    "sentence_fluency": {
+      "dimension_name": "Sentence Fluency",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "Choppy or rambling; awkward constructions.",
+        "good control over simple sentences, little over complex",
+        "mechanical rather than fluid; occasional awkwardness",
+        "sentence patterns that are monotonous",
+        "sentences functional but lack energy",
+        "significant portions difficult to follow or read aloud",
+        "some passages invite fluid oral reading; others do not"
+      ],
+      "evidence_span_ids": [
+        "span-real-0de8a477b5f0",
+        "span-real-11bf03ea3d91",
+        "span-real-57a846f6490b",
+        "span-real-5e94d18707bf",
+        "span-real-784fe36c6069",
+        "span-real-7a21f0713f1c",
+        "span-real-85aa58c9f4ce",
+        "span-real-e27902ad0740",
+        "span-real-e612126fce6d",
+        "span-real-fallback-83bfec56",
+        "span-real-fd0e55f0d78a"
+      ],
+      "feedback_text": "Your essay received a 3 for Sentence Fluency. The writing shows good control of simple sentences but has **occasional awkwardness** and patterns that can be **monotonous**, making **significant portions difficult to follow or read aloud**. For example, the sentence beginning \"As the play stared to end @PERSON1 stared to hang out...\" is rambling and awkward. Furthermore, the overuse of sentences starting with \"So\" or \"As\" creates a choppy, mechanical rhythm, as seen in consecutive paragraphs: \"So they both agreed...\" and \"As the play was ending...\" This mix of fluid passages and awkward constructions limits the overall fluency.",
+      "confidence": 0.85
+    },
+    "conventions": {
+      "dimension_name": "Conventions",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
+        "errors in grammar and usage do not block meaning but distract reader",
+        "some control over basic conventions",
+        "spelling errors distract reader; common words misspelled"
+      ],
+      "evidence_span_ids": [
+        "span-real-1207353ab153",
+        "span-real-14efc08072a2",
+        "span-real-22fc19bbc1bf",
+        "span-real-252061201409",
+        "span-real-2a9f85e60d8c",
+        "span-real-2f3ea802a16d",
+        "span-real-320bf15b5e98",
+        "span-real-331f2bb28bd9",
+        "span-real-4841d93b93e8",
+        "span-real-66a1120d0f9e",
+        "span-real-66ba69800abd",
+        "span-real-863faf09f355",
+        "span-real-9040901dfb45",
+        "span-real-99006cfc1a90",
+        "span-real-a5958848c484",
+        "span-real-b98a10f8a298",
+        "span-real-ce9631272fd2",
+        "span-real-e4137f31ced7",
+        "span-real-efa4f1d17f82",
+        "span-real-fb160411f15e"
+      ],
+      "feedback_text": "Your essay received a score of 3 for Conventions. You demonstrate **\"some control over basic conventions,\"** but **\"errors in grammar and usage do not block meaning but distract reader.\"** This is evident in frequent subject-verb agreement errors, such as **\"the people that was their\"** and **\"how many great thing that they will have.\"** Furthermore, **\"spelling errors distract reader,\"** as seen with repeated misspellings of common words like **\"vary\"** for *very* and **\"their\"** for *there*. While end-of-sentence punctuation is often correct, these patterns of internal errors create distractions throughout your writing.",
+      "confidence": 0.85
+    }
+  },
+  "summary": "Real provider feedback for 6 dimension(s).",
+  "provider": "openai_compatible"
+}

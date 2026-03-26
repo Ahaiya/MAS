@@ -138,6 +138,11 @@ class LoggingProvider(BaseProvider):
     # ── Cumulative stats ───────────────────────────────────────────────────────
 
     @property
+    def model_id(self) -> str:
+        """Model identifier of the wrapped provider."""
+        return getattr(self._inner, "_model_id", None) or "?"
+
+    @property
     def call_count(self) -> int:
         """Total number of complete() calls made through this wrapper."""
         return self._call_count

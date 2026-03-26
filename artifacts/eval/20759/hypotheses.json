@@ -1,0 +1,439 @@
+{
+  "run_id": "run-f1fb2e059b48",
+  "hypotheses": [
+    {
+      "hypothesis_id": "hyp-real-069a524c2959",
+      "observation_id": "obs-937d4eba7467",
+      "dimension_id": "ideas_content",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "easily identifiable purpose",
+        "clear main ideas",
+        "supporting details are relevant but may be overly general or limited"
+      ],
+      "evidence_span_ids": [
+        "span-real-5450d8e2b93f",
+        "span-real-733161d5bd71",
+        "span-real-3cc88a5e3fca",
+        "span-real-4c03dd80fb7d",
+        "span-real-985c89ec5055",
+        "span-real-39db1812c8a6"
+      ],
+      "rationale": "The essay has an easily identifiable purpose (nervous first meeting evolving into a loving relationship) and clear main ideas (anxiety transforming into comfort and love). Supporting details are relevant to the narrative but somewhat limited in depth and insight - while specific moments are described (car ride, restaurant, bookstore), they remain at a surface level without deeper exploration of emotions or significance beyond the immediate events. The essay communicates effectively but lacks the rich, insightful development characteristic of scores 5-6.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-b5e0103000a9",
+      "observation_id": "obs-937d4eba7467",
+      "dimension_id": "ideas_content",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "easily identifiable purpose",
+        "clear main ideas",
+        "supporting details are relevant but may be overly general or limited"
+      ],
+      "evidence_span_ids": [
+        "span-real-5450d8e2b93f",
+        "span-real-733161d5bd71",
+        "span-real-3cc88a5e3fca",
+        "span-real-4c03dd80fb7d",
+        "span-real-985c89ec5055",
+        "span-real-39db1812c8a6"
+      ],
+      "rationale": "The essay presents a clear narrative with an easily identifiable purpose: recounting the first in-person meeting of a long-distance couple. The main ideas are clear, tracking the emotional arc from anxiety to happiness (Evidence 1). Supporting details are relevant, such as the specific settings of the car, dinner, and bookstore (Evidence 4). However, some emotional descriptions rely on general phrases like 'on cloud nine' or 'happy as can be' rather than unique insights (Evidence 6), fitting the Score 4 descriptor that support may be 'overly general or limited.' The essay is more developed than a Score 3 but lacks the depth and rich insight required for a Score 5.",
+      "confidence": 0.9
+    },
+    {
+      "hypothesis_id": "hyp-real-f3d623c4809a",
+      "observation_id": "obs-6cf1a5d900a2",
+      "dimension_id": "organization",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "clear sequencing and paragraph breaks",
+        "recognizable, developed beginning not particularly inviting",
+        "body easy to follow with details fitting where placed",
+        "transitions may be stilted or formulaic"
+      ],
+      "evidence_span_ids": [
+        "span-real-9ffa2adec672",
+        "span-real-d05028b010de",
+        "span-real-68976c8e5e8c",
+        "span-real-8dcd91521716",
+        "span-real-21ee538d94e4",
+        "span-real-9d13bc516e81"
+      ],
+      "rationale": "The essay demonstrates clear chronological sequencing with effective paragraph breaks that follow a logical timeline (waiting in car → arrival → car ride → restaurant → mall → bookstore → reflection). The beginning establishes context and the conclusion provides closure by reflecting on the significance of laughter in the relationship. Details are placed appropriately to advance the narrative, though transitions between events are somewhat formulaic ('Once at the dinner table...', 'After we ate dinner...'). The organization is coherent and functional but lacks the inviting beginning or creative structure that would elevate it to a score of 5.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-4ba3d1ba22de",
+      "observation_id": "obs-6cf1a5d900a2",
+      "dimension_id": "organization",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "clear sequencing and paragraph breaks",
+        "body easy to follow with details fitting where placed",
+        "organization may be predictable"
+      ],
+      "evidence_span_ids": [
+        "span-real-9ffa2adec672",
+        "span-real-d05028b010de",
+        "span-real-68976c8e5e8c",
+        "span-real-8dcd91521716",
+        "span-real-21ee538d94e4",
+        "span-real-9d13bc516e81"
+      ],
+      "rationale": "The essay demonstrates a clear chronological structure, moving logically from the car ride to dinner, the mall, and finally a reflection on the relationship. Paragraph breaks separate these distinct scenes effectively, making the body easy to follow (Evidence 1, 2). Transitions such as 'As soon as' and 'After we ate' guide the reader through the timeline, though they are somewhat formulaic, fitting the Score 4 profile of predictable organization. The conclusion ties back to the opening theme of laughter, providing a recognizable closure (Evidence 6), consistent with the descriptor 'developed conclusion may lack subtlety'.",
+      "confidence": 0.9
+    },
+    {
+      "hypothesis_id": "hyp-real-c0d6f16423ee",
+      "observation_id": "obs-c06fb0a76901",
+      "dimension_id": "voice",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 5,
+        "display_annotation": null,
+        "display_score": "5",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "appropriate level of closeness to or distance from audience",
+        "strong sense of audience; writer seems aware of reader and how to communicate effectively",
+        "reader may discern writer behind words and feel sense of interaction",
+        "topic has come to life; shows originality, liveliness, honesty, conviction, excitement, humor, or suspense"
+      ],
+      "evidence_span_ids": [
+        "span-real-9e41cf82f684",
+        "span-real-0bda550b8d6c",
+        "span-real-4f7e7a431257",
+        "span-real-bcde7365a1b9",
+        "span-real-e456ad0d8754",
+        "span-real-af8ec4319be1",
+        "span-real-a1b67c8c91af",
+        "span-real-cd7e4f65523c",
+        "span-real-7b3930ee15f7",
+        "span-real-9ece736b8282",
+        "span-real-1d8ea9b79902"
+      ],
+      "rationale": "The essay demonstrates a strong, consistent voice throughout with clear audience awareness. The writer maintains an appropriate first-person narrative voice that feels sincere and engaged, allowing the reader to discern the writer's personality and emotional state. Evidence shows liveliness ('I started to laugh...'), honesty ('I was bright red'), excitement ('I was on cloud nine'), and conviction ('Laughter is the thing that helped bridge the gap'). The writer consistently communicates with the reader, creating a sense of interaction through emotional transparency and personal reflection. While not reaching the exceptional, deeply committed level of a score 6, the voice is sustained and effective across the entire essay, meeting the criteria for score 5.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-c5855da5f1d2",
+      "observation_id": "obs-c06fb0a76901",
+      "dimension_id": "voice",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 5,
+        "display_annotation": null,
+        "display_score": "5",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "appropriate level of closeness to or distance from audience",
+        "topic has come to life; shows originality, liveliness, honesty, conviction, excitement, humor, or suspense",
+        "reader may discern writer behind words and feel sense of interaction"
+      ],
+      "evidence_span_ids": [
+        "span-real-9e41cf82f684",
+        "span-real-0bda550b8d6c",
+        "span-real-4f7e7a431257",
+        "span-real-bcde7365a1b9",
+        "span-real-e456ad0d8754",
+        "span-real-af8ec4319be1",
+        "span-real-a1b67c8c91af",
+        "span-real-cd7e4f65523c",
+        "span-real-7b3930ee15f7",
+        "span-real-9ece736b8282",
+        "span-real-1d8ea9b79902"
+      ],
+      "rationale": "The essay demonstrates a strong, sustained personal voice that conveys sincere emotion and deep commitment to the topic. The writer effectively brings the narrative to life through expressive details about anxiety, embarrassment, and joy (evidence IDs 1, 2), allowing the reader to clearly discern the writer behind the words. The conclusion exhibits clear audience awareness and conviction regarding the relationship (evidence ID 3), meeting the criteria for a score of 5 where the topic comes to life with honesty and excitement.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-7721e6941361",
+      "observation_id": "obs-9890431923cc",
+      "dimension_id": "word_choice",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "words that work but do not particularly energize writing",
+        "expression is functional; slang not purposeful or effective",
+        "rare experiments with language; avoids clichés"
+      ],
+      "evidence_span_ids": [
+        "span-real-1489de26a914",
+        "span-real-33349fd0970e",
+        "span-real-591f46fca8fa",
+        "span-real-7a6e6a61727f",
+        "span-real-7cc00c9836ed",
+        "span-real-fe380981ce2a",
+        "span-real-192bf0b2eb2b",
+        "span-real-379b76e0e5e7",
+        "span-real-7233b1b7e7d6",
+        "span-real-b8ec92948a52",
+        "span-real-0f875232238d",
+        "span-real-28a29427ecea",
+        "span-real-63d0913a2dfa"
+      ],
+      "rationale": "The essay demonstrates functional word choice that effectively conveys the narrative. Words like 'melted away,' 'bubbling up,' 'flowed so smoothly,' and 'famished' work well and show some precision, but they don't particularly energize the writing or create striking imagery. While there are attempts at descriptive language (e.g., 'bright red,' 'cloud nine'), they remain somewhat conventional rather than fresh or original. The expression is clear and avoids major clichés, with only 'butterflies in my stomach' being a common phrase. The vocabulary is appropriate and accurate throughout, supporting the narrative without significant misuse, but it lacks the variety and natural energy that would elevate it to a score of 5.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-633bbd134a7d",
+      "observation_id": "obs-9890431923cc",
+      "dimension_id": "word_choice",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 5,
+        "display_annotation": null,
+        "display_score": "5",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "Accurate, specific words; word choices energize writing",
+        "Words that evoke clear images",
+        "Vocabulary may be striking and varied but natural and not overdone"
+      ],
+      "evidence_span_ids": [
+        "span-real-1489de26a914",
+        "span-real-33349fd0970e",
+        "span-real-591f46fca8fa",
+        "span-real-7a6e6a61727f",
+        "span-real-7cc00c9836ed",
+        "span-real-fe380981ce2a",
+        "span-real-192bf0b2eb2b",
+        "span-real-379b76e0e5e7",
+        "span-real-7233b1b7e7d6",
+        "span-real-b8ec92948a52",
+        "span-real-0f875232238d",
+        "span-real-28a29427ecea",
+        "span-real-63d0913a2dfa"
+      ],
+      "rationale": "The essay employs precise and varied vocabulary ('famished,' 'regaling,' 'deviously') that elevates the writing beyond functional communication, energizing the narrative with specific details. Word choices evoke clear images ('bright red,' 'butterflies in my stomach'), contributing to a natural and engaging tone. Although some clichés are present, the overall precision and appropriateness of the language align with the Score 5 descriptors for interesting and natural language.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-279547551802",
+      "observation_id": "obs-07fec98965b1",
+      "dimension_id": "sentence_fluency",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "natural sound; reader moves easily but lacks rhythm and grace",
+        "some repeated patterns that detract from impact",
+        "strong control over simple sentences, variable over complex",
+        "occasional lapses in stylistic control"
+      ],
+      "evidence_span_ids": [
+        "span-real-dc7828d8891d",
+        "span-real-3fa0203bda09",
+        "span-real-4505b558bd40",
+        "span-real-aa60b94029d3",
+        "span-real-40fe701f2b3e",
+        "span-real-8c7ba558eab8",
+        "span-real-f7bf4de59202",
+        "span-real-e6daf27048c6",
+        "span-real-c46ce7a67d55",
+        "span-real-8c4a73cb8187",
+        "span-real-95483e343271",
+        "span-real-1877e8c0ec5f",
+        "span-real-64e3fbd407ed",
+        "span-real-61fa679d2890",
+        "span-real-e22aa3decf0d",
+        "span-real-ff2ff58413f0",
+        "span-real-8e48a2987747",
+        "span-real-0eda05dbe61b",
+        "span-real-ff6f1e4c895a",
+        "span-real-147f68c6be4b",
+        "span-real-e3acf1ae7756",
+        "span-real-07ad5033acad",
+        "span-real-868f287cd86b",
+        "span-real-d3730de582c3",
+        "span-real-8410354b83a6",
+        "span-real-a9f904d303ae",
+        "span-real-40673288bae0",
+        "span-real-d0d8e7875fb1",
+        "span-real-fa2cc74c1aab",
+        "span-real-124ac51d6757",
+        "span-real-4b7c8b4bd522",
+        "span-real-5f0c8f6d9f0c",
+        "span-real-078ace272ee7",
+        "span-real-8cf4a7e14712",
+        "span-real-99b49fb00426",
+        "span-real-eeeca778abc8",
+        "span-real-e69caabb5fbb",
+        "span-real-1f7290bd9101",
+        "span-real-5ee59395922d"
+      ],
+      "rationale": "The essay demonstrates functional sentence fluency with natural flow that allows easy reading, aligning with score 4 descriptors. The writing moves smoothly through narrative events with generally clear transitions, but lacks the rhythmic grace and varied patterns characteristic of higher scores. There are some repeated patterns (e.g., 'I was nervous,' 'I smiled,' simple dialogue tags) that slightly detract from impact, and occasional lapses in stylistic control with run-on sentences and comma splices (e.g., 'I was smiling broadly still, he reached out...'). The writer shows strong control over simple sentences but variable control over complex structures. While the dialogue sounds natural for the most part, the overall sentence patterns are somewhat predictable rather than carefully crafted for enhanced meaning.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-f1ead97bd8bd",
+      "observation_id": "obs-07fec98965b1",
+      "dimension_id": "sentence_fluency",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "Natural sound; reader moves easily but lacks rhythm and grace",
+        "Strong control over simple sentences, variable over complex",
+        "Occasional lapses in stylistic control"
+      ],
+      "evidence_span_ids": [
+        "span-real-dc7828d8891d",
+        "span-real-3fa0203bda09",
+        "span-real-4505b558bd40",
+        "span-real-aa60b94029d3",
+        "span-real-40fe701f2b3e",
+        "span-real-8c7ba558eab8",
+        "span-real-f7bf4de59202",
+        "span-real-e6daf27048c6",
+        "span-real-c46ce7a67d55",
+        "span-real-8c4a73cb8187",
+        "span-real-95483e343271",
+        "span-real-1877e8c0ec5f",
+        "span-real-64e3fbd407ed",
+        "span-real-61fa679d2890",
+        "span-real-e22aa3decf0d",
+        "span-real-ff2ff58413f0",
+        "span-real-8e48a2987747",
+        "span-real-0eda05dbe61b",
+        "span-real-ff6f1e4c895a",
+        "span-real-147f68c6be4b",
+        "span-real-e3acf1ae7756",
+        "span-real-07ad5033acad",
+        "span-real-868f287cd86b",
+        "span-real-d3730de582c3",
+        "span-real-8410354b83a6",
+        "span-real-a9f904d303ae",
+        "span-real-40673288bae0",
+        "span-real-d0d8e7875fb1",
+        "span-real-fa2cc74c1aab",
+        "span-real-124ac51d6757",
+        "span-real-4b7c8b4bd522",
+        "span-real-5f0c8f6d9f0c",
+        "span-real-078ace272ee7",
+        "span-real-8cf4a7e14712",
+        "span-real-99b49fb00426",
+        "span-real-eeeca778abc8",
+        "span-real-e69caabb5fbb",
+        "span-real-1f7290bd9101",
+        "span-real-5ee59395922d"
+      ],
+      "rationale": "The essay exhibits a natural sound where the reader moves easily through the narrative, supporting the Score 4 descriptor of flow that 'lacks rhythm and grace' compared to a 5. There is clear variety in sentence structure, such as the rhetorical questions ('@CAPS6 if he wasn't...'), but the writer shows 'variable [control] over complex' sentences. Frequent comma splices (e.g., 'I was smiling broadly still, he reached out...') represent 'occasional lapses in stylistic control' that prevent the 'carefully crafted' quality of a Score 5, while the overall energy and readability keep it above the 'mechanical' nature of a Score 3.",
+      "confidence": 0.9
+    },
+    {
+      "hypothesis_id": "hyp-real-6e838934ec8f",
+      "observation_id": "obs-1313d919fd53",
+      "dimension_id": "conventions",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
+        "spelling errors distract reader; common words misspelled",
+        "errors in grammar and usage do not block meaning but distract reader",
+        "significant need for editing"
+      ],
+      "evidence_span_ids": [
+        "span-real-491d5497129b",
+        "span-real-62ccc1665757",
+        "span-real-78ddb56e35bf",
+        "span-real-652eada227c0",
+        "span-real-3c56d49688e2",
+        "span-real-44149080fc63",
+        "span-real-29788103e2b9",
+        "span-real-2b77e432eab9",
+        "span-real-c711a7bb2887",
+        "span-real-a60b130a5bcd",
+        "span-real-8e9b17607dfe",
+        "span-real-f6674b9e7634",
+        "span-real-52f1db911048",
+        "span-real-c588fea61b16"
+      ],
+      "rationale": "The essay demonstrates limited control of conventions. While end-of-sentence punctuation is generally correct, there are frequent internal punctuation errors (e.g., comma splices like 'I was smiling broadly still, he reached out...'). Multiple spelling errors distract the reader ('embarassing' for 'embarrassing', 'wth' for 'with', 'ad' for 'and'). Grammar/usage errors are present ('Here him and I were', 'bridge the gap between him and I') but don't block overall meaning. The errors collectively create a need for significant editing, aligning with Score 3 descriptors.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-b5edf4395398",
+      "observation_id": "obs-1313d919fd53",
+      "dimension_id": "conventions",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "internal punctuation has frequent errors",
+        "spelling errors distract reader; common words misspelled",
+        "end-of-sentence punctuation usually correct"
+      ],
+      "evidence_span_ids": [
+        "span-real-491d5497129b",
+        "span-real-62ccc1665757",
+        "span-real-78ddb56e35bf",
+        "span-real-652eada227c0",
+        "span-real-3c56d49688e2",
+        "span-real-44149080fc63",
+        "span-real-29788103e2b9",
+        "span-real-2b77e432eab9",
+        "span-real-c711a7bb2887",
+        "span-real-a60b130a5bcd",
+        "span-real-8e9b17607dfe",
+        "span-real-f6674b9e7634",
+        "span-real-52f1db911048",
+        "span-real-c588fea61b16"
+      ],
+      "rationale": "The essay demonstrates limited control over conventions, aligning with Score 3. While end-of-sentence punctuation is generally correct, there are frequent internal punctuation errors, specifically comma splices (e.g., 'talked, I felt', 'him, we'). Additionally, there are spelling errors on common words ('ad' for 'and', 'wth' for 'with', 'your' for 'you're', 'embarassing'), which distract the reader. These errors do not block meaning (ruling out Score 2), but they occur frequently enough to require significant editing and prevent a Score 4, which expects spelling to be usually correct on common words and internal punctuation to be only sometimes incorrect.",
+      "confidence": 0.9
+    }
+  ]
+}

@@ -1,0 +1,164 @@
+{
+  "dimensions": {
+    "ideas_content": {
+      "dimension_name": "Ideas and Content",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "Clear main ideas",
+        "Easily identifiable purpose",
+        "Supporting details are relevant but may be overly general or limited",
+        "clear main ideas",
+        "easily identifiable purpose",
+        "supporting details are relevant but may be overly general or limited"
+      ],
+      "evidence_span_ids": [
+        "span-real-0edc9d2a5914",
+        "span-real-1be8cf078c2c",
+        "span-real-295ce9e95dd4",
+        "span-real-41d42356660d",
+        "span-real-46ec7ed75c17",
+        "span-real-4de97a0ca190",
+        "span-real-e064ca93314b"
+      ],
+      "feedback_text": "Your essay received a score of 4 for Ideas and Content. You establish a **clear main idea** and an **easily identifiable purpose** about how laughter can spark a new friendship. For example, you state, \"I think @CAPS4 was a great way to start a conversation.\" Your **supporting details are relevant but may be overly general**, such as explaining you talked about vacations and family, which connects to the friendship but lacks specific depth. Another detail, \"Laughing with the person will let them know that we are interested,\" supports your main idea but remains a broad observation rather than a developed example.",
+      "confidence": 0.85
+    },
+    "organization": {
+      "dimension_name": "Organization",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "body easy to follow with details fitting where placed",
+        "clear sequencing and paragraph breaks",
+        "developed conclusion may lack subtlety",
+        "organization helps reader despite some weaknesses",
+        "recognizable, developed beginning not particularly inviting"
+      ],
+      "evidence_span_ids": [
+        "span-real-0daf2d91b110",
+        "span-real-28c87e694960",
+        "span-real-318f31da9372",
+        "span-real-6a0814ba3304",
+        "span-real-b717eb17bff1",
+        "span-real-bf8094d02a4f",
+        "span-real-d76305ffb6dd",
+        "span-real-fcaf4f252c17"
+      ],
+      "feedback_text": "Your essay scored a 4 in Organization. Your writing has a **recognizable, developed beginning** and the **body is easy to follow with details fitting where placed**, as you clearly start with the observation about changed conversations before recounting the specific story in @LOCATION1. The **clear sequencing and paragraph breaks** help guide the reader from the initial meeting, to the conversation about living in @LOCATION1, and finally to your reflective conclusion about laughter and friendship. However, the **developed conclusion may lack subtlety**, as it directly states the lesson (\"I never thought that laughing can help you start a conversation\") after you had already effectively shown this idea through your narrative.",
+      "confidence": 0.85
+    },
+    "voice": {
+      "dimension_name": "Voice",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "Reader may glimpse writer and feel sense of interaction in places",
+        "Sense of audience; writer seems aware but has not consistently employed appropriate voice",
+        "Voice present; some expressiveness and sincerity.",
+        "reader may glimpse writer and feel sense of interaction in places",
+        "suitable level of closeness to or distance from audience"
+      ],
+      "evidence_span_ids": [
+        "span-real-1093bd313a6b",
+        "span-real-3e3df9df86e3",
+        "span-real-5f62c32d727b",
+        "span-real-761311cc5fc6",
+        "span-real-7b1039ff6d3b",
+        "span-real-ea6081d8ad67"
+      ],
+      "feedback_text": "Your essay received a score of 4 for Voice. This score reflects that a \"sense of audience\" is present and there is \"some expressiveness and sincerity,\" allowing the \"reader [to] glimpse writer and feel sense of interaction in places.\" Your sincere reflections, such as \"I actually liked making a new friend this way\" and \"I think @CAPS4 was a great way to start a conversation,\" create a genuine, personal tone. Furthermore, your detailed account of how the conversation changed—\"Then, @CAPS4 got calmer and a little unusual\"—engages the reader directly in your observational experience. This expressiveness provides glimpses of interaction, though the voice is not yet fully sustained for the entire narrative.",
+      "confidence": 0.85
+    },
+    "word_choice": {
+      "dimension_name": "Word Choice",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "Lacks precision and variety; generic paper.",
+        "expression seems mundane and general",
+        "expression seems mundane and general; slang not effective",
+        "words generally accurate but misused words may occasionally appear",
+        "words that work but rarely capture reader's interest"
+      ],
+      "evidence_span_ids": [
+        "span-real-06a093006955",
+        "span-real-4cadcb2ef0c3",
+        "span-real-5a59b1348dc4",
+        "span-real-71467b4fb3da",
+        "span-real-8f6519e6b884",
+        "span-real-c2c16f0c144c",
+        "span-real-cce17c71d64d",
+        "span-real-e1e14de56b11"
+      ],
+      "feedback_text": "Your essay received a score of 3 for Word Choice. Your expression often seems \"mundane and general,\" relying on simple, accurate words like \"hilarious thing,\" \"great friend,\" and \"interesting stuff\" that \"rarely capture the reader's interest.\" While your words are generally correct, there is a \"lack of precision and variety,\" making the writing feel like a \"generic paper.\" For example, describing a change in conversation as getting \"calmer and a little unusual\" is vague, and repeatedly using \"laugh\" or \"laughing\" as the central action misses opportunities for more vivid or specific language. Your word choices communicate the event clearly but do not elevate the description.",
+      "confidence": 0.85
+    },
+    "sentence_fluency": {
+      "dimension_name": "Sentence Fluency",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "Flows but less than fluid; somewhat varied patterns.",
+        "Natural sound; reader moves easily but lacks rhythm and grace.",
+        "Occasional lapses in stylistic control.",
+        "natural sound; reader moves easily but lacks rhythm and grace",
+        "some repeated patterns that detract from impact",
+        "strong control over simple sentences, variable over complex"
+      ],
+      "evidence_span_ids": [
+        "span-real-1576eba747b3",
+        "span-real-71dcf7d1fe70",
+        "span-real-b5b947827327",
+        "span-real-b921392370fd",
+        "span-real-d4d238047e13",
+        "span-real-f0d72ea02a36",
+        "span-real-fc7f46b21154"
+      ],
+      "feedback_text": "Your essay received a 4 in Sentence Fluency. Your writing has a **natural sound and the reader moves easily**, as shown in clear, simple sentences like, \"I had a good conversation with my new friend.\" However, the flow is **somewhat varied** and shows **occasional lapses in stylistic control**. For example, the construction \"I asked him where was he going to go\" is slightly awkward, and the repeated use of sentences starting with \"We\" or \"I\" creates **some repeated patterns that detract from impact**. Overall, your sentences are understandable and mostly fluid, but they lack a consistent rhythm and variety to become truly graceful.",
+      "confidence": 0.85
+    },
+    "conventions": {
+      "dimension_name": "Conventions",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "correct end-of-sentence punctuation; internal sometimes incorrect",
+        "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
+        "errors in grammar and usage do not block meaning but distract reader",
+        "occasional lapses in grammar and usage; not severe enough to distort meaning",
+        "significant need for editing",
+        "some control over basic conventions",
+        "spelling errors distract reader; common words misspelled",
+        "spelling usually correct, especially on common words"
+      ],
+      "evidence_span_ids": [
+        "span-real-0a04a0bf1980",
+        "span-real-195a6ad1b73e",
+        "span-real-1e1868c34611",
+        "span-real-2f20591cc717",
+        "span-real-4c78569a021b",
+        "span-real-5fee3dba6949",
+        "span-real-64bb851ff1ae",
+        "span-real-651d7a21e0cb",
+        "span-real-7bb01fd44633",
+        "span-real-9c5c0251fd5e",
+        "span-real-9d01d61c9ba8",
+        "span-real-b512bf272daa",
+        "span-real-c64ab31195ad",
+        "span-real-d5c3b7827f55",
+        "span-real-e3f96c37c511"
+      ],
+      "feedback_text": "Your essay received a score of 3 for Conventions. This score reflects **\"some control over basic conventions\"** with a **\"significant need for editing.\"** While your **\"end-of-sentence punctuation is usually correct,\"** there are frequent errors in internal punctuation and grammar that distract the reader. For example, you often omit necessary words, as in \"I didn't know how @CAPS4's like to live\" and \"I's like to live,\" and you incorrectly use \"@CAPS6\" for \"when\" in sentences like \"We wanted to buy candy... @CAPS6 we returned.\" These **\"errors in grammar and usage do not block meaning but distract,\"** showing inconsistency with foundational writing rules.",
+      "confidence": 0.85
+    }
+  },
+  "summary": "Real provider feedback for 6 dimension(s).",
+  "provider": "openai_compatible"
+}

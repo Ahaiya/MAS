@@ -1,0 +1,363 @@
+{
+  "run_id": "run-cabf37953594",
+  "hypotheses": [
+    {
+      "hypothesis_id": "hyp-real-bbdda374a792",
+      "observation_id": "obs-75900131af64",
+      "dimension_id": "ideas_content",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "easily identifiable purpose",
+        "clear main ideas",
+        "supporting details are relevant but may be overly general or limited"
+      ],
+      "evidence_span_ids": [
+        "span-real-0edc9d2a5914",
+        "span-real-295ce9e95dd4",
+        "span-real-4de97a0ca190",
+        "span-real-46ec7ed75c17",
+        "span-real-1be8cf078c2c",
+        "span-real-e064ca93314b",
+        "span-real-41d42356660d"
+      ],
+      "rationale": "The essay has an easily identifiable purpose (exploring how laughter can initiate friendships) and clear main ideas about this concept. Supporting details are relevant to the narrative (meeting a friend in @LOCATION1, the conversation flow, reflections on the experience) but remain somewhat general and limited in depth. The essay explores the topic adequately but lacks the rich, insightful development or strong connections that would characterize a score of 5.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-2acc4b8c9e03",
+      "observation_id": "obs-75900131af64",
+      "dimension_id": "ideas_content",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "Clear main ideas",
+        "Supporting details are relevant but may be overly general or limited",
+        "Easily identifiable purpose"
+      ],
+      "evidence_span_ids": [
+        "span-real-0edc9d2a5914",
+        "span-real-295ce9e95dd4",
+        "span-real-4de97a0ca190",
+        "span-real-46ec7ed75c17",
+        "span-real-1be8cf078c2c",
+        "span-real-e064ca93314b",
+        "span-real-41d42356660d"
+      ],
+      "rationale": "The essay demonstrates a clear central idea regarding the power of laughter to initiate conversation, which is easily identifiable in the introduction and reinforced in the conclusion (Evidence 1, 7). The supporting details are relevant, utilizing a specific personal narrative to illustrate the point (Evidence 4). However, while the story is coherent, the insight remains somewhat surface-level and the development, though complete, lacks the depth and careful selection of details required for a Score 5. It exceeds Score 3 by successfully moving from general observations to specific examples and maintaining focus throughout, fitting the Score 4 profile of clear ideas with relevant but not particularly insightful support.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-5ad8a1b44ebe",
+      "observation_id": "obs-05e4aa0d2f5a",
+      "dimension_id": "organization",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "clear sequencing and paragraph breaks",
+        "recognizable, developed beginning not particularly inviting",
+        "developed conclusion may lack subtlety",
+        "body easy to follow with details fitting where placed",
+        "organization helps reader despite some weaknesses"
+      ],
+      "evidence_span_ids": [
+        "span-real-fcaf4f252c17",
+        "span-real-d76305ffb6dd",
+        "span-real-28c87e694960",
+        "span-real-0daf2d91b110",
+        "span-real-6a0814ba3304",
+        "span-real-bf8094d02a4f",
+        "span-real-b717eb17bff1",
+        "span-real-318f31da9372"
+      ],
+      "rationale": "The essay demonstrates clear chronological sequencing from the initial thesis about laughter starting conversations, through the narrative of meeting a friend in @LOCATION1, to the reflective conclusion. Paragraph breaks are present and logical. The beginning introduces the main idea directly, and the conclusion reinforces it, though both are straightforward rather than particularly inviting or subtle. Transitions like 'This happened to me once,' 'I remember,' and 'Now, whenever I go' help move the narrative forward, though some are basic. Details about the setting and conversation generally fit where placed, supporting the main point without confusion. The organization is functional and coherent, aligning with Score 4 descriptors, but lacks the inviting elements or creative flow for a higher score.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-2701ae1ea0eb",
+      "observation_id": "obs-05e4aa0d2f5a",
+      "dimension_id": "organization",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "body easy to follow with details fitting where placed",
+        "organization helps reader despite some weaknesses",
+        "recognizable, developed beginning not particularly inviting"
+      ],
+      "evidence_span_ids": [
+        "span-real-fcaf4f252c17",
+        "span-real-d76305ffb6dd",
+        "span-real-28c87e694960",
+        "span-real-0daf2d91b110",
+        "span-real-6a0814ba3304",
+        "span-real-bf8094d02a4f",
+        "span-real-b717eb17bff1",
+        "span-real-318f31da9372"
+      ],
+      "rationale": "The essay exhibits a clear chronological structure with a functional introduction and conclusion that effectively tie together (supports beginning_closure). The narrative sequencing is logical and easy to follow, with details placed appropriately within the timeline (supports sequencing, supports detail_placement). Although the text lacks visual paragraph breaks and transitions are occasionally formulaic, the coherent arrangement of ideas ensures the organization helps the reader despite these weaknesses, aligning with Score 4 criteria rather than the unclear or skeletal structure of a Score 3.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-4bc916383698",
+      "observation_id": "obs-a45610882819",
+      "dimension_id": "voice",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "Voice present; some expressiveness and sincerity.",
+        "Sense of audience; writer seems aware but has not consistently employed appropriate voice",
+        "Reader may glimpse writer and feel sense of interaction in places"
+      ],
+      "evidence_span_ids": [
+        "span-real-1093bd313a6b",
+        "span-real-ea6081d8ad67",
+        "span-real-3e3df9df86e3",
+        "span-real-7b1039ff6d3b",
+        "span-real-5f62c32d727b",
+        "span-real-761311cc5fc6"
+      ],
+      "rationale": "The essay demonstrates a consistent first-person voice with moments of expressiveness and sincerity throughout, meeting the threshold for Score 4. The writer shows awareness of audience through reflective commentary and maintains a conversational tone. However, the voice remains somewhat casual and lacks the sustained originality, liveliness, or deep commitment required for Score 5. The evidence shows the writer's presence is reliably sensed across the narrative, but it doesn't consistently achieve the strong, intentional audience awareness or distinctive voice needed for higher scores.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-e926fdeb2bf3",
+      "observation_id": "obs-a45610882819",
+      "dimension_id": "voice",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "Voice present; some expressiveness and sincerity.",
+        "suitable level of closeness to or distance from audience",
+        "reader may glimpse writer and feel sense of interaction in places"
+      ],
+      "evidence_span_ids": [
+        "span-real-1093bd313a6b",
+        "span-real-ea6081d8ad67",
+        "span-real-3e3df9df86e3",
+        "span-real-7b1039ff6d3b",
+        "span-real-5f62c32d727b",
+        "span-real-761311cc5fc6"
+      ],
+      "rationale": "The essay demonstrates a consistent first-person voice that engages the reader with a personal anecdote, aligning with the Score 4 descriptor 'Voice present; some expressiveness and sincerity.' The writer maintains a 'suitable level of closeness to or distance from audience' by sharing personal reflections and lessons learned (Evidence 1, 3, 5). While the writer's presence is felt throughout ('reader may glimpse writer'), the language remains somewhat plain and lacks the distinctive liveliness or originality required for a Score 5, making 4 the most accurate score.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-e6e86edf673a",
+      "observation_id": "obs-18cd76be4ce3",
+      "dimension_id": "word_choice",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "words that work but rarely capture reader's interest",
+        "expression seems mundane and general; slang not effective",
+        "words generally accurate but misused words may occasionally appear"
+      ],
+      "evidence_span_ids": [
+        "span-real-06a093006955",
+        "span-real-e1e14de56b11",
+        "span-real-71467b4fb3da",
+        "span-real-5a59b1348dc4",
+        "span-real-cce17c71d64d",
+        "span-real-4cadcb2ef0c3",
+        "span-real-c2c16f0c144c",
+        "span-real-8f6519e6b884"
+      ],
+      "rationale": "The essay uses functional, generally accurate vocabulary that communicates the narrative clearly, but the word choice is predominantly mundane and generic. Words like 'great friend,' 'hilarious thing,' 'calmer,' and 'interesting stuff' work but lack precision and rarely energize the writing. The expression is straightforward without vivid imagery or striking vocabulary, aligning with Score 3 descriptors where language lacks precision and variety, resulting in a generic paper. The evidence shows competent communication but minimal engagement through word choice.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-ff06e0330735",
+      "observation_id": "obs-18cd76be4ce3",
+      "dimension_id": "word_choice",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "Lacks precision and variety; generic paper.",
+        "words generally accurate but misused words may occasionally appear",
+        "expression seems mundane and general"
+      ],
+      "evidence_span_ids": [
+        "span-real-06a093006955",
+        "span-real-e1e14de56b11",
+        "span-real-71467b4fb3da",
+        "span-real-5a59b1348dc4",
+        "span-real-cce17c71d64d",
+        "span-real-4cadcb2ef0c3",
+        "span-real-c2c16f0c144c",
+        "span-real-8f6519e6b884"
+      ],
+      "rationale": "The essay demonstrates a Score 3 level of Word Choice. The vocabulary is largely generic and mundane, relying on overused words like 'great,' 'good,' 'nice,' and vague terms like 'stuff' and 'things' (Evidence 6: 'interesting stuff to say'). While the message is generally understandable, there are occasional misused words that detract from precision, such as 'live know' instead of 'live now' (Evidence 5) and 'I's like.' The language lacks the variety and energy required for a Score 4, fitting the Score 3 descriptor of a 'generic paper' where words 'work but rarely capture reader's interest.'",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-3b04b791d702",
+      "observation_id": "obs-e653f825e833",
+      "dimension_id": "sentence_fluency",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "natural sound; reader moves easily but lacks rhythm and grace",
+        "some repeated patterns that detract from impact",
+        "strong control over simple sentences, variable over complex"
+      ],
+      "evidence_span_ids": [
+        "span-real-f0d72ea02a36",
+        "span-real-b5b947827327",
+        "span-real-71dcf7d1fe70",
+        "span-real-d4d238047e13",
+        "span-real-fc7f46b21154",
+        "span-real-b921392370fd",
+        "span-real-1576eba747b3"
+      ],
+      "rationale": "The essay demonstrates clear sentence fluency with a natural conversational flow that moves easily from one idea to the next, particularly in the narrative sections describing the interaction with the new friend. However, there are noticeable repetitive patterns (e.g., frequent use of 'I' beginnings, similar sentence structures in explanatory passages) that prevent it from achieving the effortless rhythm and grace of a score 5. The writer shows strong control over simple sentences but variable control over complex constructions, with occasional awkward phrasing like 'One of the things I do first @CAPS6 someone is trying to be funny is laugh.' The overall sound is natural and readable, but lacks the crafted variation and enhanced meaning of higher scores.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-3187cbd1238f",
+      "observation_id": "obs-e653f825e833",
+      "dimension_id": "sentence_fluency",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "Flows but less than fluid; somewhat varied patterns.",
+        "Natural sound; reader moves easily but lacks rhythm and grace.",
+        "Occasional lapses in stylistic control."
+      ],
+      "evidence_span_ids": [
+        "span-real-f0d72ea02a36",
+        "span-real-b5b947827327",
+        "span-real-71dcf7d1fe70",
+        "span-real-d4d238047e13",
+        "span-real-fc7f46b21154",
+        "span-real-b921392370fd",
+        "span-real-1576eba747b3"
+      ],
+      "rationale": "The essay demonstrates a Score 4 level of Sentence Fluency. It generally flows and the reader moves easily through the narrative, matching the descriptor 'Natural sound; reader moves easily but lacks rhythm and grace.' There is 'somewhat varied patterns' evident in the mix of short sentences ('They weren't that far.') and longer explanatory ones (Evidence 5). However, the writing is 'less than fluid' due to 'occasional lapses in stylistic control,' particularly in complex sentences where grammar or syntax becomes awkward (e.g., 'how I's like to live,' 'One of the things I do first... is laugh'). These lapses prevent the essay from reaching Score 5's 'easy flow and rhythm,' but the overall functionality and coherence keep it above Score 3's 'mechanical rather than fluid' classification.",
+      "confidence": 0.8
+    },
+    {
+      "hypothesis_id": "hyp-real-42f41f63feb1",
+      "observation_id": "obs-9985a80cb83b",
+      "dimension_id": "conventions",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "some control over basic conventions",
+        "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
+        "spelling errors distract reader; common words misspelled",
+        "errors in grammar and usage do not block meaning but distract reader",
+        "significant need for editing"
+      ],
+      "evidence_span_ids": [
+        "span-real-195a6ad1b73e",
+        "span-real-1e1868c34611",
+        "span-real-9c5c0251fd5e",
+        "span-real-4c78569a021b",
+        "span-real-651d7a21e0cb",
+        "span-real-c64ab31195ad",
+        "span-real-d5c3b7827f55",
+        "span-real-0a04a0bf1980",
+        "span-real-7bb01fd44633",
+        "span-real-b512bf272daa",
+        "span-real-9d01d61c9ba8",
+        "span-real-e3f96c37c511",
+        "span-real-64bb851ff1ae",
+        "span-real-2f20591cc717",
+        "span-real-5fee3dba6949"
+      ],
+      "rationale": "The essay demonstrates limited control of conventions. While end-of-sentence punctuation is generally correct, there are frequent internal punctuation errors (e.g., missing commas in compound sentences, awkward dialogue punctuation). Spelling errors with common words ('know' instead of 'now') distract the reader. Grammar and usage issues are noticeable throughout, including awkward phrasing ('I didn't want to just stop our conversation there so I asked him where was he going to go'), incorrect verb forms ('how I's like to live'), and missing words. These errors don't completely block meaning but require significant editing to improve readability, aligning with the score 3 descriptors.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-7c654fba2a61",
+      "observation_id": "obs-9985a80cb83b",
+      "dimension_id": "conventions",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "correct end-of-sentence punctuation; internal sometimes incorrect",
+        "spelling usually correct, especially on common words",
+        "occasional lapses in grammar and usage; not severe enough to distort meaning"
+      ],
+      "evidence_span_ids": [
+        "span-real-195a6ad1b73e",
+        "span-real-1e1868c34611",
+        "span-real-9c5c0251fd5e",
+        "span-real-4c78569a021b",
+        "span-real-651d7a21e0cb",
+        "span-real-c64ab31195ad",
+        "span-real-d5c3b7827f55",
+        "span-real-0a04a0bf1980",
+        "span-real-7bb01fd44633",
+        "span-real-b512bf272daa",
+        "span-real-9d01d61c9ba8",
+        "span-real-e3f96c37c511",
+        "span-real-64bb851ff1ae",
+        "span-real-2f20591cc717",
+        "span-real-5fee3dba6949"
+      ],
+      "rationale": "The essay demonstrates control over standard conventions with end-of-sentence punctuation generally correct. Internal punctuation is sometimes incorrect (e.g., missing commas in compound sentences, dialogue tags), and there are occasional lapses in grammar and usage (e.g., 'I's' for 'it's', 'know' for 'now'), but these errors do not distort meaning or significantly impede readability. Spelling is usually correct despite isolated common word errors. Following the calibration guidance to lean toward 4 for functional writing with minor weaknesses, this essay fits the Score 4 profile of 'control... minor errors do not impede'.",
+      "confidence": 0.85
+    }
+  ]
+}

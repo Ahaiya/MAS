@@ -67,8 +67,8 @@ artifact_bundle:
         api_base: ""             # e.g. "https://api.deepseek.com/v1"
         api_key_env: "RATER_1_API_KEY"
       rater_2:
-        model: ""
-        api_base: ""
+        model: "qwen3.5-plus"
+        api_base: "https://dashscope.aliyuncs.com/compatible-mode/v1"
         api_key_env: "RATER_2_API_KEY"
       rater_3:
         model: ""
