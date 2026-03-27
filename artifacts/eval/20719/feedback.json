@@ -6,23 +6,22 @@
       "display_score": "3",
       "display_annotation": null,
       "descriptor_refs": [
-        "Understandable but simplistic; support often limited",
+        "Understandable but simplistic; support often limited.",
         "difficulties moving from general observations to specifics",
         "predictable or overly-obvious main ideas",
         "support attempted but details are limited, uneven, somewhat off-topic, or too general"
       ],
       "evidence_span_ids": [
-        "span-real-1bf1881bad84",
-        "span-real-1de74df6ab98",
-        "span-real-28da0949ab88",
-        "span-real-7814dfc8e060",
-        "span-real-9fe5a13365dd",
-        "span-real-b2c309e09f94",
-        "span-real-c71e88abb977",
-        "span-real-f0462869c9ee",
-        "span-real-f433e99d6f5f"
+        "span-real-420e5796a785",
+        "span-real-5f185f12a0ad",
+        "span-real-6386576b249a",
+        "span-real-774ebbe443ba",
+        "span-real-a8dbc968a11a",
+        "span-real-c6884b3204bb",
+        "span-real-ce7b55d6f7dd",
+        "span-real-fb6a9a52107a"
       ],
-      "feedback_text": "Your essay received a score of 3 for Ideas and Content. The main idea—that friendship is about having fun—is clear but **predictable or overly-obvious**. While you **attempt support, the details are limited, uneven, or too general**. For example, you state that laughing is the best thing you do, but the story about the hallway and trash can lacks specific, focused development to make the moment vivid. Similarly, the extended anecdote about the frozen dinner and the laundry mat fantasy are **understandable but simplistic**; they list events and silly ideas without deepening the reader's understanding of your friendship beyond the general claim of having fun. This keeps the support from moving effectively from general observations to meaningful specifics.",
+      "feedback_text": "Your essay received a score of 3 for Ideas and Content. The main idea about friendship is **understandable but simplistic**, and you have **difficulties moving from general observations to specifics**. While you attempt support with stories, the **details are limited, uneven, somewhat off-topic, or too general**. For example, the story about your friend sliding into a trash can is a specific event, but its connection to your main point about friendship is not clearly developed. Other details, like describing frozen chicken as looking like vomit, become lengthy and distract from your central idea, making the support feel uneven and occasionally off-topic.",
       "confidence": 0.85
     },
     "organization": {
@@ -33,25 +32,22 @@
       "descriptor_refs": [
         "attempts at sequencing and paragraph breaks but order occasionally unclear",
         "beginning and ending present but undeveloped or too obvious",
-        "structure is skeletal or too rigid",
-        "transitions sometimes work; same few devices overused"
+        "structure is skeletal or too rigid"
       ],
       "evidence_span_ids": [
-        "span-real-19434202f475",
-        "span-real-2544c6f64fd6",
-        "span-real-62627f2d4f15",
-        "span-real-64966ccd54cd",
-        "span-real-909ccf83b74a",
-        "span-real-95bff3b9bcd7",
-        "span-real-967648844b71",
-        "span-real-a58c72a048e2",
-        "span-real-a7c81da717f3",
-        "span-real-ad94246ccefe",
-        "span-real-cc72b47330c8",
-        "span-real-f9954ab22a9c",
-        "span-real-fe015e795033"
+        "span-real-1d253dc2fddd",
+        "span-real-7f98475287a8",
+        "span-real-9495efa0d90a",
+        "span-real-98ac4029b3ca",
+        "span-real-a5b7749b7f99",
+        "span-real-b308fdfce50b",
+        "span-real-b931fecb4fa2",
+        "span-real-cd7d1f472478",
+        "span-real-db1802550836",
+        "span-real-dbe6895a8cbb",
+        "span-real-e40eccb83a48"
       ],
-      "feedback_text": "Your essay received a score of 3 for Organization. The structure is skeletal, with a clear but underdeveloped beginning and ending, as seen in the opening statement about laughing with friends and the brief \"overall\" conclusion. The order of ideas is occasionally unclear, such as when you jump from talking about laundry to food with only the phrase \"Now about the food its sort of like the laundry but I guess better?\" This attempt at a transition is overused and sometimes awkward, like the abrupt shift introduced with \"anyways the class bell had just rouge.\" These moments make the sequencing feel uncertain, supporting the score.",
+      "feedback_text": "Your essay received a score of 3 for Organization. The **structure is skeletal**, with a clear but underdeveloped beginning and ending that are **too obvious**, stating you love to hang out with friends and \"overall\" they are good listeners. Furthermore, the **order is occasionally unclear** due to abrupt shifts between topics. For example, you jump from a story about a hallway trash can directly to an inside joke about lunch without a transition, and later move from discussing fights to laundry stories without a logical bridge. These sudden shifts make the sequence of your ideas difficult for the reader to follow.",
       "confidence": 0.85
     },
     "voice": {
@@ -60,26 +56,25 @@
       "display_score": "4",
       "display_annotation": null,
       "descriptor_refs": [
-        "Liveliness, sincerity, or humor when appropriate",
         "Reader may glimpse writer and feel sense of interaction in places",
+        "Sense of audience; writer seems aware but has not consistently employed appropriate voice",
         "Voice present; some expressiveness and sincerity",
-        "liveliness, sincerity, or humor when appropriate",
+        "Voice present; some expressiveness and sincerity.",
         "reader may glimpse writer and feel sense of interaction in places",
-        "sense of audience; writer seems aware but has not consistently employed appropriate voice",
-        "suitable level of closeness to or distance from audience"
+        "writing may be inappropriately casual or inappropriately formal in places"
       ],
       "evidence_span_ids": [
-        "span-real-172e257b9c73",
-        "span-real-3063222ef571",
-        "span-real-52a8a4e33ffe",
-        "span-real-53a98bd597fd",
-        "span-real-77432b492b57",
-        "span-real-9da0802e0b86",
-        "span-real-b114023401e5",
-        "span-real-cfd1d9a0b576",
-        "span-real-dcb6e96a3e8b"
+        "span-real-43ea4666bd16",
+        "span-real-52b3916648c7",
+        "span-real-590a7c0f26bc",
+        "span-real-6cb2c94a684f",
+        "span-real-710ae01c57fd",
+        "span-real-a9d9ec96f7c9",
+        "span-real-c9f117d09f99",
+        "span-real-e3d0faf54ed2",
+        "span-real-fca9ba85c9f6"
       ],
-      "feedback_text": "Your essay received a score of 4 for Voice. The writing shows **\"liveliness, sincerity, or humor when appropriate,\"** and the **\"reader may glimpse writer and feel a sense of interaction in places.\"** For example, your sincere reflection that friends \"take your mind off things\" and your lively, humorous story about your friend sliding into a hallway trash can create a genuine sense of your personality. This allows the reader to glimpse your perspective and feel a connection. However, the voice is not fully sustained, as seen in sections with more general statements, leading to a **\"sense of audience; writer seems aware but has not consistently employed appropriate voice.\"**",
+      "feedback_text": "Your essay received a score of 4 for Voice. The reader can \"glimpse writer and feel sense of interaction in places,\" and your voice has \"some expressiveness and sincerity.\" For example, your sincere enthusiasm comes through in lines like \"hell yeah\" about dinner and the reflection that your friendship's ability to laugh is \"what makes us weird.\" However, the voice is not consistently appropriate, as the writing can be \"inappropriately casual in places,\" such as in the overly graphic description of the frozen dinner looking like someone \"had eaten the food than puked it back up.\" This mix of engaging personality and inconsistent tone places your voice in this score range.",
       "confidence": 0.85
     },
     "word_choice": {
@@ -88,19 +83,21 @@
       "display_score": "3",
       "display_annotation": null,
       "descriptor_refs": [
+        "Lacks precision and variety; generic paper.",
         "expression seems mundane and general; slang not effective",
+        "reliance on cliches and overused expressions",
         "words generally accurate but misused words may occasionally appear",
         "words that work but rarely capture reader's interest"
       ],
       "evidence_span_ids": [
-        "span-real-17b4ab123934",
-        "span-real-577d0bc723a4",
-        "span-real-86b82b2c22f0",
-        "span-real-d0cecfbeb105",
-        "span-real-d6d468737e6d",
-        "span-real-dd4bfc5260e1"
+        "span-real-19e3cd167739",
+        "span-real-aa0107c4272d",
+        "span-real-cb1df3762004",
+        "span-real-d9affbaecb7e",
+        "span-real-e751f15b3d0a",
+        "span-real-fe2fa9137c6f"
       ],
-      "feedback_text": "Your essay received a score of 3 for Word Choice. Your expression often seems mundane and general, and while your words are generally accurate, misused words occasionally appear. For example, you write \"laundry mate\" and \"minds went crazy,\" and misuse \"an\" for \"and\" and \"self's\" for \"selves.\" These choices make the language feel informal and sometimes unclear. Furthermore, your words work but rarely capture the reader's interest, relying on simple descriptions like \"it was that great looking\" and \"the sound effects were so funny.\" While these phrases communicate your ideas, they are ordinary and do not create a vivid or engaging picture for the reader.",
+      "feedback_text": "Your essay received a score of 3 for Word Choice. The language often **lacks precision and variety**, relying on **cliches and overused expressions** like \"that is what a friend is to me.\" While your words are generally accurate, the expression remains **mundane and general**, rarely capturing a reader's sustained interest. For example, describing a meal as looking like \"somebody had eaten the food than puked it back up\" uses a vivid but crude and slang-like comparison that is not effectively polished. Similarly, recounting that \"all we do is laugh an have fun an fun in to trash can\" depends on generic, repetitive terms. These choices keep the writing from being more engaging or precise.",
       "confidence": 0.85
     },
     "sentence_fluency": {
@@ -109,24 +106,35 @@
       "display_score": "3",
       "display_annotation": null,
       "descriptor_refs": [
+        "Choppy or rambling; awkward constructions.",
         "good control over simple sentences, little over complex",
         "mechanical rather than fluid; occasional awkwardness",
         "sentences functional but lack energy",
+        "significant number of awkward, choppy, or rambling constructions",
+        "significant portions difficult to follow or read aloud",
         "some passages invite fluid oral reading; others do not"
       ],
       "evidence_span_ids": [
-        "span-real-2059d03897a3",
-        "span-real-51d9cfafe598",
-        "span-real-5a76d551b520",
-        "span-real-7b8f7dcd6a47",
-        "span-real-a2475f618151",
-        "span-real-a5fad8e00b78",
-        "span-real-a7097e0c708e",
-        "span-real-cdb6b4090375",
-        "span-real-d15c725fd576",
-        "span-real-f51ab388737c"
+        "span-real-022dc723ee0c",
+        "span-real-07e4a53c729d",
+        "span-real-22bbd4953df5",
+        "span-real-60bb27a1b1a6",
+        "span-real-6d00b4256061",
+        "span-real-7abecf47175f",
+        "span-real-80a50b09d9af",
+        "span-real-8c6f53dec3d7",
+        "span-real-900d4a07b4b5",
+        "span-real-9f566c6f64fd",
+        "span-real-a68391a1bbca",
+        "span-real-bbff8f4d28bd",
+        "span-real-be01113f9f86",
+        "span-real-c4ed3e6efd92",
+        "span-real-d10c05c5be78",
+        "span-real-e88e27d4bce0",
+        "span-real-efc7248db582",
+        "span-real-f9f078388dff"
       ],
-      "feedback_text": "Your essay received a score of 3 for Sentence Fluency. You show **good control over simple sentences, but little over complex** ones, leading to a rhythm that is **mechanical rather than fluid; occasional awkwardness** occurs. For example, the long, run-on sentence about the hallway and the bell creates a breathless, awkward passage that is hard to read fluidly. In contrast, some simpler sentences like, \"I hang out with my friends, the one thing we do best is laugh sometimes for no reason,\" are functional and clear. This mix means **some passages invite fluid oral reading; others do not**, as the frequent use of \"an\" for \"and\" and inconsistent punctuation often break the natural flow.",
+      "feedback_text": "Your essay received a score of 3 for Sentence Fluency. The writing shows **good control over simple sentences**, but there is a **significant number of awkward, rambling constructions** that make **significant portions difficult to follow or read aloud**. For example, the long sentence beginning \"I say trash can I really mean trash cans...\" is choppy and runs together multiple ideas without proper punctuation. Similarly, phrases like \"they usual are good listeners. overall. Though they take your mind off things\" are mechanically connected rather than fluid, creating awkward breaks in the flow. While some passages are functional, these frequent issues prevent the writing from achieving a smooth and energetic rhythm.",
       "confidence": 0.85
     },
     "conventions": {
@@ -135,32 +143,68 @@
       "display_score": "3",
       "display_annotation": null,
       "descriptor_refs": [
-        "Limited control; errors begin to impede readability.",
+        "capitalization inconsistent or often incorrect",
         "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
         "errors in grammar and usage do not block meaning but distract reader",
-        "significant need for editing",
-        "spelling errors distract reader; common words misspelled"
+        "many end-of-sentence errors; frequent internal punctuation errors",
+        "spelling errors distract reader; common words misspelled",
+        "spelling errors that frequently distract reader; common words misspelled"
       ],
       "evidence_span_ids": [
-        "span-real-0a90a8e80f27",
-        "span-real-0f429c042ae1",
-        "span-real-1147d972b1c4",
-        "span-real-1ad0f54395a9",
-        "span-real-3dd1270f238a",
-        "span-real-4e5802cbf623",
-        "span-real-4efaf50e6b48",
-        "span-real-5500ac868b37",
-        "span-real-98841d8a09d7",
-        "span-real-a4d82efa8b11",
-        "span-real-ae5f06a913ef",
-        "span-real-cf9016ff5ca1",
-        "span-real-dd0e60af4773",
-        "span-real-fbabb27ca742"
+        "span-real-001530bf20e9",
+        "span-real-067ef5915d27",
+        "span-real-171ef617f4f9",
+        "span-real-18437ffb8b0b",
+        "span-real-23deb7494be9",
+        "span-real-50efedf6b659",
+        "span-real-510cd7696f2e",
+        "span-real-579a27ef9380",
+        "span-real-8a0a1376fb23",
+        "span-real-966011dfa89d",
+        "span-real-9b10f0a822ed",
+        "span-real-b0f0f999dc92",
+        "span-real-cd2dabf17c1d",
+        "span-real-d0a1dfac2b6d",
+        "span-real-f6848e8b836f"
       ],
-      "feedback_text": "Your essay received a score of 3 in Conventions. The writing shows a **significant need for editing**, as **errors in grammar and usage distract the reader**. For example, you consistently use \"an\" instead of \"and,\" and misspell common words like \"then\" as \"than\" and \"clothes\" as \"close.\" These spelling errors and incorrect word choices are frequent distractions. Furthermore, while end-of-sentence punctuation is usually correct, **internal punctuation has frequent errors**, which impedes readability. This is seen in long, unpunctuated sentences like \"i came to school the next day i just started talking about what i had for dinner,\" where commas are needed to separate ideas. These patterns of error limit your control of writing conventions.",
+      "feedback_text": "Your essay received a score of 3 for Conventions. This score reflects that while your meaning is generally clear, \"errors in grammar and usage do not block meaning but distract reader,\" and \"spelling errors distract reader; common words misspelled.\" For example, you frequently misspell common words like \"an\" for *and*, \"than\" for *then*, and \"rouge\" for *rang*. Furthermore, \"end-of-sentence punctuation usually correct; internal punctuation has frequent errors,\" as shown in sentences like \"My friend an I have a inside joke? we went out to lunch together,\" where a question mark is incorrectly used, and commas are often missing where needed. These consistent errors throughout your essay distract from your message.",
       "confidence": 0.85
     }
   },
   "summary": "Real provider feedback for 6 dimension(s).",
-  "provider": "openai_compatible"
+  "provider": "openai_compatible",
+  "composite": {
+    "composite_id": "composite-c9cbd4102fe0",
+    "aggregation_policy_ref": "",
+    "contributing_decision_ids": [
+      "dec-2f08531ff5ba",
+      "dec-bb828a25dec6",
+      "dec-2d40e87defaa",
+      "dec-9fc3662781bc"
+    ],
+    "composite_score": {
+      "canonical_score": 27,
+      "display_annotation": null,
+      "display_score": "27",
+      "scale_ref": "composite:asap_set8_composite"
+    },
+    "aggregation_detail": {
+      "variant_id": "without_resolution",
+      "aggregation_method": "average_per_trait_then_weighted_sum",
+      "source_raters": [
+        "rater_1",
+        "rater_2"
+      ],
+      "weights": {
+        "ideas_content": 2,
+        "organization": 2,
+        "voice": 0,
+        "word_choice": 0,
+        "sentence_fluency": 2,
+        "conventions": 4
+      },
+      "resolution_used": false
+    },
+    "composite_note": null
+  }
 }

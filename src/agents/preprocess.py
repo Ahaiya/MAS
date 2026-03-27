@@ -1,5 +1,5 @@
 """
-Mock Preprocessor — deterministic text normalization and segmentation.
+Preprocessor — deterministic text normalization and segmentation.
 
 Converts EvaluationRequest -> (NormalizedRequest, NormalizedDocument).
 Segmentation splits on sentence boundaries (period/exclamation/question + space).

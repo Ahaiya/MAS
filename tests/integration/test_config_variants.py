@@ -29,7 +29,7 @@ from src.policies.adjudication import evaluate_all_triggers
 from src.policies.aggregation import compute_composite
 from src.policies.explanation import render_dimension_explanation
 from src.pipeline.export import build_pipeline_output
-from src.agents import mock_coverage, mock_scorer
+from src.agents import coverage, deterministic_scorer
 
 
 # ── Rubric builder helper ──────────────────────────────────────────────────────
@@ -207,16 +207,16 @@ class TestRubricVariants:
         rubric = self._rubric_3dim_scale10()
         assert validate_score_in_range(rubric, "dim_t1", 5)
 
-    def test_mock_coverage_adapts_to_rubric(self):
+    def test_coverage_adapts_to_rubric(self):
         doc = _make_doc()
         rubric2 = self._rubric_2dim_scale4()
         rubric3 = self._rubric_3dim_scale10()
-        plans2 = mock_coverage.run(doc, rubric2)
-        plans3 = mock_coverage.run(doc, rubric3)
+        plans2 = coverage.run(doc, rubric2)
+        plans3 = coverage.run(doc, rubric3)
         assert len(plans2) == 2
         assert len(plans3) == 3
 
-    def test_mock_scorer_respects_scale_range(self):
+    def test_deterministic_scorer_respects_scale_range(self):
         from src.contracts.evidence import DimensionObservation, ObservationConfidence
         rubric4 = self._rubric_2dim_scale4()
         obs = DimensionObservation(
@@ -229,7 +229,7 @@ class TestRubricVariants:
             observation_confidence=ObservationConfidence.HIGH,
             uncertainty_notes=[],
         )
-        hyp = mock_scorer.run(obs, rubric4, "rater_x")
+        hyp = deterministic_scorer.run(obs, rubric4, "rater_x")
         assert 1 <= hyp.score.canonical_score <= 4
 
     def test_dimension_ids_from_config_not_hardcoded(self):

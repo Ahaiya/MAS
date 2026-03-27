@@ -5,7 +5,7 @@ Evaluates all configured adjudication triggers from PolicySnapshot
 against scoring hypotheses. This is the policy-aware version that
 delegates to ``src.policies.adjudication.evaluate_all_triggers``.
 
-The mock_consistency_checker (Phase 3) only evaluated the first
+The deterministic_consistency_checker (Phase 3) only evaluated the first
 score_distance trigger. This module evaluates ALL configured triggers,
 including pattern_match (cusp) rules.
 """

@@ -1,5 +1,5 @@
 """
-Mock Adjudicator — deterministic conflict resolution and final decision production.
+Deterministic Adjudicator — deterministic conflict resolution and final decision production.
 
 For each ConflictRecord, produces an AdjudicationRecord with is_resolved=True
 by selecting the winning hypothesis (lexicographically smallest hypothesis_id
@@ -84,7 +84,10 @@ def _resolve_conflict(
         policy_rule_id=conflict.trigger_rule_id,
         resolved_score=winner.score,
         resolver_hypothesis_id=winner.hypothesis_id,
-        resolution_note=f"Mock resolution via {resolution_strategy}; winner: {winner.rater_id}",
+        resolution_note=(
+            f"Deterministic resolution via {resolution_strategy}; "
+            f"winner: {winner.rater_id}"
+        ),
         is_resolved=True,
     )
     return adj_record, winner.score, winner.hypothesis_id

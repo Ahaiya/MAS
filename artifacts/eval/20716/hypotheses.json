@@ -1,9 +1,9 @@
 {
-  "run_id": "run-5fd26d8608e3",
+  "run_id": "run-1d4aedb56855",
   "hypotheses": [
     {
-      "hypothesis_id": "hyp-real-8b0a04c6182e",
-      "observation_id": "obs-562c7b535fbf",
+      "hypothesis_id": "hyp-real-d45efad16075",
+      "observation_id": "obs-8289c6444b90",
       "dimension_id": "ideas_content",
       "rater_id": "rater_1",
       "score": {
@@ -18,22 +18,23 @@
         "supporting details are relevant but may be overly general or limited"
       ],
       "evidence_span_ids": [
-        "span-real-d8e7ece77afc",
-        "span-real-9407033fadf3",
-        "span-real-9f017041e349",
-        "span-real-f4fb8071be8d",
-        "span-real-078959789de8",
-        "span-real-fdabf99fa5c5",
-        "span-real-a706e8a5fb3d",
-        "span-real-0820b947e171",
-        "span-real-ac9fca1e842f"
+        "span-real-fb2d42596cd0",
+        "span-real-e9ca21b19955",
+        "span-real-580b8c2a4ddd",
+        "span-real-f56870c3ac5d",
+        "span-real-8416654f8ebf",
+        "span-real-614e8951bf66",
+        "span-real-63dc827f3a23",
+        "span-real-2005ef2f6528",
+        "span-real-f70f2a68072a",
+        "span-real-f26bd0b39e5e"
       ],
-      "rationale": "The essay has an easily identifiable purpose (trying to make a grouchy mom laugh) and clear main ideas (friendship, humor as connection, understanding grief). Supporting details are relevant to the narrative but somewhat limited and general - we get the basic sequence of events but minimal insight into characters' feelings or deeper reflection. The essay explores the topic but developmental details are somewhat out of balance, with more focus on the joke-telling incidents than on the emotional resolution.",
+      "rationale": "The essay has a clear, easily identifiable purpose (making a grouchy mother laugh) and main ideas that are straightforward to follow. Supporting details are relevant to the narrative, such as the repeated joke-telling attempts and the revelation about the mother's grief. However, the development is somewhat limited and simplistic—the joke is repeated with minimal variation, and the exploration of the mother's sadness is brief and resolved quickly. The essay lacks the depth, insight, or careful selection of details expected at score 5, but it is coherent and functional, meeting the criteria for a score 4.",
       "confidence": 0.85
     },
     {
-      "hypothesis_id": "hyp-real-e53b4e6278a3",
-      "observation_id": "obs-562c7b535fbf",
+      "hypothesis_id": "hyp-real-ca3a3421008f",
+      "observation_id": "obs-8289c6444b90",
       "dimension_id": "ideas_content",
       "rater_id": "rater_2",
       "score": {
@@ -48,22 +49,23 @@
         "supporting details are relevant but may be overly general or limited"
       ],
       "evidence_span_ids": [
-        "span-real-d8e7ece77afc",
-        "span-real-9407033fadf3",
-        "span-real-9f017041e349",
-        "span-real-f4fb8071be8d",
-        "span-real-078959789de8",
-        "span-real-fdabf99fa5c5",
-        "span-real-a706e8a5fb3d",
-        "span-real-0820b947e171",
-        "span-real-ac9fca1e842f"
+        "span-real-fb2d42596cd0",
+        "span-real-e9ca21b19955",
+        "span-real-580b8c2a4ddd",
+        "span-real-f56870c3ac5d",
+        "span-real-8416654f8ebf",
+        "span-real-614e8951bf66",
+        "span-real-63dc827f3a23",
+        "span-real-2005ef2f6528",
+        "span-real-f70f2a68072a",
+        "span-real-f26bd0b39e5e"
       ],
-      "rationale": "The essay has an easily identifiable purpose (trying to cheer up a friend's grieving mother) and clear main ideas (initial misunderstanding, joke-telling attempts, eventual success and revelation). Supporting details are relevant to the narrative but are somewhat general and limited in depth - the emotional resolution with the mother's explanation is brief, and the joke repetition lacks variation. This matches the 'clear main ideas with relevant but limited support' description of a score 4, as the essay explores the topic but developmental details are somewhat out of balance.",
+      "rationale": "The essay demonstrates a clear narrative arc with an easily identifiable purpose (cheering up a grieving adult) and clear main ideas that progress logically from problem to resolution. Supporting details, such as the specific scenes at lunch and the sleepover, are relevant to the story. However, the emotional insight regarding the grandmother's death is stated briefly without deep reflection or thorough exploration, which aligns with the Score 4 descriptor that details may be 'limited' or not 'particularly insightful' compared to a Score 5. The content is functional and coherent, exceeding the 'simplistic' or 'limited development' criteria of Score 3.",
       "confidence": 0.85
     },
     {
-      "hypothesis_id": "hyp-real-e674666241f0",
-      "observation_id": "obs-91e719895b55",
+      "hypothesis_id": "hyp-real-63dd4ab63957",
+      "observation_id": "obs-c7c5f7169113",
       "dimension_id": "organization",
       "rater_id": "rater_1",
       "score": {
@@ -78,23 +80,18 @@
         "structure is skeletal or too rigid"
       ],
       "evidence_span_ids": [
-        "span-real-6f250a59dbc6",
-        "span-real-26a22d6d87de",
-        "span-real-33605e92c25e",
-        "span-real-86af1e34b23a",
-        "span-real-0c86e7539df6",
-        "span-real-1a0ecf856d6f",
-        "span-real-47dc9cc2752d",
-        "span-real-980f2cc573fc",
-        "span-real-312f8b11d576",
-        "span-real-16f2805ba203"
+        "span-real-b6fb8bbb438d",
+        "span-real-2818b9cbc725",
+        "span-real-fcb361d7be31",
+        "span-real-6942dbd893cd",
+        "span-real-173e57a04557"
       ],
-      "rationale": "The essay demonstrates attempted organization with clear chronological sequencing ('A long time ago when I was in third grade', 'The next day', 'When I got to @PERSON2 house', 'The next morning') and a recognizable beginning and ending. However, the structure is skeletal and rigid, following a simple timeline without paragraph breaks, making the order occasionally unclear in dense sections. The beginning introduces the friend's grouchy mother, and the ending returns to the narrator's mother, but both are underdeveloped. The essay lacks transitions beyond basic time markers, and details are placed functionally but without sophisticated organization. This aligns with Score 3 descriptors: 'attempts at sequencing... but order occasionally unclear', 'beginning and ending present but undeveloped', and 'structure is skeletal or too rigid'.",
+      "rationale": "The essay demonstrates attempted organization with chronological sequencing and a clear beginning, middle, and end. However, the structure is skeletal and rigid, following a simple 'this happened, then this happened' pattern without paragraph breaks. The beginning introduces the friend's grouchy mother, and the ending provides closure with the mother's explanation and the narrator's humorous final exchange with his own mother, but both are underdeveloped. Transitions are basic temporal markers ('The next day,' 'When I got to @PERSON2 house'), and the placement of details is functional but not particularly effective, making the overall structure feel like a simple recounting of events rather than a compelling narrative flow.",
       "confidence": 0.85
     },
     {
-      "hypothesis_id": "hyp-real-54d0e22ca9a0",
-      "observation_id": "obs-91e719895b55",
+      "hypothesis_id": "hyp-real-505729c6d44d",
+      "observation_id": "obs-c7c5f7169113",
       "dimension_id": "organization",
       "rater_id": "rater_2",
       "score": {
@@ -104,28 +101,23 @@
         "scale_ref": "ordinal_6"
       },
       "descriptor_refs": [
-        "attempts at sequencing and paragraph breaks but order occasionally unclear",
         "beginning and ending present but undeveloped or too obvious",
-        "structure is skeletal or too rigid"
+        "structure is skeletal or too rigid",
+        "attempts at sequencing and paragraph breaks but order occasionally unclear"
       ],
       "evidence_span_ids": [
-        "span-real-6f250a59dbc6",
-        "span-real-26a22d6d87de",
-        "span-real-33605e92c25e",
-        "span-real-86af1e34b23a",
-        "span-real-0c86e7539df6",
-        "span-real-1a0ecf856d6f",
-        "span-real-47dc9cc2752d",
-        "span-real-980f2cc573fc",
-        "span-real-312f8b11d576",
-        "span-real-16f2805ba203"
+        "span-real-b6fb8bbb438d",
+        "span-real-2818b9cbc725",
+        "span-real-fcb361d7be31",
+        "span-real-6942dbd893cd",
+        "span-real-173e57a04557"
       ],
-      "rationale": "The essay shows attempted organization with clear chronological sequencing and a complete narrative arc (beginning, middle, end). However, the structure is skeletal and rigid - it follows a simple 'this happened, then this happened' pattern without paragraph breaks or sophisticated transitions. The beginning and ending are present but undeveloped (abrupt 'FIN' ending). While the sequence of events is generally clear, the lack of paragraphing and minimal transitions make the organization feel mechanical rather than fluid. This matches the 'attempted organization; inconsistent or skeletal structure' descriptors for Score 3.",
-      "confidence": 0.85
+      "rationale": "The essay demonstrates a clear chronological sequence (Evidence 1, 3), which prevents a score of 1 or 2, but the complete lack of paragraph breaks results in a 'skeletal' structure where distinct scenes (lunch, class, sleepover) are merged into a single block of text. This violates the Score 4 requirement for 'clear... paragraph breaks.' Additionally, the beginning ('A long time ago') and ending ('FIN') are present but 'undeveloped or too obvious' (Evidence 1, 5), fitting the Score 3 profile. While the logical order is clear, the visual organization and structural development limit the score to 3.",
+      "confidence": 0.9
     },
     {
-      "hypothesis_id": "hyp-real-160a4fbd1cf1",
-      "observation_id": "obs-c042d77e42df",
+      "hypothesis_id": "hyp-real-210a67c1b07b",
+      "observation_id": "obs-69b552ac940a",
       "dimension_id": "voice",
       "rater_id": "rater_1",
       "score": {
@@ -135,49 +127,57 @@
         "scale_ref": "ordinal_6"
       },
       "descriptor_refs": [
-        "Voice present; some expressiveness and sincerity",
-        "reader may glimpse writer and feel sense of interaction in places",
-        "liveliness, sincerity, or humor when appropriate"
-      ],
-      "evidence_span_ids": [
-        "span-real-ce09da991539",
-        "span-real-24e224938d2f",
-        "span-real-e34ad2357888",
-        "span-real-af424ffadfc7",
-        "span-real-7b7f19539745"
-      ],
-      "rationale": "The essay demonstrates consistent voice throughout with a casual, first-person narrative that feels sincere and occasionally humorous. The writer shows audience awareness through conversational elements like dialogue and personal reflections ('I thought she didn't like me or something'). There's liveliness in the joke-telling scenes and sincerity in the resolution about the mother's grief. However, the voice remains at a functional, consistent level without the exceptional commitment or originality required for scores 5-6. The writer's presence is reliably felt, but the voice doesn't consistently demonstrate the strong, intentional audience awareness or deep commitment needed for higher scores.",
-      "confidence": 0.85
-    },
-    {
-      "hypothesis_id": "hyp-real-92c4924ea5c1",
-      "observation_id": "obs-c042d77e42df",
-      "dimension_id": "voice",
-      "rater_id": "rater_2",
-      "score": {
-        "canonical_score": 4,
-        "display_annotation": null,
-        "display_score": "4",
-        "scale_ref": "ordinal_6"
-      },
-      "descriptor_refs": [
-        "Voice present; some expressiveness and sincerity",
+        "Voice present; some expressiveness and sincerity.",
         "Reader may glimpse writer and feel sense of interaction in places",
         "Liveliness, sincerity, or humor when appropriate"
       ],
       "evidence_span_ids": [
-        "span-real-ce09da991539",
-        "span-real-24e224938d2f",
-        "span-real-e34ad2357888",
-        "span-real-af424ffadfc7",
-        "span-real-7b7f19539745"
+        "span-real-c0a5b0a30edd",
+        "span-real-bc7811eed0e4",
+        "span-real-6dd77631194e",
+        "span-real-9e17019f9817",
+        "span-real-429450037c7d",
+        "span-real-9a4e09daad39",
+        "span-real-e56271af8c3b",
+        "span-real-ff4821153ac0",
+        "span-real-14e541625623"
       ],
-      "rationale": "The essay demonstrates a consistent, appropriate voice throughout with moments of expressiveness and sincerity. The writer maintains a casual first-person narrative appropriate for a personal story, showing audience awareness through conversational tone and dialogue. Evidence includes expressive moments like 'my jokesare horrible,' the joke-telling scenes with authentic dialogue, and the humorous conclusion 'gosh darn it.' The voice is present and engaging but doesn't consistently reach the strong, sustained originality required for a score of 5.",
+      "rationale": "The essay demonstrates consistent voice throughout with a casual, first-person narrative that shows the writer's personality. The writer maintains audience awareness by explaining their thoughts and feelings (e.g., 'At first I didn't know she was a grouch i just thought she didn't like me or something'), and shows expressiveness through dialogue and humorous elements like the 'boo who' joke. However, the voice remains at a functional level without the sustained originality, deep commitment, or exceptional audience awareness required for scores 5-6. The writing is sincere and shows liveliness in appropriate moments, but doesn't consistently rise to the level of strong, intentional voice throughout.",
       "confidence": 0.85
     },
     {
-      "hypothesis_id": "hyp-real-b540675c331c",
-      "observation_id": "obs-f32b060561ba",
+      "hypothesis_id": "hyp-real-27be60d646c5",
+      "observation_id": "obs-69b552ac940a",
+      "dimension_id": "voice",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "Voice present; some expressiveness and sincerity.",
+        "Reader may glimpse writer and feel sense of interaction in places.",
+        "Writing may be inappropriately casual or inappropriately formal in places."
+      ],
+      "evidence_span_ids": [
+        "span-real-c0a5b0a30edd",
+        "span-real-bc7811eed0e4",
+        "span-real-6dd77631194e",
+        "span-real-9e17019f9817",
+        "span-real-429450037c7d",
+        "span-real-9a4e09daad39",
+        "span-real-e56271af8c3b",
+        "span-real-ff4821153ac0",
+        "span-real-14e541625623"
+      ],
+      "rationale": "The essay demonstrates a consistent narrative voice with clear expressiveness and sincerity, aligning with Score 4 descriptors. The writer's personality is evident throughout ('cracking up', 'gosh darn it'), allowing the reader to glimpse the writer behind the words (Evidence 1, 9). While the casual tone and mechanical errors (run-on sentences, missing punctuation in dialogue) prevent a higher score, the voice remains engaged and interactive rather than flat or inconsistent (Evidence 6). This fits the Score 4 criterion that writing 'may be inappropriately casual... in places' while still maintaining a sense of audience and commitment to the story.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-7f9376501248",
+      "observation_id": "obs-06c71f0fcf44",
       "dimension_id": "word_choice",
       "rater_id": "rater_1",
       "score": {
@@ -192,21 +192,23 @@
         "words generally accurate but misused words may occasionally appear"
       ],
       "evidence_span_ids": [
-        "span-real-6deb10454012",
-        "span-real-81431605d68a",
-        "span-real-08d298e72f03",
-        "span-real-12e4792085ba",
-        "span-real-4ef806a13d30",
-        "span-real-22ab292a2052",
-        "span-real-d4802725454a",
-        "span-real-9d6e12832daa"
+        "span-real-3b91059e074c",
+        "span-real-ab38e7df28a0",
+        "span-real-7867a4e78643",
+        "span-real-e499565d2d39",
+        "span-real-daf75de4ddb6",
+        "span-real-04ddbf2cc662",
+        "span-real-a1f6b63d75ef",
+        "span-real-b20aa047d171",
+        "span-real-1ff34775ca32",
+        "span-real-eb8ec0933e8c"
       ],
-      "rationale": "The essay uses functional vocabulary that communicates the narrative clearly but lacks precision and variety. Words like 'bad mood,' 'grouch,' and 'horrible' are accurate but generic and mundane. Slang terms like 'cracking up' and 'gosh darn it' are present but not particularly effective or purposeful. The repetition of phrases like 'laughed and laughed' and similar descriptions of frowning demonstrates limited word choice. While the essay avoids major errors in word usage, the language rarely energizes the writing or captures reader interest, aligning with Score 3 descriptors.",
+      "rationale": "The essay uses functional, generally accurate vocabulary that communicates the narrative clearly, but it lacks precision and variety. Words like 'grouch,' 'cracking up,' and 'gosh darn it' are familiar and work for the story but don't particularly energize the writing or create vivid imagery. The language remains mundane and general throughout, with occasional awkward phrasing (e.g., 'my jokesare horrible' without spacing, 'anempty seat'). While the word choice effectively conveys the message, it rarely rises above the generic level described in the score 3 rubric, aligning more with the 'A New Truck' anchor than the more precise and engaging language of the score 4 or 5 anchors.",
       "confidence": 0.85
     },
     {
-      "hypothesis_id": "hyp-real-b0a06a02edaf",
-      "observation_id": "obs-f32b060561ba",
+      "hypothesis_id": "hyp-real-9d560bc4d0be",
+      "observation_id": "obs-06c71f0fcf44",
       "dimension_id": "word_choice",
       "rater_id": "rater_2",
       "score": {
@@ -216,26 +218,28 @@
         "scale_ref": "ordinal_6"
       },
       "descriptor_refs": [
-        "words that work but rarely capture reader's interest",
-        "expression seems mundane and general; slang not effective",
-        "words generally accurate but misused words may occasionally appear"
+        "Lacks precision and variety; generic paper.",
+        "Words that work but rarely capture reader's interest.",
+        "Reliance on cliches and overused expressions."
       ],
       "evidence_span_ids": [
-        "span-real-6deb10454012",
-        "span-real-81431605d68a",
-        "span-real-08d298e72f03",
-        "span-real-12e4792085ba",
-        "span-real-4ef806a13d30",
-        "span-real-22ab292a2052",
-        "span-real-d4802725454a",
-        "span-real-9d6e12832daa"
+        "span-real-3b91059e074c",
+        "span-real-ab38e7df28a0",
+        "span-real-7867a4e78643",
+        "span-real-e499565d2d39",
+        "span-real-daf75de4ddb6",
+        "span-real-04ddbf2cc662",
+        "span-real-a1f6b63d75ef",
+        "span-real-b20aa047d171",
+        "span-real-1ff34775ca32",
+        "span-real-eb8ec0933e8c"
       ],
-      "rationale": "The essay uses functional, generally accurate vocabulary that communicates the narrative clearly, but lacks precision and variety to engage the reader. Words like 'bad mood,' 'grouch,' and 'horrible' are mundane and generic. Slang such as 'cracking up' and 'gosh darn it' feels ineffective rather than purposeful. While the language works to tell the story, it rarely captures interest or energizes the writing, aligning with Score 3 descriptors.",
-      "confidence": 0.85
+      "rationale": "The essay demonstrates Word Choice characteristics consistent with a Score 3. The vocabulary is functional and accurate enough to tell the story, but it lacks precision and variety, relying heavily on generic terms like 'grouch,' 'bad mood,' and 'laugh' (Evidence 8 shows repetitive use of 'laugh'). The writing includes vague phrasing such as 'or something' (Evidence 2) and relies on cliches like 'sounds like a plan' (Evidence 4). While the words work to convey the narrative, they are mundane and rarely capture the reader's interest, fitting the Score 3 descriptor of a 'generic paper' rather than the more energizing language of Score 4 or the monotonous/obscured language of Score 2.",
+      "confidence": 0.9
     },
     {
-      "hypothesis_id": "hyp-real-b090a6cc365a",
-      "observation_id": "obs-50e9e5fc7970",
+      "hypothesis_id": "hyp-real-23d9a4e21d83",
+      "observation_id": "obs-198856491168",
       "dimension_id": "sentence_fluency",
       "rater_id": "rater_1",
       "score": {
@@ -245,51 +249,51 @@
         "scale_ref": "ordinal_6"
       },
       "descriptor_refs": [
-        "mechanical rather than fluid; occasional awkwardness",
         "some passages invite fluid oral reading; others do not",
         "good control over simple sentences, little over complex",
         "sentences functional but lack energy"
       ],
       "evidence_span_ids": [
-        "span-real-e1edda09f2c1",
-        "span-real-0175bd1b20de",
-        "span-real-8fecdec31538",
-        "span-real-73f1cedd91d4",
-        "span-real-51b23d8e418b"
+        "span-real-7b22351c07ca",
+        "span-real-f48965dc9c66",
+        "span-real-0dfc7437b4d0",
+        "span-real-c684a3234365",
+        "span-real-87f013a80add",
+        "span-real-86391e872d33"
       ],
-      "rationale": "The essay demonstrates mechanical rather than fluid sentence fluency. While the narrative is generally understandable and has some natural conversational moments (especially in dialogue), there are frequent run-on sentences, awkward constructions, and inconsistent verb tense usage that disrupt the flow. The writer shows good control over simple sentences but struggles with complex sentence structures, resulting in a functional but unenergetic rhythm. For example, 'When @PERSON2 told me his mom was a grouch I started to laugh and laugh. He asked me what was so funny i told him that i thought his mom didn't like me or something because every time I see his mom I would smile at her and all she will do is frown and walk away' shows both conversational flow and awkward construction in the same passage. The essay lacks the varied patterns and crafted rhythm needed for higher scores.",
+      "rationale": "The essay demonstrates mechanical rather than fluid sentence fluency. While some passages read naturally (e.g., the dialogue exchanges), others are choppy with run-on sentences and inconsistent verb tense ('I would smile... all she will do'). The writer shows good control over simple sentences but struggles with complex structures, leading to occasional awkwardness. The sentences are functional for storytelling but lack rhythmic variety and crafted energy, aligning with score 3 descriptors.",
       "confidence": 0.85
     },
     {
-      "hypothesis_id": "hyp-real-7dded2ad70e8",
-      "observation_id": "obs-50e9e5fc7970",
+      "hypothesis_id": "hyp-real-92a49e52343b",
+      "observation_id": "obs-198856491168",
       "dimension_id": "sentence_fluency",
       "rater_id": "rater_2",
       "score": {
-        "canonical_score": 3,
+        "canonical_score": 2,
         "display_annotation": null,
-        "display_score": "3",
+        "display_score": "2",
         "scale_ref": "ordinal_6"
       },
       "descriptor_refs": [
-        "mechanical rather than fluid; occasional awkwardness",
-        "some passages invite fluid oral reading; others do not",
-        "good control over simple sentences, little over complex",
-        "sentences functional but lack energy"
+        "significant portions difficult to follow or read aloud",
+        "significant number of awkward, choppy, or rambling constructions",
+        "sentence patterns that are monotonous"
       ],
       "evidence_span_ids": [
-        "span-real-e1edda09f2c1",
-        "span-real-0175bd1b20de",
-        "span-real-8fecdec31538",
-        "span-real-73f1cedd91d4",
-        "span-real-51b23d8e418b"
+        "span-real-7b22351c07ca",
+        "span-real-f48965dc9c66",
+        "span-real-0dfc7437b4d0",
+        "span-real-c684a3234365",
+        "span-real-87f013a80add",
+        "span-real-86391e872d33"
       ],
-      "rationale": "The essay demonstrates basic sentence functionality with mostly simple sentence structures that are generally clear, but lacks fluid rhythm and variety. There are frequent run-on sentences and awkward constructions (e.g., 'He asked me what was so funny i told him...', 'We sat in the back of the classroom its only @PERSON2 and I and anempty seat between us') that disrupt smooth oral reading. While the narrative is understandable, the sentence patterns are repetitive and mechanical rather than crafted for rhythm or emphasis. The dialogue sections are functional but somewhat stilted in their presentation. This aligns with Score 3 descriptors where writing is mechanical rather than fluid, with good control over simple sentences but little over complex structures, and sentences that lack energy.",
-      "confidence": 0.85
+      "rationale": "The essay demonstrates significant issues with sentence fluency, primarily due to pervasive run-on sentences and a lack of punctuation that forces the reader to insert their own pauses. Descriptors for Score 2 such as 'significant portions difficult to follow or read aloud' and 'awkward, choppy, or rambling constructions' accurately describe the text. For example, dialogue is often mashed together without separation ('knockshe said'), and independent clauses are fused without conjunctions or punctuation ('At first I didn't know she was a grouch i just thought she didn't like me'). While the narrative meaning is generally recoverable (distinguishing it from Score 1), the reading experience is consistently hampered by these structural weaknesses, preventing it from reaching the 'mechanical but functional' level of Score 3.",
+      "confidence": 0.9
     },
     {
-      "hypothesis_id": "hyp-real-632db685cef0",
-      "observation_id": "obs-9205f511ef23",
+      "hypothesis_id": "hyp-real-137eb67fdac4",
+      "observation_id": "obs-9457d0e337b1",
       "dimension_id": "conventions",
       "rater_id": "rater_1",
       "score": {
@@ -299,65 +303,66 @@
         "scale_ref": "ordinal_6"
       },
       "descriptor_refs": [
+        "some control over basic conventions",
         "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
         "spelling errors distract reader; common words misspelled",
-        "errors in grammar and usage do not block meaning but distract reader"
+        "significant need for editing"
       ],
       "evidence_span_ids": [
-        "span-real-e932362b35ed",
-        "span-real-739adf8fd727",
-        "span-real-74111433518a",
-        "span-real-4485233f1b24",
-        "span-real-73bcb4168e40",
-        "span-real-63be63ef17af",
-        "span-real-95b82f801ce9",
-        "span-real-0d643bffb966",
-        "span-real-e278c038fab6",
-        "span-real-1898a0520e3c",
-        "span-real-45f0f0805326",
-        "span-real-1af21b888c0f",
-        "span-real-3f45894f604a",
-        "span-real-22914ba2d708",
-        "span-real-826efef4cb71"
+        "span-real-9bd1d4223f40",
+        "span-real-623c026cee4d",
+        "span-real-74ea184c8947",
+        "span-real-b637a43e7ed3",
+        "span-real-6df5e1aad8ea",
+        "span-real-9b35bf3fd452",
+        "span-real-5399b14909e1",
+        "span-real-fbb03409ea4f",
+        "span-real-2ab453da3517",
+        "span-real-3242affb1829",
+        "span-real-fb2de80cb61f",
+        "span-real-7ec4edd3cc9c",
+        "span-real-986a1695b2d9",
+        "span-real-a62164e9eb07",
+        "span-real-82e8e3af66c8"
       ],
-      "rationale": "The essay demonstrates limited control of conventions. While end-of-sentence punctuation is usually correct (most sentences end with periods), there are frequent internal punctuation errors including missing commas in compound sentences and run-on sentences. Spelling errors distract the reader (e.g., 'jokesare,' 'anempty,' 'mt,' 'keptlaughing,' 'usthat'). Grammar and usage errors are present but don't block meaning (e.g., 'who's mom' instead of 'whose mom,' 'between @PERSON2 and I' instead of 'between @PERSON2 and me'). The errors are noticeable and require significant editing, placing this at score 3 on the rubric.",
+      "rationale": "The essay demonstrates limited control of conventions consistent with a score of 3. While end-of-sentence punctuation is mostly correct, there are frequent internal punctuation errors (missing commas, run-on sentences) and spelling errors that distract the reader (e.g., 'jokesare,' 'mt,' 'anempty,' 'keptlaughing'). Capitalization is inconsistent with lowercase 'i' used frequently. The errors do not completely block meaning but create significant need for editing throughout the text.",
       "confidence": 0.85
     },
     {
-      "hypothesis_id": "hyp-real-7a7854df7777",
-      "observation_id": "obs-9205f511ef23",
+      "hypothesis_id": "hyp-real-4a737c6199c0",
+      "observation_id": "obs-9457d0e337b1",
       "dimension_id": "conventions",
       "rater_id": "rater_2",
       "score": {
-        "canonical_score": 3,
+        "canonical_score": 2,
         "display_annotation": null,
-        "display_score": "3",
+        "display_score": "2",
         "scale_ref": "ordinal_6"
       },
       "descriptor_refs": [
-        "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
-        "spelling errors distract reader; common words misspelled",
-        "errors in grammar and usage do not block meaning but distract reader"
+        "little control over basic conventions",
+        "many end-of-sentence errors; frequent internal punctuation errors",
+        "spelling errors that frequently distract reader"
       ],
       "evidence_span_ids": [
-        "span-real-e932362b35ed",
-        "span-real-739adf8fd727",
-        "span-real-74111433518a",
-        "span-real-4485233f1b24",
-        "span-real-73bcb4168e40",
-        "span-real-63be63ef17af",
-        "span-real-95b82f801ce9",
-        "span-real-0d643bffb966",
-        "span-real-e278c038fab6",
-        "span-real-1898a0520e3c",
-        "span-real-45f0f0805326",
-        "span-real-1af21b888c0f",
-        "span-real-3f45894f604a",
-        "span-real-22914ba2d708",
-        "span-real-826efef4cb71"
+        "span-real-9bd1d4223f40",
+        "span-real-623c026cee4d",
+        "span-real-74ea184c8947",
+        "span-real-b637a43e7ed3",
+        "span-real-6df5e1aad8ea",
+        "span-real-9b35bf3fd452",
+        "span-real-5399b14909e1",
+        "span-real-fbb03409ea4f",
+        "span-real-2ab453da3517",
+        "span-real-3242affb1829",
+        "span-real-fb2de80cb61f",
+        "span-real-7ec4edd3cc9c",
+        "span-real-986a1695b2d9",
+        "span-real-a62164e9eb07",
+        "span-real-82e8e3af66c8"
       ],
-      "rationale": "The essay demonstrates limited control of conventions. While end-of-sentence punctuation is usually correct, there are frequent internal punctuation errors (missing commas, run-on sentences) and spelling errors that distract the reader (e.g., 'jokesare,' 'mt,' 'anempty,' 'keptlaughing'). Grammar and usage errors are present but don't block meaning. The essay requires significant editing, placing it at score 3 on the rubric.",
-      "confidence": 0.85
+      "rationale": "The essay demonstrates little control over basic conventions, warranting a Score 2. There are many end-of-sentence errors, evidenced by frequent run-on sentences where independent clauses are fused without punctuation (e.g., 'That made my friend laugh we were cracking up'). Capitalization is inconsistent, particularly the repeated use of lowercase 'i' (e.g., 'i just thought', 'i could say'). Spelling and spacing errors frequently distract the reader and impede readability, such as 'jokesare', 'roomall', and the garbled dialogue section ('knockshe said <who's thereI'). While the narrative meaning is generally understandable (preventing a Score 1), the density of mechanical errors prevents it from reaching Score 3, which requires end-of-sentence punctuation to be 'usually correct'.",
+      "confidence": 0.9
     }
   ]
 }

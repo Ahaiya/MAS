@@ -2,7 +2,7 @@
 Integration tests for pipeline fallback paths (Phase 3, Task 5).
 
 Covers the four non-happy paths by injecting controlled ConflictRecords
-via unittest.mock.patch on mock_consistency_checker.run:
+via unittest.mock.patch on deterministic_consistency_checker.run:
 
 1. RE_EXTRACT path: consistency checker returns RE_EXTRACT conflict once,
    then succeeds → pipeline completes with VALIDATED status.
@@ -19,7 +19,7 @@ via unittest.mock.patch on mock_consistency_checker.run:
    → CheckpointManager.RetryLimitExceeded after max_retries → pipeline FAILED.
    Verified: __force_fail__ sentinel appears in node_traces.
 
-Patching strategy: patch src.agents.mock_consistency_checker.run via
+Patching strategy: patch src.agents.deterministic_consistency_checker.run via
 patch.object so the same module object used by the runner is patched.
 Zero-hardcoding: no rubric dimension IDs or trait names are hardcoded.
 """
@@ -27,8 +27,8 @@ Zero-hardcoding: no rubric dimension IDs or trait names are hardcoded.
 import pytest
 from unittest.mock import patch
 
-from src.agents import mock_consistency_checker
-from src.agents.mock_config_resolver import run as resolve_bundle
+from src.agents import deterministic_consistency_checker
+from src.agents.config_resolver import run as resolve_bundle
 from src.contracts.request_models import EvaluationRequest
 from src.contracts.scoring import ConflictRecord, ConflictType, ResolutionPath
 from src.contracts.trace import RunStatus, NodeStatus
@@ -94,14 +94,14 @@ class TestReExtractFallback:
             [_conflict(ResolutionPath.RE_EXTRACT)],
             [],
         ]
-        with patch.object(mock_consistency_checker, "run", side_effect=side_effects):
+        with patch.object(deterministic_consistency_checker, "run", side_effect=side_effects):
             run_trace, feedback = runner.run(request_)
 
         assert run_trace.status == RunStatus.COMPLETED
 
     def test_terminal_validation_passed_after_re_extract(self, runner, request_):
         side_effects = [[_conflict(ResolutionPath.RE_EXTRACT)], []]
-        with patch.object(mock_consistency_checker, "run", side_effect=side_effects):
+        with patch.object(deterministic_consistency_checker, "run", side_effect=side_effects):
             run_trace, _ = runner.run(request_)
 
         assert run_trace.terminal_validation_passed is True
@@ -109,7 +109,7 @@ class TestReExtractFallback:
     def test_node_extractor_runs_twice(self, runner, request_):
         """After RE_EXTRACT, the extractor re-runs from COVERAGE_PLANNED."""
         side_effects = [[_conflict(ResolutionPath.RE_EXTRACT)], []]
-        with patch.object(mock_consistency_checker, "run", side_effect=side_effects):
+        with patch.object(deterministic_consistency_checker, "run", side_effect=side_effects):
             run_trace, _ = runner.run(request_)
 
         extractor_traces = [
@@ -120,7 +120,7 @@ class TestReExtractFallback:
     def test_node_observer_runs_twice(self, runner, request_):
         """After RE_EXTRACT, the observer also re-runs."""
         side_effects = [[_conflict(ResolutionPath.RE_EXTRACT)], []]
-        with patch.object(mock_consistency_checker, "run", side_effect=side_effects):
+        with patch.object(deterministic_consistency_checker, "run", side_effect=side_effects):
             run_trace, _ = runner.run(request_)
 
         observer_traces = [
@@ -130,7 +130,7 @@ class TestReExtractFallback:
 
     def test_node_consistency_checker_runs_twice(self, runner, request_):
         side_effects = [[_conflict(ResolutionPath.RE_EXTRACT)], []]
-        with patch.object(mock_consistency_checker, "run", side_effect=side_effects):
+        with patch.object(deterministic_consistency_checker, "run", side_effect=side_effects):
             run_trace, _ = runner.run(request_)
 
         checker_traces = [
@@ -141,7 +141,7 @@ class TestReExtractFallback:
 
     def test_all_traces_succeeded(self, runner, request_):
         side_effects = [[_conflict(ResolutionPath.RE_EXTRACT)], []]
-        with patch.object(mock_consistency_checker, "run", side_effect=side_effects):
+        with patch.object(deterministic_consistency_checker, "run", side_effect=side_effects):
             run_trace, _ = runner.run(request_)
 
         for nt in run_trace.node_traces:
@@ -151,7 +151,7 @@ class TestReExtractFallback:
 
     def test_feedback_has_dimensions_after_re_extract(self, runner, request_, bundle):
         side_effects = [[_conflict(ResolutionPath.RE_EXTRACT)], []]
-        with patch.object(mock_consistency_checker, "run", side_effect=side_effects):
+        with patch.object(deterministic_consistency_checker, "run", side_effect=side_effects):
             _, feedback = runner.run(request_)
 
         rubric = bundle.rubric_snapshot
@@ -170,14 +170,14 @@ class TestReScoreFallback:
             [_conflict(ResolutionPath.RE_SCORE)],
             [],
         ]
-        with patch.object(mock_consistency_checker, "run", side_effect=side_effects):
+        with patch.object(deterministic_consistency_checker, "run", side_effect=side_effects):
             run_trace, _ = runner.run(request_)
 
         assert run_trace.status == RunStatus.COMPLETED
 
     def test_terminal_validation_passed_after_re_score(self, runner, request_):
         side_effects = [[_conflict(ResolutionPath.RE_SCORE)], []]
-        with patch.object(mock_consistency_checker, "run", side_effect=side_effects):
+        with patch.object(deterministic_consistency_checker, "run", side_effect=side_effects):
             run_trace, _ = runner.run(request_)
 
         assert run_trace.terminal_validation_passed is True
@@ -185,7 +185,7 @@ class TestReScoreFallback:
     def test_node_scorer_runs_twice(self, runner, request_):
         """After RE_SCORE, only the scorer re-runs (not the extractor or observer)."""
         side_effects = [[_conflict(ResolutionPath.RE_SCORE)], []]
-        with patch.object(mock_consistency_checker, "run", side_effect=side_effects):
+        with patch.object(deterministic_consistency_checker, "run", side_effect=side_effects):
             run_trace, _ = runner.run(request_)
 
         scorer_traces = [
@@ -196,7 +196,7 @@ class TestReScoreFallback:
     def test_node_observer_runs_once_for_re_score(self, runner, request_):
         """RE_SCORE re-uses existing observations — observer must NOT re-run."""
         side_effects = [[_conflict(ResolutionPath.RE_SCORE)], []]
-        with patch.object(mock_consistency_checker, "run", side_effect=side_effects):
+        with patch.object(deterministic_consistency_checker, "run", side_effect=side_effects):
             run_trace, _ = runner.run(request_)
 
         observer_traces = [
@@ -207,7 +207,7 @@ class TestReScoreFallback:
     def test_node_extractor_runs_once_for_re_score(self, runner, request_):
         """RE_SCORE re-uses existing spans — extractor must NOT re-run."""
         side_effects = [[_conflict(ResolutionPath.RE_SCORE)], []]
-        with patch.object(mock_consistency_checker, "run", side_effect=side_effects):
+        with patch.object(deterministic_consistency_checker, "run", side_effect=side_effects):
             run_trace, _ = runner.run(request_)
 
         extractor_traces = [
@@ -217,7 +217,7 @@ class TestReScoreFallback:
 
     def test_all_traces_succeeded_after_re_score(self, runner, request_):
         side_effects = [[_conflict(ResolutionPath.RE_SCORE)], []]
-        with patch.object(mock_consistency_checker, "run", side_effect=side_effects):
+        with patch.object(deterministic_consistency_checker, "run", side_effect=side_effects):
             run_trace, _ = runner.run(request_)
 
         for nt in run_trace.node_traces:
@@ -232,7 +232,7 @@ class TestHumanReviewPath:
 
     def test_status_is_human_review(self, runner, request_):
         with patch.object(
-            mock_consistency_checker,
+            deterministic_consistency_checker,
             "run",
             return_value=[_conflict(ResolutionPath.HUMAN_REVIEW)],
         ):
@@ -242,7 +242,7 @@ class TestHumanReviewPath:
 
     def test_feedback_is_empty_for_human_review(self, runner, request_):
         with patch.object(
-            mock_consistency_checker,
+            deterministic_consistency_checker,
             "run",
             return_value=[_conflict(ResolutionPath.HUMAN_REVIEW)],
         ):
@@ -253,7 +253,7 @@ class TestHumanReviewPath:
     def test_no_feedback_node_in_trace(self, runner, request_):
         """Feedback stage must not run when escalated to HUMAN_REVIEW."""
         with patch.object(
-            mock_consistency_checker,
+            deterministic_consistency_checker,
             "run",
             return_value=[_conflict(ResolutionPath.HUMAN_REVIEW)],
         ):
@@ -265,7 +265,7 @@ class TestHumanReviewPath:
     def test_preprocess_and_coverage_ran(self, runner, request_):
         """Stages before the conflict point must still appear in trace."""
         with patch.object(
-            mock_consistency_checker,
+            deterministic_consistency_checker,
             "run",
             return_value=[_conflict(ResolutionPath.HUMAN_REVIEW)],
         ):
@@ -288,7 +288,7 @@ class TestRetryExhaustedFailed:
 
     def test_status_is_failed_on_retry_exhaustion(self, runner, request_):
         with patch.object(
-            mock_consistency_checker, "run", side_effect=self._always_re_extract
+            deterministic_consistency_checker, "run", side_effect=self._always_re_extract
         ):
             run_trace, _ = runner.run(request_)
 
@@ -296,7 +296,7 @@ class TestRetryExhaustedFailed:
 
     def test_feedback_is_empty_on_failed(self, runner, request_):
         with patch.object(
-            mock_consistency_checker, "run", side_effect=self._always_re_extract
+            deterministic_consistency_checker, "run", side_effect=self._always_re_extract
         ):
             _, feedback = runner.run(request_)
 
@@ -305,7 +305,7 @@ class TestRetryExhaustedFailed:
     def test_force_fail_sentinel_in_traces(self, runner, request_):
         """A __force_fail__ sentinel NodeTrace must appear after retry exhaustion."""
         with patch.object(
-            mock_consistency_checker, "run", side_effect=self._always_re_extract
+            deterministic_consistency_checker, "run", side_effect=self._always_re_extract
         ):
             run_trace, _ = runner.run(request_)
 
@@ -318,7 +318,7 @@ class TestRetryExhaustedFailed:
     def test_node_extractor_ran_multiple_times(self, runner, request_):
         """Extractor must re-run for each RE_EXTRACT attempt (max_retries + 1 times)."""
         with patch.object(
-            mock_consistency_checker, "run", side_effect=self._always_re_extract
+            deterministic_consistency_checker, "run", side_effect=self._always_re_extract
         ):
             run_trace, _ = runner.run(request_)
 
@@ -330,7 +330,7 @@ class TestRetryExhaustedFailed:
 
     def test_no_feedback_node_on_failed(self, runner, request_):
         with patch.object(
-            mock_consistency_checker, "run", side_effect=self._always_re_extract
+            deterministic_consistency_checker, "run", side_effect=self._always_re_extract
         ):
             run_trace, _ = runner.run(request_)
 

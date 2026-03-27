@@ -1,5 +1,5 @@
 """
-Mock Evidence Extractor — deterministic EvidenceSpan generation.
+Deterministic Evidence Extractor — deterministic EvidenceSpan generation.
 
 Produces one GLOBAL-scope EvidenceSpan per required facet in the CoveragePlan.
 Span IDs are derived from (plan_id + facet_id) hashes, ensuring that:
@@ -22,7 +22,7 @@ def _hid(seed: str, length: int = 12) -> str:
 
 
 def run(plan: CoveragePlan, document: NormalizedDocument) -> List[EvidenceSpan]:
-    """Extract one mock evidence span per required facet in the plan.
+    """Extract one deterministic evidence span per required facet in the plan.
 
     Uses GLOBAL scope (no character offsets required) for simplicity.
     Each span references exactly one facet from plan.required_facets.
@@ -48,7 +48,7 @@ def run(plan: CoveragePlan, document: NormalizedDocument) -> List[EvidenceSpan]:
                 scope=EvidenceScope.GLOBAL,
                 dimension_id=plan.dimension_id,
                 facet_ids=[facet_id],
-                extraction_note="mock_deterministic",
+                extraction_note="deterministic",
             )
         )
     return spans

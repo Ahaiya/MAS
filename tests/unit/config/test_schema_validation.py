@@ -493,7 +493,7 @@ class TestPromptFileSchema:
         path = CONFIGS_ROOT / "prompts/scoring.yaml"
         data = yaml.safe_load(path.read_text())
         schema = PromptFileSchema(**data)
-        assert schema.metadata.template_version == "v1"
+        assert schema.metadata.template_version == "v2"
 
 
 # ── Cross-Config Validation ───────────────────────────────────────────────────

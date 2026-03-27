@@ -136,8 +136,8 @@ class TestRealExtractionSmoke:
     def test_extraction_prompt_returns_response(self):
         """Build an extraction prompt and call the real provider."""
         _skip_if_no_credentials()
-        from src.agents.mock_config_resolver import run as resolve_bundle
-        from src.agents.real_extractor import run as real_extract
+        from src.agents.config_resolver import run as resolve_bundle
+        from src.agents.extractor import run as extract
         from src.providers.prompt_loader import PromptLoader
 
         if not _BUNDLE_PATH.exists() or not _SAMPLE_PATH.exists():
@@ -147,20 +147,20 @@ class TestRealExtractionSmoke:
         resolved = resolve_bundle(_BUNDLE_PATH)
         rubric = resolved.rubric_snapshot
 
-        from src.agents import mock_preprocess, mock_coverage
+        from src.agents import coverage, preprocess
         from src.contracts.request_models import EvaluationRequest
 
         raw_text = _SAMPLE_PATH.read_text(encoding="utf-8")
         req = EvaluationRequest(raw_text=raw_text, bundle_ref="smoke")
-        _, document = mock_preprocess.run(req)
-        plans = mock_coverage.run(document, rubric)
+        _, document = preprocess.run(req)
+        plans = coverage.run(document, rubric)
 
         loader = PromptLoader()
         template = loader.load(_PROJECT_ROOT / "configs" / "prompts" / "evidence_extraction.yaml")
 
         # Run extraction for first dimension only (smoke test, not full pipeline)
         first_plan = plans[0]
-        spans = real_extract(first_plan, document, rubric, provider, template)
+        spans = extract(first_plan, document, rubric, provider, template)
 
         assert isinstance(spans, list)
         assert len(spans) > 0
@@ -181,7 +181,7 @@ class TestRealPipelineSmoke:
         if not _BUNDLE_PATH.exists() or not _SAMPLE_PATH.exists():
             pytest.skip("Bundle or sample file not found")
 
-        from src.agents.mock_config_resolver import run as resolve_bundle
+        from src.agents.config_resolver import run as resolve_bundle
         from src.contracts.request_models import EvaluationRequest
         from src.contracts.trace import RunStatus
         from src.pipeline.runner import PipelineRunner

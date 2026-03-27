@@ -1,0 +1,206 @@
+{
+  "dimensions": {
+    "ideas_content": {
+      "dimension_name": "Ideas and Content",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "Clear main ideas with relevant but limited support.",
+        "Easily identifiable purpose",
+        "Topic is explored but developmental details may be out of balance",
+        "clear main ideas",
+        "easily identifiable purpose",
+        "supporting details are relevant but may be overly general or limited"
+      ],
+      "evidence_span_ids": [
+        "span-real-2608648ba681",
+        "span-real-2ea8b141b80c",
+        "span-real-46d7edf992a2",
+        "span-real-9c13274cca4c",
+        "span-real-b4243f3fe2b5",
+        "span-real-dd2b987af287"
+      ],
+      "feedback_text": "Your essay earned a score of 4 for Ideas and Content. You establish an **easily identifiable purpose** to explore the role of laughter in a memory. Your **clear main ideas** are present, as seen when you reflect that \"laughing is a good way to release inner emotional pressure.\" However, the **supporting details are relevant but may be limited or overly general**. For instance, while you vividly describe your group \"laughing hysterically\" during caroling, much of the development focuses on general thoughts about why people laugh rather than on deepening the specific narrative with balanced, concrete details from that night.",
+      "confidence": 0.85
+    },
+    "organization": {
+      "dimension_name": "Organization",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "body easy to follow with details fitting where placed",
+        "clear sequencing and paragraph breaks",
+        "developed conclusion may lack subtlety",
+        "organization helps reader despite some weaknesses",
+        "recognizable, developed beginning not particularly inviting"
+      ],
+      "evidence_span_ids": [
+        "span-real-317584f49c8e",
+        "span-real-3209d03cb438",
+        "span-real-498538807af4",
+        "span-real-561a9af5842f",
+        "span-real-57dacdea9119",
+        "span-real-62eb57db86b5",
+        "span-real-7556999c02d0",
+        "span-real-8d1cdc4dcf89",
+        "span-real-9e68349ae4fa",
+        "span-real-df323743c213",
+        "span-real-fa11777a1b88",
+        "span-real-fdb35b5876ed"
+      ],
+      "feedback_text": "Your essay scored a 4 in Organization. Your writing has a **recognizable, developed beginning** and is **easy to follow with details fitting where placed**, as shown by your clear explanation of the \"cheese ball caroling\" traditions and list-making process. The sequence of events at the key house is also clear, from the \"longest walk\" to the frozen moment and the hysterical laughter. However, the **developed conclusion may lack subtlety**; while your final reflection on laughter connects to the story, it restates the lesson rather than deepening it. Overall, your **organization helps the reader follow the story despite some weaknesses** in the ending's sophistication.",
+      "confidence": 0.85
+    },
+    "voice": {
+      "dimension_name": "Voice",
+      "canonical_score": 5,
+      "display_score": "5",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "Voice present; some expressiveness and sincerity.",
+        "appropriate level of closeness to or distance from audience",
+        "liveliness, sincerity, or humor when appropriate",
+        "reader may discern writer behind words and feel sense of interaction",
+        "reader may glimpse writer and feel sense of interaction in places",
+        "strong sense of audience; writer seems aware of reader and how to communicate effectively",
+        "topic has come to life; shows originality, liveliness, honesty, conviction, excitement, humor, or suspense"
+      ],
+      "evidence_span_ids": [
+        "span-real-1e3f7445f9b2",
+        "span-real-62e65ffca7aa",
+        "span-real-6c0afc2c6ddd",
+        "span-real-7f9792aa9b6e",
+        "span-real-a2649ce05a95",
+        "span-real-b9dd40e6ec88",
+        "span-real-cc2bacfd2290",
+        "span-real-f30fa40427ac",
+        "span-real-fallback-1be9373c"
+      ],
+      "feedback_text": "Your essay received a score of 5 for Voice. This score reflects a strong sense of audience and a voice that is present and sincere, allowing the reader to \"feel a sense of interaction\" with you as the writer. Your use of lively, expressive language brings the topic to life, particularly through your honest portrayal of emotion. For example, when you describe your group \"laughing hysterically to the point where we could not breath,\" the reader can vividly share in that moment of uncontrollable humor. Furthermore, your reflective conclusion—\"I wouldn't change anything about it\"—adds a layer of sincerity and conviction, letting the reader glimpse your personal perspective and feel a genuine connection to your experience.",
+      "confidence": 0.85
+    },
+    "word_choice": {
+      "dimension_name": "Word Choice",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "Words effectively convey message; functional but not energizing.",
+        "expression is functional; slang not purposeful or effective",
+        "rare experiments with language; avoids clichés",
+        "words that work but do not particularly energize writing"
+      ],
+      "evidence_span_ids": [
+        "span-real-253da07dbd6d",
+        "span-real-26c22407536c",
+        "span-real-38a0350e4c42",
+        "span-real-505f5024f53c",
+        "span-real-7661176bc2c8",
+        "span-real-c8d27633d03c"
+      ],
+      "feedback_text": "Your essay earned a Word Choice score of 4. Your language is **functional and effectively conveys your message**, as seen in your clear description of a family gathering where you have \"a really good time\" with \"no fighting or bickering.\" However, the words **work but do not particularly energize the writing**, often relying on common phrases like \"really nice\" and \"catch up.\" You do show **rare experiments with language**, such as the vivid simile \"We were like gargoyles gawking at him,\" which creates a strong image. Overall, your word choice communicates your ideas adequately but frequently misses opportunities to use more precise or striking language to engage the reader more fully.",
+      "confidence": 0.85
+    },
+    "sentence_fluency": {
+      "dimension_name": "Sentence Fluency",
+      "canonical_score": 4,
+      "display_score": "4",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "natural sound; reader moves easily but lacks rhythm and grace",
+        "occasional lapses in stylistic control",
+        "some repeated patterns that detract from impact",
+        "strong control over simple sentences, variable over complex"
+      ],
+      "evidence_span_ids": [
+        "span-real-22de6ce07b5f",
+        "span-real-2f4de47bfaa9",
+        "span-real-3c7219bf7fe9",
+        "span-real-3ec28fa8ca78",
+        "span-real-41c69e0dc699",
+        "span-real-65db544064d3",
+        "span-real-6eb540b032cf",
+        "span-real-83f5da544088",
+        "span-real-8fc178f5396f",
+        "span-real-93cc070811c8",
+        "span-real-9c9c74b6e3f7",
+        "span-real-c1b24c972016",
+        "span-real-cba103bf7e7f",
+        "span-real-df015341afbb",
+        "span-real-e0c192784ae4",
+        "span-real-fd8b0582ae4b"
+      ],
+      "feedback_text": "Your essay received a **4** in Sentence Fluency. Your writing has a **natural sound** and the reader moves easily through it, as shown in the clear, chronological steps of your caroling preparation list. However, there are **some repeated patterns that detract from impact**, such as the frequent use of sentences starting with \"We\" or \"I\" in your narrative sections. Furthermore, control is **strong over simple sentences** but becomes **variable over complex** ones, leading to **occasional lapses in stylistic control**. For example, the sentence \"With her being gone and my grandpa no longer being around made the pressure build uncontrollably\" is grammatically awkward, which slightly interrupts the flow of an otherwise smoothly told story.",
+      "confidence": 0.85
+    },
+    "conventions": {
+      "dimension_name": "Conventions",
+      "canonical_score": 3,
+      "display_score": "3",
+      "display_annotation": null,
+      "descriptor_refs": [
+        "capitalization errors",
+        "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
+        "errors in grammar and usage do not block meaning but distract reader",
+        "spelling errors distract reader; common words misspelled"
+      ],
+      "evidence_span_ids": [
+        "span-real-00904bf89ccd",
+        "span-real-0332073e8768",
+        "span-real-1826d1b7d4e3",
+        "span-real-1a872006d05c",
+        "span-real-2022ecee5bf6",
+        "span-real-38e002589fa1",
+        "span-real-51f668d3f138",
+        "span-real-598376b87730",
+        "span-real-5c1e231dd045",
+        "span-real-637e870552ff",
+        "span-real-670be715fae2",
+        "span-real-8b93677938f8",
+        "span-real-d7c704bac361",
+        "span-real-df81d003b2cd",
+        "span-real-fallback-0a9dbb90"
+      ],
+      "feedback_text": "Your essay received a score of 3 for Conventions. The score reflects that while your meaning is clear, frequent errors in grammar, spelling, and punctuation distract the reader. For example, \"capitalization errors\" are present, as in \"since i moved\" and \"a memory i'm sure.\" Furthermore, \"common words [are] misspelled,\" such as \"defiantly\" for \"definitely\" and \"breath\" for \"breathe,\" which create distractions. While end-of-sentence punctuation is usually correct, internal punctuation and grammar have frequent errors, as seen in the fragment \"All of which family members...\" and the incorrect apostrophe in \"it's tole.\" These issues do not block meaning but consistently draw attention away from your story.",
+      "confidence": 0.85
+    }
+  },
+  "summary": "Real provider feedback for 6 dimension(s).",
+  "provider": "openai_compatible",
+  "composite": {
+    "composite_id": "composite-edc823bcfbaf",
+    "aggregation_policy_ref": "",
+    "contributing_decision_ids": [
+      "dec-d653eb38c86b",
+      "dec-588f5d511bb4",
+      "dec-23b4854c557a",
+      "dec-36447d514c28"
+    ],
+    "composite_score": {
+      "canonical_score": 36,
+      "display_annotation": null,
+      "display_score": "36",
+      "scale_ref": "composite:asap_set8_composite"
+    },
+    "aggregation_detail": {
+      "variant_id": "without_resolution",
+      "aggregation_method": "average_per_trait_then_weighted_sum",
+      "source_raters": [
+        "rater_1",
+        "rater_2"
+      ],
+      "weights": {
+        "ideas_content": 2,
+        "organization": 2,
+        "voice": 0,
+        "word_choice": 0,
+        "sentence_fluency": 2,
+        "conventions": 4
+      },
+      "resolution_used": false
+    },
+    "composite_note": null
+  }
+}

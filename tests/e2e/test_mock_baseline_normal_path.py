@@ -20,7 +20,7 @@ bundle's RubricSnapshot, never asserted as literals in test assertions.
 import pytest
 from pathlib import Path
 
-from src.agents.mock_config_resolver import run as resolve_bundle
+from src.agents.config_resolver import run as resolve_bundle
 from src.contracts.request_models import EvaluationRequest
 from src.contracts.trace import RunStatus, NodeStatus, RunTrace
 from src.pipeline.runner import PipelineRunner

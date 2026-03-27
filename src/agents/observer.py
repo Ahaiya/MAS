@@ -1,12 +1,12 @@
 """
-Mock Observation Builder — deterministic DimensionObservation assembly.
+Observation Builder — deterministic DimensionObservation assembly.
 
 Groups EvidenceSpans by their facet_ids and constructs one FacetFinding per
 required facet from the CoveragePlan. Observation confidence is derived from
 the fraction of required facets that have at least one supporting span:
-  - All facets covered  → HIGH
-  - Some facets covered → MEDIUM
-  - No facets covered   → LOW
+  - All facets covered  -> HIGH
+  - Some facets covered -> MEDIUM
+  - No facets covered   -> LOW
 
 Observation ID is derived from the plan ID and span IDs (deterministic).
 """

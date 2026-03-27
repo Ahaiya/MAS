@@ -1,5 +1,5 @@
 """
-Real Evidence Extractor — calls a real LLM provider to extract EvidenceSpan objects.
+Evidence Extractor — calls a configured provider to extract EvidenceSpan objects.
 
 Builds the extraction prompt via prompt_builders, calls the provider,
 parses structured JSON output into EvidenceSpan contracts.
@@ -49,7 +49,7 @@ def run(
     template: PromptTemplate,
 ) -> List[EvidenceSpan]:
     """
-    Extract evidence spans for one dimension using a real LLM provider.
+    Extract evidence spans for one dimension using a configured provider.
 
     Args:
         plan     : CoveragePlan specifying dimension and required facets.
@@ -79,7 +79,7 @@ def run(
         end = span_data.get("end_offset")
         facets = list(span_data.get("facets") or plan.required_facets)
         scope = EvidenceScope.SPAN if (start is not None and end is not None) else EvidenceScope.GLOBAL
-        span_id = f"span-real-{uuid.uuid4().hex[:12]}"
+        span_id = f"span-ext-{uuid.uuid4().hex[:12]}"
         spans.append(
             EvidenceSpan(
                 span_id=span_id,
@@ -91,7 +91,7 @@ def run(
                 scope=scope,
                 dimension_id=plan.dimension_id,
                 facet_ids=facets,
-                extraction_note="real_provider",
+                extraction_note="provider",
             )
         )
 
@@ -101,7 +101,7 @@ def run(
         if facet_id not in covered_facets:
             spans.append(
                 EvidenceSpan(
-                    span_id=f"span-real-fallback-{uuid.uuid4().hex[:8]}",
+                span_id=f"span-ext-fallback-{uuid.uuid4().hex[:8]}",
                     document_id=plan.document_id,
                     unit_id=None,
                     text_quote=None,
@@ -110,7 +110,7 @@ def run(
                     scope=EvidenceScope.GLOBAL,
                     dimension_id=plan.dimension_id,
                     facet_ids=[facet_id],
-                    extraction_note="real_provider_fallback",
+                    extraction_note="provider_fallback",
                 )
             )
     return spans

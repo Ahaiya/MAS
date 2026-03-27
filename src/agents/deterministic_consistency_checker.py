@@ -1,12 +1,12 @@
 """
-Mock Consistency Checker — contract-driven conflict detection.
+Deterministic Consistency Checker — contract-driven conflict detection.
 
 Reads the non-adjacent threshold from PolicySnapshot.adjudication_policy
 (zero-hardcoding: no threshold value is hardcoded here). For each dimension
 where two or more ScoreHypotheses exist, checks whether any pair's absolute
 score difference exceeds the threshold. If so, emits a ConflictRecord.
 
-Only the first score_distance trigger is evaluated (sufficient for MVP mock).
+Only the first score_distance trigger is evaluated (sufficient for the deterministic path).
 """
 
 from __future__ import annotations

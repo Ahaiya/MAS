@@ -1,9 +1,9 @@
 {
-  "run_id": "run-3464b4affba6",
+  "run_id": "run-c50bfce18a1b",
   "hypotheses": [
     {
-      "hypothesis_id": "hyp-real-3cda0f707250",
-      "observation_id": "obs-c3aeba7598f3",
+      "hypothesis_id": "hyp-score-01aa72954fca",
+      "observation_id": "obs-d8cd600fa4ea",
       "dimension_id": "ideas_content",
       "rater_id": "rater_1",
       "score": {
@@ -18,23 +18,18 @@
         "supporting details are relevant but may be overly general or limited"
       ],
       "evidence_span_ids": [
-        "span-real-72a6eb8c6b52",
-        "span-real-7585d43e390d",
-        "span-real-32346d62dc14",
-        "span-real-4f9739be3f79",
-        "span-real-a56daa682d42",
-        "span-real-d04477ae418a",
-        "span-real-09ce9a03c2ee",
-        "span-real-5110f60c797e",
-        "span-real-f53a06f89083",
-        "span-real-f92743d2a90f"
+        "span-ext-86ea8352c36e",
+        "span-ext-094bb7399fd6",
+        "span-ext-7b2c363e6d12",
+        "span-ext-f30479b43023",
+        "span-ext-8fbf2c11ff3a"
       ],
-      "rationale": "The essay has an easily identifiable purpose (exploring the importance of laughter through a personal experience) and clear main ideas (laughter is beneficial, horses bring laughter, a specific beach memory illustrates this). Supporting details are relevant to the topic but are somewhat limited and occasionally overly general (e.g., 'laughter is a large benefit in our life' without deeper exploration). The narrative example provides concrete details about the beach trip with horses, but the development remains at a surface level without deeper insights or connections. This aligns with Score 4 descriptors: clear ideas with relevant but limited support, not reaching the thorough, balanced exploration required for Score 5.",
+      "rationale": "The essay has an easily identifiable purpose (exploring the importance of laughter through a personal experience) and clear main ideas (laughter is beneficial, horses bring joy, a specific beach memory illustrates this). Supporting details are relevant to the topic, such as the description of the beach adventure with horses, but they are somewhat limited and general rather than rich or insightful. The essay explores the topic but lacks the depth, balance, and strong, carefully selected details characteristic of scores 5-6. It is more developed than a score 3 (which would have more predictable ideas and uneven support) but does not reach the level of control and thoroughness required for a 5.",
       "confidence": 0.85
     },
     {
-      "hypothesis_id": "hyp-real-b9e64885fc78",
-      "observation_id": "obs-c3aeba7598f3",
+      "hypothesis_id": "hyp-score-720e5516ff2b",
+      "observation_id": "obs-d8cd600fa4ea",
       "dimension_id": "ideas_content",
       "rater_id": "rater_2",
       "score": {
@@ -44,28 +39,23 @@
         "scale_ref": "ordinal_6"
       },
       "descriptor_refs": [
+        "Clear main ideas with relevant but limited support.",
         "easily identifiable purpose",
-        "clear main ideas",
         "supporting details are relevant but may be overly general or limited"
       ],
       "evidence_span_ids": [
-        "span-real-72a6eb8c6b52",
-        "span-real-7585d43e390d",
-        "span-real-32346d62dc14",
-        "span-real-4f9739be3f79",
-        "span-real-a56daa682d42",
-        "span-real-d04477ae418a",
-        "span-real-09ce9a03c2ee",
-        "span-real-5110f60c797e",
-        "span-real-f53a06f89083",
-        "span-real-f92743d2a90f"
+        "span-ext-86ea8352c36e",
+        "span-ext-094bb7399fd6",
+        "span-ext-7b2c363e6d12",
+        "span-ext-f30479b43023",
+        "span-ext-8fbf2c11ff3a"
       ],
-      "rationale": "The essay has an easily identifiable purpose (exploring the importance of laughter through a personal experience) and clear main ideas (laughter is beneficial, horses bring joy, a specific beach day illustrates this). Supporting details are relevant to the topic but somewhat limited and general in places (e.g., the initial definition of laughter, the broad statement about frowning causing wrinkles). The narrative example is relevant and develops the main idea, but the exploration remains at a functional, straightforward level without deeper insights or particularly rich elaboration, aligning with Score 4 descriptors.",
+      "rationale": "The essay earns a Score 4 because it presents 'Clear main ideas with relevant but limited support.' The purpose is 'easily identifiable' as the writer defines laughter and connects it to a personal narrative about horses (Evidence 1). The supporting details in the beach story are 'relevant but may be overly general or limited' in thematic insight, describing events clearly without deep analysis (Evidence 4). The conclusion successfully ties the narrative back to the main idea of laughter and enjoyment (Evidence 5). While the content is functional and focused, the generic nature of the theme and limited exploration prevent it from reaching Score 5.",
       "confidence": 0.85
     },
     {
-      "hypothesis_id": "hyp-real-982d09df65af",
-      "observation_id": "obs-6f9983b3383c",
+      "hypothesis_id": "hyp-score-9076f9be13ce",
+      "observation_id": "obs-b67c9903d2b3",
       "dimension_id": "organization",
       "rater_id": "rater_1",
       "score": {
@@ -77,80 +67,51 @@
       "descriptor_refs": [
         "attempts at sequencing and paragraph breaks but order occasionally unclear",
         "beginning and ending present but undeveloped or too obvious",
-        "structure is skeletal or too rigid"
+        "transitions sometimes work; same few devices overused"
       ],
       "evidence_span_ids": [
-        "span-real-371c224e1f58",
-        "span-real-92f5f3dca042",
-        "span-real-9daaa52ea01a",
-        "span-real-1f996d7f5e7d",
-        "span-real-a6b3de0cf3a4"
+        "span-ext-7ee8cce2bf04",
+        "span-ext-79e877c4e32f",
+        "span-ext-166bf06ea490",
+        "span-ext-a279d9c86a6d",
+        "span-ext-db6b02872352",
+        "span-ext-e1ef682f96fd"
       ],
-      "rationale": "The essay demonstrates attempted organization with a clear chronological narrative about a beach trip with horses, providing identifiable beginning, body, and ending. However, the structure is skeletal and formulaic—starting with a general definition of laughter, transitioning to personal experience, then recounting the event in sequence, and ending with reflection. The opening paragraph lacks development and transitions are basic (e.g., 'There is this one time...'). While details follow a logical timeline, the overall organization is predictable and lacks sophistication, aligning with Score 3 descriptors.",
+      "rationale": "The essay shows an attempt at organization with a clear chronological narrative structure about a beach trip with horses, but it has significant weaknesses. The beginning introduces laughter generally but transitions awkwardly to the personal anecdote. Sequencing is attempted but occasionally unclear (e.g., the initial definition paragraph doesn't flow smoothly into the personal story). The conclusion is present but underdeveloped, simply restating the day was perfect. Transitions are basic ('There is this one time', 'After about five hours', 'Driving home') and sometimes overused. The structure is skeletal rather than developed, fitting the score 3 descriptors.",
       "confidence": 0.85
     },
     {
-      "hypothesis_id": "hyp-real-4cf6c02f809c",
-      "observation_id": "obs-6f9983b3383c",
+      "hypothesis_id": "hyp-score-1928605f6b62",
+      "observation_id": "obs-b67c9903d2b3",
       "dimension_id": "organization",
       "rater_id": "rater_2",
       "score": {
-        "canonical_score": 4,
+        "canonical_score": 3,
         "display_annotation": null,
-        "display_score": "4",
+        "display_score": "3",
         "scale_ref": "ordinal_6"
       },
       "descriptor_refs": [
-        "clear sequencing and paragraph breaks",
-        "recognizable, developed beginning not particularly inviting",
-        "developed conclusion may lack subtlety",
-        "body easy to follow with details fitting where placed"
+        "beginning and ending present but undeveloped or too obvious",
+        "structure is skeletal or too rigid",
+        "transitions sometimes work; same few devices overused"
       ],
       "evidence_span_ids": [
-        "span-real-371c224e1f58",
-        "span-real-92f5f3dca042",
-        "span-real-9daaa52ea01a",
-        "span-real-1f996d7f5e7d",
-        "span-real-a6b3de0cf3a4"
+        "span-ext-7ee8cce2bf04",
+        "span-ext-79e877c4e32f",
+        "span-ext-166bf06ea490",
+        "span-ext-a279d9c86a6d",
+        "span-ext-db6b02872352",
+        "span-ext-e1ef682f96fd"
       ],
-      "rationale": "The essay demonstrates clear and coherent organization with a recognizable structure: it begins with a general definition of laughter, transitions to personal relevance (horses as a source of laughter), narrates a specific beach adventure with horses in chronological order, and concludes by reflecting on the perfect day. Sequencing is logical and paragraph breaks (though not explicitly marked in the provided text) would naturally occur between the introduction, personal connection, narrative, and conclusion. The beginning is developed but not particularly inviting (starts with a definition), and the conclusion is developed but lacks subtlety (explicitly states 'perfuct day'). Details fit where placed, and transitions like 'For me...', 'There is this one time...', and 'After about five hours...' help move the narrative forward. However, the organization is somewhat predictable/formulaic (general → personal → specific story → reflection), and transitions are functional but not particularly smooth or creative, aligning with score 4 descriptors.",
+      "rationale": "The essay demonstrates a recognizable organizational structure with a beginning, body, and ending, preventing a score of 1 or 2. However, the structure is skeletal, relying on a generic definition for the introduction (Evidence 1: 'Laughter is to express delight...') which fits the descriptor 'beginning... too obvious'. The transition to the narrative is functional but abrupt (Evidence 3: 'There is this one time...'), and the conclusion is a simple summary (Evidence 6: 'Driving home I knew this was a perfuct day...'), lacking subtlety. Additionally, the text lacks visible paragraph breaks, and transitions are formulaic ('After about five hours', 'Once we hit the sand'), aligning with Score 3 descriptors regarding skeletal structure and inconsistent transition effectiveness.",
       "confidence": 0.85
     },
     {
-      "hypothesis_id": "hyp-real-4194785559b8",
-      "observation_id": "obs-ff2698d5bf85",
+      "hypothesis_id": "hyp-score-dfc9252c032a",
+      "observation_id": "obs-b4266bf9aaaa",
       "dimension_id": "voice",
       "rater_id": "rater_1",
-      "score": {
-        "canonical_score": 4,
-        "display_annotation": null,
-        "display_score": "4",
-        "scale_ref": "ordinal_6"
-      },
-      "descriptor_refs": [
-        "Voice present; some expressiveness and sincerity",
-        "sense of audience; writer seems aware but has not consistently employed appropriate voice",
-        "reader may glimpse writer and feel sense of interaction in places"
-      ],
-      "evidence_span_ids": [
-        "span-real-2cc2764830f0",
-        "span-real-fee124b0b597",
-        "span-real-ff8abe5e6ecb",
-        "span-real-68627976f42d",
-        "span-real-0f00efcc21d0",
-        "span-real-e45fe9f69a35",
-        "span-real-aff2ccac32aa",
-        "span-real-a26e7278f52b",
-        "span-real-5a9bff43cdc5"
-      ],
-      "rationale": "The essay demonstrates a consistent, present voice throughout with clear audience awareness (e.g., 'You @MONTH1 think horses cant smile...' directly addresses the reader) and sincere expressiveness in describing the beach experience. The writer's personality is discernible, and there's a sense of interaction with the reader, particularly in the reflective moments. However, the voice remains at a functional, conversational level without the sustained originality, liveliness, or deep commitment required for scores 5 or 6. The evidence shows consistent presence but not exceptional strength, aligning with score 4 descriptors.",
-      "confidence": 0.85
-    },
-    {
-      "hypothesis_id": "hyp-real-66aec975b9f6",
-      "observation_id": "obs-ff2698d5bf85",
-      "dimension_id": "voice",
-      "rater_id": "rater_2",
       "score": {
         "canonical_score": 4,
         "display_annotation": null,
@@ -163,22 +124,52 @@
         "liveliness, sincerity, or humor when appropriate"
       ],
       "evidence_span_ids": [
-        "span-real-2cc2764830f0",
-        "span-real-fee124b0b597",
-        "span-real-ff8abe5e6ecb",
-        "span-real-68627976f42d",
-        "span-real-0f00efcc21d0",
-        "span-real-e45fe9f69a35",
-        "span-real-aff2ccac32aa",
-        "span-real-a26e7278f52b",
-        "span-real-5a9bff43cdc5"
+        "span-ext-b4e845c19ba3",
+        "span-ext-cded14ffc4bf",
+        "span-ext-30b7e152bbed",
+        "span-ext-a4633a418488",
+        "span-ext-377e78ed0986",
+        "span-ext-83896fd76f56",
+        "span-ext-aa716d406411",
+        "span-ext-d32927000d04",
+        "span-ext-9f1fd7775be2"
       ],
-      "rationale": "The essay demonstrates consistent voice throughout with a personal, sincere tone. The writer engages the reader directly with phrases like 'You @MONTH1 think horses cant smile' and maintains a conversational style. There's clear audience awareness and expressiveness in descriptions like 'horses pranced and danced arounds like yearlings again' and the horse's nudge saying 'thanks for the good time.' However, the voice doesn't consistently reach the exceptional level of deep commitment or originality required for scores 5-6, and some mechanical aspects of the writing slightly limit the overall impact. The voice is reliably present and appropriate for this personal narrative, meeting the threshold for score 4.",
+      "rationale": "The essay demonstrates consistent voice presence throughout with expressive moments like 'horses pranced and danced arounds like yearlings again' and sincere commitment shown in 'I will always have locked away in the back of my mind.' The writer engages the reader directly with 'You @MONTH1 think horses cant smile' and maintains a personal, conversational tone. However, the voice lacks the sustained originality and deep commitment required for scores 5-6, and occasional mechanical phrasing ('laughter is to express delight') prevents higher scoring. The essay meets score 4 criteria: voice is present with expressiveness and sincerity, the reader glimpses the writer, and there's appropriate liveliness.",
       "confidence": 0.85
     },
     {
-      "hypothesis_id": "hyp-real-de7608a79c0d",
-      "observation_id": "obs-087f1cb71743",
+      "hypothesis_id": "hyp-score-343dab58bc9f",
+      "observation_id": "obs-b4266bf9aaaa",
+      "dimension_id": "voice",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "Voice present; some expressiveness and sincerity.",
+        "reader may glimpse writer and feel sense of interaction in places",
+        "writing may be inappropriately casual or inappropriately formal in places"
+      ],
+      "evidence_span_ids": [
+        "span-ext-b4e845c19ba3",
+        "span-ext-cded14ffc4bf",
+        "span-ext-30b7e152bbed",
+        "span-ext-a4633a418488",
+        "span-ext-377e78ed0986",
+        "span-ext-83896fd76f56",
+        "span-ext-aa716d406411",
+        "span-ext-d32927000d04",
+        "span-ext-9f1fd7775be2"
+      ],
+      "rationale": "The essay demonstrates a Score 4 Voice because the writer's presence is consistently felt through sincere personal reflection ('For me laughter is a all day thing') and direct audience address ('You... think'). There is expressiveness in the narrative descriptions ('wind wistling... like a moving train'), creating a sense of interaction. However, the voice shifts from an inappropriately formal/definitional opening to a casual narrative, fitting the Score 4 descriptor regarding consistency. It does not reach Score 5 because the mechanical errors and clichéd phrasing prevent the voice from feeling fully controlled or exceptionally original throughout.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-score-7063f2b655cb",
+      "observation_id": "obs-b98828084299",
       "dimension_id": "word_choice",
       "rater_id": "rater_1",
       "score": {
@@ -193,30 +184,24 @@
         "words generally accurate but misused words may occasionally appear"
       ],
       "evidence_span_ids": [
-        "span-real-aa778fe3b8df",
-        "span-real-f4b2f2679bad",
-        "span-real-4e32b16796bf",
-        "span-real-d623fd545741",
-        "span-real-d3b3f43f4b17",
-        "span-real-3f1816b9d5b3",
-        "span-real-44f96ea51870",
-        "span-real-e666a086e173",
-        "span-real-5da33b0d6ac8",
-        "span-real-2e7294ca4964",
-        "span-real-03a9c7fd1bbc",
-        "span-real-1a9d018472f2",
-        "span-real-d7dd7cb2ae9e",
-        "span-real-d7d92949765a",
-        "span-real-4ba6f146799b",
-        "span-real-25cc460a2f9f",
-        "span-real-fallback-1ce057da"
+        "span-ext-dd8d4ec45744",
+        "span-ext-5a64befd3479",
+        "span-ext-2fab6fb3f718",
+        "span-ext-2319ff4923ba",
+        "span-ext-79b0450537b2",
+        "span-ext-bfbe35f0d827",
+        "span-ext-c3439ede5b15",
+        "span-ext-41734dd8152b",
+        "span-ext-c176ab6ae247",
+        "span-ext-da4715b54137",
+        "span-ext-fallback-d7398afb"
       ],
-      "rationale": "The essay demonstrates functional word choice that generally communicates meaning, but lacks precision and variety. Multiple spelling errors (happend, scedual, particullar, cose, beacuse, tured, perfuct, injoyment) and misused words ('cose' for cause, 'tured' for turned) appear throughout, aligning with the 'misused words may occasionally appear' descriptor. While some attempts at imagery exist ('wind whistling past our ears like a moving train'), the overall expression remains mundane and general, with repetitive phrasing about laughter. The vocabulary rarely captures interest beyond basic communication, fitting the 'generic paper' characterization of a score 3.",
+      "rationale": "The essay demonstrates functional vocabulary that generally communicates meaning, but lacks precision and variety. Words like 'perfuct' (perfect), 'injoyment' (enjoyment), 'scedual' (schedule), 'cose' (cause), and 'particullar' (particular) show misused or misspelled words that detract from precision. While there are attempts at imagery ('wind whistling past our ears like a moving train'), the overall expression remains mundane and generic, with clichéd phrases ('locked away in the back of my mind') and repetitive language that fails to consistently engage the reader. The vocabulary works to convey the narrative but rarely rises above basic functional communication.",
       "confidence": 0.85
     },
     {
-      "hypothesis_id": "hyp-real-02f53a6ca11f",
-      "observation_id": "obs-087f1cb71743",
+      "hypothesis_id": "hyp-score-73f8560abfd6",
+      "observation_id": "obs-b98828084299",
       "dimension_id": "word_choice",
       "rater_id": "rater_2",
       "score": {
@@ -226,35 +211,29 @@
         "scale_ref": "ordinal_6"
       },
       "descriptor_refs": [
-        "words that work but rarely capture reader's interest",
-        "expression seems mundane and general; slang not effective",
-        "words generally accurate but misused words may occasionally appear"
+        "expression seems mundane and general",
+        "reliance on cliches and overused expressions",
+        "words that work but rarely capture reader's interest"
       ],
       "evidence_span_ids": [
-        "span-real-aa778fe3b8df",
-        "span-real-f4b2f2679bad",
-        "span-real-4e32b16796bf",
-        "span-real-d623fd545741",
-        "span-real-d3b3f43f4b17",
-        "span-real-3f1816b9d5b3",
-        "span-real-44f96ea51870",
-        "span-real-e666a086e173",
-        "span-real-5da33b0d6ac8",
-        "span-real-2e7294ca4964",
-        "span-real-03a9c7fd1bbc",
-        "span-real-1a9d018472f2",
-        "span-real-d7dd7cb2ae9e",
-        "span-real-d7d92949765a",
-        "span-real-4ba6f146799b",
-        "span-real-25cc460a2f9f",
-        "span-real-fallback-1ce057da"
+        "span-ext-dd8d4ec45744",
+        "span-ext-5a64befd3479",
+        "span-ext-2fab6fb3f718",
+        "span-ext-2319ff4923ba",
+        "span-ext-79b0450537b2",
+        "span-ext-bfbe35f0d827",
+        "span-ext-c3439ede5b15",
+        "span-ext-41734dd8152b",
+        "span-ext-c176ab6ae247",
+        "span-ext-da4715b54137",
+        "span-ext-fallback-d7398afb"
       ],
-      "rationale": "The essay demonstrates functional vocabulary that generally communicates the narrative, but lacks precision and variety. Words like 'happend,' 'scedual,' 'particullar,' 'cose,' 'perfuct,' and 'injoyment' show misused or misspelled words that detract from precision. While some imagery attempts are present ('wind wistling past our ears like a moving train'), the overall language is mundane and generic, rarely capturing sustained reader interest. The vocabulary works to convey the message but doesn't energize the writing, aligning with Score 3 descriptors.",
+      "rationale": "The essay aligns with Score 3 due to its generic vocabulary ('large benefit', 'everyday scedual') and heavy reliance on clichés ('wind... like a moving train', 'call it a day'). While the writer attempts imagery, it is not fresh, and phrasing is often imprecise or awkward ('frown to be tured up side down'), which prevents a Score 4. However, the meaning is generally clear and images are present (not absent), distinguishing it from a Score 2.",
       "confidence": 0.85
     },
     {
-      "hypothesis_id": "hyp-real-7d6651215640",
-      "observation_id": "obs-33c4722ca310",
+      "hypothesis_id": "hyp-score-26f75ec4f4e9",
+      "observation_id": "obs-279f18379d54",
       "dimension_id": "sentence_fluency",
       "rater_id": "rater_1",
       "score": {
@@ -264,57 +243,50 @@
         "scale_ref": "ordinal_6"
       },
       "descriptor_refs": [
-        "Mechanical rather than fluid; occasional awkwardness.",
-        "Some passages invite fluid oral reading; others do not.",
-        "Good control over simple sentences, little over complex."
+        "some passages invite fluid oral reading; others do not",
+        "good control over simple sentences, little over complex",
+        "sentences functional but lack energy"
       ],
       "evidence_span_ids": [
-        "span-real-0f6ee4bb6081",
-        "span-real-f47cef61f9bf",
-        "span-real-0514a1a1054e",
-        "span-real-df2aec2e2c34",
-        "span-real-ce9b47bb92d5",
-        "span-real-030a1333cdaa",
-        "span-real-54a80b9bb2fb",
-        "span-real-e3ceac640586",
-        "span-real-2afe8a7272dd"
+        "span-ext-34180bef591b",
+        "span-ext-c2ca82591b63",
+        "span-ext-5e9b41959ba3",
+        "span-ext-4d6f2c834d50",
+        "span-ext-7fa62f74f827",
+        "span-ext-589cdb74d70b"
       ],
-      "rationale": "The essay demonstrates basic sentence functionality with some moments of flow, but overall exhibits mechanical construction with noticeable awkwardness. While some narrative passages (e.g., 'Once we hit the sand we were running side by side...') read naturally, others contain choppy or confusing structures ('Laugher Laughter is to express delight, fun, or a object of a joke. Laughter is something we all do, its a large benefit...'). The writer shows reasonable control over simple sentences but struggles with complex constructions and transitions, resulting in a piece that is more functional than fluid. This aligns with Score 3 descriptors where writing is 'mechanical rather than fluid' with 'occasional awkwardness' and 'good control over simple sentences, little over complex.'",
+      "rationale": "The essay shows mechanical rather than fluid sentence fluency. While some passages flow naturally (e.g., 'Once we hit the sand we were running side by side with the wind whistling past our ears like a moving train'), others are awkward and choppy (e.g., 'Laughter is something we all do, its a large benefit in our life and it happend on a everyday scedual'). The writer demonstrates good control over simple sentences but struggles with complex structures, resulting in run-ons and unclear connections. Sentences are generally functional but lack the energy and rhythm needed for higher scores. The essay lacks the consistent flow and varied patterns required for a score of 4.",
       "confidence": 0.85
     },
     {
-      "hypothesis_id": "hyp-real-e806bb6c7673",
-      "observation_id": "obs-33c4722ca310",
+      "hypothesis_id": "hyp-score-c13e1dc5bf58",
+      "observation_id": "obs-279f18379d54",
       "dimension_id": "sentence_fluency",
       "rater_id": "rater_2",
       "score": {
-        "canonical_score": 3,
+        "canonical_score": 2,
         "display_annotation": null,
-        "display_score": "3",
+        "display_score": "2",
         "scale_ref": "ordinal_6"
       },
       "descriptor_refs": [
-        "Mechanical rather than fluid; occasional awkwardness",
-        "Some passages invite fluid oral reading; others do not",
-        "Good control over simple sentences, little over complex"
+        "significant portions difficult to follow or read aloud",
+        "significant number of awkward, choppy, or rambling constructions"
       ],
       "evidence_span_ids": [
-        "span-real-0f6ee4bb6081",
-        "span-real-f47cef61f9bf",
-        "span-real-0514a1a1054e",
-        "span-real-df2aec2e2c34",
-        "span-real-ce9b47bb92d5",
-        "span-real-030a1333cdaa",
-        "span-real-54a80b9bb2fb",
-        "span-real-e3ceac640586",
-        "span-real-2afe8a7272dd"
+        "span-ext-34180bef591b",
+        "span-ext-c2ca82591b63",
+        "span-ext-5e9b41959ba3",
+        "span-ext-4d6f2c834d50",
+        "span-ext-7fa62f74f827",
+        "span-ext-589cdb74d70b"
       ],
-      "rationale": "The essay demonstrates basic sentence functionality with some fluid passages (e.g., 'Once we hit the sand we were running side by side with the wind whistling past our ears like a moving train'), but overall patterns are mechanical with noticeable awkward constructions. There is good control over simple sentences but limited success with complex structures, as seen in run-on sentences and irregular phrasing ('its a large benefit in our life and it happend on a everyday scedual'). The writing lacks consistent rhythm and variety, aligning with score 3 descriptors.",
+      "rationale": "The essay demonstrates frequent mechanical errors (spelling and grammar) that disrupt rhythm and make oral reading difficult (e.g., 'happend', 'tured', 'gave my a nudge'). Sentence structures often lapse into rambling run-ons with comma splices, particularly in the description of the beach scene (Evidence 5). Control over simple sentences is inconsistent ('Both us', 'we eat dinner'), exceeding the 'occasional awkwardness' of Score 3 and aligning with Score 2 descriptors regarding awkward constructions and difficulty reading aloud.",
       "confidence": 0.85
     },
     {
-      "hypothesis_id": "hyp-real-7923202791f1",
-      "observation_id": "obs-7803ce56ea07",
+      "hypothesis_id": "hyp-score-95ae9e038224",
+      "observation_id": "obs-94e42c37d666",
       "dimension_id": "conventions",
       "rater_id": "rater_1",
       "score": {
@@ -329,28 +301,39 @@
         "errors in grammar and usage do not block meaning but distract reader"
       ],
       "evidence_span_ids": [
-        "span-real-10e2b5ece962",
-        "span-real-1b0b47463aa4",
-        "span-real-f488b79a32f9",
-        "span-real-a60bcfaef0e1",
-        "span-real-580b84b31f12",
-        "span-real-743e47b538f7",
-        "span-real-c99e70f9531d",
-        "span-real-655a7a02797e",
-        "span-real-833aaa9e3041",
-        "span-real-0807baaee5a1",
-        "span-real-8c12f2e9313d",
-        "span-real-c232ccba6545",
-        "span-real-9757d225f050",
-        "span-real-6423756e36bb",
-        "span-real-d4b66098ff5a"
+        "span-ext-ae538c3f31bf",
+        "span-ext-d5946c6a1344",
+        "span-ext-bede2c25a702",
+        "span-ext-bb94baa8c01d",
+        "span-ext-52f3f72975df",
+        "span-ext-3336502e9903",
+        "span-ext-e58752c2958e",
+        "span-ext-af7f65222fd3",
+        "span-ext-dde04d70e2b2",
+        "span-ext-580c3eaa2b32",
+        "span-ext-45ccd6e777fd",
+        "span-ext-f0b3dd6f70ef",
+        "span-ext-0271fe3cb8c5",
+        "span-ext-092513a76bbf",
+        "span-ext-a55ab16a557c",
+        "span-ext-6cf2da2fc7a9",
+        "span-ext-900af8a4db37",
+        "span-ext-ebc370a9a0f0",
+        "span-ext-8632d6d497f0",
+        "span-ext-6a15391de9f4",
+        "span-ext-45690df3a2fd",
+        "span-ext-9001909ea2fb",
+        "span-ext-5064e4ab32f6",
+        "span-ext-09a4cb2485e2",
+        "span-ext-8547af712e31",
+        "span-ext-fallback-f1f85858"
       ],
-      "rationale": "The essay demonstrates limited control of conventions with frequent errors that distract the reader but do not block meaning. End-of-sentence punctuation is generally correct, but internal punctuation has frequent errors (e.g., comma splices, missing commas). Numerous spelling errors distract the reader, including common words like 'happend' (happened), 'scedual' (schedule), 'particullar' (particular), 'cose' (cause), 'beacuse' (because), 'tured' (turned), 'clutsy' (clumsy), 'pounding' (pounding), 'wistling' (whistling), 'equaly' (equally), 'arounds' (around), 'tell' (till), 'we'ed' (we'd), 'finsih' (finish), 'perfuct' (perfect), 'injoyment' (enjoyment). Grammar and usage errors are present but do not prevent understanding. The essay requires significant editing, aligning with score 3 descriptors.",
+      "rationale": "The essay demonstrates limited control of conventions. While end-of-sentence punctuation is generally correct, internal punctuation errors occur frequently (e.g., 'my friends, family and, horses'). Spelling errors distract the reader throughout, with common words misspelled ('happend,' 'scedual,' 'particullar,' 'beacuse,' 'tured,' 'pouning,' 'wistling,' 'equaly,' 'arounds,' 'tell,' 'finsih,' 'perfuct,' 'injoyment'). Grammar and usage errors are present ('its a large benefit,' 'a all day thing,' 'Both us and our horses felt,' 'we eat dinner,' 'gave my a nudge') but do not block overall meaning. The errors collectively create significant need for editing, aligning with score 3 descriptors.",
       "confidence": 0.85
     },
     {
-      "hypothesis_id": "hyp-real-191f49adf2ac",
-      "observation_id": "obs-7803ce56ea07",
+      "hypothesis_id": "hyp-score-dbe1d9a8ab3a",
+      "observation_id": "obs-94e42c37d666",
       "dimension_id": "conventions",
       "rater_id": "rater_2",
       "score": {
@@ -360,31 +343,40 @@
         "scale_ref": "ordinal_6"
       },
       "descriptor_refs": [
-        "some control over basic conventions",
         "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
         "spelling errors distract reader; common words misspelled",
-        "errors in grammar and usage do not block meaning but distract reader",
-        "significant need for editing"
+        "errors in grammar and usage do not block meaning but distract reader"
       ],
       "evidence_span_ids": [
-        "span-real-10e2b5ece962",
-        "span-real-1b0b47463aa4",
-        "span-real-f488b79a32f9",
-        "span-real-a60bcfaef0e1",
-        "span-real-580b84b31f12",
-        "span-real-743e47b538f7",
-        "span-real-c99e70f9531d",
-        "span-real-655a7a02797e",
-        "span-real-833aaa9e3041",
-        "span-real-0807baaee5a1",
-        "span-real-8c12f2e9313d",
-        "span-real-c232ccba6545",
-        "span-real-9757d225f050",
-        "span-real-6423756e36bb",
-        "span-real-d4b66098ff5a"
+        "span-ext-ae538c3f31bf",
+        "span-ext-d5946c6a1344",
+        "span-ext-bede2c25a702",
+        "span-ext-bb94baa8c01d",
+        "span-ext-52f3f72975df",
+        "span-ext-3336502e9903",
+        "span-ext-e58752c2958e",
+        "span-ext-af7f65222fd3",
+        "span-ext-dde04d70e2b2",
+        "span-ext-580c3eaa2b32",
+        "span-ext-45ccd6e777fd",
+        "span-ext-f0b3dd6f70ef",
+        "span-ext-0271fe3cb8c5",
+        "span-ext-092513a76bbf",
+        "span-ext-a55ab16a557c",
+        "span-ext-6cf2da2fc7a9",
+        "span-ext-900af8a4db37",
+        "span-ext-ebc370a9a0f0",
+        "span-ext-8632d6d497f0",
+        "span-ext-6a15391de9f4",
+        "span-ext-45690df3a2fd",
+        "span-ext-9001909ea2fb",
+        "span-ext-5064e4ab32f6",
+        "span-ext-09a4cb2485e2",
+        "span-ext-8547af712e31",
+        "span-ext-fallback-f1f85858"
       ],
-      "rationale": "The essay demonstrates limited control of conventions with numerous spelling errors (happend/scedual/particullar/cose/beacuse/tured/clutsy/pounting/wistling/equaly/arounds/tell/we'ed/finsih/perfuct/injoyment), grammar/usage issues ('its a large benefit', 'Both us and our horses', 'so we eat dinner', 'gave my a nudge'), and inconsistent internal punctuation (comma splices, missing apostrophes). While end-of-sentence punctuation is generally correct and meaning remains understandable, the frequent errors distract the reader and indicate significant need for editing, aligning with score 3 descriptors.",
-      "confidence": 0.85
+      "rationale": "The essay demonstrates limited control over conventions, fitting Score 3. End-of-sentence punctuation is generally correct, but internal punctuation errors are frequent (e.g., missing apostrophes in 'cant', 'we'ed'). Spelling errors are common and involve basic vocabulary (e.g., 'beacuse', 'perfuct', 'happend', 'scdual'), which distracts the reader but does not block meaning. Grammar and usage errors (e.g., 'we eat', 'gave my') are present but the narrative remains understandable. This aligns with Score 3 descriptors regarding spelling and grammar impact. It does not reach Score 4 because spelling is not 'usually correct, especially on common words,' and it exceeds Score 2 because end-of-sentence punctuation is stable and meaning is not impeded.",
+      "confidence": 0.9
     }
   ]
 }

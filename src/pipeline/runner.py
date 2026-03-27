@@ -11,7 +11,7 @@ PipelineRunner 是系统唯一的编排入口。职责如下：
 
 运行模式：
 - 真实 LLM 模式：provider 不为 None 时生效。证据抽取、评分、一致性检查、反馈生成
-  均调用真实 Agent（real_extractor / real_scorer / consistency_checker / real_feedback）。
+  在需要 LLM 的阶段调用真实 Agent；feedback 阶段统一走 feedback。
 - Mock 模式：未配置 provider 时使用确定性 Mock Worker，用于回归测试与管道联调。
 
 设计不变量：
@@ -24,13 +24,13 @@ PipelineRunner 是系统唯一的编排入口。职责如下：
 
 修正记录：
 - [2026-03-26] 真实 LLM 模式下一致性检查改用 consistency_checker（支持全量触发器，
-  包括 Cusp Rule），Mock 模式保留 mock_consistency_checker。
+  包括 Cusp Rule），deterministic 模式保留 deterministic_consistency_checker。
 - [2026-03-26] 真实 LLM 模式下检测到冲突后，自动触发 resolution rater（默认 rater_3）
-  对全部维度重新评分（ASAP Set 8 "resolution read" 规则），再交由 real_adjudicator
-  以 rater_3 分数为权威进行裁决。Mock 模式保留 mock_adjudicator。
+  对全部维度重新评分（ASAP Set 8 "resolution read" 规则），再交由 adjudicator
+  以 rater_3 分数为权威进行裁决。deterministic 模式保留 deterministic_adjudicator。
 - [2026-03-26] feedback 阶段前新增 compute_composite 调用，composite 总分写入
   feedback_dict["composite"]；adj_records 提升为 carry-forward 变量供聚合阶段使用。
-- [2026-03-26] real_adjudicator 兜底路径（rater_3 缺失）的 resolution_path 改为
+- [2026-03-26] adjudicator 兜底路径（rater_3 缺失）的 resolution_path 改为
   HUMAN_REVIEW，避免 route_after_adjudication 路由到 ADJUDICATED 触发非法状态转换。
 """
 
@@ -41,19 +41,18 @@ from typing import Any, Dict, List, Optional, Tuple
 from uuid import uuid4
 
 from src.agents import (
+    adjudicator,
+    coverage,
     consistency_checker,
-    mock_adjudicator,
-    mock_consistency_checker,
-    mock_coverage,
-    mock_extractor,
-    mock_feedback,
-    mock_observer,
-    mock_preprocess,
-    mock_scorer,
-    real_adjudicator,
-    real_extractor,
-    real_feedback,
-    real_scorer,
+    deterministic_adjudicator,
+    deterministic_consistency_checker,
+    deterministic_extractor,
+    deterministic_scorer,
+    extractor,
+    feedback as feedback_agent,
+    observer,
+    preprocess,
+    scorer,
 )
 from src.contracts.artifact_bundle import ResolvedArtifactBundle
 from src.providers.base import BaseProvider
@@ -186,7 +185,7 @@ class PipelineRunner:
 
         Returns:
             (RunTrace, feedback_dict) where feedback_dict is the output of
-            mock_feedback.run(). If the pipeline fails or is escalated to
+            feedback.run(). If the pipeline fails or is escalated to
             HUMAN_REVIEW, feedback_dict is empty {}.
         """
         bundle = self._bundle
@@ -219,7 +218,7 @@ class PipelineRunner:
             # ── Stage 1: Preprocess ──────────────────────────────────────────
             store.record_node_start("node_preprocess", "preprocess",
                                     input_ref=request_id)
-            norm_req, document = mock_preprocess.run(request)
+            norm_req, document = preprocess.run(request)
             ckpt = ckpt_mgr.create_checkpoint(
                 "node_preprocess", "preprocess", document.document_id
             )
@@ -233,7 +232,7 @@ class PipelineRunner:
             # ── Stage 2: Coverage planning ───────────────────────────────────
             store.record_node_start("node_coverage", "coverage",
                                     input_ref=document.document_id)
-            plans = mock_coverage.run(document, rubric)
+            plans = coverage.run(document, rubric)
             validate_coverage_plans(plans, rubric)
             ckpt = ckpt_mgr.create_checkpoint(
                 "node_coverage", "coverage", document.document_id
@@ -262,14 +261,14 @@ class PipelineRunner:
                         extraction_tpl = self._tpl("evidence_extraction")
                         extraction_provider = self._provider_for_stage("evidence_extraction")
                         all_spans_by_dim = {
-                            plan.dimension_id: real_extractor.run(
+                            plan.dimension_id: extractor.run(
                                 plan, document, rubric, extraction_provider, extraction_tpl
                             )
                             for plan in plans
                         }
                     else:
                         all_spans_by_dim = {
-                            plan.dimension_id: mock_extractor.run(plan, document)
+                            plan.dimension_id: deterministic_extractor.run(plan, document)
                             for plan in plans
                         }
                     total_spans = sum(len(s) for s in all_spans_by_dim.values())
@@ -289,7 +288,7 @@ class PipelineRunner:
                     store.record_node_start("node_observer", "observe",
                                             input_ref=f"spans:{sum(len(s) for s in all_spans_by_dim.values())}")
                     observations = [
-                        mock_observer.run(
+                        observer.run(
                             all_spans_by_dim.get(plan.dimension_id, []), plan
                         )
                         for plan in plans
@@ -321,7 +320,7 @@ class PipelineRunner:
                             s for spans in all_spans_by_dim.values() for s in spans
                         ]
                         hypotheses = [
-                            real_scorer.run(
+                            scorer.run(
                                 obs, all_spans_flat, rubric, document,
                                 self._provider_for_rater(rater_id), scoring_tpl, rater_id
                             )
@@ -330,7 +329,7 @@ class PipelineRunner:
                         ]
                     else:
                         hypotheses = [
-                            mock_scorer.run(obs, rubric, rater_id)
+                            deterministic_scorer.run(obs, rubric, rater_id)
                             for obs in observations
                             for rater_id in rater_ids
                         ]
@@ -355,7 +354,7 @@ class PipelineRunner:
                     if self._is_real():
                         conflicts = consistency_checker.run(hypotheses, policy)
                     else:
-                        conflicts = mock_consistency_checker.run(hypotheses, policy)
+                        conflicts = deterministic_consistency_checker.run(hypotheses, policy)
                     store.record_node_success(
                         "node_consistency_checker",
                         output_ref=f"conflicts:{len(conflicts)}",
@@ -366,7 +365,7 @@ class PipelineRunner:
 
                     if next_state == PipelineState.FEEDBACK_RENDERED:
                         # No conflicts — create decisions directly from hypotheses
-                        _, decisions = mock_adjudicator.run([], hypotheses, policy)
+                        _, decisions = deterministic_adjudicator.run([], hypotheses, policy)
                         graph.advance(PipelineState.FEEDBACK_RENDERED)
                         break
 
@@ -387,7 +386,7 @@ class PipelineRunner:
                                 s for spans in all_spans_by_dim.values() for s in spans
                             ]
                             rater3_hypotheses = [
-                                real_scorer.run(
+                                scorer.run(
                                     obs, all_spans_flat, rubric, document,
                                     self._provider_for_rater(resolution_rater),
                                     scoring_tpl, resolution_rater,
@@ -404,11 +403,11 @@ class PipelineRunner:
                         store.record_node_start("node_adjudicator", "adjudicate",
                                                 input_ref=f"conflicts:{len(conflicts)}")
                         if self._is_real():
-                            adj_records, decisions = real_adjudicator.run(
+                            adj_records, decisions = adjudicator.run(
                                 conflicts, hypotheses, policy
                             )
                         else:
-                            adj_records, decisions = mock_adjudicator.run(
+                            adj_records, decisions = deterministic_adjudicator.run(
                                 conflicts, hypotheses, policy
                             )
                         store.record_node_success(
@@ -494,15 +493,20 @@ class PipelineRunner:
             # ── Stage: Feedback ──────────────────────────────────────────────
             store.record_node_start("node_feedback", "feedback",
                                     input_ref=f"decisions:{len(decisions)}")
-            if self._is_real():
-                explanation_tpl = self._tpl("explanation")
-                all_spans_flat = [s for spans in all_spans_by_dim.values() for s in spans]
-                feedback = real_feedback.run(
-                    decisions, observations, rubric,
-                    all_spans_flat, self._provider_for_stage("feedback"), explanation_tpl
-                )
-            else:
-                feedback = mock_feedback.run(decisions, observations, rubric)
+            all_spans_flat = [s for spans in all_spans_by_dim.values() for s in spans]
+            explanation_tpl = self._tpl("explanation") if self._is_real() else None
+            feedback = feedback_agent.run(
+                decisions=decisions,
+                observations=observations,
+                spans=all_spans_flat,
+                rubric=rubric,
+                policy=policy,
+                provider=(
+                    self._provider_for_stage("feedback")
+                    if self._is_real() else None
+                ),
+                template=explanation_tpl,
+            )
 
             # 将 composite 总分写入 feedback，保持输出结构统一
             feedback["composite"] = composite.to_dict() if composite is not None else None

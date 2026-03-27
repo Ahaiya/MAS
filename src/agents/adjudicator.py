@@ -1,5 +1,5 @@
 """
-真实裁决器 — 按 adjudication policy 的 use_rater_3_as_authoritative 策略处理冲突。
+裁决器 — 按 adjudication policy 的 use_rater_3_as_authoritative 策略处理冲突。
 
 职责：
 - 接收冲突记录（ConflictRecord）、全部评分假设（ScoreHypothesis，含 rater_3），

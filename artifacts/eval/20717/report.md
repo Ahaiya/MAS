@@ -2,9 +2,9 @@
 
 | 项目 | 内容 |
 |------|------|
-| 评价时间 | 2026-03-16 12:32:53 |
-| 耗时 | 8分14秒 |
-| 运行 ID | `run-d88381a6e095` |
+| 评价时间 | 2026-03-27 02:33:41 |
+| 耗时 | 14分48秒 |
+| 运行 ID | `run-9a5f87a8facb` |
 | 量规版本 | `asap_set8_baseline@2026-03-12` |
 
 ## 执行过程
@@ -13,64 +13,64 @@
 |------|------|------|------|
 | ✅ 文档预处理 | success | 0秒 | `doc-00bfe0e4b101` |
 | ✅ 维度覆盖确认 | success | 0秒 | `plans:6` |
-| ✅ 证据抽取 | success | 4分50秒 | `spans:79` |
+| ✅ 证据抽取 | success | 3分36秒 | `spans:78` |
 | ✅ 证据整理 | success | 0秒 | `obs:6` |
-| ✅ 双评审打分 | success | 2分39秒 | `hyps:12` |
+| ✅ 双评审打分 | success | 10分39秒 | `hyps:12` |
 | ✅ 一致性检验 | success | 0秒 | `conflicts:0` |
-| ✅ 反馈生成 | success | 43秒 | `dims:6` |
+| ✅ 反馈生成 | success | 33秒 | `dims:6` |
 
 > **一致性结论：** 两位评审员完全一致，无需裁决
 
 ## 综合得分
 
-| 维度 | MAS | 等级 | 人类评审1 | 人类评审2 | 偏差 |
+| 维度 | MAS | 等级 | 人类R1 | 人类R2 | 偏差 |
 |------|:---:|:---:|:---:|:---:|:---:|
 | 💡 Ideas & Content | **4** | 良好 | 5 | 6 | -1.5 |
 | 📐 Organization | **4** | 良好 | 4 | 5 | -0.5 |
-| 🎤 Voice | **5** | 良好+ | 5 | 6 | -0.5 |
+| 🎤 Voice | **4** | 良好 | 5 | 6 | -1.5 |
 | 📝 Word Choice | **4** | 良好 | 4 | 6 | -1.0 |
 | 🔄 Sentence Fluency | **4** | 良好 | 4 | 5 | -0.5 |
 | ✏️ Conventions | **3** | 中等 | 4 | 5 | -1.5 |
-| **合计** | **24** | | 26 | 33 | -5.5 |
+| **合计** | **23** | | 26 | 33 | -6.5 |
 
-**满分：36 分** &nbsp;|&nbsp; MAS：24 分（67%）&nbsp;|&nbsp; 人类均值：29.5 分（82%）
+**ASAP加权总分：35/60（58%）** | 人类均值：47.0/60（78%）
 
 ## 各维度详细反馈
 
 ### 💡 Ideas & Content — 4/6　良好
 
+- Clear main ideas with relevant but limited support.
 - clear main ideas
 - easily identifiable purpose
-- supporting details are relevant but may be overly general or limited
 
-Your essay earned a score of 4 for Ideas and Content. You establish a **clear main idea** about choosing a softball team and your **purpose is easily identifiable** as explaining that decision. You support this with **relevant details**, such as your love for the sport's physicality and your dilemma between a comfortable team and a challenging one. However, some supporting points remain **overly general or limited**, like stating the new team was "amazing" and the girls were "like family" without providing specific, developed examples of those experiences. This keeps your support from being fully elaborated.
+Your essay earned a score of 4 for Ideas and Content. You establish **clear main ideas** about your difficult team decision and the importance of friendship in softball. Your **supporting details are relevant but may be overly general or limited**. For instance, you effectively show your nervousness with specific evidence like your "stomach was in knots" and arms "shaking uncontrollably." However, when explaining why the new team was the right choice, the support becomes general, stating you were "laughing through out my whole try out" and the girls are "like family" without deeper exploration. These details are relevant and clarify your purpose, but they stay at a surface level.
 
 
 ### 📐 Organization — 4/6　良好
 
-- body easy to follow with details fitting where placed
-- clear sequencing and paragraph breaks
-- developed conclusion may lack subtlety
+- Attempted organization; inconsistent or skeletal structure.
+- Beginning and ending present but undeveloped or too obvious.
+- Transitions sometimes work; same few devices overused.
 
-Your essay earns a 4 in Organization. Your writing has a **clear sequencing and paragraph breaks**, moving logically from your dilemma to the tryout and final decision. The **body is easy to follow with details fitting where placed**, such as when you detail your nervous car ride and the immediate relief when the new team greeted you warmly. However, **transitions may be stilted or formulaic**, as seen in the abrupt shift from your decision ("I then decided I would take a chance") directly into the tryout scene without a smoother narrative bridge. This structure supports the story but lacks more sophisticated flow.
+Your essay earned a score of 4 for Organization. You establish a **"recognizable, developed beginning"** by setting the scene of driving to the tryout with your stomach "in knots." The **"body [is] easy to follow"** as you clearly sequence your dilemma, analyzing the pros and cons of switching teams before deciding to "take a chance." However, the **"transitions may be stilted or formulaic,"** often relying on a series of sentences starting with "As" or "Then" to move the narrative forward, which creates a somewhat repetitive structure.
 
 
-### 🎤 Voice — 5/6　良好+
+### 🎤 Voice — 4/6　良好
 
-- appropriate level of closeness to or distance from audience
-- reader may discern writer behind words and feel sense of interaction
-- strong sense of audience; writer seems aware of reader and how to communicate effectively
+- Reader may glimpse writer and feel sense of interaction in places
+- Sense of audience; writer seems aware but has not consistently employed appropriate voice
+- Voice present; some expressiveness and sincerity
 
-Your essay earned a **5** in Voice because you create a **strong sense of audience** and make the **topic come to life** with honesty and excitement. The reader clearly **discerns the writer behind the words**, feeling a direct sense of interaction. For example, your vivid physical descriptions—"my arms were shaking uncontrollably" and "my mouth became bone dry"—honestly convey your nervousness, bringing the moment to life. Furthermore, your reflection on how "laughter played a very big role" in your decision effectively shows your awareness of the reader, as you explain your internal convictions and the joy that ultimately convinced you to join the new team.
+Your essay received a score of 4 for Voice. The reader can "glimpse writer and feel sense of interaction in places," and you show a "sense of audience" by revealing your internal struggles. Your voice is present with "expressiveness and sincerity," as seen in your vivid nervousness when your "mouth became bone dry" and your arms shook "uncontrollably." This sincerity continues when you describe your love for the sport's gritty details, like "the dirt that sticks to your face." These moments create a suitable closeness, letting the reader share in your dilemma between the team you knew and the intimidating new one.
 
 
 ### 📝 Word Choice — 4/6　良好
 
-- attempts at colorful language may occasionally seem overdone
+- Lacks precision and variety; generic paper.
 - expression is functional; slang not purposeful or effective
-- words that work but do not particularly energize writing
+- rare experiments with language; avoids clichés
 
-Your essay earned a Word Choice score of 4. Your expression is functional, using words that work but do not particularly energize the writing. For example, phrases like "going out discovering new friendships" and "through out your softball career" are clear but plain. At times, your attempts at colorful language may occasionally seem overdone, as seen in the cliché "my heart felt like it was beating a million times per second." While these choices convey your meaning, more precise and fresh language would make your descriptions more vivid and engaging.
+Your essay received a Word Choice score of 4. The language is generally functional but lacks precision and variety, relying on clichés and overused expressions. For example, you use the common phrases “my heart felt like it was beating a million times per second” and “new fresh meat,” which do not energize the writing. Furthermore, misused words occasionally appear, as seen in “better then me” and “there favorite color.” While your descriptions like “sticky mess” are accurate, the overall word choice remains generic, missing opportunities for more original and precise language to elevate your narrative.
 
 
 ### 🔄 Sentence Fluency — 4/6　良好
@@ -79,16 +79,16 @@ Your essay earned a Word Choice score of 4. Your expression is functional, using
 - occasional lapses in stylistic control
 - some repeated patterns that detract from impact
 
-Your essay received a **4 in Sentence Fluency**. Your writing has a **"natural sound"** and the reader moves through it easily, as shown in the vivid description, "the dirt that sticks to your face, the sweat dripping from your forehead." However, there are **"some repeated patterns that detract from impact,"** such as the frequent use of comma splices: "I wanted this team to like me, I was playing..." and "I couldn't wait to go back, I now had made new friends..." This creates **"occasional lapses in stylistic control,"** where compound or complex sentences are needed to better manage your ideas.
+Your essay demonstrates **strong control** over simple sentences, but shows **variable control over complex** ones, resulting in a score of 4. Your writing has a **natural sound** that allows the reader to move easily through it, as seen in the rhythmic list, "I love the dirt that sticks to your face, the sweat dripping from your forehead..." However, **some repeated patterns detract from impact**, particularly the frequent use of commas to join independent clauses where a period or semicolon would be better. For example, "My first thought was to run; that was it I didn't want to go, I was done I wanted home..." This creates **occasional lapses in stylistic control**, slightly disrupting the flow you establish elsewhere.
 
 
 ### ✏️ Conventions — 3/6　中等
 
-- control over conventions used, though wide range not demonstrated
-- correct end-of-sentence punctuation; internal sometimes incorrect
 - end-of-sentence punctuation usually correct; internal punctuation has frequent errors
+- errors in grammar and usage do not block meaning but distract reader
+- internal punctuation has frequent errors
 
-Your essay received a score of 3 for Conventions. This score reflects that while you have control over basic conventions, errors in grammar, usage, and spelling frequently distract the reader. For example, end-of-sentence punctuation is usually correct, but internal punctuation is often faulty, as seen in the run-on sentence: "Although I love softball I feel that the memories... are the things you remember the most through out your softball career." Furthermore, common words are misspelled, such as "through out" for "throughout," "there" for "their," and "then" for "than." These repeated errors do not block meaning, but they create consistent distractions from your writing.
+Your essay received a score of 3 for Conventions. This score reflects that while your end-of-sentence punctuation is usually correct, **internal punctuation has frequent errors**, and **errors in grammar and usage do not block meaning but distract the reader**. For example, you often use commas where periods or other punctuation are needed, as in: "Nervous began to take over my body my arms were shaking uncontrollably and I was second guessing every move I made, I even had troubles..." Additionally, distracting errors in word choice and spelling occur, such as using "there" for "their" ("turn there heads") and "then" for "than" ("better then me"). These mistakes are noticeable but do not prevent understanding.
 
 ---
-*由 MAS 自动评价系统生成 | 运行 ID: `run-d88381a6e095`*
+*由 MAS 自动评价系统生成 | 运行 ID: `run-9a5f87a8facb`*

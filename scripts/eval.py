@@ -33,7 +33,7 @@ if str(_PROJECT_ROOT) not in sys.path:
 
 import typer
 
-from src.agents.mock_config_resolver import run as resolve_bundle
+from src.agents.config_resolver import run as resolve_bundle
 from src.contracts.artifact_bundle import ProviderEntryConfig
 from src.contracts.request_models import EvaluationRequest
 from src.pipeline.runner import PipelineRunner

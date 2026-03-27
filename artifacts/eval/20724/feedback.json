@@ -6,26 +6,29 @@
       "display_score": "3",
       "display_annotation": null,
       "descriptor_refs": [
-        "details may not be well-grounded in credible resources",
+        "Understandable but simplistic; support often limited.",
         "difficulties moving from general observations to specifics",
         "predictable or overly-obvious main ideas",
         "support attempted but details are limited, uneven, somewhat off-topic, or too general"
       ],
       "evidence_span_ids": [
-        "span-real-1dd70cb39e71",
-        "span-real-21bf95b31f69",
-        "span-real-30363f8e5fa4",
-        "span-real-394bbf946dcc",
-        "span-real-575731a72c94",
-        "span-real-5abe961610fe",
-        "span-real-611656cbcafa",
-        "span-real-a535ec4e0d32",
-        "span-real-d045db7e2933",
-        "span-real-e6660aeaecee",
-        "span-real-eba18b64a418",
-        "span-real-fcc3f1901028"
+        "span-real-1dfdac608c20",
+        "span-real-45faefc45afe",
+        "span-real-4eaa648269c7",
+        "span-real-4ef5715649eb",
+        "span-real-50f7e5630be7",
+        "span-real-57c0bd73fb0a",
+        "span-real-654e802f0cb1",
+        "span-real-6f1dd4f7bbe5",
+        "span-real-7820e5aa9d38",
+        "span-real-7b8347598f25",
+        "span-real-a6eebf56b571",
+        "span-real-c4103587c2bb",
+        "span-real-e7c811aea1c9",
+        "span-real-f18e6ce43e8a",
+        "span-real-f5e68cee6e8e"
       ],
-      "feedback_text": "Your essay received a score of 3 for Ideas and Content. The main idea—that laughter is important—is **predictable or overly-obvious**, and the support is **attempted but details are limited, uneven, somewhat off-topic, or too general**. For example, you repeatedly state general observations like \"laughter is a major thing\" in relationships and that it makes people \"feel happy,\" but you have **difficulties moving from general observations to specifics**. Instead of grounded examples, you rely on direct pleas to the reader (\"Come on, you know you want to laugh\") and shift to an overly broad, serious topic like suicide without providing credible or developed support for that claim. This leaves your argument feeling repetitive and unspecific.",
+      "feedback_text": "Your essay received a score of 3 for Ideas and Content. The main idea that laughter is important is **understandable but simplistic** and **predictable or overly-obvious**. Your **support is attempted but details are limited, uneven, somewhat off-topic, or too general**. You repeatedly state that laughter is needed in relationships and to avoid being \"grouchy,\" as seen in claims like \"laughter is a major thing you need in a relationship\" and it stops people from being \"unbearable to be around.\" However, the essay struggles to move beyond these general observations into specific examples or developed reasoning, ultimately relying on broad appeals like \"people should laugh every day because it makes you feel happy.\"",
       "confidence": 0.85
     },
     "organization": {
@@ -36,42 +39,41 @@
       "descriptor_refs": [
         "attempts at sequencing and paragraph breaks but order occasionally unclear",
         "beginning and ending present but undeveloped or too obvious",
-        "structure is skeletal or too rigid"
+        "structure is skeletal or too rigid",
+        "transitions sometimes work; same few devices overused"
       ],
       "evidence_span_ids": [
-        "span-real-0730e19d982a",
-        "span-real-286e0aa4b414",
-        "span-real-4122e9f9533f",
-        "span-real-75d74196c8f3",
-        "span-real-b1f8dcf54c24",
-        "span-real-db214add421c",
-        "span-real-dc95b6bfd50d",
-        "span-real-e374fddf398b"
+        "span-real-2ad9d00a16b2",
+        "span-real-5173a85ba593",
+        "span-real-5bcaea94f90c",
+        "span-real-8843dd4c420a",
+        "span-real-c0dabf3fb3e4",
+        "span-real-dd6336431dea"
       ],
-      "feedback_text": "Your essay received a score of 3 for Organization. The structure is skeletal, as it repeats the core idea that laughter is important without developing distinct supporting points. The beginning and ending are present but too obvious, opening and closing with direct pleas for the reader to laugh. This is shown in your opening (\"So please... please laugh\") and your closing (\"Ha ha ha. I hope that at least made you smile\"). While you attempt sequencing by listing relationships like \"friend ship\" and \"work relation ship,\" the order is unclear because each paragraph circles back to the same undeveloped message about laughter's necessity, making the overall progression feel repetitive rather than logically built.",
+      "feedback_text": "Your essay scored a 3 in Organization. You made clear attempts at sequencing and paragraphing, and your beginning and ending are present. However, the structure is somewhat skeletal, and the order of ideas is occasionally unclear. For example, you jump from discussing laughter for suicidal thoughts to laughing with friends, then to relationships, and back to general advice without a clear progression. This makes the overall order feel repetitive rather than developed. Furthermore, your transitions are limited, often relying on the same few devices like \"So\" or directly addressing the reader, as in \"So please for ever ones sake... please laugh.\" This pattern shows an attempt to connect ideas, but results in a structure that is too rigid and an argument that circles back on itself instead of building.",
       "confidence": 0.85
     },
     "voice": {
       "dimension_name": "Voice",
-      "canonical_score": 4,
-      "display_score": "4",
+      "canonical_score": 3,
+      "display_score": "3",
       "display_annotation": null,
       "descriptor_refs": [
-        "Liveliness, sincerity, or humor when appropriate",
-        "Sense of audience; writer seems aware but has not consistently employed appropriate voice",
-        "Voice present; some expressiveness and sincerity",
+        "limited sense of audience; writer's awareness unclear",
+        "occasional sense of writer but voice may shift or disappear",
         "reader may glimpse writer and feel sense of interaction in places",
         "sense of audience; writer seems aware but has not consistently employed appropriate voice",
-        "suitable level of closeness to or distance from audience"
+        "voice either inappropriately personal or inappropriately impersonal",
+        "writing may be inappropriately casual or inappropriately formal in places"
       ],
       "evidence_span_ids": [
-        "span-real-29b5994baa79",
-        "span-real-4c539cae4e5d",
-        "span-real-952f4fd12eaa",
-        "span-real-a2e43a0a71ba",
-        "span-real-e57485cfdf31"
+        "span-real-40efd7fbd7db",
+        "span-real-832f106ff1fe",
+        "span-real-8592161f75d0",
+        "span-real-8a5f3c1c5a7a",
+        "span-real-b1ab048ed7f6"
       ],
-      "feedback_text": "Your essay received a score of 4 for Voice. You establish a **sense of audience** and create a **glimpse of interaction**, as seen when you directly address the reader: \"Come on, you know you want to laugh. Ha ha ha. I hope that at least made you smile a little bit.\" This shows **expressiveness and sincerity** in your plea for happiness. However, the voice is not fully sustained. While phrases like \"laugh and giggle even when life gets you down\" are engaging, the overall tone remains general rather than consistently personal, which prevents a deeper connection. You are clearly aware of your reader but have not **consistently employed** a distinct voice throughout.",
+      "feedback_text": "Your essay received a score of 3 for Voice. This score reflects a **limited sense of audience** and a voice that is **inappropriately casual in places**. While the reader can **glimpse the writer and feel a sense of interaction**, this voice is not consistently appropriate or sustained. For example, direct, informal commands like \"Come on, you know you want to laugh\" and phrases like \"life gets you down and is crappy\" create an overly casual tone that may not suit all readers. This shifts again with the more serious, vulnerable statement about being suicidal, which, while showing the writer's presence, contributes to an inconsistent voice that moves between casual urging and deeply personal revelation.",
       "confidence": 0.85
     },
     "word_choice": {
@@ -80,28 +82,25 @@
       "display_score": "3",
       "display_annotation": null,
       "descriptor_refs": [
+        "Expression seems mundane and general; slang not effective",
+        "Lacks precision and variety; generic paper.",
+        "Words that work but rarely capture reader's interest",
         "expression seems mundane and general; slang not effective",
-        "reliance on cliches and overused expressions",
         "words generally accurate but misused words may occasionally appear",
         "words that work but rarely capture reader's interest"
       ],
       "evidence_span_ids": [
-        "span-real-0106cac336b5",
-        "span-real-1fd79c8619d9",
-        "span-real-349c47d501a2",
-        "span-real-3928b6dee7ed",
-        "span-real-4731d109ed3a",
-        "span-real-5ee2fa3ca336",
-        "span-real-827c97832c61",
-        "span-real-94df2be8e158",
-        "span-real-b5b00f935140",
-        "span-real-be02d1e70c0c",
-        "span-real-ca1c08835a78",
-        "span-real-d0315faea5b6",
-        "span-real-d9c31c74fc39",
-        "span-real-f73019b33611"
+        "span-real-412edf1cca53",
+        "span-real-599797c39753",
+        "span-real-64a27a9e2fe4",
+        "span-real-68d72d0beaa8",
+        "span-real-808115464449",
+        "span-real-a0ff79c3ea89",
+        "span-real-b2a2ba98cc97",
+        "span-real-bce161aa7f40",
+        "span-real-dd02ff2a0fd7"
       ],
-      "feedback_text": "Your essay received a score of 3 for Word Choice. The language often relies on cliches and overused expressions, such as \"life gets you down\" and \"really bad mood,\" which make the expression seem mundane and general. While your words are generally accurate, the frequent use of informal and imprecise terms like \"crappy,\" \"screwed up,\" and \"grouchy and unbearable\" rarely captures the reader's interest. These choices, including the direct plea \"Come on, you know you want to laugh,\" demonstrate a limited vocabulary that fails to create a more engaging or original description of your ideas.",
+      "feedback_text": "Your essay received a Word Choice score of 3. The expression often seems mundane and general, using words that work but rarely capture the reader's interest. This is seen in vague, repetitive phrases like \"really good thing,\" \"really feels good,\" and \"really bad mood,\" which lack precision. Furthermore, while words are generally accurate, the use of slang like \"crappy\" and \"screwed up\" is not effective for the context, and a term like \"suicidal\" may be misused for dramatic effect. The reliance on simple, generic lists such as \"laugh, smile, giggle, happy\" and \"relationship, friendship, love relationship\" also limits variety and impact.",
       "confidence": 0.85
     },
     "sentence_fluency": {
@@ -110,19 +109,21 @@
       "display_score": "3",
       "display_annotation": null,
       "descriptor_refs": [
+        "Mechanical rather than fluid; occasional awkwardness.",
+        "good control over simple sentences, little over complex",
         "mechanical rather than fluid; occasional awkwardness",
         "sentences functional but lack energy",
-        "some passages invite fluid oral reading; others do not"
+        "some variety but falls into repetitive patterns"
       ],
       "evidence_span_ids": [
-        "span-real-0d9e71319187",
-        "span-real-9b2cce651ff8",
-        "span-real-a8c9cf319876",
-        "span-real-ab7d7005b9c1",
-        "span-real-b533f9f8c8a7",
-        "span-real-fd30683bc393"
+        "span-real-355d6d2391e4",
+        "span-real-45ddf79e9d6d",
+        "span-real-679055f5c4fd",
+        "span-real-8bc8b41197e9",
+        "span-real-8c0b4dcc23d2",
+        "span-real-dffd7c380986"
       ],
-      "feedback_text": "Your sentence fluency score is 3. The writing is **mechanical rather than fluid**, with **some passages inviting fluid oral reading while others do not**. For example, the choppy repetition in \"So every now and then laugh for once and be happy even if it is for a few seconds in your life\" creates an awkward rhythm. However, you achieve better flow in sentences like, \"Laughter is a really good thing to have in any relationship you are in,\" which reads more smoothly. The shifting patterns result in prose that is **functional but lacks consistent energy**, as seen in the abrupt command, \"Ha ha ha. I hope that at least made you smile a little bit,\" which interrupts the paragraph's rhythm.",
+      "feedback_text": "Your essay received a 3 in Sentence Fluency. Your writing shows **good control over simple sentences**, but the overall flow is **mechanical rather than fluid** and **falls into repetitive patterns**. For example, you repeatedly use the same sentence structure to introduce ideas: \"Laughter is a really good thing...\" and \"In any relationship you have...\" This creates a predictable rhythm. Furthermore, the abrupt shift to direct address in \"Come on, you know you want to laugh. Ha ha ha\" is **occasionally awkward**, interrupting the paragraph's flow. While your sentences are functional and clear, this repetition and occasional awkwardness prevent the writing from developing a more natural and energetic fluency.",
       "confidence": 0.85
     },
     "conventions": {
@@ -131,26 +132,61 @@
       "display_score": "3",
       "display_annotation": null,
       "descriptor_refs": [
-        "End-of-sentence punctuation usually correct; internal punctuation has frequent errors",
-        "Limited control; errors begin to impede readability.",
-        "Spelling errors distract reader; common words misspelled",
+        "end-of-sentence punctuation usually correct",
+        "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
         "errors in grammar and usage do not block meaning but distract reader",
         "significant need for editing",
-        "some control over basic conventions",
         "spelling errors distract reader; common words misspelled"
       ],
       "evidence_span_ids": [
-        "span-real-14b20c790042",
-        "span-real-732ad283bb2e",
-        "span-real-79d6f5f483e5",
-        "span-real-91792ad51308",
-        "span-real-b17dfbe0754e",
-        "span-real-f2bde6dcd74d"
+        "span-real-10f99be022ee",
+        "span-real-305353867947",
+        "span-real-588a32b226fb",
+        "span-real-683eb15ae5ad",
+        "span-real-700e1f859436",
+        "span-real-8b6de726885d",
+        "span-real-a4f7fe60e73b",
+        "span-real-c625f02a6c87",
+        "span-real-fed1918e4589"
       ],
-      "feedback_text": "Your essay received a score of 3 for Conventions. The score reflects that while you have some control over basic conventions, errors are frequent and \"begin to impede readability.\" For example, spelling errors distract the reader, as seen in common words like \"ever ones\" (everyone's), \"friend ship\" (friendship), and \"some body\" (somebody). Furthermore, internal punctuation has frequent errors, such as the missing comma after the introductory phrase \"When you are being suicidal...\" and the run-on sentence that follows. These patterns of error create a \"significant need for editing,\" but your core meaning remains understandable.",
+      "feedback_text": "Your Conventions score is 3. While end-of-sentence punctuation is usually correct, errors in grammar, usage, and spelling are frequent and distract the reader, indicating a significant need for editing. For example, spelling errors in common words like \"some one,\" \"friend ship,\" and \"relation ship\" are distracting. Furthermore, errors in grammar and usage, such as the fragment \"So please for ever ones sake around you and your life please laugh,\" do not block meaning but disrupt the flow. These patterns of error are consistent throughout the essay.",
       "confidence": 0.85
     }
   },
   "summary": "Real provider feedback for 6 dimension(s).",
-  "provider": "openai_compatible"
+  "provider": "openai_compatible",
+  "composite": {
+    "composite_id": "composite-86b62a57e6dc",
+    "aggregation_policy_ref": "",
+    "contributing_decision_ids": [
+      "dec-f923e8e05684",
+      "dec-8c22f20e8cfb",
+      "dec-7a183671d3f6",
+      "dec-5f763b5798ce"
+    ],
+    "composite_score": {
+      "canonical_score": 30,
+      "display_annotation": null,
+      "display_score": "30",
+      "scale_ref": "composite:asap_set8_composite"
+    },
+    "aggregation_detail": {
+      "variant_id": "without_resolution",
+      "aggregation_method": "average_per_trait_then_weighted_sum",
+      "source_raters": [
+        "rater_1",
+        "rater_2"
+      ],
+      "weights": {
+        "ideas_content": 2,
+        "organization": 2,
+        "voice": 0,
+        "word_choice": 0,
+        "sentence_fluency": 2,
+        "conventions": 4
+      },
+      "resolution_used": false
+    },
+    "composite_note": null
+  }
 }

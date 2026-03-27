@@ -1,9 +1,9 @@
 {
-  "run_id": "run-17c1a6e6cacb",
+  "run_id": "run-8b33eb54b899",
   "hypotheses": [
     {
-      "hypothesis_id": "hyp-real-baf868b14a8b",
-      "observation_id": "obs-9523a7256648",
+      "hypothesis_id": "hyp-real-7f8505a41507",
+      "observation_id": "obs-f76e6913062f",
       "dimension_id": "ideas_content",
       "rater_id": "rater_1",
       "score": {
@@ -18,31 +18,21 @@
         "difficulties moving from general observations to specifics"
       ],
       "evidence_span_ids": [
-        "span-real-29a6d3cfcaa5",
-        "span-real-f32a2d056296",
-        "span-real-ddae214bb2c0",
-        "span-real-8b674a2906f3",
-        "span-real-01ca345de9e9",
-        "span-real-4801cc1b2c63",
-        "span-real-4bc57d48ab7b",
-        "span-real-3649b3f9c869",
-        "span-real-aabae328f1b1",
-        "span-real-9dfd11102422",
-        "span-real-f8897f2ab993",
-        "span-real-9976350fbc14",
-        "span-real-057ec76eb10a",
-        "span-real-5022b44816d6",
-        "span-real-47b8f81ac2bf",
-        "span-real-fbd701b1106d",
-        "span-real-a1935a0e9a02",
-        "span-real-c9837072f179"
+        "span-real-262ceca9b7e5",
+        "span-real-425d0632bad6",
+        "span-real-b4f4c4121e76",
+        "span-real-a0054c8f62c1",
+        "span-real-cc757d2f9f07",
+        "span-real-fe3439862950",
+        "span-real-cebbbf2476b4",
+        "span-real-d88b47dc24c2"
       ],
-      "rationale": "The essay has a clear main idea about getting lost downtown, but the development is simplistic and predictable. Supporting details are limited and repetitive (multiple instances of getting lost, phone calls, and friends laughing). The narrative moves from one general event to another without specific, well-grounded details, and the exploration remains at a surface level without deeper insights or connections.",
+      "rationale": "The essay has a clear main idea about getting lost downtown, but it's predictable and simplistic. Supporting details are limited and uneven - while some relevant details exist (cold/dark setting, asking for directions), the development is minimal with repetitive dialogue and vague descriptions. The writer struggles to move from general observations to specific, meaningful details, resulting in a narrative that communicates the basic idea but lacks depth or insight.",
       "confidence": 0.85
     },
     {
-      "hypothesis_id": "hyp-real-b5acf2056efe",
-      "observation_id": "obs-9523a7256648",
+      "hypothesis_id": "hyp-real-5544707fc726",
+      "observation_id": "obs-f76e6913062f",
       "dimension_id": "ideas_content",
       "rater_id": "rater_2",
       "score": {
@@ -52,72 +42,54 @@
         "scale_ref": "ordinal_6"
       },
       "descriptor_refs": [
-        "Understandable but simplistic; support often limited",
+        "Understandable but simplistic; support often limited.",
         "predictable or overly-obvious main ideas",
         "support attempted but details are limited, uneven, somewhat off-topic, or too general"
       ],
       "evidence_span_ids": [
-        "span-real-29a6d3cfcaa5",
-        "span-real-f32a2d056296",
-        "span-real-ddae214bb2c0",
-        "span-real-8b674a2906f3",
-        "span-real-01ca345de9e9",
-        "span-real-4801cc1b2c63",
-        "span-real-4bc57d48ab7b",
-        "span-real-3649b3f9c869",
-        "span-real-aabae328f1b1",
-        "span-real-9dfd11102422",
-        "span-real-f8897f2ab993",
-        "span-real-9976350fbc14",
-        "span-real-057ec76eb10a",
-        "span-real-5022b44816d6",
-        "span-real-47b8f81ac2bf",
-        "span-real-fbd701b1106d",
-        "span-real-a1935a0e9a02",
-        "span-real-c9837072f179"
+        "span-real-262ceca9b7e5",
+        "span-real-425d0632bad6",
+        "span-real-b4f4c4121e76",
+        "span-real-a0054c8f62c1",
+        "span-real-cc757d2f9f07",
+        "span-real-fe3439862950",
+        "span-real-cebbbf2476b4",
+        "span-real-d88b47dc24c2"
       ],
-      "rationale": "The essay presents a clear, understandable narrative about getting lost downtown, but the main idea is predictable and simplistic. While the writer attempts to support the story with details about confusion, bus rides, phone calls, and friends' reactions, these details are limited, repetitive, and often overly general (e.g., 'it was cold,dark and just creepy,' 'i coulda got snacked or raped'). The development is uneven, with some events adding little to the central theme, and the exploration lacks depth or insight beyond the basic premise of repeatedly getting lost.",
+      "rationale": "The essay earns a Score 3 because the main idea is understandable but simplistic, fitting the descriptor 'Understandable but simplistic; support often limited.' The narrative follows a predictable path of getting lost and being found, aligning with 'predictable or overly-obvious main ideas.' While the writer attempts to provide details, they are often too general (e.g., 'cold,dark and just creepy') or abrupt ('yeah thats it'), demonstrating that 'support attempted but details are limited.' The essay communicates a clear sequence of events, preventing a Score 2, but lacks the balanced exploration or consistent detail quality required for a Score 4.",
       "confidence": 0.85
     },
     {
-      "hypothesis_id": "hyp-real-a7754a3cbf83",
-      "observation_id": "obs-43f9d1e24f79",
+      "hypothesis_id": "hyp-real-dc0bb454c3d9",
+      "observation_id": "obs-4a640f78e61f",
       "dimension_id": "organization",
       "rater_id": "rater_1",
       "score": {
-        "canonical_score": 3,
+        "canonical_score": 2,
         "display_annotation": null,
-        "display_score": "3",
+        "display_score": "2",
         "scale_ref": "ordinal_6"
       },
       "descriptor_refs": [
-        "attempts at sequencing and paragraph breaks but order occasionally unclear",
-        "beginning and ending present but undeveloped or too obvious",
-        "structure is skeletal or too rigid"
+        "some attempts at sequencing but order frequently unclear",
+        "missing or extremely undeveloped beginning, body, and/or ending",
+        "details seem randomly placed, leaving reader confused"
       ],
       "evidence_span_ids": [
-        "span-real-506d992a9914",
-        "span-real-4850b1db51b3",
-        "span-real-89ab80982653",
-        "span-real-5a7f9aa58f26",
-        "span-real-73f64e9683a4",
-        "span-real-462273449163",
-        "span-real-829ddd3dfe14",
-        "span-real-79c919a8ec8b",
-        "span-real-18bf85636ccd",
-        "span-real-62204ea25802",
-        "span-real-a5123ac44a9e",
-        "span-real-44c8b1f9fbcf",
-        "span-real-428a0911712d",
-        "span-real-3fda224fa2cc",
-        "span-real-cf633dc953a7"
+        "span-real-44b15e0bddfa",
+        "span-real-e45319045d4b",
+        "span-real-081da8342aca",
+        "span-real-b8c4c8e9b0d3",
+        "span-real-000e13d31947",
+        "span-real-0915d34399a9",
+        "span-real-aa4571a69fa8"
       ],
-      "rationale": "The essay demonstrates attempted organization with a chronological narrative structure and a recognizable beginning ('Well ima tell a story about the time i got @CAPS3 down town') and ending ('Then that hole night was about me getting losted and not know were i was going and yeah thats it'). However, the structure is skeletal and overly rigid, following a simple 'then... then... then...' sequence without effective paragraph breaks or sophisticated transitions. The order is occasionally unclear (e.g., the transitions between events are abrupt, and the pacing feels rushed at times). While the essay communicates the main idea of getting lost, the organizational structure is limited and does not effectively guide the reader through the text with smooth flow or developed sections.",
+      "rationale": "The essay shows some chronological sequencing but frequently becomes unclear and disjointed. The beginning is extremely undeveloped ('Well ima tell a story'), and the ending is similarly weak ('yeah thats it'). Details are randomly placed (e.g., the window scene, multiple phone calls about being lost) without clear purpose, leaving the reader confused about the narrative's progression. While there are attempts at transitions ('Then', 'So', 'Later'), they are ineffective at creating coherence. The organizational structure is difficult to follow throughout.",
       "confidence": 0.85
     },
     {
-      "hypothesis_id": "hyp-real-f1efc57a4910",
-      "observation_id": "obs-43f9d1e24f79",
+      "hypothesis_id": "hyp-real-4db2cffc72de",
+      "observation_id": "obs-4a640f78e61f",
       "dimension_id": "organization",
       "rater_id": "rater_2",
       "score": {
@@ -127,35 +99,59 @@
         "scale_ref": "ordinal_6"
       },
       "descriptor_refs": [
-        "attempts at sequencing and paragraph breaks but order occasionally unclear",
         "beginning and ending present but undeveloped or too obvious",
+        "transitions sometimes work; same few devices overused",
         "structure is skeletal or too rigid"
       ],
       "evidence_span_ids": [
-        "span-real-506d992a9914",
-        "span-real-4850b1db51b3",
-        "span-real-89ab80982653",
-        "span-real-5a7f9aa58f26",
-        "span-real-73f64e9683a4",
-        "span-real-462273449163",
-        "span-real-829ddd3dfe14",
-        "span-real-79c919a8ec8b",
-        "span-real-18bf85636ccd",
-        "span-real-62204ea25802",
-        "span-real-a5123ac44a9e",
-        "span-real-44c8b1f9fbcf",
-        "span-real-428a0911712d",
-        "span-real-3fda224fa2cc",
-        "span-real-cf633dc953a7"
+        "span-real-44b15e0bddfa",
+        "span-real-e45319045d4b",
+        "span-real-081da8342aca",
+        "span-real-b8c4c8e9b0d3",
+        "span-real-000e13d31947",
+        "span-real-0915d34399a9",
+        "span-real-aa4571a69fa8"
       ],
-      "rationale": "The essay shows attempted organization with a chronological sequence of events and a recognizable beginning and ending. However, the structure is skeletal with no paragraph breaks, making the order occasionally unclear as events flow together without clear separation. The beginning ('Well ima tell a story about the time...') and ending ('yeah thats it') are present but undeveloped and obvious. Transitions are basic ('So', 'Then', 'Later'), and the rigid chronological structure lacks effective development of key moments, placing it at score 3.",
+      "rationale": "The essay demonstrates a Score 3 level of organization. It features a recognizable beginning and ending, though they are undeveloped and obvious ('Well ima tell a story', 'yeah thats it'), matching the descriptor 'beginning and ending present but undeveloped or too obvious'. The sequencing is chronological and generally followable, but relies on overused transitions like 'Then' and 'So', fitting 'transitions sometimes work; same few devices overused'. The structure is skeletal, consisting of a single block of text without paragraph breaks, which prevents a Score 4 ('clear sequencing and paragraph breaks'), but the logical order of events keeps it above a Score 2 ('order frequently unclear').",
       "confidence": 0.85
     },
     {
-      "hypothesis_id": "hyp-real-90038cb5b35c",
-      "observation_id": "obs-e8e4bb9d68ba",
+      "hypothesis_id": "hyp-real-c9d694f913d8",
+      "observation_id": "obs-a5a996116ae8",
       "dimension_id": "voice",
       "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "limited sense of audience; writer's awareness unclear",
+        "occasional sense of writer but voice may shift or disappear",
+        "voice either inappropriately personal or inappropriately impersonal"
+      ],
+      "evidence_span_ids": [
+        "span-real-08796d32b952",
+        "span-real-c79200dbc980",
+        "span-real-dce9a089993f",
+        "span-real-6af27ece37f5",
+        "span-real-20207e790e41",
+        "span-real-d2d1f57b0222",
+        "span-real-53736ef11419",
+        "span-real-fed2c3ed3150",
+        "span-real-91a69298cb47",
+        "span-real-9d1ef1da14d8",
+        "span-real-7968cca39b00"
+      ],
+      "rationale": "The essay shows occasional glimpses of the writer's personality and some expressive moments (e.g., 'i was counfused and like what the heck,' 'i walked away kind mad like ugh'), but the voice is inconsistent and often disappears into flat, mechanical storytelling. There is limited audience awareness—the writer seems to be recounting events rather than intentionally engaging the reader. The informal, casual tone is baseline for a personal narrative in this dataset and does not alone indicate strong voice. While there are moments of commitment and expressiveness, they are not sustained throughout the essay, and the voice shifts or fades in many sections, aligning with Score 3 descriptors.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-5490ad71bfe6",
+      "observation_id": "obs-a5a996116ae8",
+      "dimension_id": "voice",
+      "rater_id": "rater_2",
       "score": {
         "canonical_score": 4,
         "display_annotation": null,
@@ -163,89 +159,29 @@
         "scale_ref": "ordinal_6"
       },
       "descriptor_refs": [
-        "voice present; some expressiveness and sincerity",
+        "sense of audience; writer seems aware but has not consistently employed appropriate voice",
         "reader may glimpse writer and feel sense of interaction in places",
-        "writing may be inappropriately casual or inappropriately formal in places"
+        "liveliness, sincerity, or humor when appropriate"
       ],
       "evidence_span_ids": [
-        "span-real-cb34f9f40e9b",
-        "span-real-4823308cf05e",
-        "span-real-21048675f0a8",
-        "span-real-90030ea6d12b",
-        "span-real-d9622ca1a0b4",
-        "span-real-606feabe4676",
-        "span-real-214d9a2564bb",
-        "span-real-e96328368edc",
-        "span-real-cda3d01a167f",
-        "span-real-af4469f66a95",
-        "span-real-576e505cec1b",
-        "span-real-fcb8b40d3878",
-        "span-real-2bab1b0e0202",
-        "span-real-15ceceae5aa4",
-        "span-real-555147001814",
-        "span-real-af082f354059",
-        "span-real-2697778509a4",
-        "span-real-17cc9220b62e",
-        "span-real-b1d98cc40424",
-        "span-real-9fc17fe8f4f9",
-        "span-real-7c554f10cc2c",
-        "span-real-11e5684a6975",
-        "span-real-4531608e65d2",
-        "span-real-95d72028f518",
-        "span-real-6769dfdadb3c"
+        "span-real-08796d32b952",
+        "span-real-c79200dbc980",
+        "span-real-dce9a089993f",
+        "span-real-6af27ece37f5",
+        "span-real-20207e790e41",
+        "span-real-d2d1f57b0222",
+        "span-real-53736ef11419",
+        "span-real-fed2c3ed3150",
+        "span-real-91a69298cb47",
+        "span-real-9d1ef1da14d8",
+        "span-real-7968cca39b00"
       ],
-      "rationale": "The essay demonstrates a clear voice with consistent expressiveness and sincerity throughout. The writer engages the reader with conversational language ('Well ima tell a story', 'i was like oh my gosh', 'yeah thats it') and emotional reactions ('i walked away kind mad like ugh', 'i was glad', 'i smiled'). There's a sense of interaction as the writer shares personal experiences and reactions. However, the voice is consistently casual and informal, which aligns with the descriptor about writing being 'inappropriately casual' in places. The writer shows commitment to the topic through detailed storytelling and emotional honesty, but lacks the sophisticated control and deep engagement characteristic of scores 5-6.",
-      "confidence": 0.85
+      "rationale": "The essay demonstrates a consistent first-person persona that engages the reader from start to finish (Evidence 1, 3), meeting the Score 4 criterion for 'sense of audience; writer seems aware'. The writer expresses emotion and sincerity through colloquialisms and reactions (Evidence 4, 6), aligning with Score 4's 'liveliness, sincerity'. However, the voice is frequently 'inappropriately casual' (text-speak, phonetic spelling), which fits the Score 4 descriptor 'has not consistently employed appropriate voice' and prevents a Score 5, but the consistent presence of the writer distinguishes it from Score 3's 'occasional sense of writer' or 'awareness unclear'.",
+      "confidence": 0.8
     },
     {
-      "hypothesis_id": "hyp-real-feff1c097310",
-      "observation_id": "obs-e8e4bb9d68ba",
-      "dimension_id": "voice",
-      "rater_id": "rater_2",
-      "score": {
-        "canonical_score": 4,
-        "display_annotation": null,
-        "display_score": "4",
-        "scale_ref": "ordinal_6"
-      },
-      "descriptor_refs": [
-        "Voice present; some expressiveness and sincerity",
-        "Reader may glimpse writer and feel sense of interaction in places",
-        "Liveliness, sincerity, or humor when appropriate"
-      ],
-      "evidence_span_ids": [
-        "span-real-cb34f9f40e9b",
-        "span-real-4823308cf05e",
-        "span-real-21048675f0a8",
-        "span-real-90030ea6d12b",
-        "span-real-d9622ca1a0b4",
-        "span-real-606feabe4676",
-        "span-real-214d9a2564bb",
-        "span-real-e96328368edc",
-        "span-real-cda3d01a167f",
-        "span-real-af4469f66a95",
-        "span-real-576e505cec1b",
-        "span-real-fcb8b40d3878",
-        "span-real-2bab1b0e0202",
-        "span-real-15ceceae5aa4",
-        "span-real-555147001814",
-        "span-real-af082f354059",
-        "span-real-2697778509a4",
-        "span-real-17cc9220b62e",
-        "span-real-b1d98cc40424",
-        "span-real-9fc17fe8f4f9",
-        "span-real-7c554f10cc2c",
-        "span-real-11e5684a6975",
-        "span-real-4531608e65d2",
-        "span-real-95d72028f518",
-        "span-real-6769dfdadb3c"
-      ],
-      "rationale": "The essay demonstrates a clear voice with consistent expressiveness and sincerity throughout. The writer uses conversational language ('Well ima tell a story,' 'i was like oh my gosh,' 'yea yea i know whatever lol') that creates a sense of personality and engagement. There's evidence of audience awareness with direct storytelling framing and moments where the reader glimpses the writer's personality through emotional reactions and humor. However, the voice is somewhat casual and informal throughout, lacking the sophisticated control and deep commitment characteristic of scores 5-6. The writing shows liveliness and sincerity appropriate to the narrative, placing it solidly at score 4.",
-      "confidence": 0.85
-    },
-    {
-      "hypothesis_id": "hyp-real-3adfece0e55a",
-      "observation_id": "obs-4c72c4d023f9",
+      "hypothesis_id": "hyp-real-dc530ecf040e",
+      "observation_id": "obs-0241602d0abd",
       "dimension_id": "word_choice",
       "rater_id": "rater_1",
       "score": {
@@ -260,95 +196,64 @@
         "images that are fuzzy or absent altogether"
       ],
       "evidence_span_ids": [
-        "span-real-0658d6bf925a",
-        "span-real-1b6feffcfb15",
-        "span-real-13f8d9245bf0",
-        "span-real-d983ac1dc50f",
-        "span-real-41e77b3777ce",
-        "span-real-fe78ef9d0c30",
-        "span-real-c817cd5d3947",
-        "span-real-7195b611a432",
-        "span-real-b3c65de5a125",
-        "span-real-11b9e545ab72",
-        "span-real-4a99a5e212e3",
-        "span-real-116ef2400d63",
-        "span-real-f46c4cbc866f",
-        "span-real-a6f04c58649b",
-        "span-real-2157323394a0"
+        "span-real-a7c44de1e63d",
+        "span-real-ab1b9cb3f029",
+        "span-real-7f3ef6231937",
+        "span-real-1060e732e67b",
+        "span-real-f30d1e494ddd",
+        "span-real-da12e5a31062",
+        "span-real-17f6d62b480d",
+        "span-real-b6b31f596d56",
+        "span-real-8700649d2d39",
+        "span-real-b44a587b1521",
+        "span-real-e74b06dfa23b",
+        "span-real-2f1ab06a1d4e",
+        "span-real-4e4929e0c41f",
+        "span-real-a7bdac3e2c3a"
       ],
-      "rationale": "The essay demonstrates monotonous and misused language throughout. There is heavy reliance on worn expressions like 'i was like,' 'i was like oh my gosh,' 'i said,' and repetitive conversational filler. Words are often imprecise ('snacked' instead of 'attacked,' 'losted' instead of 'lost') and fail to create clear images. The language is flat and colorless, with minimal variety and no purposeful or effective use of slang. While the essay is somewhat comprehensible, the word choice actively detracts from the narrative and lacks the precision and control needed for a score of 3.",
+      "rationale": "The essay demonstrates monotonous language with heavy reliance on conversational filler ('like,' 'well,' 'yeah'), imprecise vocabulary ('bad' instead of more specific terms, 'kind mad'), and worn expressions ('what the heck,' 'oh my gosh'). Word choice is consistently flat and fails to create clear images; attempts at specificity (e.g., 'cold,dark and just creepy') remain generic. The language is functional but lacks the precision, variety, or energy required for higher scores, aligning with Score 2 descriptors.",
       "confidence": 0.85
     },
     {
-      "hypothesis_id": "hyp-real-5212cb9ad81b",
-      "observation_id": "obs-4c72c4d023f9",
+      "hypothesis_id": "hyp-real-e92333b09851",
+      "observation_id": "obs-0241602d0abd",
       "dimension_id": "word_choice",
       "rater_id": "rater_2",
       "score": {
-        "canonical_score": 3,
+        "canonical_score": 2,
         "display_annotation": null,
-        "display_score": "3",
+        "display_score": "2",
         "scale_ref": "ordinal_6"
       },
       "descriptor_refs": [
-        "words that work but rarely capture reader's interest",
-        "expression seems mundane and general; slang not effective",
-        "words generally accurate but misused words may occasionally appear"
+        "Monotonous and/or misused language.",
+        "words that are colorless, flat, or imprecise",
+        "words simply do not fit text; seem imprecise, inadequate, or just plain wrong"
       ],
       "evidence_span_ids": [
-        "span-real-0658d6bf925a",
-        "span-real-1b6feffcfb15",
-        "span-real-13f8d9245bf0",
-        "span-real-d983ac1dc50f",
-        "span-real-41e77b3777ce",
-        "span-real-fe78ef9d0c30",
-        "span-real-c817cd5d3947",
-        "span-real-7195b611a432",
-        "span-real-b3c65de5a125",
-        "span-real-11b9e545ab72",
-        "span-real-4a99a5e212e3",
-        "span-real-116ef2400d63",
-        "span-real-f46c4cbc866f",
-        "span-real-a6f04c58649b",
-        "span-real-2157323394a0"
+        "span-real-a7c44de1e63d",
+        "span-real-ab1b9cb3f029",
+        "span-real-7f3ef6231937",
+        "span-real-1060e732e67b",
+        "span-real-f30d1e494ddd",
+        "span-real-da12e5a31062",
+        "span-real-17f6d62b480d",
+        "span-real-b6b31f596d56",
+        "span-real-8700649d2d39",
+        "span-real-b44a587b1521",
+        "span-real-e74b06dfa23b",
+        "span-real-2f1ab06a1d4e",
+        "span-real-4e4929e0c41f",
+        "span-real-a7bdac3e2c3a"
       ],
-      "rationale": "The essay uses functional but generic language with frequent informal slang ('ima,' 'coulda,' 'wonted') that lacks precision and effectiveness. While the vocabulary communicates the basic narrative, it rarely engages the reader with vivid or specific word choices. Occasional misspellings ('counfused,' 'losted,' 'shure') and repetitive phrasing ('i was like,' 'i said') further demonstrate the limitations described in the score 3 descriptors. The language is mundane and general, fitting the 'generic paper' characterization rather than achieving the functional clarity of a score 4.",
-      "confidence": 0.85
+      "rationale": "The essay demonstrates frequent misused language and imprecise word choices that align with Score 2. Words like 'losted', 'snacked' (instead of snatched), 'wonted', and 'hole' (instead of whole) are 'just plain wrong' and appear frequently, violating the Score 3 requirement that words be 'generally accurate' with only occasional misuse. Imagery is colorless and flat (e.g., 'cold,dark and just creepy'). While the meaning is not fully obscured (ruling out Score 1), the vocabulary is monotonous and inadequate for effective communication.",
+      "confidence": 0.9
     },
     {
-      "hypothesis_id": "hyp-real-09676ff4f7d8",
-      "observation_id": "obs-379d41617e72",
+      "hypothesis_id": "hyp-real-23e5aa1e25b5",
+      "observation_id": "obs-e04968060041",
       "dimension_id": "sentence_fluency",
       "rater_id": "rater_1",
-      "score": {
-        "canonical_score": 3,
-        "display_annotation": null,
-        "display_score": "3",
-        "scale_ref": "ordinal_6"
-      },
-      "descriptor_refs": [
-        "some passages invite fluid oral reading; others do not",
-        "good control over simple sentences, little over complex",
-        "sentences functional but lack energy"
-      ],
-      "evidence_span_ids": [
-        "span-real-231e08f9e185",
-        "span-real-93ad406f8472",
-        "span-real-a66a91c853a1",
-        "span-real-5a327bf12cb2",
-        "span-real-1ed9ed6bf7a7",
-        "span-real-4785ef02c899",
-        "span-real-5c0066a647c9",
-        "span-real-6cbfb318c5ca"
-      ],
-      "rationale": "The essay demonstrates mechanical rather than fluid sentence fluency. While the narrative is generally understandable and has some conversational flow in dialogue sections (e.g., 'Hello i said it was that girl she said i just wonted to make shure your not @CAPS3'), the writing is characterized by repetitive simple sentence structures, frequent run-on sentences, and awkward constructions that force the reader to slow down. The writer shows reasonable control over basic sentence construction but struggles with complex sentences and varied patterns, resulting in a functional but unpolished rhythm that aligns with score 3 descriptors.",
-      "confidence": 0.85
-    },
-    {
-      "hypothesis_id": "hyp-real-3d2880e08a51",
-      "observation_id": "obs-379d41617e72",
-      "dimension_id": "sentence_fluency",
-      "rater_id": "rater_2",
       "score": {
         "canonical_score": 2,
         "display_annotation": null,
@@ -360,21 +265,48 @@
         "significant number of awkward, choppy, or rambling constructions"
       ],
       "evidence_span_ids": [
-        "span-real-231e08f9e185",
-        "span-real-93ad406f8472",
-        "span-real-a66a91c853a1",
-        "span-real-5a327bf12cb2",
-        "span-real-1ed9ed6bf7a7",
-        "span-real-4785ef02c899",
-        "span-real-5c0066a647c9",
-        "span-real-6cbfb318c5ca"
+        "span-real-18506ce79ce2",
+        "span-real-16768ae70a31",
+        "span-real-d5bdd30a1b2b",
+        "span-real-8235672c01b3",
+        "span-real-c84cba91073d",
+        "span-real-3d50e2153900",
+        "span-real-877e4af23334"
       ],
-      "rationale": "The essay exhibits significant sentence fluency issues throughout. The writing is choppy and disjointed, with numerous run-on sentences, awkward constructions, and inconsistent punctuation that force the reader to slow down and reread. While the narrative voice is conversational, the sentence structure frequently obscures meaning and lacks intentional variation. Examples include: 'So i just called thenm and see were she was at the phone rings then she pick up' (awkward, choppy) and 'so i didnt wont her to know i was @CAPS3 so i didnt call her and tried to find my own way back but i couldnt so i just tried to think then @NUM3 mins went by she callled' (rambling). These patterns align with Score 2 descriptors of significant difficulty in oral reading and numerous awkward constructions.",
+      "rationale": "The essay exhibits significant sentence fluency issues that make it difficult to follow and read aloud. The writing is characterized by choppy, rambling constructions with frequent run-on sentences and awkward phrasing (e.g., 'So on my way there i thought i went to far so i got the bus and was like were am i? I was counfused and like what the heck.'). Sentence patterns are monotonous with repetitive 'I was like' and 'she said' constructions, and the overall structure obscures meaning rather than enhancing it. While the narrative is understandable, the sentence-level execution consistently impedes smooth reading and comprehension.",
       "confidence": 0.85
     },
     {
-      "hypothesis_id": "hyp-real-352109264954",
-      "observation_id": "obs-b0294f6905cf",
+      "hypothesis_id": "hyp-real-9851d23b047b",
+      "observation_id": "obs-e04968060041",
+      "dimension_id": "sentence_fluency",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 2,
+        "display_annotation": null,
+        "display_score": "2",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "significant portions difficult to follow or read aloud",
+        "sentence patterns that are monotonous",
+        "significant number of awkward, choppy, or rambling constructions"
+      ],
+      "evidence_span_ids": [
+        "span-real-18506ce79ce2",
+        "span-real-16768ae70a31",
+        "span-real-d5bdd30a1b2b",
+        "span-real-8235672c01b3",
+        "span-real-c84cba91073d",
+        "span-real-3d50e2153900",
+        "span-real-877e4af23334"
+      ],
+      "rationale": "The essay demonstrates a Score 2 level of Sentence Fluency due to pervasive run-on sentences and a lack of punctuation that makes smooth oral reading difficult. The text relies heavily on monotonous patterns using 'then', 'so', and 'and' to string clauses together without clear boundaries (e.g., Evidence 2: 'the man said your down town i said i know just never mind i walked away kind mad like ugh'). Awkward and rambling constructions force the reader to slow down to parse meaning, such as in Evidence 5 ('showed me ow to @CAPS2 to the store is at') and Evidence 7 ('didnt see the hose so i went the othere way'). While the narrative is generally comprehensible, the sentence structure lacks control and fluidity, fitting the description of 'awkward constructions' rather than the 'mechanical' control expected at Score 3.",
+      "confidence": 0.9
+    },
+    {
+      "hypothesis_id": "hyp-real-abd74b4cfda3",
+      "observation_id": "obs-6598489154e2",
       "dimension_id": "conventions",
       "rater_id": "rater_1",
       "score": {
@@ -387,38 +319,39 @@
         "little control over basic conventions",
         "many end-of-sentence errors; frequent internal punctuation errors",
         "spelling errors that frequently distract reader; common words misspelled",
+        "capitalization inconsistent or often incorrect",
         "errors interfere with readability and meaning"
       ],
       "evidence_span_ids": [
-        "span-real-8226bd5aeda5",
-        "span-real-d0e47a0420b4",
-        "span-real-5c584539abfd",
-        "span-real-bcbff6d44206",
-        "span-real-78aac3271406",
-        "span-real-10e38bc02e90",
-        "span-real-582421855835",
-        "span-real-583ba23372f7",
-        "span-real-d4cb9d7e6509",
-        "span-real-c827346957c6",
-        "span-real-c97de21b86f0",
-        "span-real-6680311407d8",
-        "span-real-e220474b215e",
-        "span-real-c7118f73560f",
-        "span-real-d62ca22966f9",
-        "span-real-99b6a66f5dba",
-        "span-real-5cbe1f04efa1",
-        "span-real-d3a113c5822a",
-        "span-real-52b5a278eee9",
-        "span-real-2690e751dfc6",
-        "span-real-930018c390a4",
-        "span-real-4e0e54c6d21a"
+        "span-real-0fd2506da568",
+        "span-real-065852c3ae99",
+        "span-real-e1d020657c1a",
+        "span-real-c4d3afb695bf",
+        "span-real-705d450d306e",
+        "span-real-05bc5c8fa193",
+        "span-real-6dda4c67294a",
+        "span-real-ba6eaeb6722a",
+        "span-real-520a382585dc",
+        "span-real-49dbd65e7e20",
+        "span-real-7c0419f824e8",
+        "span-real-86932bcddc16",
+        "span-real-df0a965e752e",
+        "span-real-cd35a1853faa",
+        "span-real-2544f613a77c",
+        "span-real-a19d7c32c8e8",
+        "span-real-972f56a12c5c",
+        "span-real-c02b71359dbd",
+        "span-real-0d87d390491b",
+        "span-real-302bedb89933",
+        "span-real-96da3af4ea7d",
+        "span-real-13a22fe1a5ee"
       ],
-      "rationale": "The essay demonstrates little control over basic conventions with numerous errors that significantly impede readability. There are frequent spelling errors of common words ('counfused,' 'thenm,' 'tonw,' 'wont,' 'shure,' 'hannin,' 'losted'), consistent capitalization errors ('i' instead of 'I'), and pervasive punctuation issues including missing commas in lists, run-on sentences, and incorrect end-of-sentence punctuation. The errors are so frequent that they force the reader to decode meaning, aligning with Score 2 descriptors of 'errors interfere with readability and meaning' and 'substantial need for editing.' While the narrative is understandable with effort, the convention errors are not merely distracting but actively impede smooth reading.",
-      "confidence": 0.85
+      "rationale": "The essay demonstrates little control over basic conventions with numerous errors that impede readability. There are frequent spelling errors of common words ('counfused,' 'thenm,' 'tonw,' 'wont,' 'shure,' 'losted,' 'hose' for 'house'), inconsistent capitalization (lowercase 'i' throughout, inconsistent sentence beginnings), and many punctuation errors (missing commas in lists, run-on sentences, incorrect end-of-sentence punctuation). The errors significantly interfere with meaning and readability, requiring substantial editing. This aligns with Score 2 descriptors: 'little control over basic conventions,' 'many end-of-sentence errors,' 'spelling errors that frequently distract reader,' and 'errors interfere with readability and meaning.'",
+      "confidence": 0.9
     },
     {
-      "hypothesis_id": "hyp-real-79f730b18d29",
-      "observation_id": "obs-b0294f6905cf",
+      "hypothesis_id": "hyp-real-137c1b33c7ca",
+      "observation_id": "obs-6598489154e2",
       "dimension_id": "conventions",
       "rater_id": "rater_2",
       "score": {
@@ -428,37 +361,37 @@
         "scale_ref": "ordinal_6"
       },
       "descriptor_refs": [
-        "little control over basic conventions",
-        "many end-of-sentence errors; frequent internal punctuation errors",
-        "spelling errors that frequently distract reader; common words misspelled",
-        "errors interfere with readability and meaning"
+        "Little control over basic conventions",
+        "Many end-of-sentence errors; frequent internal punctuation errors",
+        "Spelling errors that frequently distract reader; common words misspelled",
+        "Capitalization inconsistent or often incorrect"
       ],
       "evidence_span_ids": [
-        "span-real-8226bd5aeda5",
-        "span-real-d0e47a0420b4",
-        "span-real-5c584539abfd",
-        "span-real-bcbff6d44206",
-        "span-real-78aac3271406",
-        "span-real-10e38bc02e90",
-        "span-real-582421855835",
-        "span-real-583ba23372f7",
-        "span-real-d4cb9d7e6509",
-        "span-real-c827346957c6",
-        "span-real-c97de21b86f0",
-        "span-real-6680311407d8",
-        "span-real-e220474b215e",
-        "span-real-c7118f73560f",
-        "span-real-d62ca22966f9",
-        "span-real-99b6a66f5dba",
-        "span-real-5cbe1f04efa1",
-        "span-real-d3a113c5822a",
-        "span-real-52b5a278eee9",
-        "span-real-2690e751dfc6",
-        "span-real-930018c390a4",
-        "span-real-4e0e54c6d21a"
+        "span-real-0fd2506da568",
+        "span-real-065852c3ae99",
+        "span-real-e1d020657c1a",
+        "span-real-c4d3afb695bf",
+        "span-real-705d450d306e",
+        "span-real-05bc5c8fa193",
+        "span-real-6dda4c67294a",
+        "span-real-ba6eaeb6722a",
+        "span-real-520a382585dc",
+        "span-real-49dbd65e7e20",
+        "span-real-7c0419f824e8",
+        "span-real-86932bcddc16",
+        "span-real-df0a965e752e",
+        "span-real-cd35a1853faa",
+        "span-real-2544f613a77c",
+        "span-real-a19d7c32c8e8",
+        "span-real-972f56a12c5c",
+        "span-real-c02b71359dbd",
+        "span-real-0d87d390491b",
+        "span-real-302bedb89933",
+        "span-real-96da3af4ea7d",
+        "span-real-13a22fe1a5ee"
       ],
-      "rationale": "The essay demonstrates little control over basic conventions with numerous errors that impede readability. Frequent spelling errors (e.g., 'counfused,' 'thenm,' 'tonw,' 'wonted,' 'shure,' 'losted,' 'othere,' 'wendow') distract the reader and involve common words. End-of-sentence punctuation is inconsistent (missing periods, incorrect question marks), and internal punctuation is frequently incorrect or absent (e.g., run-on sentences like 'When i was heading down town to go meet some body it was cold,dark and just creepy'). Capitalization is inconsistent ('i' vs. 'I'). Grammar and usage errors ('i ask,' 'she pick up,' 'you was,' 'coulda,' 'woulda') are pervasive and interfere with meaning. The text requires substantial editing to be readable, aligning with Score 2 descriptors.",
-      "confidence": 0.85
+      "rationale": "The essay demonstrates little control over basic conventions, aligning with Score 2. The first-person pronoun 'i' is consistently lowercase, and sentence beginnings are frequently uncapitalized (evidence 1). Punctuation is weak, characterized by numerous run-on sentences and a lack of quotation marks for dialogue, which forces the reader to parse sentence boundaries manually (evidence 2). Spelling errors on common words occur frequently throughout the text, such as 'were' for 'where', 'hole' for 'whole', and 'losted' for 'lost' (evidence 3, 4). While the narrative is ultimately understandable, these errors frequently distract the reader and impede smooth readability, matching the Score 2 descriptor that errors 'interfere with readability and meaning'.",
+      "confidence": 0.9
     }
   ]
 }

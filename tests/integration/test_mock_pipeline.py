@@ -29,7 +29,7 @@ from src.contracts.scoring import (
 from src.contracts.score_representation import create_score_representation
 from src.contracts.trace import RunTrace, RunStatus, NodeStatus
 
-from src.agents import mock_config_resolver
+from src.agents import config_resolver
 from src.pipeline.runner import PipelineRunner
 from src.pipeline.validators import (
     validate_coverage_plans,
@@ -54,7 +54,7 @@ SAMPLE_TEXT = (
 
 @pytest.fixture(scope="module")
 def bundle():
-    return mock_config_resolver.run(BUNDLE_PATH)
+    return config_resolver.run(BUNDLE_PATH)
 
 
 @pytest.fixture(scope="module")

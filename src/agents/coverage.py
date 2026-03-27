@@ -1,5 +1,5 @@
 """
-Mock Coverage Planner — deterministic CoveragePlan generation.
+Coverage Planner — deterministic CoveragePlan generation.
 
 Produces one CoveragePlan per rubric dimension, targeting all available text
 units. Dimension traversal is delegated to ``src.policies.rubric_core``

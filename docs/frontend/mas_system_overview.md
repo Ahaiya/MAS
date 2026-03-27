@@ -68,7 +68,7 @@ observation_built → scored → consistency_checked → feedback_rendered → v
 }
 ```
 
-### 2.2 每个维度的字段（真实 provider 输出，来自 `src/agents/real_feedback.py`）
+### 2.2 每个维度的字段（统一输出，来自 `src/agents/feedback.py`）
 
 ```json
 "ideas_content": {
@@ -102,10 +102,8 @@ observation_built → scored → consistency_checked → feedback_rendered → v
 | `feedback_text` | string | **稳定** | LLM 生成的完整反馈文本，含 Markdown 加粗 |
 | `confidence` | float | **稳定** | 置信度，范围 [0.0, 1.0]，当前固定为 0.85 |
 
-> **注意**：Mock 模式（`src/agents/mock_feedback.py`）输出格式略有不同：
-> 使用 `final_score`（而非 `canonical_score`），并有 `evidence_count` 和 `rationale`，
-> 无 `descriptor_refs`、`evidence_span_ids`、`feedback_text`。
-> **前端应以真实 provider 格式（`canonical_score`）为准。**
+> **注意**：现在 mock 与真实 provider 已统一为同一结构。
+> 其中 `final_score` 仍然保留，但只是 `canonical_score` 的兼容别名。
 
 ### 2.3 `summary` 和 `provider`
 
@@ -196,7 +194,7 @@ observation_built → scored → consistency_checked → feedback_rendered → v
 
 ### 4.1 证据如何产生
 
-1. LLM 被要求在原文中定位支撑评分的文本片段（`src/agents/real_extractor.py`）
+1. LLM 被要求在原文中定位支撑评分的文本片段（`src/agents/extractor.py`）
 2. LLM 返回结构化 JSON，每个 span 包含：
    - `quote`：原文引用（verbatim）
    - `start_offset`：在规范化文本中的字符起始位置（含）
@@ -448,7 +446,7 @@ interface SampleReport {
 | 人工评分 | `data/training_set_8.tsv` |
 | 真实运行产物 | `artifacts/eval/20716/feedback.json` |
 | 真实运行追踪 | `artifacts/eval/20716/run_trace.json` |
-| feedback 结构代码 | `src/agents/real_feedback.py` |
+| feedback 结构代码 | `src/agents/feedback.py` |
 | span 结构定义 | `src/contracts/evidence.py` |
 | trace 结构定义 | `src/contracts/trace.py` |
 | QWK 计算 | `src/evaluation/qwk.py` |

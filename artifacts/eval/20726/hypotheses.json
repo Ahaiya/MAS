@@ -1,9 +1,9 @@
 {
-  "run_id": "run-d594ea1ee8e2",
+  "run_id": "run-1be4baa5fe59",
   "hypotheses": [
     {
-      "hypothesis_id": "hyp-real-730107e25a43",
-      "observation_id": "obs-b8fffacac627",
+      "hypothesis_id": "hyp-real-f2edfdb58f04",
+      "observation_id": "obs-f73accd58799",
       "dimension_id": "ideas_content",
       "rater_id": "rater_1",
       "score": {
@@ -18,19 +18,28 @@
         "supporting details are relevant but may be overly general or limited"
       ],
       "evidence_span_ids": [
-        "span-real-866d520b7458",
-        "span-real-4224abc7d0dd",
-        "span-real-a79e0d808bce",
-        "span-real-00cb8f66c326",
-        "span-real-9f7f73c11ea6",
-        "span-real-2dd0a1760b9a"
+        "span-real-145fd2136f9e",
+        "span-real-19ba40908571",
+        "span-real-39b87311fef9",
+        "span-real-cbcda6fb26b7",
+        "span-real-01867e7b599d",
+        "span-real-40e557340b35",
+        "span-real-7cb1e7cc3dec",
+        "span-real-3012830d0e34",
+        "span-real-e31087f8de9c",
+        "span-real-84fa90b633cd",
+        "span-real-f806eeea54bd",
+        "span-real-7486ff81b688",
+        "span-real-e3b6f232410e",
+        "span-real-63390c45f20c",
+        "span-real-117216720014"
       ],
-      "rationale": "The essay has an easily identifiable purpose (celebrating laughter's importance) and clear main ideas (laughter is contagious, connects people, and brings joy). Supporting details, such as the anecdote about staying up late with friends, are relevant but remain somewhat general and limited in depth. The exploration is balanced but lacks the rich, insightful connections characteristic of higher scores.",
+      "rationale": "The essay has a clear, easily identifiable purpose (celebrating laughter's importance) and clear main ideas (laughter connects people, has no age limit, improves mood). Supporting details are relevant but often general (e.g., 'laughter brightens mood') rather than specific or insightful. The personal anecdote provides some development but remains somewhat limited in depth. This matches the Score 4 descriptor of 'clear main ideas with relevant but limited support' and aligns with the calibration that Score 4 represents competent, functional writing.",
       "confidence": 0.85
     },
     {
-      "hypothesis_id": "hyp-real-38d05805cee2",
-      "observation_id": "obs-b8fffacac627",
+      "hypothesis_id": "hyp-real-ed5db7e631ce",
+      "observation_id": "obs-f73accd58799",
       "dimension_id": "ideas_content",
       "rater_id": "rater_2",
       "score": {
@@ -45,19 +54,28 @@
         "supporting details are relevant but may be overly general or limited"
       ],
       "evidence_span_ids": [
-        "span-real-866d520b7458",
-        "span-real-4224abc7d0dd",
-        "span-real-a79e0d808bce",
-        "span-real-00cb8f66c326",
-        "span-real-9f7f73c11ea6",
-        "span-real-2dd0a1760b9a"
+        "span-real-145fd2136f9e",
+        "span-real-19ba40908571",
+        "span-real-39b87311fef9",
+        "span-real-cbcda6fb26b7",
+        "span-real-01867e7b599d",
+        "span-real-40e557340b35",
+        "span-real-7cb1e7cc3dec",
+        "span-real-3012830d0e34",
+        "span-real-e31087f8de9c",
+        "span-real-84fa90b633cd",
+        "span-real-f806eeea54bd",
+        "span-real-7486ff81b688",
+        "span-real-e3b6f232410e",
+        "span-real-63390c45f20c",
+        "span-real-117216720014"
       ],
-      "rationale": "The essay has an easily identifiable purpose (celebrating laughter's importance) and clear main ideas (laughter is contagious, connects people, and brings joy). Supporting details are relevant, such as the personal anecdote about staying up late with friends, but remain somewhat general and limited in development. The writing explores the topic but lacks the depth, balance, and careful selection of details characteristic of higher scores (5-6). It avoids the simplistic or unclear issues of lower scores (1-3) by maintaining focus and coherence throughout.",
+      "rationale": "The essay demonstrates a clear, easily identifiable purpose centered on the value of laughter. It moves beyond simplistic generalizations by including a specific personal anecdote (staying up late with friends), which provides relevant support. However, the insights remain somewhat generic ('greatest feelings in the world'), and the development, while present, lacks the depth and careful selection of details characteristic of a Score 5. This aligns with the Score 4 descriptor of 'Clear main ideas with relevant but limited support.'",
       "confidence": 0.85
     },
     {
-      "hypothesis_id": "hyp-real-292859172e9d",
-      "observation_id": "obs-190bcfc95e39",
+      "hypothesis_id": "hyp-real-33784378d5a7",
+      "observation_id": "obs-1f2d5fded691",
       "dimension_id": "organization",
       "rater_id": "rater_1",
       "score": {
@@ -73,74 +91,72 @@
         "transitions may be stilted or formulaic"
       ],
       "evidence_span_ids": [
-        "span-real-e80e8fe7eeb5",
-        "span-real-4bec99c73894",
-        "span-real-1042678d452e",
-        "span-real-7d7ff67ec779"
+        "span-real-e1146f3df88f",
+        "span-real-abb7845041b8",
+        "span-real-feb6b3b3e90f",
+        "span-real-74e61cd4b11e",
+        "span-real-0946b78ee59b"
       ],
-      "rationale": "The essay demonstrates clear and coherent organization with a recognizable beginning that introduces the topic of laughter, a body that develops the theme through personal anecdotes and observations, and a conclusion that reinforces the main idea. Sequencing is logical, moving from general observations to specific examples and back to broader implications. However, the structure is somewhat predictable and formulaic, with transitions that work but are occasionally repetitive (e.g., repeated use of '@CAPS1' as a transition device). The organization helps the reader follow the writer's thoughts effectively, though it lacks the inviting beginning and smooth transitions characteristic of higher scores.",
+      "rationale": "The essay demonstrates clear organization with a recognizable structure: it opens with rhetorical questions about laughter, provides a personal anecdote about staying up late with friends, then expands to broader reflections on laughter's importance. Sequencing is logical and paragraph breaks are present, though the essay could benefit from more distinct paragraphing. The beginning is developed but somewhat formulaic with its rhetorical questions. Transitions work but are occasionally repetitive (e.g., multiple uses of 'When...'). Details fit where placed, with the personal story effectively illustrating the main ideas. The organization helps the reader follow the writer's thoughts despite some weaknesses like occasional repetitive transitions.",
       "confidence": 0.85
     },
     {
-      "hypothesis_id": "hyp-real-16bd60db6be4",
-      "observation_id": "obs-190bcfc95e39",
+      "hypothesis_id": "hyp-real-23287aeff9ff",
+      "observation_id": "obs-1f2d5fded691",
       "dimension_id": "organization",
       "rater_id": "rater_2",
       "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "beginning and ending present but undeveloped or too obvious",
+        "placement of details not always effective",
+        "transitions sometimes work"
+      ],
+      "evidence_span_ids": [
+        "span-real-e1146f3df88f",
+        "span-real-abb7845041b8",
+        "span-real-feb6b3b3e90f",
+        "span-real-74e61cd4b11e",
+        "span-real-0946b78ee59b"
+      ],
+      "rationale": "The essay earns a Score 3 because it demonstrates an attempted organizational structure with identifiable parts but lacks the polish of higher scores. The beginning (Evidence 1) and ending (Evidence 5) are present and recognizable ('Laughter, one of life's greatest gifts' / 'Laughter really is the shortest distance between people!'), fitting the descriptor 'beginning and ending present but undeveloped or too obvious.' However, the text is presented as a single block without visible paragraph breaks, which prevents it from reaching Score 4 ('clear sequencing and paragraph breaks'). While the sequencing moves logically from general hook to specific anecdote (Evidence 2) to reflection, the placement of details is sometimes repetitive (e.g., 'contagious' mentioned in both intro and conclusion), aligning with 'placement of details not always effective.' Transitions like 'One time' and 'When' are functional but simple, matching 'transitions sometimes work.'",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-befa4655bfce",
+      "observation_id": "obs-a3f7317c93a1",
+      "dimension_id": "voice",
+      "rater_id": "rater_1",
+      "score": {
         "canonical_score": 4,
         "display_annotation": null,
         "display_score": "4",
         "scale_ref": "ordinal_6"
       },
       "descriptor_refs": [
-        "clear sequencing and paragraph breaks",
-        "recognizable, developed beginning not particularly inviting",
-        "developed conclusion may lack subtlety",
-        "body easy to follow with details fitting where placed"
+        "Voice present; some expressiveness and sincerity",
+        "Sense of audience; writer seems aware but has not consistently employed appropriate voice",
+        "Reader may glimpse writer and feel sense of interaction in places"
       ],
       "evidence_span_ids": [
-        "span-real-e80e8fe7eeb5",
-        "span-real-4bec99c73894",
-        "span-real-1042678d452e",
-        "span-real-7d7ff67ec779"
+        "span-real-fb3ca3bc5ddd",
+        "span-real-65d26484fb26",
+        "span-real-3331871766ce",
+        "span-real-fc9ec191be99",
+        "span-real-f5abc9fcba1b",
+        "span-real-b8f9ab8c4ee3",
+        "span-real-7e9a472f7006"
       ],
-      "rationale": "The essay demonstrates clear and coherent organization with a recognizable structure. It begins with an introduction about laughter's universal appeal, transitions to a personal anecdote about staying up late with friends, expands to describe the physical and emotional effects of laughter, and concludes with advice to laugh freely. The sequencing is logical and easy to follow, with details fitting where placed (e.g., the personal story illustrates the earlier claims about laughter's effects). However, the organization is somewhat predictable and formulaic—moving from general statements to personal example to broader implications—and the conclusion, while developed, lacks subtlety with its direct advice and final aphorism. The essay lacks paragraph breaks, which slightly weakens the structure, but the overall flow remains clear. This aligns with Score 4 descriptors: clear sequencing, recognizable beginning and conclusion (though not particularly inviting), body easy to follow, and organization that helps the reader despite some weaknesses.",
+      "rationale": "The essay demonstrates a consistent, expressive voice throughout with sincere engagement on the topic of laughter. The writer directly addresses the reader ('Have you ever...'), shows audience awareness through rhetorical questions and inclusive language, and conveys personal commitment with vivid descriptions of laughter experiences. However, while voice is reliably present, it doesn't consistently reach the level of strong, intentional audience awareness or originality required for a score 5. The writing is appropriately casual for a personal narrative but doesn't show the exceptional commitment or distinctive voice needed for a score 6.",
       "confidence": 0.85
     },
     {
-      "hypothesis_id": "hyp-real-59d914e1eada",
-      "observation_id": "obs-4f4ab22b8826",
-      "dimension_id": "voice",
-      "rater_id": "rater_1",
-      "score": {
-        "canonical_score": 5,
-        "display_annotation": null,
-        "display_score": "5",
-        "scale_ref": "ordinal_6"
-      },
-      "descriptor_refs": [
-        "appropriate level of closeness to or distance from audience",
-        "strong sense of audience; writer seems aware of reader and how to communicate effectively",
-        "reader may discern writer behind words and feel sense of interaction",
-        "topic has come to life; shows originality, liveliness, honesty, conviction, excitement, humor, or suspense"
-      ],
-      "evidence_span_ids": [
-        "span-real-c50b58e0f795",
-        "span-real-a3700aa4de05",
-        "span-real-7d41fec45ac7",
-        "span-real-be8182bacdec",
-        "span-real-c89a967de912",
-        "span-real-856fc935ec62",
-        "span-real-1c1a4874f580",
-        "span-real-8c2977cae0bc",
-        "span-real-8a99d7105472"
-      ],
-      "rationale": "The essay demonstrates a strong, consistent voice with clear audience awareness through direct questions ('Have you ever laughed so hard that you cried?') and inclusive language ('You are never too old for laughter'). The writer's personal engagement is evident through vivid, expressive descriptions of laughter experiences ('tears were flowing out of @CAPS2 eyes, and i couldn't get a breath out of @CAPS2 heaving lungs'), showing liveliness and conviction. The voice remains appropriately personal throughout, creating a sense of interaction between reader and writer, though occasional minor mechanical issues prevent it from reaching the exceptional level of Score 6.",
-      "confidence": 0.85
-    },
-    {
-      "hypothesis_id": "hyp-real-b8f5868ecf5f",
-      "observation_id": "obs-4f4ab22b8826",
+      "hypothesis_id": "hyp-real-f8b63ac80c00",
+      "observation_id": "obs-a3f7317c93a1",
       "dimension_id": "voice",
       "rater_id": "rater_2",
       "score": {
@@ -150,28 +166,25 @@
         "scale_ref": "ordinal_6"
       },
       "descriptor_refs": [
-        "appropriate level of closeness to or distance from audience",
         "strong sense of audience; writer seems aware of reader and how to communicate effectively",
-        "reader may discern writer behind words and feel sense of interaction",
-        "topic has come to life; shows originality, liveliness, honesty, conviction, excitement, humor, or suspense"
+        "topic has come to life; shows originality, liveliness, honesty, conviction, excitement, humor, or suspense",
+        "appropriate level of closeness to or distance from audience"
       ],
       "evidence_span_ids": [
-        "span-real-c50b58e0f795",
-        "span-real-a3700aa4de05",
-        "span-real-7d41fec45ac7",
-        "span-real-be8182bacdec",
-        "span-real-c89a967de912",
-        "span-real-856fc935ec62",
-        "span-real-1c1a4874f580",
-        "span-real-8c2977cae0bc",
-        "span-real-8a99d7105472"
+        "span-real-fb3ca3bc5ddd",
+        "span-real-65d26484fb26",
+        "span-real-3331871766ce",
+        "span-real-fc9ec191be99",
+        "span-real-f5abc9fcba1b",
+        "span-real-b8f9ab8c4ee3",
+        "span-real-7e9a472f7006"
       ],
-      "rationale": "The essay demonstrates a strong, appropriate voice with clear audience awareness through direct questions ('Have you ever...') and inclusive language ('You are never too old...'). The writer shows deep commitment to the topic through vivid personal anecdotes and expressive descriptions of laughter's physical effects ('tears were flowing,' 'heaving lungs,' 'sun just warms over your heart'). While there are minor mechanical issues (e.g., 'breath' vs. 'breathe,' 'there' vs. 'they're'), the voice remains consistently engaging, sincere, and conversational, creating a genuine sense of interaction with the reader. This aligns with Score 5 descriptors more than Score 4, as the voice is not just present but effectively sustained with conviction and liveliness.",
+      "rationale": "The essay demonstrates a Score 5 voice through strong, sustained audience awareness and consistent commitment to the topic. The writer frequently addresses the reader directly using rhetorical questions and advice ('Have you ever...', 'I bet you that...', 'Who cares...'), fulfilling the descriptor 'writer seems aware of reader and how to communicate effectively.' The personal anecdote about staying up until 3 AM and the description of 'silent laughing' bring the topic to life with liveliness and honesty, matching 'topic has come to life; shows... conviction, excitement.' The casual, enthusiastic tone maintains an 'appropriate level of closeness' for a personal narrative without becoming inappropriate or inconsistent, distinguishing it from a Score 4 where voice might only be present 'in places.'",
       "confidence": 0.85
     },
     {
-      "hypothesis_id": "hyp-real-f56420ceeeb5",
-      "observation_id": "obs-e1390075245c",
+      "hypothesis_id": "hyp-real-f8f3c1327b95",
+      "observation_id": "obs-66950aeebe8b",
       "dimension_id": "word_choice",
       "rater_id": "rater_1",
       "score": {
@@ -186,23 +199,21 @@
         "rare experiments with language; avoids clichés"
       ],
       "evidence_span_ids": [
-        "span-real-b52c1a087941",
-        "span-real-24593360370d",
-        "span-real-0384d9dc3ce3",
-        "span-real-93a961f024e3",
-        "span-real-6ecd1791ee77",
-        "span-real-2399e3ff215e",
-        "span-real-6fb29dd991e8",
-        "span-real-1a008bfd310a",
-        "span-real-0624ad637833",
-        "span-real-8db9a02a35a8"
+        "span-real-ff0e7750801a",
+        "span-real-558c46a1097f",
+        "span-real-e7ae6f934759",
+        "span-real-037ee48fb5f7",
+        "span-real-ef920b196a95",
+        "span-real-910eab61c1c4",
+        "span-real-51b28d19692d",
+        "span-real-23f43e40eed2"
       ],
-      "rationale": "The essay effectively conveys its message about laughter with functional word choice. Words like 'delirious,' 'kooky,' 'heaving lungs,' 'tear-induced,' and 'therapeutic' show some specificity and precision, and the final metaphor 'shortest distance between people' demonstrates a rare experiment with figurative language. However, much of the vocabulary remains general ('greatest gifts,' 'amazing,' 'great,' 'important'), and while the writing is clear and avoids clichés, it lacks the striking, varied, or consistently vivid language that would energize the writing and push it to a score of 5. The word choice is competent and supports the message but is not particularly fresh or engaging.",
+      "rationale": "The essay demonstrates functional word choice that effectively conveys the message about laughter. Words like 'delirious,' 'kooky,' 'heaving lungs,' and 'therapeutic' show some specificity and variety, while phrases like 'tears were flowing' and 'warms over your heart and soul' create clear images. However, the language rarely energizes the writing or feels particularly fresh or vivid. Some expressions are somewhat generic ('greatest gifts,' 'contagious,' 'brightens my day'), and while the writer avoids major clichés, the word choice remains more serviceable than striking. Compared to the Score 5 anchor's 'infinite silence' and 'white gargantuan cantilever bridge,' this essay lacks the natural yet energizing precision that would elevate it to a 5.",
       "confidence": 0.85
     },
     {
-      "hypothesis_id": "hyp-real-27ab32ab1bfa",
-      "observation_id": "obs-e1390075245c",
+      "hypothesis_id": "hyp-real-9dd91be24271",
+      "observation_id": "obs-66950aeebe8b",
       "dimension_id": "word_choice",
       "rater_id": "rater_2",
       "score": {
@@ -212,58 +223,27 @@
         "scale_ref": "ordinal_6"
       },
       "descriptor_refs": [
-        "words that work but do not particularly energize writing",
-        "expression is functional; slang not purposeful or effective",
-        "rare experiments with language; avoids clichés"
+        "Words effectively convey message; functional but not energizing.",
+        "attempts at colorful language may occasionally seem overdone"
       ],
       "evidence_span_ids": [
-        "span-real-b52c1a087941",
-        "span-real-24593360370d",
-        "span-real-0384d9dc3ce3",
-        "span-real-93a961f024e3",
-        "span-real-6ecd1791ee77",
-        "span-real-2399e3ff215e",
-        "span-real-6fb29dd991e8",
-        "span-real-1a008bfd310a",
-        "span-real-0624ad637833",
-        "span-real-8db9a02a35a8"
+        "span-real-ff0e7750801a",
+        "span-real-558c46a1097f",
+        "span-real-e7ae6f934759",
+        "span-real-037ee48fb5f7",
+        "span-real-ef920b196a95",
+        "span-real-910eab61c1c4",
+        "span-real-51b28d19692d",
+        "span-real-23f43e40eed2"
       ],
-      "rationale": "The essay demonstrates functional word choice that effectively conveys the message about laughter's importance. Words like 'heaving lungs,' 'therapeutic,' and the metaphor 'shortest distance between people' show attempts at specificity and imagery, though they don't consistently energize the writing. The language is generally accurate and avoids clichés, with some experiments like 'tear-induced' and the sun comparison. However, much of the vocabulary remains general ('greatest gifts,' 'feel much better,' 'very important'), and the expression rarely rises above functional communication to become particularly vivid or striking. The essay communicates clearly but lacks the precision, variety, and natural energy characteristic of scores 5-6.",
+      "rationale": "The essay demonstrates word choice that effectively conveys the message, utilizing specific imagery like 'heaving lungs' (Evidence 3) and 'tear-induced... therapeutic' (Evidence 8) that elevates it above the generic limitations of a Score 3. However, the writing relies on functional expression (Evidence 6) and includes word usage errors ('breath' instead of 'breathe', 'effects' instead of 'affects') and clichés ('shortest distance between people') that prevent it from reaching the consistent accuracy and precision required for a Score 5. The dense hyphenated description in Evidence 8 aligns with the Score 4 descriptor where 'attempts at colorful language may occasionally seem overdone,' resulting in a functional but not consistently energizing overall effect.",
       "confidence": 0.85
     },
     {
-      "hypothesis_id": "hyp-real-c41ab4e07d4d",
-      "observation_id": "obs-7fde7e9108ea",
+      "hypothesis_id": "hyp-real-c638ae5e5864",
+      "observation_id": "obs-1a9b8eb66f5d",
       "dimension_id": "sentence_fluency",
       "rater_id": "rater_1",
-      "score": {
-        "canonical_score": 4,
-        "display_annotation": null,
-        "display_score": "4",
-        "scale_ref": "ordinal_6"
-      },
-      "descriptor_refs": [
-        "natural sound; reader moves easily but lacks rhythm and grace",
-        "strong control over simple sentences, variable over complex",
-        "occasional lapses in stylistic control"
-      ],
-      "evidence_span_ids": [
-        "span-real-1835c61d6252",
-        "span-real-d2558728c7c9",
-        "span-real-80bfd4fcd2e4",
-        "span-real-cfbbe4d63a01",
-        "span-real-177e1d99e522",
-        "span-real-235924d87539",
-        "span-real-25cfbe6f4c64"
-      ],
-      "rationale": "The essay demonstrates a natural, conversational flow that moves easily from sentence to sentence, particularly in the narrative sections about staying up late with friends. The writer shows strong control over simple sentence structures, creating readable prose. However, there are occasional lapses in stylistic control (e.g., 'your' instead of 'you're,' 'life's' instead of 'lives,' inconsistent capitalization of 'i'), and while there is some variety in sentence beginnings and lengths, the patterns become somewhat repetitive, lacking the rhythm and grace of higher-scoring essays. The writing is functional and clear but doesn't achieve the effortless flow or extensive variation characteristic of scores 5-6.",
-      "confidence": 0.85
-    },
-    {
-      "hypothesis_id": "hyp-real-b717378a3729",
-      "observation_id": "obs-7fde7e9108ea",
-      "dimension_id": "sentence_fluency",
-      "rater_id": "rater_2",
       "score": {
         "canonical_score": 4,
         "display_annotation": null,
@@ -276,20 +256,52 @@
         "strong control over simple sentences, variable over complex"
       ],
       "evidence_span_ids": [
-        "span-real-1835c61d6252",
-        "span-real-d2558728c7c9",
-        "span-real-80bfd4fcd2e4",
-        "span-real-cfbbe4d63a01",
-        "span-real-177e1d99e522",
-        "span-real-235924d87539",
-        "span-real-25cfbe6f4c64"
+        "span-real-32f56e61fe77",
+        "span-real-d7f759601a50",
+        "span-real-cac935e250be",
+        "span-real-128af25df42b",
+        "span-real-c3b5c7621291",
+        "span-real-67ad81d60818",
+        "span-real-cf5fcd5dfeb3",
+        "span-real-c7ee270d3be5",
+        "span-real-10478e53197d"
       ],
-      "rationale": "The essay demonstrates natural flow and readability with conversational tone and rhetorical questions that create movement. However, it lacks sophisticated rhythm and grace, with some repetitive patterns (e.g., frequent use of '@CAPS1' and similar sentence structures) that slightly detract from impact. The writer shows strong control over simple sentences but variable control over complex ones, with occasional awkward constructions. The writing is functional and communicates clearly, inviting oral reading in most passages, but doesn't achieve the effortless glide or extensive variation characteristic of scores 5-6.",
+      "rationale": "The essay demonstrates clear flow and natural sound throughout, with the reader moving easily from sentence to sentence. There is effective sentence variety with rhetorical questions, fragments, and different beginnings. However, the writing lacks the rhythm and grace of a score 5, with some repetitive patterns (e.g., repeated use of '@CAPS1' and similar sentence structures) that slightly detract from impact. The writer shows strong control over simple sentences but variable control over complex ones, with occasional awkward phrasing. This aligns with the score 4 descriptors of 'flows but less than fluid' and 'some repeated patterns that detract from impact.'",
       "confidence": 0.85
     },
     {
-      "hypothesis_id": "hyp-real-4b0fb93012cd",
-      "observation_id": "obs-a6bf41be6f43",
+      "hypothesis_id": "hyp-real-1029466465e5",
+      "observation_id": "obs-1a9b8eb66f5d",
+      "dimension_id": "sentence_fluency",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "natural sound; reader moves easily but lacks rhythm and grace",
+        "some repeated patterns that detract from impact",
+        "occasional lapses in stylistic control"
+      ],
+      "evidence_span_ids": [
+        "span-real-32f56e61fe77",
+        "span-real-d7f759601a50",
+        "span-real-cac935e250be",
+        "span-real-128af25df42b",
+        "span-real-c3b5c7621291",
+        "span-real-67ad81d60818",
+        "span-real-cf5fcd5dfeb3",
+        "span-real-c7ee270d3be5",
+        "span-real-10478e53197d"
+      ],
+      "rationale": "The essay demonstrates a natural, conversational flow with varied sentence structures, including rhetorical questions and fragments ('Boring, right?'), allowing the reader to move easily through the text. However, it lacks the polished rhythm and grace required for a Score 5, exhibiting occasional awkward constructions (e.g., the lengthy sentence describing silent laughing) and repetitive phrasing ('contagious', '@CAPS1') that detract from the overall impact. These lapses in stylistic control align with the Score 4 descriptors.",
+      "confidence": 0.85
+    },
+    {
+      "hypothesis_id": "hyp-real-d52e855d4f66",
+      "observation_id": "obs-2a82029dd6dd",
       "dimension_id": "conventions",
       "rater_id": "rater_1",
       "score": {
@@ -304,32 +316,19 @@
         "errors in grammar and usage do not block meaning but distract reader"
       ],
       "evidence_span_ids": [
-        "span-real-4ea31e26352b",
-        "span-real-b3d3b38a900e",
-        "span-real-3121e4c3954d",
-        "span-real-878116a1afc1",
-        "span-real-d62b7d224641",
-        "span-real-1bcf57dd8be7",
-        "span-real-081f98c8747a",
-        "span-real-1ead89a0ace9",
-        "span-real-ee0e959b077b",
-        "span-real-a2c9dbcc7c95",
-        "span-real-f0ff39393600",
-        "span-real-363b71a7e9cf",
-        "span-real-9c48de9281e1",
-        "span-real-effcf97857b5",
-        "span-real-607830eb1499",
-        "span-real-020bb4fc30d5",
-        "span-real-dbe56dd15471",
-        "span-real-f32618fd3c40",
-        "span-real-2c72b7ea1ffd"
+        "span-real-a9164dcb80d7",
+        "span-real-b9ed17dddfbb",
+        "span-real-1576cf384844",
+        "span-real-2029e72d1dfb",
+        "span-real-6d3a4ffc3864",
+        "span-real-e20984bd64d0"
       ],
-      "rationale": "The essay demonstrates limited control of conventions with frequent errors that distract the reader but do not block meaning. End-of-sentence punctuation is usually correct, but internal punctuation has frequent errors (e.g., comma splices, missing commas). Spelling errors distract (e.g., 'breath' for 'breathe', 'life's' for 'lives', 'its' for 'it's', 'your' for 'you're', 'there' for 'they're'). Grammar and usage errors are noticeable (e.g., 'a persons heart', 'i couldn't get a breath', 'effects' for 'affects', 'people thinks'). While the essay is readable overall, the accumulation of errors requires significant editing, aligning with Score 3 descriptors.",
+      "rationale": "The essay demonstrates limited control of conventions with frequent errors that begin to impede readability. End-of-sentence punctuation is usually correct, but internal punctuation has frequent errors (e.g., comma splices and missing commas). Spelling errors distract the reader (e.g., 'breath' instead of 'breathe,' 'life's' instead of 'lives,' 'there' instead of 'they're'). Grammar and usage errors are noticeable (e.g., 'a persons heart,' 'your feeling down,' 'you not laughing yourself') but do not block overall meaning. The errors create a significant need for editing, aligning with Score 3 descriptors.",
       "confidence": 0.85
     },
     {
-      "hypothesis_id": "hyp-real-99ce4911a7c8",
-      "observation_id": "obs-a6bf41be6f43",
+      "hypothesis_id": "hyp-real-99659c401b2f",
+      "observation_id": "obs-2a82029dd6dd",
       "dimension_id": "conventions",
       "rater_id": "rater_2",
       "score": {
@@ -339,35 +338,20 @@
         "scale_ref": "ordinal_6"
       },
       "descriptor_refs": [
-        "some control over basic conventions",
-        "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
+        "internal punctuation has frequent errors",
         "spelling errors distract reader; common words misspelled",
-        "errors in grammar and usage do not block meaning but distract reader",
-        "significant need for editing"
+        "capitalization errors"
       ],
       "evidence_span_ids": [
-        "span-real-4ea31e26352b",
-        "span-real-b3d3b38a900e",
-        "span-real-3121e4c3954d",
-        "span-real-878116a1afc1",
-        "span-real-d62b7d224641",
-        "span-real-1bcf57dd8be7",
-        "span-real-081f98c8747a",
-        "span-real-1ead89a0ace9",
-        "span-real-ee0e959b077b",
-        "span-real-a2c9dbcc7c95",
-        "span-real-f0ff39393600",
-        "span-real-363b71a7e9cf",
-        "span-real-9c48de9281e1",
-        "span-real-effcf97857b5",
-        "span-real-607830eb1499",
-        "span-real-020bb4fc30d5",
-        "span-real-dbe56dd15471",
-        "span-real-f32618fd3c40",
-        "span-real-2c72b7ea1ffd"
+        "span-real-a9164dcb80d7",
+        "span-real-b9ed17dddfbb",
+        "span-real-1576cf384844",
+        "span-real-2029e72d1dfb",
+        "span-real-6d3a4ffc3864",
+        "span-real-e20984bd64d0"
       ],
-      "rationale": "The essay demonstrates some control over basic conventions with generally correct end-of-sentence punctuation, but has frequent internal punctuation errors (comma splices, missing commas), spelling errors that distract (breath/breathe, its/it's, life's/lives, your/you're), capitalization errors ('i', 'young'), and grammar/usage issues (subject-verb agreement, pronoun consistency, sentence fragments). These errors are noticeable and require significant editing, but do not completely block meaning. The writing is more limited than the Score 4 anchor, which shows control with only minor errors that don't impede readability.",
-      "confidence": 0.85
+      "rationale": "The essay exhibits limited control over standard conventions, aligning with Score 3 descriptors. There are frequent errors in grammar and usage involving common homophones (e.g., 'your' vs. 'you're', 'there' vs. 'they're', 'effects' vs. 'affects', 'its' vs. 'it's') and basic capitalization mistakes (e.g., lowercase 'i', 'young' at the start of a sentence). Internal punctuation errors, particularly comma splices, occur throughout the text. While these errors distract the reader, they do not block meaning, which distinguishes this from a Score 2, but the frequency prevents it from reaching Score 4's requirement for 'control' and 'occasional lapses'.",
+      "confidence": 0.9
     }
   ]
 }

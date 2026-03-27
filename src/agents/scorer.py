@@ -1,5 +1,5 @@
 """
-Real Scorer — calls a real LLM provider to produce a ScoreHypothesis.
+Scorer — calls a configured provider to produce a ScoreHypothesis.
 
 Builds the scoring prompt via prompt_builders, calls the provider,
 parses structured JSON output into a ScoreHypothesis contract.
@@ -47,7 +47,7 @@ def run(
     rater_id: str,
 ) -> ScoreHypothesis:
     """
-    Score one dimension using a real LLM provider.
+    Score one dimension using a configured provider.
 
     Args:
         observation  : DimensionObservation for the dimension.
@@ -87,7 +87,7 @@ def run(
     justification = str(data.get("justification", ""))
 
     return ScoreHypothesis(
-        hypothesis_id=f"hyp-real-{uuid.uuid4().hex[:12]}",
+        hypothesis_id=f"hyp-score-{uuid.uuid4().hex[:12]}",
         observation_id=observation.observation_id,
         dimension_id=dim_id,
         rater_id=rater_id,

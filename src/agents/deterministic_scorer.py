@@ -1,5 +1,5 @@
 """
-Mock Scorer — deterministic ScoreHypothesis generation.
+Deterministic Scorer — deterministic ScoreHypothesis generation.
 
 Derives a canonical score from a hash of (observation_id + rater_id +
 dimension_id), then maps it into the dimension's valid scale range
@@ -77,6 +77,6 @@ def run(
         score=score,
         descriptor_refs=descriptor_refs,
         evidence_span_ids=evidence_span_ids,
-        rationale=f"Mock score {score_val} for {dim_id} by {rater_id}",
+        rationale=f"Deterministic score {score_val} for {dim_id} by {rater_id}",
         confidence=0.8,
     )

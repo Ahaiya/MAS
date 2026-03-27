@@ -1,9 +1,8 @@
 """
-Mock Config Resolver — wraps the real ConfigCompiler.
+Config Resolver — wraps the real ConfigCompiler.
 
-"Mock" here means no real LLM is invoked. The config resolver always uses
-the real ConfigCompiler to load and compile bundle YAML files. This is
-intentional: config loading is deterministic and has no LLM dependency.
+This worker never calls an LLM. It compiles a bundle YAML file into a frozen
+ResolvedArtifactBundle using the real ConfigCompiler.
 """
 
 from __future__ import annotations

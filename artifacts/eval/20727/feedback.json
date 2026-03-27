@@ -3,169 +3,237 @@
     "ideas_content": {
       "dimension_name": "Ideas and Content",
       "canonical_score": 4,
+      "final_score": 4,
       "display_score": "4",
       "display_annotation": null,
       "descriptor_refs": [
+        "Clear main ideas with relevant but limited support.",
         "clear main ideas",
         "easily identifiable purpose",
         "supporting details are relevant but may be overly general or limited"
       ],
       "evidence_span_ids": [
-        "span-real-09ce9a03c2ee",
-        "span-real-32346d62dc14",
-        "span-real-4f9739be3f79",
-        "span-real-5110f60c797e",
-        "span-real-72a6eb8c6b52",
-        "span-real-7585d43e390d",
-        "span-real-a56daa682d42",
-        "span-real-d04477ae418a",
-        "span-real-f53a06f89083",
-        "span-real-f92743d2a90f"
+        "span-ext-094bb7399fd6",
+        "span-ext-7b2c363e6d12",
+        "span-ext-86ea8352c36e",
+        "span-ext-8fbf2c11ff3a",
+        "span-ext-f30479b43023"
       ],
-      "feedback_text": "Your essay received a score of 4 for Ideas and Content. You establish a **clear main idea** about the importance of laughter and an **easily identifiable purpose** in recounting a joyful beach ride. Your **supporting details are relevant**, as shown when you describe the horses playing in the waves to illustrate a moment of pure joy. However, some details remain **overly general**, such as stating laughter happens on an \"everyday scedual\" and is a \"large benefit,\" without more specific development beyond the central anecdote. The connection between your main idea and the detailed narrative is clear, giving your purpose a solid foundation.",
-      "confidence": 0.85
+      "evidence_count": 5,
+      "feedback_text": "Your essay received a score of 4 for Ideas and Content. You have **clear main ideas** and an **easily identifiable purpose**, establishing that laught",
+      "commentary": "Your essay received a score of 4 for Ideas and Content. You have **clear main ideas** and an **easily identifiable purpose**, establishing that laught",
+      "uncertainty_note": null,
+      "decision_confidence": 0.85,
+      "confidence": 0.85,
+      "rationale": ""
     },
     "organization": {
       "dimension_name": "Organization",
       "canonical_score": 3,
+      "final_score": 3,
       "display_score": "3",
       "display_annotation": null,
       "descriptor_refs": [
         "attempts at sequencing and paragraph breaks but order occasionally unclear",
         "beginning and ending present but undeveloped or too obvious",
-        "body easy to follow with details fitting where placed",
-        "clear sequencing and paragraph breaks",
-        "developed conclusion may lack subtlety",
-        "recognizable, developed beginning not particularly inviting",
-        "structure is skeletal or too rigid"
+        "structure is skeletal or too rigid",
+        "transitions sometimes work; same few devices overused"
       ],
       "evidence_span_ids": [
-        "span-real-1f996d7f5e7d",
-        "span-real-371c224e1f58",
-        "span-real-92f5f3dca042",
-        "span-real-9daaa52ea01a",
-        "span-real-a6b3de0cf3a4"
+        "span-ext-166bf06ea490",
+        "span-ext-79e877c4e32f",
+        "span-ext-7ee8cce2bf04",
+        "span-ext-a279d9c86a6d",
+        "span-ext-db6b02872352",
+        "span-ext-e1ef682f96fd"
       ],
-      "feedback_text": "Your essay received a score of 3 for Organization. You provide a **recognizable, developed beginning** by setting the scene at the beach, and the **body is easy to follow with details fitting where placed**, as seen in the clear sequence of saddling the horses, running on the sand, and playing in the water. However, the order becomes **occasionally unclear** when you pause the beach narrative for a general paragraph defining laughter, which interrupts the flow of your personal story. Your **ending is present but undeveloped**, summarizing the \"perfuct day\" without moving beyond a simple list of the day's enjoyable elements.",
-      "confidence": 0.85
+      "evidence_count": 6,
+      "feedback_text": "Your essay scored a 3 in Organization. You provide a clear **beginning and ending**, framing a specific beach memory and concluding with the drive hom",
+      "commentary": "Your essay scored a 3 in Organization. You provide a clear **beginning and ending**, framing a specific beach memory and concluding with the drive hom",
+      "uncertainty_note": null,
+      "decision_confidence": 0.85,
+      "confidence": 0.85,
+      "rationale": ""
     },
     "voice": {
       "dimension_name": "Voice",
       "canonical_score": 4,
+      "final_score": 4,
       "display_score": "4",
       "display_annotation": null,
       "descriptor_refs": [
         "Voice present; some expressiveness and sincerity",
+        "Voice present; some expressiveness and sincerity.",
         "liveliness, sincerity, or humor when appropriate",
         "reader may glimpse writer and feel sense of interaction in places",
-        "sense of audience; writer seems aware but has not consistently employed appropriate voice"
+        "writing may be inappropriately casual or inappropriately formal in places"
       ],
       "evidence_span_ids": [
-        "span-real-0f00efcc21d0",
-        "span-real-2cc2764830f0",
-        "span-real-5a9bff43cdc5",
-        "span-real-68627976f42d",
-        "span-real-a26e7278f52b",
-        "span-real-aff2ccac32aa",
-        "span-real-e45fe9f69a35",
-        "span-real-fee124b0b597",
-        "span-real-ff8abe5e6ecb"
+        "span-ext-30b7e152bbed",
+        "span-ext-377e78ed0986",
+        "span-ext-83896fd76f56",
+        "span-ext-9f1fd7775be2",
+        "span-ext-a4633a418488",
+        "span-ext-aa716d406411",
+        "span-ext-b4e845c19ba3",
+        "span-ext-cded14ffc4bf",
+        "span-ext-d32927000d04"
       ],
-      "feedback_text": "Your essay received a score of 4 for Voice. This score reflects that your voice is present with some expressiveness and sincerity, allowing the reader to glimpse you and feel a sense of interaction. For example, your lively description of running with the horse \"with the wind whistling past our ears like a moving train\" creates a vivid and engaging moment. Your sincere connection to your subject also comes through when you note how horses \"make you laugh and giggle like your own little brothers or sisters,\" showing your personal awareness of the audience. However, this engaging voice is not yet employed consistently throughout the essay to fully sustain that sense of interaction.",
-      "confidence": 0.85
+      "evidence_count": 9,
+      "feedback_text": "Your essay received a score of 4 for Voice. This score reflects that your voice is present with \"some expressiveness and sincerity,\" and the \"reader m",
+      "commentary": "Your essay received a score of 4 for Voice. This score reflects that your voice is present with \"some expressiveness and sincerity,\" and the \"reader m",
+      "uncertainty_note": null,
+      "decision_confidence": 0.85,
+      "confidence": 0.85,
+      "rationale": ""
     },
     "word_choice": {
       "dimension_name": "Word Choice",
       "canonical_score": 3,
+      "final_score": 3,
       "display_score": "3",
       "display_annotation": null,
       "descriptor_refs": [
+        "expression seems mundane and general",
         "expression seems mundane and general; slang not effective",
+        "reliance on cliches and overused expressions",
         "words generally accurate but misused words may occasionally appear",
         "words that work but rarely capture reader's interest"
       ],
       "evidence_span_ids": [
-        "span-real-03a9c7fd1bbc",
-        "span-real-1a9d018472f2",
-        "span-real-25cc460a2f9f",
-        "span-real-2e7294ca4964",
-        "span-real-3f1816b9d5b3",
-        "span-real-44f96ea51870",
-        "span-real-4ba6f146799b",
-        "span-real-4e32b16796bf",
-        "span-real-5da33b0d6ac8",
-        "span-real-aa778fe3b8df",
-        "span-real-d3b3f43f4b17",
-        "span-real-d623fd545741",
-        "span-real-d7d92949765a",
-        "span-real-d7dd7cb2ae9e",
-        "span-real-e666a086e173",
-        "span-real-f4b2f2679bad",
-        "span-real-fallback-1ce057da"
+        "span-ext-2319ff4923ba",
+        "span-ext-2fab6fb3f718",
+        "span-ext-41734dd8152b",
+        "span-ext-5a64befd3479",
+        "span-ext-79b0450537b2",
+        "span-ext-bfbe35f0d827",
+        "span-ext-c176ab6ae247",
+        "span-ext-c3439ede5b15",
+        "span-ext-da4715b54137",
+        "span-ext-dd8d4ec45744",
+        "span-ext-fallback-d7398afb"
       ],
-      "feedback_text": "Your essay received a Word Choice score of 3. The language is generally accurate but often seems mundane and rarely captures the reader's interest. For example, phrases like \"adventuring caves, sand dunes and starfish\" and \"like your own little brothers or sisters\" use common, general words that do not create a vivid picture. Furthermore, misused or misspelled words occasionally appear, weakening your expression, as seen in \"injoyment,\" \"clutsy,\" \"perfuct,\" and \"everyday scedual.\" These choices make the writing feel ordinary and at times imprecise, aligning with the feedback that the words work but are not engaging and that errors are present.",
-      "confidence": 0.85
+      "evidence_count": 11,
+      "feedback_text": "Your essay received a Word Choice score of 3. The expression often seems mundane and general, with a reliance on cliches and overused phrases. For exa",
+      "commentary": "Your essay received a Word Choice score of 3. The expression often seems mundane and general, with a reliance on cliches and overused phrases. For exa",
+      "uncertainty_note": null,
+      "decision_confidence": 0.85,
+      "confidence": 0.85,
+      "rationale": ""
     },
     "sentence_fluency": {
       "dimension_name": "Sentence Fluency",
       "canonical_score": 3,
+      "final_score": 3,
       "display_score": "3",
       "display_annotation": null,
       "descriptor_refs": [
-        "Good control over simple sentences, little over complex",
-        "Good control over simple sentences, little over complex.",
-        "Mechanical rather than fluid; occasional awkwardness",
-        "Mechanical rather than fluid; occasional awkwardness.",
-        "Some passages invite fluid oral reading; others do not",
-        "Some passages invite fluid oral reading; others do not."
+        "good control over simple sentences, little over complex",
+        "sentences functional but lack energy",
+        "significant number of awkward, choppy, or rambling constructions",
+        "significant portions difficult to follow or read aloud",
+        "some passages invite fluid oral reading; others do not"
       ],
       "evidence_span_ids": [
-        "span-real-030a1333cdaa",
-        "span-real-0514a1a1054e",
-        "span-real-0f6ee4bb6081",
-        "span-real-2afe8a7272dd",
-        "span-real-54a80b9bb2fb",
-        "span-real-ce9b47bb92d5",
-        "span-real-df2aec2e2c34",
-        "span-real-e3ceac640586",
-        "span-real-f47cef61f9bf"
+        "span-ext-34180bef591b",
+        "span-ext-4d6f2c834d50",
+        "span-ext-589cdb74d70b",
+        "span-ext-5e9b41959ba3",
+        "span-ext-7fa62f74f827",
+        "span-ext-c2ca82591b63"
       ],
-      "feedback_text": "Your essay received a score of 3 for Sentence Fluency. This score reflects that you have **good control over simple sentences, but little over complex ones**, and the writing is often **mechanical rather than fluid**. For example, you create fluid, descriptive moments like, \"the wind wistling past our ears like a moving train,\" which invites oral reading. However, other sentences become awkward and mechanically long, such as the one listing reasons for laughter, which strings together many ideas with commas. This mix means **some passages invite fluid oral reading; others do not**, as seen in the smooth narrative about the horse's nudge versus the tangled explanation about laughter causing fewer wrinkles.",
-      "confidence": 0.85
+      "evidence_count": 6,
+      "feedback_text": "Your essay received a score of 3 for Sentence Fluency. This score reflects that while you have **good control over simple sentences**, there is **litt",
+      "commentary": "Your essay received a score of 3 for Sentence Fluency. This score reflects that while you have **good control over simple sentences**, there is **litt",
+      "uncertainty_note": null,
+      "decision_confidence": 0.85,
+      "confidence": 0.85,
+      "rationale": ""
     },
     "conventions": {
       "dimension_name": "Conventions",
       "canonical_score": 3,
+      "final_score": 3,
       "display_score": "3",
       "display_annotation": null,
       "descriptor_refs": [
         "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
         "errors in grammar and usage do not block meaning but distract reader",
-        "significant need for editing",
-        "some control over basic conventions",
         "spelling errors distract reader; common words misspelled"
       ],
       "evidence_span_ids": [
-        "span-real-0807baaee5a1",
-        "span-real-10e2b5ece962",
-        "span-real-1b0b47463aa4",
-        "span-real-580b84b31f12",
-        "span-real-6423756e36bb",
-        "span-real-655a7a02797e",
-        "span-real-743e47b538f7",
-        "span-real-833aaa9e3041",
-        "span-real-8c12f2e9313d",
-        "span-real-9757d225f050",
-        "span-real-a60bcfaef0e1",
-        "span-real-c232ccba6545",
-        "span-real-c99e70f9531d",
-        "span-real-d4b66098ff5a",
-        "span-real-f488b79a32f9"
+        "span-ext-0271fe3cb8c5",
+        "span-ext-092513a76bbf",
+        "span-ext-09a4cb2485e2",
+        "span-ext-3336502e9903",
+        "span-ext-45690df3a2fd",
+        "span-ext-45ccd6e777fd",
+        "span-ext-5064e4ab32f6",
+        "span-ext-52f3f72975df",
+        "span-ext-580c3eaa2b32",
+        "span-ext-6a15391de9f4",
+        "span-ext-6cf2da2fc7a9",
+        "span-ext-8547af712e31",
+        "span-ext-8632d6d497f0",
+        "span-ext-9001909ea2fb",
+        "span-ext-900af8a4db37",
+        "span-ext-a55ab16a557c",
+        "span-ext-ae538c3f31bf",
+        "span-ext-af7f65222fd3",
+        "span-ext-bb94baa8c01d",
+        "span-ext-bede2c25a702",
+        "span-ext-d5946c6a1344",
+        "span-ext-dde04d70e2b2",
+        "span-ext-e58752c2958e",
+        "span-ext-ebc370a9a0f0",
+        "span-ext-f0b3dd6f70ef",
+        "span-ext-fallback-f1f85858"
       ],
-      "feedback_text": "Your essay received a score of 3 for Conventions. While you show some control over basic conventions, there is a significant need for editing, and errors in grammar and usage frequently distract the reader. For example, misspelled common words like \"perfuct\" (perfect), \"equaly\" (equally), and \"scedual\" (schedule) are distracting. Furthermore, internal punctuation has frequent errors, as seen in the run-on sentence structure of \"we'ed swerve around and try to beat the wave to the shore\" and the missing apostrophe in \"horses heads.\" While your meaning remains clear, these repeated errors require careful proofreading to improve the readability of your writing.",
-      "confidence": 0.85
+      "evidence_count": 26,
+      "feedback_text": "Your essay received a score of 3 in Conventions. This score reflects that while your end-of-sentence punctuation is usually correct, internal punctuat",
+      "commentary": "Your essay received a score of 3 in Conventions. This score reflects that while your end-of-sentence punctuation is usually correct, internal punctuat",
+      "uncertainty_note": null,
+      "decision_confidence": 0.85,
+      "confidence": 0.85,
+      "rationale": ""
     }
   },
-  "summary": "Real provider feedback for 6 dimension(s).",
-  "provider": "openai_compatible"
+  "violations": [],
+  "generated_at": "2026-03-27T06:30:11.032325+00:00",
+  "summary": "LLM-generated feedback for 6 dimension(s).",
+  "provider": "openai_compatible",
+  "composite": {
+    "composite_id": "composite-7b5dd1e3fac4",
+    "aggregation_policy_ref": "",
+    "contributing_decision_ids": [
+      "dec-0b85a6d6303d",
+      "dec-3468f9d7ce99",
+      "dec-58e91216a931",
+      "dec-aa2c2ef431e8"
+    ],
+    "composite_score": {
+      "canonical_score": 31,
+      "display_annotation": null,
+      "display_score": "31",
+      "scale_ref": "composite:asap_set8_composite"
+    },
+    "aggregation_detail": {
+      "variant_id": "without_resolution",
+      "aggregation_method": "average_per_trait_then_weighted_sum",
+      "source_raters": [
+        "rater_1",
+        "rater_2"
+      ],
+      "weights": {
+        "ideas_content": 2,
+        "organization": 2,
+        "voice": 0,
+        "word_choice": 0,
+        "sentence_fluency": 2,
+        "conventions": 4
+      },
+      "resolution_used": false
+    },
+    "composite_note": null
+  }
 }

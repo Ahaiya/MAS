@@ -1,3 +1,5 @@
+# 当前阶段不作为参考
+
 ## 1. Core Objective & Context
 
 MVP 成功标准：
@@ -177,7 +179,7 @@ MVP 成功标准：
 
 - [x] 实现 deterministic mock workers
   输入: Phase 1 配置、Phase 2 contract、状态机节点定义
-  输出: `src/agents/mock_config_resolver.py`、`src/agents/mock_preprocess.py`、`src/agents/mock_coverage.py`、`src/agents/mock_extractor.py`、`src/agents/mock_observer.py`、`src/agents/mock_scorer.py`、`src/agents/mock_consistency_checker.py`、`src/agents/mock_adjudicator.py`、`src/agents/mock_feedback.py`
+  输出: `src/agents/config_resolver.py`、`src/agents/preprocess.py`、`src/agents/coverage.py`、`src/agents/deterministic_extractor.py`、`src/agents/observer.py`、`src/agents/deterministic_scorer.py`、`src/agents/deterministic_consistency_checker.py`、`src/agents/deterministic_adjudicator.py`、`src/agents/feedback.py`
   验收: `python -m pytest tests/unit/agents/test_mock_workers.py`
   依赖: 状态机骨架、配置编译器、所有 contract
 

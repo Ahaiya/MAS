@@ -133,10 +133,10 @@ class TestExtractHypothesesFromTrace:
 
 
 class TestConsistencyWithGoldenData:
-    def test_mock_scorer_hypotheses_consistency(self):
+    def test_deterministic_scorer_hypotheses_consistency(self):
         """Simulate what mock scorer produces: 2 hypotheses per dimension."""
         # Mock scorer produces exactly 2 score hypotheses per dimension
-        # by design (from mock_scorer.py). Both are set to score=2 for most dims.
+        # by design (from deterministic_scorer.py). Both are set to score=2 for most dims.
         # Simulate 6 dimensions, 2 hypotheses each, adjacent scores
         hyps = {f"dim_{i}": [i + 1, i + 1] for i in range(6)}
         report = compute_consistency("run-mock-sim", hyps)
