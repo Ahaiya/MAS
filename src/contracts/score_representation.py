@@ -1,4 +1,6 @@
 """
+分数表示契约，明确区分 canonical score 与展示层分数字段。
+
 Score Representation Contract
 
 Defines the explicit separation of canonical (integer) score from display form.

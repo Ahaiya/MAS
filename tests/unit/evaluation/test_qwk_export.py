@@ -95,7 +95,7 @@ class TestExportRun:
     def test_export_run_from_artifact_dir(self):
         run_dir = _ARTIFACTS / "20716" / "mock"
         if not run_dir.exists():
-            pytest.skip("Baseline artifact not present — run scripts/run_baseline.py first")
+            pytest.skip("Baseline artifact not present — run tests/scripts/run_baseline.py first")
 
         export = export_run(run_dir, essay_id="20716")
         assert isinstance(export, RunExport)

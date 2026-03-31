@@ -1,4 +1,6 @@
 """
+请求契约，定义原始输入、标准化文档与文本单元的核心数据结构。
+
 Request Normalization and Text Segmentation Contracts
 
 Defines the data shapes for the evaluation request pipeline:
@@ -51,6 +53,8 @@ class TextUnit:
         end_offset: Exclusive end character offset.
         unit_type: Semantic type — e.g., "sentence", "paragraph", "full_document".
         sequence_index: Zero-based position of this unit in document order.
+        chunk_title: Optional semantic title when chunk is produced by LLM chunker.
+        chunk_method: Chunking method marker ("rule", "llm_semantic", "llm_hierarchical").
     """
 
     unit_id: str
@@ -60,6 +64,8 @@ class TextUnit:
     end_offset: int
     unit_type: str
     sequence_index: int
+    chunk_title: Optional[str] = None
+    chunk_method: str = "rule"
 
     def __post_init__(self) -> None:
         if self.end_offset <= self.start_offset:
@@ -81,6 +87,8 @@ class TextUnit:
             "end_offset": self.end_offset,
             "unit_type": self.unit_type,
             "sequence_index": self.sequence_index,
+            "chunk_title": self.chunk_title,
+            "chunk_method": self.chunk_method,
         }
 
     @classmethod
@@ -88,7 +96,8 @@ class TextUnit:
         _check_no_extra(
             data,
             frozenset({"unit_id", "document_id", "text", "start_offset",
-                       "end_offset", "unit_type", "sequence_index"}),
+                       "end_offset", "unit_type", "sequence_index",
+                       "chunk_title", "chunk_method"}),
             "TextUnit",
         )
         return cls(
@@ -99,6 +108,8 @@ class TextUnit:
             end_offset=data["end_offset"],
             unit_type=data["unit_type"],
             sequence_index=data["sequence_index"],
+            chunk_title=data.get("chunk_title"),
+            chunk_method=data.get("chunk_method", "rule"),
         )
 
 
@@ -222,6 +233,8 @@ class NormalizedDocument:
         char_count: Total character count of normalized_text.
         word_count: Approximate word count (whitespace-tokenized).
         document_metadata: Pipeline-generated document metadata.
+        document_type: Optional high-level type hint ("essay", "report", "dialogue", "unknown").
+        token_estimate: Approximate token count hint for branch selection in long-doc processing.
     """
 
     document_id: str
@@ -231,6 +244,8 @@ class NormalizedDocument:
     char_count: int
     word_count: int
     document_metadata: Dict[str, Any]
+    document_type: str = "unknown"
+    token_estimate: int = 0
 
     def get_unit(self, unit_id: str) -> Optional[TextUnit]:
         """Look up a TextUnit by its unit_id. Returns None if not found."""
@@ -248,6 +263,8 @@ class NormalizedDocument:
             "char_count": self.char_count,
             "word_count": self.word_count,
             "document_metadata": dict(self.document_metadata),
+            "document_type": self.document_type,
+            "token_estimate": self.token_estimate,
         }
 
     @classmethod
@@ -255,7 +272,8 @@ class NormalizedDocument:
         _check_no_extra(
             data,
             frozenset({"document_id", "request_id", "normalized_text", "text_units",
-                       "char_count", "word_count", "document_metadata"}),
+                       "char_count", "word_count", "document_metadata",
+                       "document_type", "token_estimate"}),
             "NormalizedDocument",
         )
         return cls(
@@ -266,6 +284,8 @@ class NormalizedDocument:
             char_count=data["char_count"],
             word_count=data["word_count"],
             document_metadata=dict(data.get("document_metadata") or {}),
+            document_type=data.get("document_type", "unknown"),
+            token_estimate=data.get("token_estimate", 0),
         )
 
 
@@ -290,6 +310,8 @@ class CoveragePlan:
         minimum_evidence_units: Min evidence spans required (from rubric config).
         allowed_evidence_scopes: Valid scope types (e.g., ["span", "global"]).
         coverage_strategy: Extraction strategy hint (e.g., "full_scan", "targeted").
+        relevance_scores: Optional relevance score map (chunk/unit id -> score) from
+                          LLM-based coverage planning; empty for full-scan plans.
     """
 
     plan_id: str
@@ -300,6 +322,7 @@ class CoveragePlan:
     minimum_evidence_units: int
     allowed_evidence_scopes: List[str]
     coverage_strategy: str
+    relevance_scores: Dict[str, float] = field(default_factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -311,6 +334,7 @@ class CoveragePlan:
             "minimum_evidence_units": self.minimum_evidence_units,
             "allowed_evidence_scopes": list(self.allowed_evidence_scopes),
             "coverage_strategy": self.coverage_strategy,
+            "relevance_scores": dict(self.relevance_scores),
         }
 
     @classmethod
@@ -319,7 +343,8 @@ class CoveragePlan:
             data,
             frozenset({"plan_id", "document_id", "dimension_id", "target_unit_ids",
                        "required_facets", "minimum_evidence_units",
-                       "allowed_evidence_scopes", "coverage_strategy"}),
+                       "allowed_evidence_scopes", "coverage_strategy",
+                       "relevance_scores"}),
             "CoveragePlan",
         )
         return cls(
@@ -331,4 +356,5 @@ class CoveragePlan:
             minimum_evidence_units=data["minimum_evidence_units"],
             allowed_evidence_scopes=list(data.get("allowed_evidence_scopes") or []),
             coverage_strategy=data["coverage_strategy"],
+            relevance_scores=dict(data.get("relevance_scores") or {}),
         )

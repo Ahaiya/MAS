@@ -1,4 +1,6 @@
-"""QWK-ready export: extract scored fields from run artifacts for evaluation.
+"""评测导出模块，负责把运行产物整理成便于外环分析的平面结构。
+
+QWK-ready export: extract scored fields from run artifacts for evaluation.
 
 Provides functions to convert MAS run artifacts (feedback.json, run_trace.json)
 into flat structures suitable for QWK computation and downstream evaluation.

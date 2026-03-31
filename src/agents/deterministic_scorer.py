@@ -1,4 +1,6 @@
 """
+确定性评分 Agent，在 mock 模式下稳定地产生 ScoreHypothesis。
+
 Deterministic Scorer — deterministic ScoreHypothesis generation.
 
 Derives a canonical score from a hash of (observation_id + rater_id +

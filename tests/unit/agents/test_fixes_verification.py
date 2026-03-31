@@ -22,8 +22,7 @@ from src.contracts.scoring import (
     ScoreHypothesis,
 )
 # ConflictType 实际值：NON_ADJACENT / CUSP / OTHER
-from src.agents import consistency_checker
-from src.agents import adjudicator
+from src.agents import reconciliation
 from src.policies.aggregation import compute_composite
 
 
@@ -155,10 +154,10 @@ def _adj_record(dim_id: str, is_resolved: bool = True) -> AdjudicationRecord:
     )
 
 
-# ── Fix 1: consistency_checker 识别 Cusp Rule ────────────────────────────────
+# ── Fix 1: reconciliation.run 识别 Cusp Rule ────────────────────────────────
 
 class TestFix1CuspRuleDetected:
-    """Fix 1: runner 现在调用真实 consistency_checker，能识别 Cusp Rule。"""
+    """Fix 1: runner 现在调用统一 reconciliation 入口，能识别 Cusp Rule。"""
 
     def test_cusp_pattern_44_vs_34_triggers_conflict(self, policy):
         """一方 [4,4,4,4]，另一方 [3,4,4,4]，应产生冲突记录。"""
@@ -170,7 +169,7 @@ class TestFix1CuspRuleDetected:
             _hyp(S_DIM, "rater_2", 4), _hyp(C_DIM, "rater_2", 4),
             _hyp(V_DIM, "rater_2", 3), _hyp(W_DIM, "rater_2", 3),
         ]
-        conflicts = consistency_checker.run(hyps, policy)
+        conflicts = reconciliation.run(hyps, policy).conflicts
         assert len(conflicts) > 0, "Cusp Rule 应产生至少一个冲突记录"
 
     def test_cusp_pattern_trigger_id_is_cusp_rule(self, policy):
@@ -183,7 +182,7 @@ class TestFix1CuspRuleDetected:
             _hyp(S_DIM, "rater_2", 4), _hyp(C_DIM, "rater_2", 4),
             _hyp(V_DIM, "rater_2", 3), _hyp(W_DIM, "rater_2", 3),
         ]
-        conflicts = consistency_checker.run(hyps, policy)
+        conflicts = reconciliation.run(hyps, policy).conflicts
         trigger_ids = {c.trigger_rule_id for c in conflicts}
         assert "cusp_rule" in trigger_ids
 
@@ -191,7 +190,7 @@ class TestFix1CuspRuleDetected:
         """所有分数相同且无 cusp pattern，不应产生冲突。"""
         hyps = [_hyp(dim, "rater_1", 4) for dim in ALL_DIMS] + \
                [_hyp(dim, "rater_2", 4) for dim in ALL_DIMS]
-        conflicts = consistency_checker.run(hyps, policy)
+        conflicts = reconciliation.run(hyps, policy).conflicts
         assert conflicts == []
 
     def test_score_distance_still_triggers(self, policy):
@@ -201,14 +200,14 @@ class TestFix1CuspRuleDetected:
         # ideas_content: R1=4, R2=2 → distance=2 > 1
         hyps = [h for h in hyps if not (h.dimension_id == I_DIM and h.rater_id == "rater_2")]
         hyps.append(_hyp(I_DIM, "rater_2", 2))
-        conflicts = consistency_checker.run(hyps, policy)
+        conflicts = reconciliation.run(hyps, policy).conflicts
         assert any(c.dimension_id == I_DIM for c in conflicts)
 
 
-# ── Fix 2: adjudicator 使用 rater_3 ─────────────────────────────────────────
+# ── Fix 2: reconciliation.resolve 使用 rater_3 ─────────────────────────────
 
 class TestFix2AdjudicatorUsesRater3:
-    """Fix 2: 有冲突时，adjudicator 以 rater_3 分数为权威。"""
+    """Fix 2: 有冲突时，reconciliation.resolve 以 rater_3 分数为权威。"""
 
     def _make_conflict(self, dim_id: str) -> ConflictRecord:
         return ConflictRecord(
@@ -229,7 +228,7 @@ class TestFix2AdjudicatorUsesRater3:
             _hyp(I_DIM, "rater_2", 5),
             _hyp(I_DIM, "rater_3", 4),  # R3 = 4，应为权威
         ]
-        _, decisions = adjudicator.run(conflicts, hyps, policy)
+        _, decisions = reconciliation.resolve(conflicts, hyps, policy)
         i_dec = next(d for d in decisions if d.dimension_id == I_DIM)
         assert i_dec.final_score.canonical_score == 4
 
@@ -241,7 +240,7 @@ class TestFix2AdjudicatorUsesRater3:
             _hyp(I_DIM, "rater_2", 5),
             _hyp(I_DIM, "rater_3", 4),
         ]
-        adj_records, _ = adjudicator.run(conflicts, hyps, policy)
+        adj_records, _ = reconciliation.resolve(conflicts, hyps, policy)
         assert all(r.is_resolved for r in adj_records)
 
     def test_conflicted_dim_resolution_path_third_rater(self, policy):
@@ -252,7 +251,7 @@ class TestFix2AdjudicatorUsesRater3:
             _hyp(I_DIM, "rater_2", 5),
             _hyp(I_DIM, "rater_3", 4),
         ]
-        adj_records, _ = adjudicator.run(conflicts, hyps, policy)
+        adj_records, _ = reconciliation.resolve(conflicts, hyps, policy)
         assert adj_records[0].resolution_path == ResolutionPath.THIRD_RATER
 
     def test_non_conflicted_dim_uses_rater1_score(self, policy):
@@ -262,7 +261,7 @@ class TestFix2AdjudicatorUsesRater3:
             _hyp(O_DIM, "rater_1", 3),
             _hyp(O_DIM, "rater_2", 3),
         ]
-        _, decisions = adjudicator.run(conflicts, hyps, policy)
+        _, decisions = reconciliation.resolve(conflicts, hyps, policy)
         o_dec = next(d for d in decisions if d.dimension_id == O_DIM)
         assert o_dec.final_score.canonical_score == 3
         assert o_dec.adjudication_id is None
@@ -272,6 +271,19 @@ class TestFix2AdjudicatorUsesRater3:
 
 class TestFix4FallbackHumanReview:
     """Fix 4: rater_3 不存在时，兜底路径为 HUMAN_REVIEW，不触发非法状态转换。"""
+
+    def _human_review_policy(self, policy: PolicySnapshot) -> PolicySnapshot:
+        adjudication_policy = dict(policy.adjudication_policy)
+        adjudication_policy["resolution_strategy"] = {
+            "default": "use_resolution_rater_as_authoritative",
+            "fallback_if_no_resolution": "human_review",
+        }
+        return PolicySnapshot(
+            adjudication_policy=adjudication_policy,
+            aggregation_policy=policy.aggregation_policy,
+            explanation_policy=policy.explanation_policy,
+            policy_version=policy.policy_version,
+        )
 
     def _make_conflict(self, dim_id: str) -> ConflictRecord:
         return ConflictRecord(
@@ -286,27 +298,30 @@ class TestFix4FallbackHumanReview:
 
     def test_missing_rater3_gives_human_review_path(self, policy):
         """无 rater_3 hypothesis 时，resolution_path 应为 HUMAN_REVIEW。"""
+        policy = self._human_review_policy(policy)
         conflicts = [self._make_conflict(I_DIM)]
         hyps = [
             _hyp(I_DIM, "rater_1", 2),
             _hyp(I_DIM, "rater_2", 5),
             # 故意不提供 rater_3
         ]
-        adj_records, _ = adjudicator.run(conflicts, hyps, policy)
+        adj_records, _ = reconciliation.resolve(conflicts, hyps, policy)
         assert adj_records[0].resolution_path == ResolutionPath.HUMAN_REVIEW
 
     def test_missing_rater3_is_resolved_false(self, policy):
         """无 rater_3 时，is_resolved 应为 False。"""
+        policy = self._human_review_policy(policy)
         conflicts = [self._make_conflict(I_DIM)]
         hyps = [_hyp(I_DIM, "rater_1", 2), _hyp(I_DIM, "rater_2", 5)]
-        adj_records, _ = adjudicator.run(conflicts, hyps, policy)
+        adj_records, _ = reconciliation.resolve(conflicts, hyps, policy)
         assert adj_records[0].is_resolved is False
 
     def test_missing_rater3_resolved_score_is_none(self, policy):
         """无 rater_3 时，resolved_score 应为 None（不能用 R1/R2 充数）。"""
+        policy = self._human_review_policy(policy)
         conflicts = [self._make_conflict(I_DIM)]
         hyps = [_hyp(I_DIM, "rater_1", 2), _hyp(I_DIM, "rater_2", 5)]
-        adj_records, _ = adjudicator.run(conflicts, hyps, policy)
+        adj_records, _ = reconciliation.resolve(conflicts, hyps, policy)
         assert adj_records[0].resolved_score is None
 
 

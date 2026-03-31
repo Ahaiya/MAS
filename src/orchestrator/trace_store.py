@@ -1,4 +1,6 @@
 """
+追踪存储模块，负责累计单次运行中的节点轨迹与事件摘要。
+
 Trace Store — accumulates NodeTrace records during a pipeline run.
 
 Provides a mutable session that the orchestrator uses to record node

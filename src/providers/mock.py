@@ -1,4 +1,6 @@
 """
+Mock Provider，负责在无网络测试中稳定返回确定性结果。
+
 MockProvider — deterministic, no-network LLM provider for testing.
 
 Contract:

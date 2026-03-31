@@ -1,4 +1,6 @@
 """
+检查点管理器，负责记录节点级快照并保护回退重试次数。
+
 Checkpoint Manager — node-level snapshot tracking and retry limiting.
 
 Manages the creation and retrieval of CheckpointRef objects (from Phase 2

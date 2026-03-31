@@ -1,4 +1,6 @@
 """
+配置编译器，负责把 bundle、rubric、policy 和 provider 配置编译成冻结快照。
+
 Config Compiler: Orchestrates bundle loading, artifact resolution, and freeze.
 
 Produces a frozen ResolvedArtifactBundle ready for use by the orchestrator.
@@ -88,6 +90,16 @@ class ConfigCompiler:
             loaded_prompts = [
                 self._resolver.load_artifact(ref) for ref in bundle.prompt_refs
             ]
+            loaded_chunking = (
+                self._resolver.load_artifact(bundle.chunking_policy_ref)
+                if bundle.chunking_policy_ref is not None
+                else None
+            )
+            loaded_scoring_context = (
+                self._resolver.load_artifact(bundle.scoring_context_ref)
+                if bundle.scoring_context_ref is not None
+                else None
+            )
         except ResolverError as exc:
             raise ConfigCompileError(f"Failed to resolve artifact: {exc}") from exc
 
@@ -99,6 +111,8 @@ class ConfigCompiler:
             loaded_adj.loaded_data,
             loaded_agg.loaded_data,
             loaded_exp.loaded_data,
+            loaded_chunking.loaded_data if loaded_chunking is not None else None,
+            loaded_scoring_context.loaded_data if loaded_scoring_context is not None else None,
         )
 
         # Step 3c: Build prompt templates dict {source_file: template_string}
@@ -115,6 +129,10 @@ class ConfigCompiler:
             loaded_exp.content_hash,
             *[p.content_hash for p in loaded_prompts],
         ]
+        if loaded_chunking is not None:
+            all_content_hashes.append(loaded_chunking.content_hash)
+        if loaded_scoring_context is not None:
+            all_content_hashes.append(loaded_scoring_context.content_hash)
         total_hash = compute_bundle_hash(all_content_hashes)
 
         # Step 4b: Build ProviderConfig from raw dict (if present in bundle)
@@ -139,6 +157,8 @@ class ConfigCompiler:
             validation_rules=bundle.validation_rules,
             metadata=bundle.metadata,
             provider_config_raw=bundle.provider_config_raw,
+            chunking_policy_ref=loaded_chunking,
+            scoring_context_ref=loaded_scoring_context,
         )
 
         return ResolvedArtifactBundle(
@@ -159,6 +179,7 @@ def _parse_provider_entry(raw: dict[str, Any]) -> ProviderEntryConfig:
         api_key_env=raw["api_key_env"],
         model=raw.get("model", "") or "",
         api_base=raw.get("api_base", "") or "",
+        params=dict(raw.get("params") or {}),
     )
 
 
@@ -210,11 +231,20 @@ def _build_policy_snapshot(
     adj_file_data: dict[str, Any],
     agg_file_data: dict[str, Any],
     exp_file_data: dict[str, Any],
+    chunking_file_data: dict[str, Any] | None = None,
+    scoring_context_file_data: dict[str, Any] | None = None,
 ) -> PolicySnapshot:
     """Build a PolicySnapshot from the inner policy content of each file."""
     adj_policy = adj_file_data["adjudication_policy"]
     agg_policy = agg_file_data["aggregation_policy"]
     exp_policy = exp_file_data["explanation_policy"]
+    chunking_policy = {}
+    if isinstance(chunking_file_data, dict):
+        chunking_policy = dict(chunking_file_data.get("chunking_policy") or {})
+
+    scoring_context = {}
+    if isinstance(scoring_context_file_data, dict):
+        scoring_context = dict(scoring_context_file_data.get("scoring_context") or {})
 
     policy_version = (
         f"adj:{adj_policy.get('policy_version', 'unknown')}"
@@ -227,4 +257,6 @@ def _build_policy_snapshot(
         aggregation_policy=agg_policy,
         explanation_policy=exp_policy,
         policy_version=policy_version,
+        chunking_policy=chunking_policy,
+        scoring_context=scoring_context,
     )

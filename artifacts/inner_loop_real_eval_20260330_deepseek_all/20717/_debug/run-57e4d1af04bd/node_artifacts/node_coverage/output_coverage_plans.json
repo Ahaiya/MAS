@@ -1,0 +1,180 @@
+[
+  {
+    "plan_id": "plan-3e55a5234cb9",
+    "document_id": "doc-00bfe0e4b101",
+    "dimension_id": "ideas_content",
+    "target_unit_ids": [
+      "unit-d5d353ae0c53",
+      "unit-e2e1eee7ca46",
+      "unit-59b94fdf22f4",
+      "unit-9020b623f4bd",
+      "unit-aa434102569d"
+    ],
+    "required_facets": [
+      "clarity_focus",
+      "main_idea_salience",
+      "support_relevance",
+      "development_depth",
+      "audience_purpose_fit"
+    ],
+    "minimum_evidence_units": 2,
+    "allowed_evidence_scopes": [
+      "span",
+      "global"
+    ],
+    "coverage_strategy": "targeted",
+    "relevance_scores": {
+      "unit-d5d353ae0c53": 1.0,
+      "unit-e2e1eee7ca46": 0.5,
+      "unit-59b94fdf22f4": 0.3333333333333333,
+      "unit-9020b623f4bd": 0.25,
+      "unit-aa434102569d": 0.2
+    }
+  },
+  {
+    "plan_id": "plan-00f6134b7584",
+    "document_id": "doc-00bfe0e4b101",
+    "dimension_id": "organization",
+    "target_unit_ids": [
+      "unit-d5d353ae0c53",
+      "unit-e2e1eee7ca46",
+      "unit-9020b623f4bd",
+      "unit-59b94fdf22f4"
+    ],
+    "required_facets": [
+      "sequencing",
+      "beginning_closure",
+      "transitions",
+      "detail_placement"
+    ],
+    "minimum_evidence_units": 2,
+    "allowed_evidence_scopes": [
+      "span",
+      "global"
+    ],
+    "coverage_strategy": "targeted",
+    "relevance_scores": {
+      "unit-d5d353ae0c53": 1.0,
+      "unit-e2e1eee7ca46": 0.5,
+      "unit-9020b623f4bd": 0.3333333333333333,
+      "unit-59b94fdf22f4": 0.25
+    }
+  },
+  {
+    "plan_id": "plan-28cae359d9f7",
+    "document_id": "doc-00bfe0e4b101",
+    "dimension_id": "voice",
+    "target_unit_ids": [
+      "unit-d5d353ae0c53",
+      "unit-e2e1eee7ca46",
+      "unit-9020b623f4bd"
+    ],
+    "required_facets": [
+      "audience_awareness",
+      "commitment",
+      "expressiveness"
+    ],
+    "minimum_evidence_units": 1,
+    "allowed_evidence_scopes": [
+      "span",
+      "global"
+    ],
+    "coverage_strategy": "targeted",
+    "relevance_scores": {
+      "unit-d5d353ae0c53": 1.0,
+      "unit-e2e1eee7ca46": 0.5,
+      "unit-9020b623f4bd": 0.3333333333333333
+    }
+  },
+  {
+    "plan_id": "plan-67f87a19ea77",
+    "document_id": "doc-00bfe0e4b101",
+    "dimension_id": "word_choice",
+    "target_unit_ids": [
+      "unit-59b94fdf22f4",
+      "unit-9020b623f4bd",
+      "unit-d5d353ae0c53",
+      "unit-e2e1eee7ca46"
+    ],
+    "required_facets": [
+      "precision",
+      "variety",
+      "imagery",
+      "appropriateness"
+    ],
+    "minimum_evidence_units": 2,
+    "allowed_evidence_scopes": [
+      "span",
+      "global"
+    ],
+    "coverage_strategy": "targeted",
+    "relevance_scores": {
+      "unit-59b94fdf22f4": 1.0,
+      "unit-9020b623f4bd": 0.5,
+      "unit-d5d353ae0c53": 0.3333333333333333,
+      "unit-e2e1eee7ca46": 0.25
+    }
+  },
+  {
+    "plan_id": "plan-3cd7751ff6d6",
+    "document_id": "doc-00bfe0e4b101",
+    "dimension_id": "sentence_fluency",
+    "target_unit_ids": [
+      "unit-d5d353ae0c53",
+      "unit-59b94fdf22f4",
+      "unit-9020b623f4bd",
+      "unit-e2e1eee7ca46"
+    ],
+    "required_facets": [
+      "flow_rhythm",
+      "sentence_variety",
+      "structural_control"
+    ],
+    "minimum_evidence_units": 2,
+    "allowed_evidence_scopes": [
+      "span",
+      "global"
+    ],
+    "coverage_strategy": "targeted",
+    "relevance_scores": {
+      "unit-d5d353ae0c53": 1.0,
+      "unit-59b94fdf22f4": 0.5,
+      "unit-9020b623f4bd": 0.3333333333333333,
+      "unit-e2e1eee7ca46": 0.25
+    }
+  },
+  {
+    "plan_id": "plan-73b82095d25e",
+    "document_id": "doc-00bfe0e4b101",
+    "dimension_id": "conventions",
+    "target_unit_ids": [
+      "unit-a0db0c6bfae5",
+      "unit-59b94fdf22f4",
+      "unit-e2e1eee7ca46",
+      "unit-d5d353ae0c53",
+      "unit-9020b623f4bd",
+      "unit-aa434102569d"
+    ],
+    "required_facets": [
+      "punctuation",
+      "spelling",
+      "capitalization",
+      "grammar_usage",
+      "readability_impact"
+    ],
+    "minimum_evidence_units": 3,
+    "allowed_evidence_scopes": [
+      "span",
+      "global"
+    ],
+    "coverage_strategy": "targeted",
+    "relevance_scores": {
+      "unit-a0db0c6bfae5": 1.0,
+      "unit-59b94fdf22f4": 0.5,
+      "unit-e2e1eee7ca46": 0.3333333333333333,
+      "unit-d5d353ae0c53": 0.25,
+      "unit-9020b623f4bd": 0.2,
+      "unit-aa434102569d": 0.16666666666666666
+    }
+  }
+]

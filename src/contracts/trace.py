@@ -1,4 +1,6 @@
 """
+追踪契约，定义运行轨迹、节点记录与回放所需的元数据结构。
+
 Trace and Replay Metadata Contracts
 
 Defines the audit trail and replay structures for the evaluation pipeline:

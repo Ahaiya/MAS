@@ -33,7 +33,7 @@ def _run_pipeline(essay_id: str, output_dir: Path) -> tuple[dict, dict]:
     result = subprocess.run(
         [
             sys.executable,
-            str(_PROJECT_ROOT / "scripts" / "run_baseline.py"),
+            str(_PROJECT_ROOT / "tests" / "scripts" / "run_baseline.py"),
             "--bundle", str(_BUNDLE),
             "--provider", "mock",
             "--input-file", str(input_file),
@@ -43,7 +43,7 @@ def _run_pipeline(essay_id: str, output_dir: Path) -> tuple[dict, dict]:
         text=True,
     )
     assert result.returncode == 0, (
-        f"run_baseline.py failed for {essay_id}:\n{result.stdout}\n{result.stderr}"
+        f"tests/scripts/run_baseline.py failed for {essay_id}:\n{result.stdout}\n{result.stderr}"
     )
     trace = json.loads((output_dir / "run_trace.json").read_text())
     feedback = json.loads((output_dir / "feedback.json").read_text())

@@ -135,7 +135,17 @@ class TestConfigResolverLoadBundleFile:
 
     def test_prompt_refs_count(self, resolver):
         bundle = resolver.load_bundle_file(BUNDLE_PATH)
-        assert len(bundle.prompt_refs) == 3
+        assert len(bundle.prompt_refs) == 5
+
+    def test_chunking_policy_ref_loaded(self, resolver):
+        bundle = resolver.load_bundle_file(BUNDLE_PATH)
+        assert bundle.chunking_policy_ref is not None
+        assert bundle.chunking_policy_ref.source_file == "policies/chunking/asap_set8_chunking.yaml"
+
+    def test_scoring_context_ref_loaded(self, resolver):
+        bundle = resolver.load_bundle_file(BUNDLE_PATH)
+        assert bundle.scoring_context_ref is not None
+        assert bundle.scoring_context_ref.source_file == "prompts/scoring_context.yaml"
 
     def test_prompt_refs_are_artifact_refs(self, resolver):
         bundle = resolver.load_bundle_file(BUNDLE_PATH)
@@ -319,9 +329,30 @@ class TestConfigCompilerCompile:
         assert result.policy_snapshot.policy_version
         assert len(result.policy_snapshot.policy_version) > 0
 
+    def test_policy_snapshot_has_chunking_policy(self, compiler):
+        result = compiler.compile(BUNDLE_PATH)
+        policy = result.policy_snapshot.chunking_policy
+        assert policy.get("policy_id") == "asap_set8_chunking_v1"
+        assert policy.get("coverage", {}).get("default_top_k") == 5
+
+    def test_policy_snapshot_has_scoring_context(self, compiler):
+        result = compiler.compile(BUNDLE_PATH)
+        context = result.policy_snapshot.scoring_context
+        assert context.get("context_id") == "asap_set8_scoring_context_v1"
+        assert len(context.get("score_anchors", [])) >= 1
+
+    def test_provider_params_preserved_in_compiled_bundle(self, compiler):
+        result = compiler.compile(BUNDLE_PATH)
+        assert result.provider_config is not None
+        r2 = result.provider_config.rater_providers["rater_2"]
+        assert r2.params["temperature"] == 0.0
+        assert r2.params["max_tokens"] == 2048
+        assert r2.params["extra_body"]["enable_thinking"] is True
+        assert r2.params["extra_body"]["thinking_budget"] == 512
+
     def test_prompt_templates_count(self, compiler):
         result = compiler.compile(BUNDLE_PATH)
-        assert len(result.prompt_templates) == 3
+        assert len(result.prompt_templates) == 5
 
     def test_prompt_templates_values_are_strings(self, compiler):
         result = compiler.compile(BUNDLE_PATH)

@@ -50,8 +50,6 @@ real-provider = [
 
 [project.scripts]
 validate-config = "scripts.validate_config:main"
-run-baseline = "scripts.run_baseline:main"
-extract-sample = "scripts.extract_sample:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

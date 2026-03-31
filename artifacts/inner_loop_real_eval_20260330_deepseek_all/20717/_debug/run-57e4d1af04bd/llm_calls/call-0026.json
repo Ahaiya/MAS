@@ -1,0 +1,40 @@
+{
+  "call_id": "call-0026",
+  "status": "succeeded",
+  "label": "feedback",
+  "provider_name": "openai_compatible",
+  "model_id": "?",
+  "started_at": "2026-03-30T14:41:31.767225+00:00",
+  "finished_at": "2026-03-30T14:41:38.505969+00:00",
+  "elapsed_ms": 6737.96,
+  "request": {
+    "system_path": null,
+    "prompt_path": "llm_calls/blobs/call-0026.prompt.txt",
+    "output_schema_path": null,
+    "params": {},
+    "prompt_chars": 4701,
+    "has_output_schema": false
+  },
+  "response": {
+    "content_path": "llm_calls/blobs/call-0026.response.txt",
+    "structured_path": null,
+    "usage": {
+      "prompt_tokens": 1152,
+      "completion_tokens": 176,
+      "total_tokens": 1328
+    },
+    "preview": "Your essay shows a limited command of writing conventions, and the frequent errors make it harder to read smoothly. Specifically, you have multiple punctuation…"
+  },
+  "debug_context": {
+    "node_id": "node_feedback",
+    "stage_name": "feedback",
+    "dimension_id": "conventions",
+    "decision_id": "dec-6062bd1f7cf4",
+    "template_source": "/Users/ahai/Code/MAS/configs/prompts/explanation.yaml",
+    "template_version": "v2",
+    "used_override_template": false,
+    "evidence_span_count": 11
+  },
+  "call_path": "llm_calls/call-0026.json",
+  "error": null
+}

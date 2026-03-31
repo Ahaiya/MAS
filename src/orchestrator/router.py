@@ -1,4 +1,6 @@
 """
+路由模块，负责根据冲突和裁决结果决定流水线下一跳状态。
+
 Router — contract-driven routing decisions for the state machine.
 
 Router functions inspect contract field values (ConflictRecord.recommended_path,

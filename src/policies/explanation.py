@@ -1,4 +1,6 @@
 """
+解释策略模块，负责渲染维度反馈并执行证据约束与引用校验。
+
 Explanation Policy — config-driven explanation rendering and citation enforcement.
 
 Renders per-dimension explanations from FinalDimensionDecision, EvidenceSpan,
@@ -23,7 +25,11 @@ from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 
 from src.contracts.artifact_bundle import PolicySnapshot, RubricSnapshot
-from src.contracts.evidence import EvidenceSpan
+from src.contracts.evidence import (
+    DimensionObservation,
+    EvidenceSpan,
+    ObservationConfidence,
+)
 from src.contracts.scoring import FinalDimensionDecision
 
 
@@ -90,18 +96,74 @@ def _get_output_constraints(policy: PolicySnapshot) -> Dict[str, Any]:
     return policy.explanation_policy.get("output_constraints", {})
 
 
-_LOW_CONFIDENCE_THRESHOLD = 0.5
+def _get_low_confidence_threshold(policy: PolicySnapshot) -> float:
+    constraints = _get_output_constraints(policy)
+    raw = constraints.get("low_confidence_threshold", 0.5)
+    try:
+        threshold = float(raw)
+    except (TypeError, ValueError):
+        return 0.5
+    if threshold < 0.0 or threshold > 1.0:
+        return 0.5
+    return threshold
 
 
 def _build_commentary(
     decision: FinalDimensionDecision,
+    observation: DimensionObservation,
     spans: List[EvidenceSpan],
     rubric: RubricSnapshot,
     max_length: int,
+    scorer_rationale: Optional[str] = None,
 ) -> str:
     """Build a short, evidence-anchored commentary string."""
+    rationale = (scorer_rationale or "").strip()
+    if rationale:
+        return rationale[:max_length]
+
     dim_id = decision.dimension_id
     score_val = decision.final_score.canonical_score
+
+    span_by_id = {
+        span.span_id: span
+        for span in spans
+        if span.dimension_id == dim_id
+    }
+
+    def _quoted(span_id: str) -> Optional[str]:
+        span = span_by_id.get(span_id)
+        if span is None:
+            return None
+        quote = (span.text_quote or "").strip()
+        if not quote:
+            return None
+        return f"'{quote}'"
+
+    facet_lines: List[str] = []
+    for finding in observation.facet_findings:
+        supporting_quotes = [
+            q
+            for q in (_quoted(span_id) for span_id in finding.supporting_span_ids)
+            if q is not None
+        ]
+        counter_quotes = [
+            q
+            for q in (_quoted(span_id) for span_id in finding.counter_span_ids)
+            if q is not None
+        ]
+        if not supporting_quotes and not counter_quotes:
+            continue
+
+        supporting_text = ", ".join(supporting_quotes) if supporting_quotes else "(none)"
+        line = f"[{finding.facet_id}]: supporting evidence: {supporting_text}"
+        if counter_quotes:
+            line += "; however, counter evidence suggests: " + ", ".join(counter_quotes)
+        if finding.finding_note:
+            line += f" ({finding.finding_note})"
+        facet_lines.append(line)
+
+    if facet_lines:
+        return " ".join(facet_lines)[:max_length]
 
     # Find descriptor summary for the score from rubric levels
     descriptor_summary = ""
@@ -111,11 +173,12 @@ def _build_commentary(
             descriptor_summary = level.get("summary", "")
             break
 
-    # Find relevant span quote
+    # Find a relevant evidence quote from the final decision references.
     span_quote = ""
-    for span in spans:
-        if span.dimension_id == dim_id and span.text_quote:
-            span_quote = f'"{span.text_quote}"'
+    for span_id in decision.evidence_span_ids:
+        quoted = _quoted(span_id)
+        if quoted is not None:
+            span_quote = quoted
             break
 
     if descriptor_summary and span_quote:
@@ -130,12 +193,27 @@ def _build_commentary(
     return commentary[:max_length]
 
 
+def _fallback_observation(decision: FinalDimensionDecision) -> DimensionObservation:
+    """Create a minimal observation when upstream observation is unavailable."""
+    return DimensionObservation(
+        observation_id=f"obs-fallback-{decision.dimension_id}",
+        document_id="unknown",
+        dimension_id=decision.dimension_id,
+        supporting_span_ids=list(decision.evidence_span_ids),
+        counter_span_ids=[],
+        facet_findings=[],
+        observation_confidence=ObservationConfidence.MEDIUM,
+        uncertainty_notes=[],
+    )
+
+
 def _build_uncertainty_note(
     decision: FinalDimensionDecision,
+    low_confidence_threshold: float,
 ) -> Optional[str]:
     """Return an uncertainty note if conditions warrant one."""
     reasons: List[str] = []
-    if decision.decision_confidence < _LOW_CONFIDENCE_THRESHOLD:
+    if decision.decision_confidence < low_confidence_threshold:
         reasons.append(
             f"confidence={decision.decision_confidence:.2f} below threshold"
         )
@@ -154,6 +232,8 @@ def render_dimension_explanation(
     spans: List[EvidenceSpan],
     rubric: RubricSnapshot,
     policy: PolicySnapshot,
+    observation: Optional[DimensionObservation] = None,
+    scorer_rationale: Optional[str] = None,
 ) -> DimensionExplanation:
     """Render a structured, policy-bounded explanation for one dimension.
 
@@ -168,6 +248,7 @@ def render_dimension_explanation(
     """
     constraints = _get_output_constraints(policy)
     max_len: int = int(constraints.get("max_commentary_length_per_dimension", 500))
+    low_conf_threshold = _get_low_confidence_threshold(policy)
 
     dim_id = decision.dimension_id
     dim_cfg = rubric.dimension_by_id.get(dim_id, {})
@@ -176,8 +257,16 @@ def render_dimension_explanation(
     # Filter spans to this dimension
     dim_spans = [s for s in spans if s.dimension_id == dim_id]
 
-    commentary = _build_commentary(decision, dim_spans, rubric, max_len)
-    uncertainty_note = _build_uncertainty_note(decision)
+    obs = observation or _fallback_observation(decision)
+    commentary = _build_commentary(
+        decision=decision,
+        observation=obs,
+        spans=dim_spans,
+        rubric=rubric,
+        max_length=max_len,
+        scorer_rationale=scorer_rationale,
+    )
+    uncertainty_note = _build_uncertainty_note(decision, low_conf_threshold)
 
     return DimensionExplanation(
         dimension_id=dim_id,

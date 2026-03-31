@@ -1,0 +1,100 @@
+{
+    "evidence_spans": [
+        {
+            "quote": "Softball has to be one of the single most greatest sports alive; playing softball in college has always been a goal of mine.",
+            "chunk_id": "unit-d5d353ae0c53",
+            "facets": ["clarity_focus", "main_idea_salience"],
+            "support_type": "supporting"
+        },
+        {
+            "quote": "I love the dirt that sticks to your face, the sweat dripping from your forehead, and the gallons and gallons of water you poor all over yourself to keep cool in the blistering @CAPS2.",
+            "chunk_id": "unit-d5d353ae0c53",
+            "facets": ["support_relevance", "development_depth"],
+            "support_type": "supporting"
+        },
+        {
+            "quote": "Although I love softball I feel that the memories you acquire from the times you have with your teammates, are the things you remember the most through out your softball career.",
+            "chunk_id": "unit-d5d353ae0c53",
+            "facets": ["clarity_focus", "main_idea_salience"],
+            "support_type": "supporting"
+        },
+        {
+            "quote": "I have always had great memories through softball many laughs, tears, and frustrations so when I had the opportunity to play on a top notch team I looked forward to all the many more memories I would have.",
+            "chunk_id": "unit-d5d353ae0c53",
+            "facets": ["support_relevance", "development_depth"],
+            "support_type": "supporting"
+        },
+        {
+            "quote": "Did I really want to stay and be comfortable? Or maybe challenge myself to become a better player; maybe i could work hard enough, and have college scouts take a look at me and hopefully have me play for them later.",
+            "chunk_id": "unit-aa434102569d",
+            "facets": ["clarity_focus", "development_depth"],
+            "support_type": "supporting"
+        },
+        {
+            "quote": "I then decided I would take a chance and try for this team.",
+            "chunk_id": "unit-aa434102569d",
+            "facets": ["main_idea_salience", "audience_purpose_fit"],
+            "support_type": "supporting"
+        },
+        {
+            "quote": "As my dad and I drove to the field where I would try out for this team, my stomach was in knots.",
+            "chunk_id": "unit-9020b623f4bd",
+            "facets": ["support_relevance", "development_depth"],
+            "support_type": "supporting"
+        },
+        {
+            "quote": "I wanted this team to like me, I was playing all the possible ways in my head I could greet them so i didn't sound snobby or a grump.",
+            "chunk_id": "unit-9020b623f4bd",
+            "facets": ["support_relevance", "audience_purpose_fit"],
+            "support_type": "supporting"
+        },
+        {
+            "quote": "The time moved quickly and I wished it would slow; my heart felt like it was beating a million times per second.",
+            "chunk_id": "unit-9020b623f4bd",
+            "facets": ["support_relevance", "development_depth"],
+            "support_type": "supporting"
+        },
+        {
+            "quote": "As I approached the field it felt like time was in slow motion, walking by I saw all the girls turn there heads to see what new fresh meat had arrived.",
+            "chunk_id": "unit-59b94fdf22f4",
+            "facets": ["support_relevance", "development_depth"],
+            "support_type": "supporting"
+        },
+        {
+            "quote": "My first thought was to run; that was it I didn't want to go, I was done I wanted home I was ready to start my year with the @CAPS2, I just couldn't take it.",
+            "chunk_id": "unit-59b94fdf22f4",
+            "facets": ["support_relevance", "development_depth"],
+            "support_type": "supporting"
+        },
+        {
+            "quote": "Each and everyone of them told me their names, there favorite color, and a small fun fact about themselves.",
+            "chunk_id": "unit-59b94fdf22f4",
+            "facets": ["support_relevance", "development_depth"],
+            "support_type": "supporting"
+        },
+        {
+            "quote": "I found myself laughing through out my whole try out, there were no awkward moments and I enjoyed my time there.",
+            "chunk_id": "unit-59b94fdf22f4",
+            "facets": ["support_relevance", "development_depth"],
+            "support_type": "supporting"
+        },
+        {
+            "quote": "My year with this team was amazing I have friendships with these girls that I never would have discovered if I hadn't gone.",
+            "chunk_id": "unit-e2e1eee7ca46",
+            "facets": ["clarity_focus", "main_idea_salience"],
+            "support_type": "supporting"
+        },
+        {
+            "quote": "Laughter played a very big role in the decision I made to play with this team, if I had just gone and tried out, and had I not had fun and laughed, I would have decided to play with the @CAPS2.",
+            "chunk_id": "unit-e2e1eee7ca46",
+            "facets": ["support_relevance", "development_depth"],
+            "support_type": "supporting"
+        },
+        {
+            "quote": "I have had great memories with the @CAPS2, but also softball is all about going out discovering new friendships; therefore, enjoying the sport as well as the people.",
+            "chunk_id": "unit-e2e1eee7ca46",
+            "facets": ["clarity_focus", "audience_purpose_fit"],
+            "support_type": "supporting"
+        }
+    ]
+}

@@ -1,0 +1,127 @@
+You are an evidence extraction specialist for automated essay scoring.
+
+Your task is to extract evidence for: Word Choice (W).
+Work only from the provided chunk list.
+
+## Rubric Levels (full descriptors)
+
+- Rank 1: Extremely limited vocabulary; meaning obscured.
+  
+  - general, vague words that fail to communicate
+  
+  - extremely limited range of words
+  
+  - words simply do not fit text; seem imprecise, inadequate, or just plain wrong
+  
+
+- Rank 2: Monotonous and/or misused language.
+  
+  - words that are colorless, flat, or imprecise
+  
+  - monotonous repetition or overwhelming reliance on worn expressions
+  
+  - images that are fuzzy or absent altogether
+  
+
+- Rank 3: Lacks precision and variety; generic paper.
+  
+  - words that work but rarely capture reader's interest
+  
+  - expression seems mundane and general; slang not effective
+  
+  - attempts at colorful language seem overdone or forced
+  
+  - words generally accurate but misused words may occasionally appear
+  
+  - reliance on cliches and overused expressions
+  
+
+- Rank 4: Words effectively convey message; functional but not energizing.
+  
+  - words that work but do not particularly energize writing
+  
+  - expression is functional; slang not purposeful or effective
+  
+  - attempts at colorful language may occasionally seem overdone
+  
+  - occasional overuse of technical language or jargon
+  
+  - rare experiments with language; avoids clichés
+  
+
+- Rank 5: Interesting, precise, natural language.
+  
+  - accurate, specific words; word choices energize writing
+  
+  - fresh, vivid expression; slang purposeful and effective
+  
+  - vocabulary may be striking and varied but natural and not overdone
+  
+  - ordinary words used in unusual way
+  
+  - words that evoke clear images; figurative language may be used
+  
+
+- Rank 6: Exceptionally interesting, precise, natural language.
+  
+  - accurate, strong, specific words; powerful words energize writing
+  
+  - fresh, original expression; slang purposeful and effective
+  
+  - vocabulary that is striking and varied but natural and not overdone
+  
+  - ordinary words used in unusual way
+  
+  - words that evoke strong images; figurative language may be used
+  
+
+
+## Required Facets
+
+- precision
+
+- variety
+
+- imagery
+
+- appropriateness
+
+
+## Candidate Chunks
+
+[unit-d5d353ae0c53] Introduction to Softball Passion
+Softball has to be one of the single most greatest sports alive; playing softball in college has always been a goal of mine. I love the dirt that sticks to your face, the sweat dripping from your forehead, and the gallons and gallons of water you poor all over yourself to keep cool in the blistering @CAPS2. Although I love softball I feel that the memories you acquire from the times you have with your teammates, are the things you remember the most through out your softball career. I have always had great memories through softball many laughs, tears, and frustrations so when I had the opportunity to play on a top notch team I looked forward to all the many more memories I would have.
+
+
+[unit-9020b623f4bd] Nervous Journey to Tryout
+As my dad and I drove to the field where I would try out for this team, my stomach was in knots. I wanted this team to like me, I was playing all the possible ways in my head I could greet them so i didn't sound snobby or a grump. The time moved quickly and I wished it would slow; my heart felt like it was beating a million times per second. I was so nervous my mouth began to feel sticky and have an odd taste to it, soon after my mouth became bone dry no taste, no flavor, just a sticky mess. The car then was stationary my dad looked at me and just said "ready or not here we come". Nervous began to take over my body my arms were shaking uncontrollably and I was second guessing every move I made, I even had troubles removing my seat belt.
+
+
+[unit-59b94fdf22f4] Tryout Experience and Acceptance
+As I approached the field it felt like time was in slow motion, walking by I saw all the girls turn there heads to see what new fresh meat had arrived. My first thought was to run; that was it I didn't want to go, I was done I wanted home I was ready to start my year with the @CAPS2, I just couldn't take it. Then as I walked onto the field they all grew a smile. Each and everyone of them told me their names, there favorite color, and a small fun fact about themselves. I found myself laughing through out my whole try out, there were no awkward moments and I enjoyed my time there. I couldn't wait to go back, I now had made new friends, friends I knew I would grow close with.
+
+
+[unit-e2e1eee7ca46] Reflection on Decision and Friendship
+My year with this team was amazing I have friendships with these girls that I never would have discovered if I hadn't gone. Those girls are like family, and the coaches even more so. Laughter played a very big role in the decision I made to play with this team, if I had just gone and tried out, and had I not had fun and laughed, I would have decided to play with the @CAPS2. I have had great memories with the @CAPS2, but also softball is all about going out discovering new friendships; therefore, enjoying the sport as well as the people.
+
+
+
+## Instructions
+1. Extract evidence directly relevant to the listed facets.
+2. Each facet should have at least 2 evidence span(s) when possible.
+3. `quote` must be a verbatim quote from chunk text. Do not paraphrase or summarize.
+4. Set `chunk_id` to the chunk where the quote comes from.
+5. Set `support_type` as one of: supporting, counter, neutral.
+6. Return valid JSON only (no markdown, no extra commentary).
+
+## Output JSON
+{
+  "evidence_spans": [
+    {
+      "quote": "exact text from the document",
+      "chunk_id": "c2",
+      "facets": ["clarity_focus", "main_idea_salience"],
+      "support_type": "supporting|counter|neutral"
+    }
+  ]
+}

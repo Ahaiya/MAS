@@ -1,4 +1,6 @@
 """
+证据抽取 Agent，负责从候选文本中提取可被评分和反馈引用的证据片段。
+
 Evidence Extractor — calls a configured provider to extract EvidenceSpan objects.
 
 Builds the extraction prompt via prompt_builders, calls the provider,
@@ -11,15 +13,16 @@ from the CoveragePlan and RubricSnapshot; nothing is hardcoded here.
 from __future__ import annotations
 
 import uuid
-from typing import List
+from typing import List, Optional
 
 from src.agents.prompt_builders import build_extraction_prompt
 from src.contracts.artifact_bundle import RubricSnapshot
 from src.contracts.evidence import EvidenceScope, EvidenceSpan
-from src.contracts.request_models import CoveragePlan, NormalizedDocument
+from src.contracts.request_models import CoveragePlan, NormalizedDocument, TextUnit
 from src.providers.base import BaseProvider, LLMRequest
 from src.providers.prompt_loader import PromptTemplate
 from src.providers.structured_output import normalize_structured_output
+from src.utils.quote_matcher import QuoteMatchResult, match_quote
 
 _OUTPUT_SCHEMA = {
     "type": "object",
@@ -30,8 +33,7 @@ _OUTPUT_SCHEMA = {
                 "type": "object",
                 "properties": {
                     "quote": {"type": "string"},
-                    "start_offset": {"type": "integer"},
-                    "end_offset": {"type": "integer"},
+                    "chunk_id": {"type": "string"},
                     "facets": {"type": "array", "items": {"type": "string"}},
                     "support_type": {"type": "string"},
                 },
@@ -41,12 +43,55 @@ _OUTPUT_SCHEMA = {
 }
 
 
+def _match_with_chunk_hint(
+    quote: str,
+    chunk_id: Optional[str],
+    document: NormalizedDocument,
+) -> QuoteMatchResult:
+    """Match quote globally, then retry locally within chunk when hinted."""
+    global_match = match_quote(quote, document.normalized_text, document.text_units)
+    if global_match.match_method != "unmatched" or not chunk_id:
+        return global_match
+
+    unit = document.get_unit(chunk_id)
+    if unit is None:
+        return global_match
+
+    local_unit = TextUnit(
+        unit_id=unit.unit_id,
+        document_id=unit.document_id,
+        text=unit.text,
+        start_offset=0,
+        end_offset=len(unit.text),
+        unit_type=unit.unit_type,
+        sequence_index=0,
+        chunk_title=unit.chunk_title,
+        chunk_method=unit.chunk_method,
+    )
+    local_match = match_quote(quote, unit.text, [local_unit])
+    if (
+        local_match.match_method == "unmatched"
+        or local_match.start_offset is None
+        or local_match.end_offset is None
+    ):
+        return global_match
+
+    return QuoteMatchResult(
+        start_offset=unit.start_offset + local_match.start_offset,
+        end_offset=unit.start_offset + local_match.end_offset,
+        unit_id=unit.unit_id,
+        match_method=local_match.match_method,
+        confidence=local_match.confidence,
+    )
+
+
 def run(
     plan: CoveragePlan,
     document: NormalizedDocument,
     rubric: RubricSnapshot,
     provider: BaseProvider,
     template: PromptTemplate,
+    override_template: Optional[PromptTemplate] = None,
 ) -> List[EvidenceSpan]:
     """
     Extract evidence spans for one dimension using a configured provider.
@@ -56,14 +101,35 @@ def run(
         document : NormalizedDocument with the essay text.
         rubric   : RubricSnapshot for dimension metadata.
         provider : Configured BaseProvider to call.
-        template : Loaded extraction prompt template.
+        template         : Loaded extraction prompt template.
+        override_template: Optional per-dimension override template.
 
     Returns:
         List of EvidenceSpan objects parsed from the LLM response.
         Returns an empty list (not an error) if the LLM returns no spans.
     """
-    prompt_text = build_extraction_prompt(plan, document, rubric, template)
-    request = LLMRequest(prompt=prompt_text, output_schema=_OUTPUT_SCHEMA)
+    prompt_text = build_extraction_prompt(
+        plan,
+        document,
+        rubric,
+        template,
+        override_template=override_template,
+    )
+    template_used = override_template or template
+    request = LLMRequest(
+        prompt=prompt_text,
+        output_schema=_OUTPUT_SCHEMA,
+        metadata={
+            "node_id": "node_extractor",
+            "stage_name": "evidence_extraction",
+            "dimension_id": plan.dimension_id,
+            "plan_id": plan.plan_id,
+            "document_id": document.document_id,
+            "template_source": template_used.source_path,
+            "template_version": template_used.metadata.get("template_version"),
+            "used_override_template": override_template is not None,
+        },
+    )
     response = provider.complete(request)
 
     # Parse structured output, fall back to content parsing
@@ -71,27 +137,44 @@ def run(
         data = response.structured_data
     else:
         data = normalize_structured_output(response.content)
+    if not isinstance(data, dict):
+        data = {}
 
     spans: List[EvidenceSpan] = []
     for span_data in data.get("evidence_spans", []):
         quote = span_data.get("quote") or ""
-        start = span_data.get("start_offset")
-        end = span_data.get("end_offset")
+        chunk_id = span_data.get("chunk_id")
         facets = list(span_data.get("facets") or plan.required_facets)
-        scope = EvidenceScope.SPAN if (start is not None and end is not None) else EvidenceScope.GLOBAL
+        raw_support_type = str(span_data.get("support_type") or "supporting").strip().lower()
+        support_type = (
+            raw_support_type
+            if raw_support_type in {"supporting", "counter", "neutral"}
+            else "supporting"
+        )
+        match = _match_with_chunk_hint(quote, chunk_id, document)
+        start = match.start_offset
+        end = match.end_offset
+        unit_id = match.unit_id
+        scope = (
+            EvidenceScope.SPAN
+            if match.match_method in {"exact", "normalized", "fuzzy"}
+            else EvidenceScope.GLOBAL
+        )
         span_id = f"span-ext-{uuid.uuid4().hex[:12]}"
+        extraction_note = f"provider:{match.match_method}:{support_type}"
         spans.append(
             EvidenceSpan(
                 span_id=span_id,
                 document_id=plan.document_id,
-                unit_id=None,
+                unit_id=unit_id if scope == EvidenceScope.SPAN else None,
                 text_quote=quote or None,
-                start_offset=start,
-                end_offset=end,
+                start_offset=start if scope == EvidenceScope.SPAN else None,
+                end_offset=end if scope == EvidenceScope.SPAN else None,
                 scope=scope,
                 dimension_id=plan.dimension_id,
                 facet_ids=facets,
-                extraction_note="provider",
+                extraction_note=extraction_note,
+                support_type=support_type,
             )
         )
 
@@ -110,7 +193,8 @@ def run(
                     scope=EvidenceScope.GLOBAL,
                     dimension_id=plan.dimension_id,
                     facet_ids=[facet_id],
-                    extraction_note="provider_fallback",
+                    extraction_note="provider_fallback:no_evidence",
+                    support_type="supporting",
                 )
             )
     return spans

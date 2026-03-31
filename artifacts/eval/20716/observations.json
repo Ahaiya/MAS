@@ -1,0 +1,1138 @@
+{
+  "run_id": "run-99d1e061af1b",
+  "document_id": "doc-f34ce0393252",
+  "observations": [
+    {
+      "observation_id": "obs-2004631acc91",
+      "document_id": "doc-f34ce0393252",
+      "dimension_id": "ideas_content",
+      "supporting_span_ids": [
+        "span-c282cf9372dc",
+        "span-4090b7021aa0",
+        "span-910983d4fde9",
+        "span-062ea60686ec",
+        "span-8f1272032a7a"
+      ],
+      "counter_span_ids": [],
+      "facet_findings": [
+        {
+          "facet_id": "clarity_focus",
+          "supporting_span_ids": [
+            "span-c282cf9372dc"
+          ],
+          "counter_span_ids": [],
+          "finding_note": "1 supporting, 0 counter"
+        },
+        {
+          "facet_id": "main_idea_salience",
+          "supporting_span_ids": [
+            "span-4090b7021aa0"
+          ],
+          "counter_span_ids": [],
+          "finding_note": "1 supporting, 0 counter"
+        },
+        {
+          "facet_id": "support_relevance",
+          "supporting_span_ids": [
+            "span-910983d4fde9"
+          ],
+          "counter_span_ids": [],
+          "finding_note": "1 supporting, 0 counter"
+        },
+        {
+          "facet_id": "development_depth",
+          "supporting_span_ids": [
+            "span-062ea60686ec"
+          ],
+          "counter_span_ids": [],
+          "finding_note": "1 supporting, 0 counter"
+        },
+        {
+          "facet_id": "audience_purpose_fit",
+          "supporting_span_ids": [
+            "span-8f1272032a7a"
+          ],
+          "counter_span_ids": [],
+          "finding_note": "1 supporting, 0 counter"
+        }
+      ],
+      "observation_confidence": "high",
+      "uncertainty_notes": [],
+      "coverage_miss_span_ids": []
+    },
+    {
+      "observation_id": "obs-273ef7da5275",
+      "document_id": "doc-f34ce0393252",
+      "dimension_id": "organization",
+      "supporting_span_ids": [
+        "span-dc492cac45a4",
+        "span-5c33d7a2e676",
+        "span-f81a4b194ab6",
+        "span-52c42770d819"
+      ],
+      "counter_span_ids": [],
+      "facet_findings": [
+        {
+          "facet_id": "sequencing",
+          "supporting_span_ids": [
+            "span-dc492cac45a4"
+          ],
+          "counter_span_ids": [],
+          "finding_note": "1 supporting, 0 counter"
+        },
+        {
+          "facet_id": "beginning_closure",
+          "supporting_span_ids": [
+            "span-5c33d7a2e676"
+          ],
+          "counter_span_ids": [],
+          "finding_note": "1 supporting, 0 counter"
+        },
+        {
+          "facet_id": "transitions",
+          "supporting_span_ids": [
+            "span-f81a4b194ab6"
+          ],
+          "counter_span_ids": [],
+          "finding_note": "1 supporting, 0 counter"
+        },
+        {
+          "facet_id": "detail_placement",
+          "supporting_span_ids": [
+            "span-52c42770d819"
+          ],
+          "counter_span_ids": [],
+          "finding_note": "1 supporting, 0 counter"
+        }
+      ],
+      "observation_confidence": "high",
+      "uncertainty_notes": [],
+      "coverage_miss_span_ids": []
+    },
+    {
+      "observation_id": "obs-7ac0e6136c3f",
+      "document_id": "doc-f34ce0393252",
+      "dimension_id": "voice",
+      "supporting_span_ids": [
+        "span-34dfcc382208",
+        "span-a677f25cd575",
+        "span-cb64deb7dc41"
+      ],
+      "counter_span_ids": [],
+      "facet_findings": [
+        {
+          "facet_id": "audience_awareness",
+          "supporting_span_ids": [
+            "span-34dfcc382208"
+          ],
+          "counter_span_ids": [],
+          "finding_note": "1 supporting, 0 counter"
+        },
+        {
+          "facet_id": "commitment",
+          "supporting_span_ids": [
+            "span-a677f25cd575"
+          ],
+          "counter_span_ids": [],
+          "finding_note": "1 supporting, 0 counter"
+        },
+        {
+          "facet_id": "expressiveness",
+          "supporting_span_ids": [
+            "span-cb64deb7dc41"
+          ],
+          "counter_span_ids": [],
+          "finding_note": "1 supporting, 0 counter"
+        }
+      ],
+      "observation_confidence": "high",
+      "uncertainty_notes": [],
+      "coverage_miss_span_ids": []
+    },
+    {
+      "observation_id": "obs-8f11d4420869",
+      "document_id": "doc-f34ce0393252",
+      "dimension_id": "word_choice",
+      "supporting_span_ids": [
+        "span-bcd8fcc6716d",
+        "span-c3096751a36a",
+        "span-ad92e2060afb",
+        "span-a0949bf778b6"
+      ],
+      "counter_span_ids": [],
+      "facet_findings": [
+        {
+          "facet_id": "precision",
+          "supporting_span_ids": [
+            "span-bcd8fcc6716d"
+          ],
+          "counter_span_ids": [],
+          "finding_note": "1 supporting, 0 counter"
+        },
+        {
+          "facet_id": "variety",
+          "supporting_span_ids": [
+            "span-c3096751a36a"
+          ],
+          "counter_span_ids": [],
+          "finding_note": "1 supporting, 0 counter"
+        },
+        {
+          "facet_id": "imagery",
+          "supporting_span_ids": [
+            "span-ad92e2060afb"
+          ],
+          "counter_span_ids": [],
+          "finding_note": "1 supporting, 0 counter"
+        },
+        {
+          "facet_id": "appropriateness",
+          "supporting_span_ids": [
+            "span-a0949bf778b6"
+          ],
+          "counter_span_ids": [],
+          "finding_note": "1 supporting, 0 counter"
+        }
+      ],
+      "observation_confidence": "high",
+      "uncertainty_notes": [],
+      "coverage_miss_span_ids": []
+    },
+    {
+      "observation_id": "obs-552f1a484a69",
+      "document_id": "doc-f34ce0393252",
+      "dimension_id": "sentence_fluency",
+      "supporting_span_ids": [
+        "span-7749757c62db",
+        "span-ee186870aef1",
+        "span-5885376ee2ce"
+      ],
+      "counter_span_ids": [],
+      "facet_findings": [
+        {
+          "facet_id": "flow_rhythm",
+          "supporting_span_ids": [
+            "span-7749757c62db"
+          ],
+          "counter_span_ids": [],
+          "finding_note": "1 supporting, 0 counter"
+        },
+        {
+          "facet_id": "sentence_variety",
+          "supporting_span_ids": [
+            "span-ee186870aef1"
+          ],
+          "counter_span_ids": [],
+          "finding_note": "1 supporting, 0 counter"
+        },
+        {
+          "facet_id": "structural_control",
+          "supporting_span_ids": [
+            "span-5885376ee2ce"
+          ],
+          "counter_span_ids": [],
+          "finding_note": "1 supporting, 0 counter"
+        }
+      ],
+      "observation_confidence": "high",
+      "uncertainty_notes": [],
+      "coverage_miss_span_ids": []
+    },
+    {
+      "observation_id": "obs-6bc89426c34e",
+      "document_id": "doc-f34ce0393252",
+      "dimension_id": "conventions",
+      "supporting_span_ids": [
+        "span-90ab59dfeb05",
+        "span-4684106c87ef",
+        "span-1f10a0ec939a",
+        "span-fe6e07811a53",
+        "span-3f2077698674"
+      ],
+      "counter_span_ids": [],
+      "facet_findings": [
+        {
+          "facet_id": "punctuation",
+          "supporting_span_ids": [
+            "span-90ab59dfeb05"
+          ],
+          "counter_span_ids": [],
+          "finding_note": "1 supporting, 0 counter"
+        },
+        {
+          "facet_id": "spelling",
+          "supporting_span_ids": [
+            "span-4684106c87ef"
+          ],
+          "counter_span_ids": [],
+          "finding_note": "1 supporting, 0 counter"
+        },
+        {
+          "facet_id": "capitalization",
+          "supporting_span_ids": [
+            "span-1f10a0ec939a"
+          ],
+          "counter_span_ids": [],
+          "finding_note": "1 supporting, 0 counter"
+        },
+        {
+          "facet_id": "grammar_usage",
+          "supporting_span_ids": [
+            "span-fe6e07811a53"
+          ],
+          "counter_span_ids": [],
+          "finding_note": "1 supporting, 0 counter"
+        },
+        {
+          "facet_id": "readability_impact",
+          "supporting_span_ids": [
+            "span-3f2077698674"
+          ],
+          "counter_span_ids": [],
+          "finding_note": "1 supporting, 0 counter"
+        }
+      ],
+      "observation_confidence": "high",
+      "uncertainty_notes": [],
+      "coverage_miss_span_ids": []
+    }
+  ],
+  "coverage_plans": [
+    {
+      "plan_id": "plan-422756262d47",
+      "document_id": "doc-f34ce0393252",
+      "dimension_id": "ideas_content",
+      "target_unit_ids": [
+        "unit-c7378c54420b",
+        "unit-2c59a5ea8abe",
+        "unit-90228299cd1b",
+        "unit-1869e57812fa",
+        "unit-77a492420fde",
+        "unit-8c8ab704704b",
+        "unit-0f8377773aeb",
+        "unit-4ea49fe92346",
+        "unit-d8c3140f5130",
+        "unit-86f4acd128dc",
+        "unit-1176c991aaa5",
+        "unit-b7b76fb7289a",
+        "unit-ff228a635703",
+        "unit-b814f0c2d20e",
+        "unit-df4aa5497639",
+        "unit-6f8d9627c091",
+        "unit-df10c1e42de6",
+        "unit-8f0421a4fcd4",
+        "unit-bc3eaa03ed8b",
+        "unit-fa26bfef9512",
+        "unit-4a9b934ae2dc",
+        "unit-68f61e311cc8",
+        "unit-6192b70e66dd",
+        "unit-76dd0bd2d4c6",
+        "unit-b8d72ea3fcae",
+        "unit-855eb8f99526",
+        "unit-7e866900b553",
+        "unit-eca11696ac6a",
+        "unit-511965a4d1bd",
+        "unit-b2cb47768c40",
+        "unit-da7ff9bb6ce0",
+        "unit-9ee8e2d18d9a",
+        "unit-63ec3adb57f4",
+        "unit-913b4e5f2514",
+        "unit-4742454f8769",
+        "unit-9aa3c4d7705f",
+        "unit-e78acc9f81ca",
+        "unit-1c89ba7f980a",
+        "unit-934596909ca1",
+        "unit-23fd81a0c91d",
+        "unit-fcae2460adb3",
+        "unit-bfcf882e76db"
+      ],
+      "required_facets": [
+        "clarity_focus",
+        "main_idea_salience",
+        "support_relevance",
+        "development_depth",
+        "audience_purpose_fit"
+      ],
+      "minimum_evidence_units": 2,
+      "allowed_evidence_scopes": [
+        "span",
+        "global"
+      ],
+      "coverage_strategy": "full_scan",
+      "relevance_scores": {}
+    },
+    {
+      "plan_id": "plan-262186fd7035",
+      "document_id": "doc-f34ce0393252",
+      "dimension_id": "organization",
+      "target_unit_ids": [
+        "unit-c7378c54420b",
+        "unit-2c59a5ea8abe",
+        "unit-90228299cd1b",
+        "unit-1869e57812fa",
+        "unit-77a492420fde",
+        "unit-8c8ab704704b",
+        "unit-0f8377773aeb",
+        "unit-4ea49fe92346",
+        "unit-d8c3140f5130",
+        "unit-86f4acd128dc",
+        "unit-1176c991aaa5",
+        "unit-b7b76fb7289a",
+        "unit-ff228a635703",
+        "unit-b814f0c2d20e",
+        "unit-df4aa5497639",
+        "unit-6f8d9627c091",
+        "unit-df10c1e42de6",
+        "unit-8f0421a4fcd4",
+        "unit-bc3eaa03ed8b",
+        "unit-fa26bfef9512",
+        "unit-4a9b934ae2dc",
+        "unit-68f61e311cc8",
+        "unit-6192b70e66dd",
+        "unit-76dd0bd2d4c6",
+        "unit-b8d72ea3fcae",
+        "unit-855eb8f99526",
+        "unit-7e866900b553",
+        "unit-eca11696ac6a",
+        "unit-511965a4d1bd",
+        "unit-b2cb47768c40",
+        "unit-da7ff9bb6ce0",
+        "unit-9ee8e2d18d9a",
+        "unit-63ec3adb57f4",
+        "unit-913b4e5f2514",
+        "unit-4742454f8769",
+        "unit-9aa3c4d7705f",
+        "unit-e78acc9f81ca",
+        "unit-1c89ba7f980a",
+        "unit-934596909ca1",
+        "unit-23fd81a0c91d",
+        "unit-fcae2460adb3",
+        "unit-bfcf882e76db"
+      ],
+      "required_facets": [
+        "sequencing",
+        "beginning_closure",
+        "transitions",
+        "detail_placement"
+      ],
+      "minimum_evidence_units": 2,
+      "allowed_evidence_scopes": [
+        "span",
+        "global"
+      ],
+      "coverage_strategy": "full_scan",
+      "relevance_scores": {}
+    },
+    {
+      "plan_id": "plan-fa117f32befb",
+      "document_id": "doc-f34ce0393252",
+      "dimension_id": "voice",
+      "target_unit_ids": [
+        "unit-c7378c54420b",
+        "unit-2c59a5ea8abe",
+        "unit-90228299cd1b",
+        "unit-1869e57812fa",
+        "unit-77a492420fde",
+        "unit-8c8ab704704b",
+        "unit-0f8377773aeb",
+        "unit-4ea49fe92346",
+        "unit-d8c3140f5130",
+        "unit-86f4acd128dc",
+        "unit-1176c991aaa5",
+        "unit-b7b76fb7289a",
+        "unit-ff228a635703",
+        "unit-b814f0c2d20e",
+        "unit-df4aa5497639",
+        "unit-6f8d9627c091",
+        "unit-df10c1e42de6",
+        "unit-8f0421a4fcd4",
+        "unit-bc3eaa03ed8b",
+        "unit-fa26bfef9512",
+        "unit-4a9b934ae2dc",
+        "unit-68f61e311cc8",
+        "unit-6192b70e66dd",
+        "unit-76dd0bd2d4c6",
+        "unit-b8d72ea3fcae",
+        "unit-855eb8f99526",
+        "unit-7e866900b553",
+        "unit-eca11696ac6a",
+        "unit-511965a4d1bd",
+        "unit-b2cb47768c40",
+        "unit-da7ff9bb6ce0",
+        "unit-9ee8e2d18d9a",
+        "unit-63ec3adb57f4",
+        "unit-913b4e5f2514",
+        "unit-4742454f8769",
+        "unit-9aa3c4d7705f",
+        "unit-e78acc9f81ca",
+        "unit-1c89ba7f980a",
+        "unit-934596909ca1",
+        "unit-23fd81a0c91d",
+        "unit-fcae2460adb3",
+        "unit-bfcf882e76db"
+      ],
+      "required_facets": [
+        "audience_awareness",
+        "commitment",
+        "expressiveness"
+      ],
+      "minimum_evidence_units": 1,
+      "allowed_evidence_scopes": [
+        "span",
+        "global"
+      ],
+      "coverage_strategy": "full_scan",
+      "relevance_scores": {}
+    },
+    {
+      "plan_id": "plan-9cc63d0af58f",
+      "document_id": "doc-f34ce0393252",
+      "dimension_id": "word_choice",
+      "target_unit_ids": [
+        "unit-c7378c54420b",
+        "unit-2c59a5ea8abe",
+        "unit-90228299cd1b",
+        "unit-1869e57812fa",
+        "unit-77a492420fde",
+        "unit-8c8ab704704b",
+        "unit-0f8377773aeb",
+        "unit-4ea49fe92346",
+        "unit-d8c3140f5130",
+        "unit-86f4acd128dc",
+        "unit-1176c991aaa5",
+        "unit-b7b76fb7289a",
+        "unit-ff228a635703",
+        "unit-b814f0c2d20e",
+        "unit-df4aa5497639",
+        "unit-6f8d9627c091",
+        "unit-df10c1e42de6",
+        "unit-8f0421a4fcd4",
+        "unit-bc3eaa03ed8b",
+        "unit-fa26bfef9512",
+        "unit-4a9b934ae2dc",
+        "unit-68f61e311cc8",
+        "unit-6192b70e66dd",
+        "unit-76dd0bd2d4c6",
+        "unit-b8d72ea3fcae",
+        "unit-855eb8f99526",
+        "unit-7e866900b553",
+        "unit-eca11696ac6a",
+        "unit-511965a4d1bd",
+        "unit-b2cb47768c40",
+        "unit-da7ff9bb6ce0",
+        "unit-9ee8e2d18d9a",
+        "unit-63ec3adb57f4",
+        "unit-913b4e5f2514",
+        "unit-4742454f8769",
+        "unit-9aa3c4d7705f",
+        "unit-e78acc9f81ca",
+        "unit-1c89ba7f980a",
+        "unit-934596909ca1",
+        "unit-23fd81a0c91d",
+        "unit-fcae2460adb3",
+        "unit-bfcf882e76db"
+      ],
+      "required_facets": [
+        "precision",
+        "variety",
+        "imagery",
+        "appropriateness"
+      ],
+      "minimum_evidence_units": 2,
+      "allowed_evidence_scopes": [
+        "span",
+        "global"
+      ],
+      "coverage_strategy": "full_scan",
+      "relevance_scores": {}
+    },
+    {
+      "plan_id": "plan-4bee3df4acaf",
+      "document_id": "doc-f34ce0393252",
+      "dimension_id": "sentence_fluency",
+      "target_unit_ids": [
+        "unit-c7378c54420b",
+        "unit-2c59a5ea8abe",
+        "unit-90228299cd1b",
+        "unit-1869e57812fa",
+        "unit-77a492420fde",
+        "unit-8c8ab704704b",
+        "unit-0f8377773aeb",
+        "unit-4ea49fe92346",
+        "unit-d8c3140f5130",
+        "unit-86f4acd128dc",
+        "unit-1176c991aaa5",
+        "unit-b7b76fb7289a",
+        "unit-ff228a635703",
+        "unit-b814f0c2d20e",
+        "unit-df4aa5497639",
+        "unit-6f8d9627c091",
+        "unit-df10c1e42de6",
+        "unit-8f0421a4fcd4",
+        "unit-bc3eaa03ed8b",
+        "unit-fa26bfef9512",
+        "unit-4a9b934ae2dc",
+        "unit-68f61e311cc8",
+        "unit-6192b70e66dd",
+        "unit-76dd0bd2d4c6",
+        "unit-b8d72ea3fcae",
+        "unit-855eb8f99526",
+        "unit-7e866900b553",
+        "unit-eca11696ac6a",
+        "unit-511965a4d1bd",
+        "unit-b2cb47768c40",
+        "unit-da7ff9bb6ce0",
+        "unit-9ee8e2d18d9a",
+        "unit-63ec3adb57f4",
+        "unit-913b4e5f2514",
+        "unit-4742454f8769",
+        "unit-9aa3c4d7705f",
+        "unit-e78acc9f81ca",
+        "unit-1c89ba7f980a",
+        "unit-934596909ca1",
+        "unit-23fd81a0c91d",
+        "unit-fcae2460adb3",
+        "unit-bfcf882e76db"
+      ],
+      "required_facets": [
+        "flow_rhythm",
+        "sentence_variety",
+        "structural_control"
+      ],
+      "minimum_evidence_units": 2,
+      "allowed_evidence_scopes": [
+        "span",
+        "global"
+      ],
+      "coverage_strategy": "full_scan",
+      "relevance_scores": {}
+    },
+    {
+      "plan_id": "plan-ad73cabf6cfa",
+      "document_id": "doc-f34ce0393252",
+      "dimension_id": "conventions",
+      "target_unit_ids": [
+        "unit-c7378c54420b",
+        "unit-2c59a5ea8abe",
+        "unit-90228299cd1b",
+        "unit-1869e57812fa",
+        "unit-77a492420fde",
+        "unit-8c8ab704704b",
+        "unit-0f8377773aeb",
+        "unit-4ea49fe92346",
+        "unit-d8c3140f5130",
+        "unit-86f4acd128dc",
+        "unit-1176c991aaa5",
+        "unit-b7b76fb7289a",
+        "unit-ff228a635703",
+        "unit-b814f0c2d20e",
+        "unit-df4aa5497639",
+        "unit-6f8d9627c091",
+        "unit-df10c1e42de6",
+        "unit-8f0421a4fcd4",
+        "unit-bc3eaa03ed8b",
+        "unit-fa26bfef9512",
+        "unit-4a9b934ae2dc",
+        "unit-68f61e311cc8",
+        "unit-6192b70e66dd",
+        "unit-76dd0bd2d4c6",
+        "unit-b8d72ea3fcae",
+        "unit-855eb8f99526",
+        "unit-7e866900b553",
+        "unit-eca11696ac6a",
+        "unit-511965a4d1bd",
+        "unit-b2cb47768c40",
+        "unit-da7ff9bb6ce0",
+        "unit-9ee8e2d18d9a",
+        "unit-63ec3adb57f4",
+        "unit-913b4e5f2514",
+        "unit-4742454f8769",
+        "unit-9aa3c4d7705f",
+        "unit-e78acc9f81ca",
+        "unit-1c89ba7f980a",
+        "unit-934596909ca1",
+        "unit-23fd81a0c91d",
+        "unit-fcae2460adb3",
+        "unit-bfcf882e76db"
+      ],
+      "required_facets": [
+        "punctuation",
+        "spelling",
+        "capitalization",
+        "grammar_usage",
+        "readability_impact"
+      ],
+      "minimum_evidence_units": 3,
+      "allowed_evidence_scopes": [
+        "span",
+        "global"
+      ],
+      "coverage_strategy": "full_scan",
+      "relevance_scores": {}
+    }
+  ],
+  "text_units": [
+    {
+      "unit_id": "unit-c7378c54420b",
+      "document_id": "doc-f34ce0393252",
+      "text": "A long time ago when I was in third grade I had a friend @PERSON2 who's mom was in a bad mood.",
+      "start_offset": 0,
+      "end_offset": 94,
+      "unit_type": "sentence",
+      "sequence_index": 0,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    },
+    {
+      "unit_id": "unit-2c59a5ea8abe",
+      "document_id": "doc-f34ce0393252",
+      "text": "She never laughed and she never smiled.",
+      "start_offset": 95,
+      "end_offset": 134,
+      "unit_type": "sentence",
+      "sequence_index": 1,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    },
+    {
+      "unit_id": "unit-90228299cd1b",
+      "document_id": "doc-f34ce0393252",
+      "text": "Every time I saw her I would smile at her and all she would do was frown and keep walking.",
+      "start_offset": 135,
+      "end_offset": 225,
+      "unit_type": "sentence",
+      "sequence_index": 2,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    },
+    {
+      "unit_id": "unit-1869e57812fa",
+      "document_id": "doc-f34ce0393252",
+      "text": "At first I didn't know she was a grouch i just thought she didn't like me or something.",
+      "start_offset": 226,
+      "end_offset": 313,
+      "unit_type": "sentence",
+      "sequence_index": 3,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    },
+    {
+      "unit_id": "unit-77a492420fde",
+      "document_id": "doc-f34ce0393252",
+      "text": "When @PERSON2 told me his mom was a grouch I started to laugh and laugh.",
+      "start_offset": 313,
+      "end_offset": 385,
+      "unit_type": "sentence",
+      "sequence_index": 4,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    },
+    {
+      "unit_id": "unit-8c8ab704704b",
+      "document_id": "doc-f34ce0393252",
+      "text": "He asked me what was so funny i told him that i thought his mom didn't like me or something because every time I see his mom I would smile at her and all she will do is frown and walk away.",
+      "start_offset": 386,
+      "end_offset": 575,
+      "unit_type": "sentence",
+      "sequence_index": 5,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    },
+    {
+      "unit_id": "unit-0f8377773aeb",
+      "document_id": "doc-f34ce0393252",
+      "text": "That made my friend laugh we were cracking up so hard that we got in trouble in class.",
+      "start_offset": 576,
+      "end_offset": 662,
+      "unit_type": "sentence",
+      "sequence_index": 6,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    },
+    {
+      "unit_id": "unit-4ea49fe92346",
+      "document_id": "doc-f34ce0393252",
+      "text": "The next day @PERSON2 and I were eating lunch at school when he says to me &lt;hey your pretty good at making people laugh&gt;.",
+      "start_offset": 665,
+      "end_offset": 792,
+      "unit_type": "sentence",
+      "sequence_index": 7,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    },
+    {
+      "unit_id": "unit-d8c3140f5130",
+      "document_id": "doc-f34ce0393252",
+      "text": "I said &lt;no I am not my jokesare horrible&gt;.",
+      "start_offset": 793,
+      "end_offset": 841,
+      "unit_type": "sentence",
+      "sequence_index": 8,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    },
+    {
+      "unit_id": "unit-86f4acd128dc",
+      "document_id": "doc-f34ce0393252",
+      "text": "He said &lt;@CAPS1 lets put them to the test go up to some one new to this school&gt;.",
+      "start_offset": 842,
+      "end_offset": 928,
+      "unit_type": "sentence",
+      "sequence_index": 9,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    },
+    {
+      "unit_id": "unit-1176c991aaa5",
+      "document_id": "doc-f34ce0393252",
+      "text": "I said @CAPS1 so we went around the whole school looking for a new student unfortunately we couldn't find one we heard the bell ring and we ran to our class.",
+      "start_offset": 929,
+      "end_offset": 1086,
+      "unit_type": "sentence",
+      "sequence_index": 10,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    },
+    {
+      "unit_id": "unit-b7b76fb7289a",
+      "document_id": "doc-f34ce0393252",
+      "text": "We sat in the back of the classroom its only @PERSON2 and I and anempty seat between us.",
+      "start_offset": 1087,
+      "end_offset": 1175,
+      "unit_type": "sentence",
+      "sequence_index": 11,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    },
+    {
+      "unit_id": "unit-ff228a635703",
+      "document_id": "doc-f34ce0393252",
+      "text": "We were excited because our teacher @PERSON1 was going to show us a movie.",
+      "start_offset": 1176,
+      "end_offset": 1250,
+      "unit_type": "sentence",
+      "sequence_index": 12,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    },
+    {
+      "unit_id": "unit-b814f0c2d20e",
+      "document_id": "doc-f34ce0393252",
+      "text": "@PERSON1 got the front of the room andclass today I have an announcement we have a new student in our class say hello to @LOCATION1.",
+      "start_offset": 1251,
+      "end_offset": 1383,
+      "unit_type": "sentence",
+      "sequence_index": 13,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    },
+    {
+      "unit_id": "unit-df4aa5497639",
+      "document_id": "doc-f34ce0393252",
+      "text": "@ORGANIZATION1 walked through the door.",
+      "start_offset": 1384,
+      "end_offset": 1423,
+      "unit_type": "sentence",
+      "sequence_index": 14,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    },
+    {
+      "unit_id": "unit-6f8d9627c091",
+      "document_id": "doc-f34ce0393252",
+      "text": "@PERSON1 told @ORGANIZATION1 shecould sit in the back in between @PERSON2 and I.",
+      "start_offset": 1424,
+      "end_offset": 1504,
+      "unit_type": "sentence",
+      "sequence_index": 15,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    },
+    {
+      "unit_id": "unit-df10c1e42de6",
+      "document_id": "doc-f34ce0393252",
+      "text": "She sat down turned to the both of us and said hello.",
+      "start_offset": 1505,
+      "end_offset": 1558,
+      "unit_type": "sentence",
+      "sequence_index": 16,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    },
+    {
+      "unit_id": "unit-8f0421a4fcd4",
+      "document_id": "doc-f34ce0393252",
+      "text": "@PERSON2 gave me a look that said tell her the joke and @CAPS3 him a thumbs up.",
+      "start_offset": 1559,
+      "end_offset": 1638,
+      "unit_type": "sentence",
+      "sequence_index": 17,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    },
+    {
+      "unit_id": "unit-bc3eaa03ed8b",
+      "document_id": "doc-f34ce0393252",
+      "text": "I turned to @LOCATION1 and said hi I'm @CAPS4 do you want to hear a joke.",
+      "start_offset": 1639,
+      "end_offset": 1712,
+      "unit_type": "sentence",
+      "sequence_index": 18,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    },
+    {
+      "unit_id": "unit-fa26bfef9512",
+      "document_id": "doc-f34ce0393252",
+      "text": "@ORGANIZATION1 said yeah sure.",
+      "start_offset": 1713,
+      "end_offset": 1743,
+      "unit_type": "sentence",
+      "sequence_index": 19,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    },
+    {
+      "unit_id": "unit-4a9b934ae2dc",
+      "document_id": "doc-f34ce0393252",
+      "text": "I started &lt;@CAPS5 knockshe said &lt;who's thereI said &lt;booshe said &lt;boo who?",
+      "start_offset": 1744,
+      "end_offset": 1829,
+      "unit_type": "sentence",
+      "sequence_index": 20,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    },
+    {
+      "unit_id": "unit-68f61e311cc8",
+      "document_id": "doc-f34ce0393252",
+      "text": "I said &lt;oh don't cry I am right here&gt;.",
+      "start_offset": 1829,
+      "end_offset": 1873,
+      "unit_type": "sentence",
+      "sequence_index": 21,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    },
+    {
+      "unit_id": "unit-6192b70e66dd",
+      "document_id": "doc-f34ce0393252",
+      "text": "At first she didn't laugh because she didn't get it but duringthe middle of the movie she said &lt;ohhhh I get itand she started to laugh.",
+      "start_offset": 1874,
+      "end_offset": 2012,
+      "unit_type": "sentence",
+      "sequence_index": 22,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    },
+    {
+      "unit_id": "unit-76dd0bd2d4c6",
+      "document_id": "doc-f34ce0393252",
+      "text": "@PERSON2 turned to me and said &lt;I told you so&gt;.",
+      "start_offset": 2013,
+      "end_offset": 2066,
+      "unit_type": "sentence",
+      "sequence_index": 23,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    },
+    {
+      "unit_id": "unit-b8d72ea3fcae",
+      "document_id": "doc-f34ce0393252",
+      "text": "@PERSON2 got this crazy idea that if I spent the night at his house that I could make his mom laugh or at least make her smile.",
+      "start_offset": 2069,
+      "end_offset": 2196,
+      "unit_type": "sentence",
+      "sequence_index": 24,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    },
+    {
+      "unit_id": "unit-855eb8f99526",
+      "document_id": "doc-f34ce0393252",
+      "text": "I said &lt;@CAPS1 sounds like a plan&gt;.",
+      "start_offset": 2197,
+      "end_offset": 2238,
+      "unit_type": "sentence",
+      "sequence_index": 25,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    },
+    {
+      "unit_id": "unit-7e866900b553",
+      "document_id": "doc-f34ce0393252",
+      "text": "I asked mt mom if it was @CAPS1 if I could spend the night at @PERSON2 house she said &lt;yeah just make sure its @CAPS1 with his mom&gt;.",
+      "start_offset": 2239,
+      "end_offset": 2377,
+      "unit_type": "sentence",
+      "sequence_index": 26,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    },
+    {
+      "unit_id": "unit-eca11696ac6a",
+      "document_id": "doc-f34ce0393252",
+      "text": "@PERSON2 asked his mom she said it was @CAPS1.",
+      "start_offset": 2378,
+      "end_offset": 2424,
+      "unit_type": "sentence",
+      "sequence_index": 27,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    },
+    {
+      "unit_id": "unit-511965a4d1bd",
+      "document_id": "doc-f34ce0393252",
+      "text": "When I got to @PERSON2 house the first thing we did was play video games.",
+      "start_offset": 2425,
+      "end_offset": 2498,
+      "unit_type": "sentence",
+      "sequence_index": 28,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    },
+    {
+      "unit_id": "unit-b2cb47768c40",
+      "document_id": "doc-f34ce0393252",
+      "text": "When it was dinner time we all sat down at the table to eat @PERSON2 and I were on one side and his parents on the other.",
+      "start_offset": 2499,
+      "end_offset": 2620,
+      "unit_type": "sentence",
+      "sequence_index": 29,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    },
+    {
+      "unit_id": "unit-da7ff9bb6ce0",
+      "document_id": "doc-f34ce0393252",
+      "text": "When we started eating @PERSON2 told me to tell the joke to his parents i said @CAPS1.",
+      "start_offset": 2621,
+      "end_offset": 2707,
+      "unit_type": "sentence",
+      "sequence_index": 30,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    },
+    {
+      "unit_id": "unit-9ee8e2d18d9a",
+      "document_id": "doc-f34ce0393252",
+      "text": "So I said to them &lt;@CAPS5 @CAPS5&gt;they replied &lt;who's thereI said &lt;boothey said &lt;boo who?",
+      "start_offset": 2708,
+      "end_offset": 2811,
+      "unit_type": "sentence",
+      "sequence_index": 31,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    },
+    {
+      "unit_id": "unit-63ec3adb57f4",
+      "document_id": "doc-f34ce0393252",
+      "text": "I said &lt;oh don't cry I am right here&gt;.",
+      "start_offset": 2811,
+      "end_offset": 2855,
+      "unit_type": "sentence",
+      "sequence_index": 32,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    },
+    {
+      "unit_id": "unit-913b4e5f2514",
+      "document_id": "doc-f34ce0393252",
+      "text": "His parents started to laugh and laugh and they keptlaughing for like five minutes.",
+      "start_offset": 2856,
+      "end_offset": 2939,
+      "unit_type": "sentence",
+      "sequence_index": 33,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    },
+    {
+      "unit_id": "unit-4742454f8769",
+      "document_id": "doc-f34ce0393252",
+      "text": "@PERSON2 turned to me and yelled it worked his mom asked what worked.",
+      "start_offset": 2940,
+      "end_offset": 3009,
+      "unit_type": "sentence",
+      "sequence_index": 34,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    },
+    {
+      "unit_id": "unit-9aa3c4d7705f",
+      "document_id": "doc-f34ce0393252",
+      "text": "@PERSON2 explained everything to them.",
+      "start_offset": 3010,
+      "end_offset": 3048,
+      "unit_type": "sentence",
+      "sequence_index": 35,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    },
+    {
+      "unit_id": "unit-e78acc9f81ca",
+      "document_id": "doc-f34ce0393252",
+      "text": "His mom told usthat her mom had recently died and that's why she was in a bad mood.",
+      "start_offset": 3049,
+      "end_offset": 3132,
+      "unit_type": "sentence",
+      "sequence_index": 36,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    },
+    {
+      "unit_id": "unit-1c89ba7f980a",
+      "document_id": "doc-f34ce0393252",
+      "text": "After dinner we went to bed and fell asleep.",
+      "start_offset": 3133,
+      "end_offset": 3177,
+      "unit_type": "sentence",
+      "sequence_index": 37,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    },
+    {
+      "unit_id": "unit-934596909ca1",
+      "document_id": "doc-f34ce0393252",
+      "text": "The next morning when my mom came to pick me up she asked me how the sleep over went.",
+      "start_offset": 3178,
+      "end_offset": 3263,
+      "unit_type": "sentence",
+      "sequence_index": 38,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    },
+    {
+      "unit_id": "unit-23fd81a0c91d",
+      "document_id": "doc-f34ce0393252",
+      "text": "I said it was fun I made people laugh.",
+      "start_offset": 3264,
+      "end_offset": 3302,
+      "unit_type": "sentence",
+      "sequence_index": 39,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    },
+    {
+      "unit_id": "unit-fcae2460adb3",
+      "document_id": "doc-f34ce0393252",
+      "text": "She said @CAPS1 but laughter isn't going to help you clean your roomall i could say was gosh darn it.",
+      "start_offset": 3303,
+      "end_offset": 3404,
+      "unit_type": "sentence",
+      "sequence_index": 40,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    },
+    {
+      "unit_id": "unit-bfcf882e76db",
+      "document_id": "doc-f34ce0393252",
+      "text": "FIN",
+      "start_offset": 3417,
+      "end_offset": 3420,
+      "unit_type": "sentence",
+      "sequence_index": 41,
+      "chunk_title": null,
+      "chunk_method": "rule"
+    }
+  ]
+}

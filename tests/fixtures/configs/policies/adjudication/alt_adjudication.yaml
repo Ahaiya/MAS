@@ -37,6 +37,7 @@ adjudication_policy:
   resolution_strategy:
     default: "average_of_raters"
     fallback_if_no_resolution: "use_higher_score"
+    re_score_scope: "conflicted_only"
 
   metadata:
     purpose: "zero_hardcoding_firewall_test"

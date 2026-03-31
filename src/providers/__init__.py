@@ -1,4 +1,6 @@
 """
+Provider 子系统入口，负责预注册内置 provider 并暴露统一装配入口。
+
 src.providers package — pre-registers built-in providers in the default registry.
 
 Importing this package ensures that "mock" is always available via get_registry().

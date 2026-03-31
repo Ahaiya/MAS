@@ -1,0 +1,226 @@
+[
+  {
+    "decision_id": "dec-6062bd1f7cf4",
+    "dimension_id": "conventions",
+    "final_score": {
+      "canonical_score": 2,
+      "display_annotation": null,
+      "display_score": "2",
+      "scale_ref": "ordinal_6"
+    },
+    "primary_hypothesis_id": "hyp-score-680cbaccc1bc",
+    "adjudication_id": null,
+    "evidence_span_ids": [
+      "span-ext-1007bdd1c954",
+      "span-ext-1e235f40e067",
+      "span-ext-247039b9e66c",
+      "span-ext-54bf2f99eb77",
+      "span-ext-94ac3ead1e8e",
+      "span-ext-a083bc61f64e",
+      "span-ext-a6c2ccb77f4c",
+      "span-ext-aa1b8e12dc3f",
+      "span-ext-e5b296fe3a24",
+      "span-ext-e7003ecf54fa",
+      "span-ext-ff32e5ef2808"
+    ],
+    "descriptor_refs": [
+      "Limited control; errors begin to impede readability.",
+      "capitalization errors",
+      "capitalization inconsistent or often incorrect",
+      "end-of-sentence punctuation usually correct; internal punctuation has frequent errors",
+      "errors in grammar and usage do not block meaning but distract reader",
+      "errors interfere with readability and meaning",
+      "little control over basic conventions",
+      "many end-of-sentence errors; frequent internal punctuation errors",
+      "significant need for editing",
+      "spelling errors distract reader; common words misspelled",
+      "spelling errors that frequently distract reader; common words misspelled",
+      "substantial need for editing"
+    ],
+    "decision_confidence": 0.9,
+    "decision_note": "no conflict, rater_1 score used (raters converged)"
+  },
+  {
+    "decision_id": "dec-05448592d541",
+    "dimension_id": "ideas_content",
+    "final_score": {
+      "canonical_score": 5,
+      "display_annotation": null,
+      "display_score": "5",
+      "scale_ref": "ordinal_6"
+    },
+    "primary_hypothesis_id": "hyp-score-903a3994ca35",
+    "adjudication_id": null,
+    "evidence_span_ids": [
+      "span-ext-014b02936af2",
+      "span-ext-017bde7c2cd1",
+      "span-ext-4295724968b9",
+      "span-ext-54705bfe977a",
+      "span-ext-5ad3f693e7f8",
+      "span-ext-76341613e7e6",
+      "span-ext-8fa7e74da5a4",
+      "span-ext-9d30ddb2d448",
+      "span-ext-9ed50ecb0d5f",
+      "span-ext-a0384e8863e3",
+      "span-ext-d748581fc654",
+      "span-ext-de750c7be931",
+      "span-ext-e1b28994ae2a",
+      "span-ext-eea15f3b9074",
+      "span-ext-f5092a413205",
+      "span-ext-f942cc0a490d"
+    ],
+    "descriptor_refs": [
+      "Clear, focused, interesting with strong support.",
+      "clarity, focus, and control",
+      "content and details well-suited to audience and purpose",
+      "main ideas stand out",
+      "supporting, relevant, carefully selected details",
+      "thorough, balanced explanation/exploration of topic"
+    ],
+    "decision_confidence": 0.9,
+    "decision_note": "no conflict, rater_1 score used (raters converged)"
+  },
+  {
+    "decision_id": "dec-a9ae20a758e1",
+    "dimension_id": "organization",
+    "final_score": {
+      "canonical_score": 4,
+      "display_annotation": null,
+      "display_score": "4",
+      "scale_ref": "ordinal_6"
+    },
+    "primary_hypothesis_id": "hyp-score-2992eac331ba",
+    "adjudication_id": null,
+    "evidence_span_ids": [
+      "span-ext-18760d1ee334",
+      "span-ext-31a77e44d833",
+      "span-ext-4ad9d191a213",
+      "span-ext-69d8999d7cf0",
+      "span-ext-9e4ca2655e52",
+      "span-ext-c7d7b412bb70"
+    ],
+    "descriptor_refs": [
+      "body easy to follow with details fitting where placed",
+      "clear sequencing and paragraph breaks",
+      "details fit where placed",
+      "effective sequencing and paragraph breaks",
+      "inviting beginning draws reader in",
+      "organization helps reader despite some weaknesses",
+      "organizational structure fits topic and is easy to follow",
+      "recognizable, developed beginning not particularly inviting",
+      "satisfying sense of resolution or closure",
+      "smooth, effective transitions among all elements",
+      "transitions may be stilted or formulaic"
+    ],
+    "decision_confidence": 0.85,
+    "decision_note": "no conflict, rater_1 score used (raters converged)"
+  },
+  {
+    "decision_id": "dec-4a093d862fa5",
+    "dimension_id": "sentence_fluency",
+    "final_score": {
+      "canonical_score": 3,
+      "display_annotation": null,
+      "display_score": "3",
+      "scale_ref": "ordinal_6"
+    },
+    "primary_hypothesis_id": "hyp-score-c1abc160c945",
+    "adjudication_id": null,
+    "evidence_span_ids": [
+      "span-ext-0f5bdd84d81f",
+      "span-ext-16a5ab589029",
+      "span-ext-1ecf9d561d1c",
+      "span-ext-3af8299cc25c",
+      "span-ext-72c844d85134",
+      "span-ext-7a1fed15b8ec",
+      "span-ext-840b9908004c",
+      "span-ext-9156299b6d32",
+      "span-ext-b8c3fde9f574",
+      "span-ext-cfb97af8fbda",
+      "span-ext-ebafd7b61640",
+      "span-ext-f2ebdc7e9687"
+    ],
+    "descriptor_refs": [
+      "Mechanical rather than fluid; occasional awkwardness.",
+      "good control over simple sentences, little over complex",
+      "lapses in stylistic control",
+      "lapses in stylistic control; dialogue may sound stilted",
+      "sentences functional but lack energy",
+      "some passages invite fluid oral reading; others do not",
+      "some variety but falls into repetitive patterns"
+    ],
+    "decision_confidence": 0.85,
+    "decision_note": "no conflict, rater_1 score used (raters converged)"
+  },
+  {
+    "decision_id": "dec-fa5a78685696",
+    "dimension_id": "voice",
+    "final_score": {
+      "canonical_score": 5,
+      "display_annotation": null,
+      "display_score": "5",
+      "scale_ref": "ordinal_6"
+    },
+    "primary_hypothesis_id": "hyp-score-b9ad95f80b49",
+    "adjudication_id": null,
+    "evidence_span_ids": [
+      "span-ext-0298da6dcc4f",
+      "span-ext-1356335d1d71",
+      "span-ext-3c6d6792d6e7",
+      "span-ext-6a6c55e35c11",
+      "span-ext-80350409f9f2",
+      "span-ext-a10eff501df3",
+      "span-ext-df61729620ec",
+      "span-ext-e4d1056604cc",
+      "span-ext-eef759e1da06"
+    ],
+    "descriptor_refs": [
+      "appropriate level of closeness to or distance from audience",
+      "appropriate voice with commitment; sense of 'writing to be read'.",
+      "reader may discern writer behind words and feel sense of interaction",
+      "strong sense of audience; writer seems aware of reader and how to communicate effectively",
+      "topic has come to life; shows originality, liveliness, honesty, conviction, excitement, humor, or suspense"
+    ],
+    "decision_confidence": 0.9,
+    "decision_note": "no conflict, rater_1 score used (raters converged)"
+  },
+  {
+    "decision_id": "dec-df4273f0aa60",
+    "dimension_id": "word_choice",
+    "final_score": {
+      "canonical_score": 4,
+      "display_annotation": null,
+      "display_score": "4",
+      "scale_ref": "ordinal_6"
+    },
+    "primary_hypothesis_id": "hyp-score-2c52b79be321",
+    "adjudication_id": null,
+    "evidence_span_ids": [
+      "span-ext-0f9ac08868e2",
+      "span-ext-284b735c57b5",
+      "span-ext-36398624f002",
+      "span-ext-6e20e4b0cbd1",
+      "span-ext-94cb0d44ec62",
+      "span-ext-9c920c9f0b7d",
+      "span-ext-b9017defd2e6",
+      "span-ext-bce27a65e942",
+      "span-ext-be870d84f25c",
+      "span-ext-bf2b4e98ff61",
+      "span-ext-e032f2062be1",
+      "span-ext-e532f245d89f",
+      "span-ext-eb8299340daf",
+      "span-ext-ebbd38627ed1"
+    ],
+    "descriptor_refs": [
+      "accurate, specific words; word choices energize writing",
+      "expression is functional; slang not purposeful or effective",
+      "fresh, vivid expression; slang purposeful and effective",
+      "occasional overuse of technical language or jargon",
+      "rare experiments with language; avoids clichés",
+      "words that evoke clear images; figurative language may be used",
+      "words that work but do not particularly energize writing"
+    ],
+    "decision_confidence": 0.85,
+    "decision_note": "no conflict, rater_1 score used (raters converged)"
+  }
+]

@@ -105,6 +105,7 @@ class TestEvidenceSpan:
         assert span_a.start_offset == 0
         assert span_a.end_offset == 44
         assert span_a.scope == EvidenceScope.SPAN
+        assert span_a.support_type == "supporting"
         assert "facet_x" in span_a.facet_ids
         # dimension_id is opaque — no hardcoded trait name
         assert isinstance(span_a.dimension_id, str)
@@ -190,6 +191,39 @@ class TestEvidenceSpan:
 
     def test_span_length(self, span_a):
         assert span_a.span_length() == 44
+
+    def test_invalid_support_type_rejected(self):
+        with pytest.raises((ValueError, TypeError)):
+            EvidenceSpan(
+                span_id="bad-support",
+                document_id="doc-001",
+                unit_id="unit-001",
+                text_quote="some text",
+                start_offset=0,
+                end_offset=9,
+                scope=EvidenceScope.SPAN,
+                dimension_id="dim_alpha",
+                facet_ids=["facet_x"],
+                extraction_note=None,
+                support_type="invalid",
+            )
+
+    def test_from_dict_missing_support_type_defaults_supporting(self):
+        span = EvidenceSpan.from_dict(
+            {
+                "span_id": "span-legacy",
+                "document_id": "doc-001",
+                "unit_id": "unit-001",
+                "text_quote": "legacy",
+                "start_offset": 0,
+                "end_offset": 6,
+                "scope": "span",
+                "dimension_id": "dim_alpha",
+                "facet_ids": ["facet_x"],
+                "extraction_note": "legacy",
+            }
+        )
+        assert span.support_type == "supporting"
 
 
 # ── FacetFinding ───────────────────────────────────────────────────────────────

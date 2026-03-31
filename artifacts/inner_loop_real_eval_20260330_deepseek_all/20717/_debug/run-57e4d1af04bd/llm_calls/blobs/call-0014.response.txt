@@ -1,0 +1,7 @@
+{
+    "proposed_score": 5,
+    "descriptor_refs": ["clarity, focus, and control", "main ideas stand out", "supporting, relevant, carefully selected details", "thorough, balanced explanation/exploration of topic", "content and details well-suited to audience and purpose"],
+    "evidence_ids": ["span-ext-de750c7be931", "span-ext-9d30ddb2d448", "span-ext-4295724968b9", "span-ext-017bde7c2cd1", "span-ext-eea15f3b9074", "span-ext-a0384e8863e3", "span-ext-9ed50ecb0d5f", "span-ext-f5092a413205", "span-ext-e1b28994ae2a", "span-ext-d748581fc654", "span-ext-5ad3f693e7f8", "span-ext-76341613e7e6", "span-ext-014b02936af2", "span-ext-f942cc0a490d", "span-ext-54705bfe977a", "span-ext-8fa7e74da5a4"],
+    "confidence": 0.9,
+    "justification": "The essay demonstrates clear, focused, and interesting ideas with strong support. Main ideas about softball passion, college goals, and the value of team memories stand out (span-ext-de750c7be931, span-ext-9d30ddb2d448). Supporting details are relevant and carefully selected, including sensory descriptions (span-ext-9ed50ecb0d5f), emotional experiences (span-ext-e1b28994ae2a, span-ext-5ad3f693e7f8), and specific interactions (span-ext-f942cc0a490d). The exploration is thorough and balanced, covering both athletic aspirations and personal growth through relationships (span-ext-4295724968b9, span-ext-eea15f3b9074). Content fits the narrative purpose of reflecting on a meaningful sports experience."
+}

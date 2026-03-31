@@ -1,0 +1,296 @@
+[
+  {
+    "observation_id": "obs-2004631acc91",
+    "document_id": "doc-f34ce0393252",
+    "dimension_id": "ideas_content",
+    "supporting_span_ids": [
+      "span-c282cf9372dc",
+      "span-4090b7021aa0",
+      "span-910983d4fde9",
+      "span-062ea60686ec",
+      "span-8f1272032a7a"
+    ],
+    "counter_span_ids": [],
+    "facet_findings": [
+      {
+        "facet_id": "clarity_focus",
+        "supporting_span_ids": [
+          "span-c282cf9372dc"
+        ],
+        "counter_span_ids": [],
+        "finding_note": "1 supporting, 0 counter"
+      },
+      {
+        "facet_id": "main_idea_salience",
+        "supporting_span_ids": [
+          "span-4090b7021aa0"
+        ],
+        "counter_span_ids": [],
+        "finding_note": "1 supporting, 0 counter"
+      },
+      {
+        "facet_id": "support_relevance",
+        "supporting_span_ids": [
+          "span-910983d4fde9"
+        ],
+        "counter_span_ids": [],
+        "finding_note": "1 supporting, 0 counter"
+      },
+      {
+        "facet_id": "development_depth",
+        "supporting_span_ids": [
+          "span-062ea60686ec"
+        ],
+        "counter_span_ids": [],
+        "finding_note": "1 supporting, 0 counter"
+      },
+      {
+        "facet_id": "audience_purpose_fit",
+        "supporting_span_ids": [
+          "span-8f1272032a7a"
+        ],
+        "counter_span_ids": [],
+        "finding_note": "1 supporting, 0 counter"
+      }
+    ],
+    "observation_confidence": "high",
+    "uncertainty_notes": [],
+    "coverage_miss_span_ids": []
+  },
+  {
+    "observation_id": "obs-273ef7da5275",
+    "document_id": "doc-f34ce0393252",
+    "dimension_id": "organization",
+    "supporting_span_ids": [
+      "span-dc492cac45a4",
+      "span-5c33d7a2e676",
+      "span-f81a4b194ab6",
+      "span-52c42770d819"
+    ],
+    "counter_span_ids": [],
+    "facet_findings": [
+      {
+        "facet_id": "sequencing",
+        "supporting_span_ids": [
+          "span-dc492cac45a4"
+        ],
+        "counter_span_ids": [],
+        "finding_note": "1 supporting, 0 counter"
+      },
+      {
+        "facet_id": "beginning_closure",
+        "supporting_span_ids": [
+          "span-5c33d7a2e676"
+        ],
+        "counter_span_ids": [],
+        "finding_note": "1 supporting, 0 counter"
+      },
+      {
+        "facet_id": "transitions",
+        "supporting_span_ids": [
+          "span-f81a4b194ab6"
+        ],
+        "counter_span_ids": [],
+        "finding_note": "1 supporting, 0 counter"
+      },
+      {
+        "facet_id": "detail_placement",
+        "supporting_span_ids": [
+          "span-52c42770d819"
+        ],
+        "counter_span_ids": [],
+        "finding_note": "1 supporting, 0 counter"
+      }
+    ],
+    "observation_confidence": "high",
+    "uncertainty_notes": [],
+    "coverage_miss_span_ids": []
+  },
+  {
+    "observation_id": "obs-7ac0e6136c3f",
+    "document_id": "doc-f34ce0393252",
+    "dimension_id": "voice",
+    "supporting_span_ids": [
+      "span-34dfcc382208",
+      "span-a677f25cd575",
+      "span-cb64deb7dc41"
+    ],
+    "counter_span_ids": [],
+    "facet_findings": [
+      {
+        "facet_id": "audience_awareness",
+        "supporting_span_ids": [
+          "span-34dfcc382208"
+        ],
+        "counter_span_ids": [],
+        "finding_note": "1 supporting, 0 counter"
+      },
+      {
+        "facet_id": "commitment",
+        "supporting_span_ids": [
+          "span-a677f25cd575"
+        ],
+        "counter_span_ids": [],
+        "finding_note": "1 supporting, 0 counter"
+      },
+      {
+        "facet_id": "expressiveness",
+        "supporting_span_ids": [
+          "span-cb64deb7dc41"
+        ],
+        "counter_span_ids": [],
+        "finding_note": "1 supporting, 0 counter"
+      }
+    ],
+    "observation_confidence": "high",
+    "uncertainty_notes": [],
+    "coverage_miss_span_ids": []
+  },
+  {
+    "observation_id": "obs-8f11d4420869",
+    "document_id": "doc-f34ce0393252",
+    "dimension_id": "word_choice",
+    "supporting_span_ids": [
+      "span-bcd8fcc6716d",
+      "span-c3096751a36a",
+      "span-ad92e2060afb",
+      "span-a0949bf778b6"
+    ],
+    "counter_span_ids": [],
+    "facet_findings": [
+      {
+        "facet_id": "precision",
+        "supporting_span_ids": [
+          "span-bcd8fcc6716d"
+        ],
+        "counter_span_ids": [],
+        "finding_note": "1 supporting, 0 counter"
+      },
+      {
+        "facet_id": "variety",
+        "supporting_span_ids": [
+          "span-c3096751a36a"
+        ],
+        "counter_span_ids": [],
+        "finding_note": "1 supporting, 0 counter"
+      },
+      {
+        "facet_id": "imagery",
+        "supporting_span_ids": [
+          "span-ad92e2060afb"
+        ],
+        "counter_span_ids": [],
+        "finding_note": "1 supporting, 0 counter"
+      },
+      {
+        "facet_id": "appropriateness",
+        "supporting_span_ids": [
+          "span-a0949bf778b6"
+        ],
+        "counter_span_ids": [],
+        "finding_note": "1 supporting, 0 counter"
+      }
+    ],
+    "observation_confidence": "high",
+    "uncertainty_notes": [],
+    "coverage_miss_span_ids": []
+  },
+  {
+    "observation_id": "obs-552f1a484a69",
+    "document_id": "doc-f34ce0393252",
+    "dimension_id": "sentence_fluency",
+    "supporting_span_ids": [
+      "span-7749757c62db",
+      "span-ee186870aef1",
+      "span-5885376ee2ce"
+    ],
+    "counter_span_ids": [],
+    "facet_findings": [
+      {
+        "facet_id": "flow_rhythm",
+        "supporting_span_ids": [
+          "span-7749757c62db"
+        ],
+        "counter_span_ids": [],
+        "finding_note": "1 supporting, 0 counter"
+      },
+      {
+        "facet_id": "sentence_variety",
+        "supporting_span_ids": [
+          "span-ee186870aef1"
+        ],
+        "counter_span_ids": [],
+        "finding_note": "1 supporting, 0 counter"
+      },
+      {
+        "facet_id": "structural_control",
+        "supporting_span_ids": [
+          "span-5885376ee2ce"
+        ],
+        "counter_span_ids": [],
+        "finding_note": "1 supporting, 0 counter"
+      }
+    ],
+    "observation_confidence": "high",
+    "uncertainty_notes": [],
+    "coverage_miss_span_ids": []
+  },
+  {
+    "observation_id": "obs-6bc89426c34e",
+    "document_id": "doc-f34ce0393252",
+    "dimension_id": "conventions",
+    "supporting_span_ids": [
+      "span-90ab59dfeb05",
+      "span-4684106c87ef",
+      "span-1f10a0ec939a",
+      "span-fe6e07811a53",
+      "span-3f2077698674"
+    ],
+    "counter_span_ids": [],
+    "facet_findings": [
+      {
+        "facet_id": "punctuation",
+        "supporting_span_ids": [
+          "span-90ab59dfeb05"
+        ],
+        "counter_span_ids": [],
+        "finding_note": "1 supporting, 0 counter"
+      },
+      {
+        "facet_id": "spelling",
+        "supporting_span_ids": [
+          "span-4684106c87ef"
+        ],
+        "counter_span_ids": [],
+        "finding_note": "1 supporting, 0 counter"
+      },
+      {
+        "facet_id": "capitalization",
+        "supporting_span_ids": [
+          "span-1f10a0ec939a"
+        ],
+        "counter_span_ids": [],
+        "finding_note": "1 supporting, 0 counter"
+      },
+      {
+        "facet_id": "grammar_usage",
+        "supporting_span_ids": [
+          "span-fe6e07811a53"
+        ],
+        "counter_span_ids": [],
+        "finding_note": "1 supporting, 0 counter"
+      },
+      {
+        "facet_id": "readability_impact",
+        "supporting_span_ids": [
+          "span-3f2077698674"
+        ],
+        "counter_span_ids": [],
+        "finding_note": "1 supporting, 0 counter"
+      }
+    ],
+    "observation_confidence": "high",
+    "uncertainty_notes": [],
+    "coverage_miss_span_ids": []
+  }
+]

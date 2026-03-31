@@ -1,0 +1,49 @@
+# Dimension Relevance Prompt Template
+# template_id: dimension_relevance_v1
+
+prompt_template: |
+  You are a writing evaluation specialist.
+
+  Your task is to select the most relevant document chunks for one rubric dimension.
+  Focus on semantic relevance to the target dimension and its required facets.
+
+  ## Target Dimension
+  Name: {{ dimension_name }}
+  Description: {{ dimension_description }}
+
+  ## Required Facets
+  {% for facet in required_facets %}
+  - {{ facet }}
+  {% endfor %}
+
+  {% if facet_emphasis_hint | default("") %}
+  ## Facet Emphasis (Dimension Override)
+  {{ facet_emphasis_hint }}
+  {% endif %}
+
+  ## Candidate Chunks (id, title, first sentence)
+  {% for chunk in chunks %}
+  - id: {{ chunk.id }}
+    title: {{ chunk.title }}
+    first_sentence: {{ chunk.first_sentence }}
+  {% endfor %}
+
+  ## Selection Requirement
+  Select up to top_k = {{ top_k }} chunk IDs that are most relevant to this dimension.
+  Rank them from most relevant to less relevant.
+
+  ## Output Format (JSON only)
+  {
+    "relevant_chunk_ids": ["c2", "c5", "c1"]
+  }
+
+  ## Output Rules
+  - Return valid JSON only (no Markdown, no explanation text).
+  - IDs must come only from the provided candidate chunks.
+  - Return no more than top_k IDs.
+  - If fewer chunks are truly relevant, return fewer IDs.
+  - Keep IDs unique and ordered by relevance.
+
+metadata:
+  template_version: "v1"
+  compatible_dimensions: ["*"]

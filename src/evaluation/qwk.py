@@ -1,4 +1,6 @@
-"""Quadratic Weighted Kappa (QWK) computation for dimension-level scoring.
+"""QWK 指标模块，负责计算维度级评分与总分对齐度。
+
+Quadratic Weighted Kappa (QWK) computation for dimension-level scoring.
 
 Provides:
   - qwk(y_true, y_pred, min_score, max_score) -> float

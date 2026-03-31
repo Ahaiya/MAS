@@ -1,0 +1,76 @@
+{
+    "evidence_spans": [
+        {
+            "quote": "Softball has to be one of the single most greatest sports alive; playing softball in college has always been a goal of mine. I love the dirt that sticks to your face, the sweat dripping from your forehead, and the gallons and gallons of water you poor all over yourself to keep cool in the blistering @CAPS2.",
+            "chunk_id": "unit-d5d353ae0c53",
+            "facets": ["flow_rhythm", "sentence_variety"],
+            "support_type": "supporting"
+        },
+        {
+            "quote": "Although I love softball I feel that the memories you acquire from the times you have with your teammates, are the things you remember the most through out your softball career.",
+            "chunk_id": "unit-d5d353ae0c53",
+            "facets": ["flow_rhythm", "structural_control"],
+            "support_type": "counter"
+        },
+        {
+            "quote": "I wanted this team to like me, I was playing all the possible ways in my head I could greet them so i didn't sound snobby or a grump.",
+            "chunk_id": "unit-9020b623f4bd",
+            "facets": ["flow_rhythm", "structural_control"],
+            "support_type": "counter"
+        },
+        {
+            "quote": "I was so nervous my mouth began to feel sticky and have an odd taste to it, soon after my mouth became bone dry no taste, no flavor, just a sticky mess.",
+            "chunk_id": "unit-9020b623f4bd",
+            "facets": ["flow_rhythm", "structural_control"],
+            "support_type": "counter"
+        },
+        {
+            "quote": "Nervous began to take over my body my arms were shaking uncontrollably and I was second guessing every move I made, I even had troubles removing my seat belt.",
+            "chunk_id": "unit-9020b623f4bd",
+            "facets": ["flow_rhythm", "structural_control"],
+            "support_type": "counter"
+        },
+        {
+            "quote": "As I approached the field it felt like time was in slow motion, walking by I saw all the girls turn there heads to see what new fresh meat had arrived.",
+            "chunk_id": "unit-59b94fdf22f4",
+            "facets": ["flow_rhythm", "sentence_variety"],
+            "support_type": "supporting"
+        },
+        {
+            "quote": "My first thought was to run; that was it I didn't want to go, I was done I wanted home I was ready to start my year with the @CAPS2, I just couldn't take it.",
+            "chunk_id": "unit-59b94fdf22f4",
+            "facets": ["flow_rhythm", "structural_control"],
+            "support_type": "counter"
+        },
+        {
+            "quote": "Each and everyone of them told me their names, there favorite color, and a small fun fact about themselves.",
+            "chunk_id": "unit-59b94fdf22f4",
+            "facets": ["flow_rhythm", "sentence_variety"],
+            "support_type": "supporting"
+        },
+        {
+            "quote": "I found myself laughing through out my whole try out, there were no awkward moments and I enjoyed my time there.",
+            "chunk_id": "unit-59b94fdf22f4",
+            "facets": ["flow_rhythm", "structural_control"],
+            "support_type": "counter"
+        },
+        {
+            "quote": "My year with this team was amazing I have friendships with these girls that I never would have discovered if I hadn't gone.",
+            "chunk_id": "unit-e2e1eee7ca46",
+            "facets": ["flow_rhythm", "structural_control"],
+            "support_type": "counter"
+        },
+        {
+            "quote": "Laughter played a very big role in the decision I made to play with this team, if I had just gone and tried out, and had I not had fun and laughed, I would have decided to play with the @CAPS2.",
+            "chunk_id": "unit-e2e1eee7ca46",
+            "facets": ["flow_rhythm", "structural_control"],
+            "support_type": "counter"
+        },
+        {
+            "quote": "I have had great memories with the @CAPS2, but also softball is all about going out discovering new friendships; therefore, enjoying the sport as well as the people.",
+            "chunk_id": "unit-e2e1eee7ca46",
+            "facets": ["flow_rhythm", "sentence_variety"],
+            "support_type": "supporting"
+        }
+    ]
+}

@@ -1,0 +1,7 @@
+{
+    "proposed_score": 4,
+    "descriptor_refs": ["clear sequencing and paragraph breaks", "recognizable, developed beginning not particularly inviting", "body easy to follow with details fitting where placed", "transitions may be stilted or formulaic", "organization helps reader despite some weaknesses"],
+    "evidence_ids": ["span-ext-69d8999d7cf0", "span-ext-4ad9d191a213", "span-ext-c7d7b412bb70", "span-ext-18760d1ee334", "span-ext-9e4ca2655e52", "span-ext-31a77e44d833"],
+    "confidence": 0.85,
+    "justification": "The essay demonstrates clear sequencing with chronological narrative (span-ext-69d8999d7cf0, span-ext-4ad9d191a213), a developed beginning establishing the topic (span-ext-c7d7b412bb70), and a developed conclusion (span-ext-18760d1ee334). Details are effectively placed to support the narrative (span-ext-9e4ca2655e52, span-ext-31a77e44d833). Transitions are present but limited (span-ext-4ad9d191a213). The organization is coherent and functional, fitting the 'clear and coherent organization; may seem formulaic' descriptor of score 4."
+}

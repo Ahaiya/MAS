@@ -1,4 +1,6 @@
 """
+状态定义模块，负责声明流水线状态枚举与合法迁移矩阵。
+
 Pipeline State Definitions
 
 Defines the PipelineState enum, the legal transition matrix (TRANSITIONS),

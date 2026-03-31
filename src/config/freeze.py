@@ -1,4 +1,6 @@
 """
+配置冻结工具，负责计算配置内容哈希并形成可追踪的版本闭包。
+
 Config Freeze: Content hashing utilities for version closure.
 
 Provides deterministic, order-independent hash computation for:

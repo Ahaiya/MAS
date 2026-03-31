@@ -1,0 +1,14 @@
+{
+  "type": "object",
+  "required": [
+    "relevant_chunk_ids"
+  ],
+  "properties": {
+    "relevant_chunk_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

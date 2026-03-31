@@ -1,4 +1,6 @@
 """
+评分 Agent，负责基于维度观察和证据生成单个评分假设。
+
 Scorer — calls a configured provider to produce a ScoreHypothesis.
 
 Builds the scoring prompt via prompt_builders, calls the provider,
@@ -11,16 +13,15 @@ score values or dimension codes appear here.
 from __future__ import annotations
 
 import uuid
-from typing import List
+from typing import Any, Dict, List, Optional
 
 from src.agents.prompt_builders import build_scoring_prompt
 from src.contracts.artifact_bundle import RubricSnapshot
 from src.contracts.evidence import DimensionObservation, EvidenceSpan
-from src.contracts.request_models import NormalizedDocument
 from src.contracts.score_representation import create_score_representation
 from src.contracts.scoring import ScoreHypothesis
 from src.policies.rubric_core import get_descriptor_refs_for_score, get_scale_range, get_scale_ref
-from src.providers.base import BaseProvider, LLMRequest
+from src.providers.base import BaseProvider, LLMRequest, ProviderParseError
 from src.providers.prompt_loader import PromptTemplate
 from src.providers.structured_output import normalize_structured_output
 
@@ -36,15 +37,78 @@ _OUTPUT_SCHEMA = {
     },
 }
 
+_SCORING_RECOVERY_PARAMS: Dict[str, Any] = {
+    "temperature": 0.0,
+    "max_tokens": 2048,
+}
+
+
+def _merge_request_params(
+    base: Optional[Dict[str, Any]],
+    overrides: Optional[Dict[str, Any]],
+) -> Dict[str, Any]:
+    """Merge request params, preserving nested dicts such as extra_body."""
+    merged: Dict[str, Any] = dict(base or {})
+    for key, value in (overrides or {}).items():
+        if isinstance(merged.get(key), dict) and isinstance(value, dict):
+            nested = dict(merged[key])
+            nested.update(value)
+            merged[key] = nested
+        else:
+            merged[key] = value
+    return merged
+
+
+def _make_request(
+    *,
+    prompt_text: str,
+    observation: DimensionObservation,
+    rater_id: str,
+    template_used: PromptTemplate,
+    evidence_span_count: int,
+    node_id: str,
+    stage_name: str,
+    used_override_template: bool,
+    params: Optional[Dict[str, Any]] = None,
+    extra_metadata: Optional[Dict[str, Any]] = None,
+) -> LLMRequest:
+    metadata = {
+        "node_id": node_id,
+        "stage_name": stage_name,
+        "dimension_id": observation.dimension_id,
+        "observation_id": observation.observation_id,
+        "rater_id": rater_id,
+        "template_source": template_used.source_path,
+        "template_version": template_used.metadata.get("template_version"),
+        "used_override_template": used_override_template,
+        "evidence_span_count": evidence_span_count,
+    }
+    metadata.update(dict(extra_metadata or {}))
+    return LLMRequest(
+        prompt=prompt_text,
+        output_schema=_OUTPUT_SCHEMA,
+        params=dict(params or {}),
+        metadata=metadata,
+    )
+
+
+def _parse_scoring_response(response) -> Dict[str, Any]:
+    if response.structured_data is not None:
+        return response.structured_data
+    return normalize_structured_output(response.content, schema=_OUTPUT_SCHEMA)
+
 
 def run(
     observation: DimensionObservation,
     evidence_spans: List[EvidenceSpan],
     rubric: RubricSnapshot,
-    document: NormalizedDocument,
     provider: BaseProvider,
     template: PromptTemplate,
     rater_id: str,
+    scoring_context: Optional[dict] = None,
+    override_template: Optional[PromptTemplate] = None,
+    node_id: str = "node_scorer",
+    stage_name: str = "scoring",
 ) -> ScoreHypothesis:
     """
     Score one dimension using a configured provider.
@@ -53,22 +117,55 @@ def run(
         observation  : DimensionObservation for the dimension.
         evidence_spans: Evidence spans referenced in the observation.
         rubric       : RubricSnapshot for scale/descriptor lookup.
-        document     : NormalizedDocument for essay text in the prompt.
         provider     : Configured BaseProvider to call.
         template     : Loaded scoring prompt template.
         rater_id     : Rater identifier (e.g. "rater_1").
+        scoring_context: Optional dataset-level scoring context.
+        override_template: Optional per-dimension scoring override template.
 
     Returns:
         ScoreHypothesis with score clamped to the valid rubric scale range.
     """
-    prompt_text = build_scoring_prompt(observation, evidence_spans, rubric, document, template)
-    request = LLMRequest(prompt=prompt_text, output_schema=_OUTPUT_SCHEMA)
-    response = provider.complete(request)
-
-    if response.structured_data is not None:
-        data = response.structured_data
-    else:
-        data = normalize_structured_output(response.content, schema=_OUTPUT_SCHEMA)
+    prompt_text = build_scoring_prompt(
+        observation,
+        evidence_spans,
+        rubric,
+        template,
+        scoring_context=scoring_context,
+        override_template=override_template,
+    )
+    template_used = override_template or template
+    request = _make_request(
+        prompt_text=prompt_text,
+        observation=observation,
+        rater_id=rater_id,
+        template_used=template_used,
+        evidence_span_count=len(evidence_spans),
+        node_id=node_id,
+        stage_name=stage_name,
+        used_override_template=override_template is not None,
+    )
+    try:
+        response = provider.complete(request)
+        data = _parse_scoring_response(response)
+    except ProviderParseError:
+        recovery_request = _make_request(
+            prompt_text=prompt_text,
+            observation=observation,
+            rater_id=rater_id,
+            template_used=template_used,
+            evidence_span_count=len(evidence_spans),
+            node_id=node_id,
+            stage_name=stage_name,
+            used_override_template=override_template is not None,
+            params=_merge_request_params(request.params, _SCORING_RECOVERY_PARAMS),
+            extra_metadata={
+                "recovery_reason": "parse_error",
+                "scoring_retry_attempt": 2,
+            },
+        )
+        response = provider.complete(recovery_request)
+        data = _parse_scoring_response(response)
 
     dim_id = observation.dimension_id
     scale_min, scale_max = get_scale_range(rubric, dim_id)
@@ -82,7 +179,16 @@ def run(
     if not descriptor_refs:
         descriptor_refs = get_descriptor_refs_for_score(rubric, dim_id, score_val) or [f"level_{score_val}"]
 
-    evidence_span_ids: List[str] = list(observation.supporting_span_ids)
+    raw_evidence_ids = list(data.get("evidence_ids") or [])
+    valid_span_ids = {span.span_id for span in evidence_spans}
+    evidence_span_ids = [
+        evidence_id
+        for evidence_id in raw_evidence_ids
+        if evidence_id in valid_span_ids
+    ]
+    if not evidence_span_ids:
+        evidence_span_ids = list(observation.supporting_span_ids)
+
     confidence = float(data.get("confidence", 0.7))
     justification = str(data.get("justification", ""))
 

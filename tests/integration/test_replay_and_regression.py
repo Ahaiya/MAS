@@ -16,7 +16,7 @@ import pytest
 
 _PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 _GOLDEN_DIR = _PROJECT_ROOT / "tests" / "golden"
-_SCRIPTS = _PROJECT_ROOT / "scripts"
+_SCRIPTS = _PROJECT_ROOT / "tests" / "scripts"
 
 
 def _run(args: list[str]) -> subprocess.CompletedProcess:

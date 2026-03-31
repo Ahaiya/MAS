@@ -1,4 +1,4 @@
-"""Configuration loader for artifact bundles."""
+"""配置加载器，负责读取 bundle 及其引用的 YAML 工件。"""
 
 from pathlib import Path
 from typing import Any

@@ -1,4 +1,6 @@
 """
+Provider 选择器，负责按名称或环境变量创建可用的 provider 实例。
+
 Provider switch — factory functions for selecting providers by name.
 
 `create_provider(name)` instantiates a provider from the default registry.

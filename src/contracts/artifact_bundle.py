@@ -1,4 +1,6 @@
 """
+配置工件契约，定义 bundle 编译完成后对外暴露的冻结快照结构。
+
 Artifact Bundle Contracts
 
 Defines the schemas for configuration artifact bundles.
@@ -31,10 +33,14 @@ class ProviderEntryConfig:
         model:       Model identifier (e.g. "deepseek-chat"). Empty string means
                      read LLM_MODEL from env at build time.
         api_base:    API base URL. Empty string means read LLM_API_BASE from env.
+        params:      Optional provider-default request params merged into each call
+                     (for example temperature, max_tokens, or provider-specific
+                     extra_body settings such as reasoning controls).
     """
     api_key_env: str
     model: str = ""
     api_base: str = ""
+    params: Dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
@@ -90,6 +96,8 @@ class ArtifactBundle:
         adjudication_policy_ref: Reference to adjudication policy artifact
         aggregation_policy_ref: Reference to aggregation policy artifact
         explanation_policy_ref: Reference to explanation policy artifact
+        chunking_policy_ref: Optional reference to chunking policy artifact
+        scoring_context_ref: Optional reference to scoring context artifact
         prompt_refs: List of prompt template references
         source_documents: List of source documentation files
         freeze_hash: Computed hash of all artifact contents (set during resolution)
@@ -123,6 +131,10 @@ class ArtifactBundle:
 
     # Raw provider_config dict parsed from bundle YAML (structured by compiler)
     provider_config_raw: Optional[Dict[str, Any]] = None
+    # Optional chunking policy reference parsed from bundle YAML
+    chunking_policy_ref: Optional[ArtifactRef] = None
+    # Optional scoring context reference parsed from bundle YAML
+    scoring_context_ref: Optional[ArtifactRef] = None
 
     def is_frozen(self) -> bool:
         """Check if this bundle has been resolved and frozen."""
@@ -130,13 +142,18 @@ class ArtifactBundle:
 
     def get_all_refs(self) -> List[ArtifactRef]:
         """Get all artifact references in this bundle."""
-        return [
+        refs = [
             self.rubric_ref,
             self.adjudication_policy_ref,
             self.aggregation_policy_ref,
             self.explanation_policy_ref,
             *self.prompt_refs,
         ]
+        if self.chunking_policy_ref is not None:
+            refs.append(self.chunking_policy_ref)
+        if self.scoring_context_ref is not None:
+            refs.append(self.scoring_context_ref)
+        return refs
 
 
 @dataclass(frozen=True)
@@ -206,12 +223,15 @@ class PolicySnapshot:
         adjudication_policy: Parsed adjudication policy rules
         aggregation_policy: Parsed aggregation policy formulas
         explanation_policy: Parsed explanation policy requirements
+        chunking_policy: Optional chunking/coverage narrowing policy
         policy_version: Combined version string for policy snapshot
     """
     adjudication_policy: Dict[str, Any]
     aggregation_policy: Dict[str, Any]
     explanation_policy: Dict[str, Any]
     policy_version: str
+    chunking_policy: Dict[str, Any] = field(default_factory=dict)
+    scoring_context: Dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)

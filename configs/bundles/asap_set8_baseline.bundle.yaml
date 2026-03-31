@@ -27,6 +27,14 @@ artifact_bundle:
     - "prompts/evidence_extraction.yaml"
     - "prompts/scoring.yaml"
     - "prompts/explanation.yaml"
+    - "prompts/chunking.yaml"
+    - "prompts/dimension_relevance.yaml"
+
+  scoring_context_ref: "context://asap_set8_scoring/v1"
+  scoring_context_source_file: "prompts/scoring_context.yaml"
+
+  chunking_policy_ref: "policy://asap_set8_chunking/v1"
+  chunking_source_file: "policies/chunking/asap_set8_chunking.yaml"
 
   # Version Closure
   freeze_hash: "TBD"  # Computed at load time
@@ -70,12 +78,26 @@ artifact_bundle:
         model: "qwen3.5-plus"
         api_base: "https://dashscope.aliyuncs.com/compatible-mode/v1"
         api_key_env: "RATER_2_API_KEY"
+        params:
+          temperature: 0.0
+          max_tokens: 2048
+          extra_body:
+            enable_thinking: true
+            thinking_budget: 512
       rater_3:
         model: ""
         api_base: ""
         api_key_env: "RATER_3_API_KEY"
 
     stage_providers:
+      chunking:
+        model: ""
+        api_base: ""
+        api_key_env: "CHUNKING_API_KEY"
+      coverage_planning:
+        model: ""
+        api_base: ""
+        api_key_env: "COVERAGE_API_KEY"
       evidence_extraction:
         model: ""
         api_base: ""

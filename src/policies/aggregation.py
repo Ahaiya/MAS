@@ -1,4 +1,6 @@
 """
+聚合策略模块，负责按配置计算 composite 总分。
+
 Aggregation Policy — config-driven composite score computation.
 
 Evaluates the aggregation formula from PolicySnapshot configuration.

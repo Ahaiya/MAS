@@ -145,7 +145,7 @@ def _make_observation(dim_id: str) -> DimensionObservation:
             )
         ],
         observation_confidence=ObservationConfidence.HIGH,
-        uncertainty_notes="",
+        uncertainty_notes=[],
     )
 
 
@@ -305,6 +305,44 @@ class TestPromptLoaderLoad:
         tpl = self.loader.load(str(SCORING_YAML))  # str path
         assert isinstance(tpl, PromptTemplate)
 
+    def test_load_with_override_prefers_dimension_file(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            (root / "evidence_extraction.yaml").write_text(
+                "prompt_template: |\n  GLOBAL\nmetadata:\n  template_version: 'v2'\n"
+                "  compatible_dimensions: ['*']\n",
+                encoding="utf-8",
+            )
+            override_dir = root / "evidence_extraction_overrides"
+            override_dir.mkdir(parents=True, exist_ok=True)
+            (override_dir / "dim_alpha.yaml").write_text(
+                "prompt_template: |\n  OVERRIDE\nmetadata:\n  template_version: 'v2'\n"
+                "  compatible_dimensions: ['dim_alpha']\n",
+                encoding="utf-8",
+            )
+
+            tpl = self.loader.load_with_override(
+                "evidence_extraction",
+                "dim_alpha",
+                prompts_root=root,
+            )
+            assert "OVERRIDE" in tpl.template_text
+
+    def test_load_with_override_falls_back_to_global(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            (root / "evidence_extraction.yaml").write_text(
+                "prompt_template: |\n  GLOBAL\nmetadata:\n  template_version: 'v2'\n"
+                "  compatible_dimensions: ['*']\n",
+                encoding="utf-8",
+            )
+            tpl = self.loader.load_with_override(
+                "evidence_extraction",
+                "dim_missing",
+                prompts_root=root,
+            )
+            assert "GLOBAL" in tpl.template_text
+
 
 # ── PromptLoader.render() tests ───────────────────────────────────────────────
 
@@ -393,10 +431,12 @@ class TestBuildExtractionPrompt:
         return PromptTemplate(
             template_text=(
                 "Dimension: {{ dimension_name }} ({{ dimension_code }})\n"
-                "Facets: {% for f in required_facets %}{{ f }} {% endfor %}\n"
-                "Text: {{ essay_text }}"
+                "Facets: {% for f in facet_descriptions %}{{ f.facet_id }} {% endfor %}\n"
+                "Levels: {% for level in levels %}{{ level.summary }} {% endfor %}\n"
+                "Chunks: {% for c in chunks %}[{{ c.id }}]{{ c.text }} {% endfor %}\n"
+                "Min: {{ minimum_evidence_units }}"
             ),
-            metadata={"template_version": "v1", "compatible_dimensions": ["*"]},
+            metadata={"template_version": "v2", "compatible_dimensions": ["*"]},
             source_path="inline",
         )
 
@@ -420,10 +460,26 @@ class TestBuildExtractionPrompt:
         result = build_extraction_prompt(self.plan, self.doc, self.rubric, tpl)
         assert "facet_clarity" in result or "facet_depth" in result
 
-    def test_contains_essay_text(self):
+    def test_contains_chunk_text(self):
         tpl = self._get_template()
         result = build_extraction_prompt(self.plan, self.doc, self.rubric, tpl)
         assert "demonstrates" in result
+
+    def test_override_template_wins_when_present(self):
+        tpl = self._get_template()
+        override = PromptTemplate(
+            template_text="OVERRIDE {{ dimension_name }} {% for c in chunks %}[{{ c.id }}]{% endfor %}",
+            metadata={"template_version": "v2", "compatible_dimensions": ["*"]},
+            source_path="override",
+        )
+        result = build_extraction_prompt(
+            self.plan,
+            self.doc,
+            self.rubric,
+            tpl,
+            override_template=override,
+        )
+        assert "OVERRIDE" in result
 
 
 class TestBuildScoringPrompt:
@@ -432,7 +488,6 @@ class TestBuildScoringPrompt:
         self.rubric = _make_rubric(self.dim_id, "Alpha Quality")
         self.observation = _make_observation(self.dim_id)
         self.spans = [_make_evidence_span(self.dim_id)]
-        self.doc = _make_normalized_document()
         self.loader = PromptLoader()
 
     def _get_template(self) -> PromptTemplate:
@@ -442,7 +497,7 @@ class TestBuildScoringPrompt:
             template_text=(
                 "Dimension: {{ dimension_name }} ({{ dimension_code }})\n"
                 "{% for level in levels %}Level {{ level.rank }}: {{ level.summary }}\n{% endfor %}"
-                "Evidence: {% for e in evidence_spans %}{{ e.quote }} {% endfor %}"
+                "Evidence: {% for f in facet_evidence %}{{ f.facet_id }} {% endfor %}"
             ),
             metadata={"template_version": "v1", "compatible_dimensions": ["*"]},
             source_path="inline",
@@ -450,22 +505,22 @@ class TestBuildScoringPrompt:
 
     def test_returns_string(self):
         tpl = self._get_template()
-        result = build_scoring_prompt(self.observation, self.spans, self.rubric, self.doc, tpl)
+        result = build_scoring_prompt(self.observation, self.spans, self.rubric, tpl)
         assert isinstance(result, str)
 
     def test_non_empty(self):
         tpl = self._get_template()
-        result = build_scoring_prompt(self.observation, self.spans, self.rubric, self.doc, tpl)
+        result = build_scoring_prompt(self.observation, self.spans, self.rubric, tpl)
         assert len(result.strip()) > 0
 
     def test_contains_dimension_name(self):
         tpl = self._get_template()
-        result = build_scoring_prompt(self.observation, self.spans, self.rubric, self.doc, tpl)
+        result = build_scoring_prompt(self.observation, self.spans, self.rubric, tpl)
         assert "Alpha Quality" in result
 
     def test_contains_level_info(self):
         tpl = self._get_template()
-        result = build_scoring_prompt(self.observation, self.spans, self.rubric, self.doc, tpl)
+        result = build_scoring_prompt(self.observation, self.spans, self.rubric, tpl)
         assert "Minimal" in result or "Developing" in result or "Adequate" in result
 
 
@@ -474,6 +529,7 @@ class TestBuildExplanationPrompt:
         self.dim_id = "dim_alpha"
         self.rubric = _make_rubric(self.dim_id, "Alpha Quality")
         self.decision = _make_final_decision(self.dim_id, 2)
+        self.observation = _make_observation(self.dim_id)
         self.spans = [_make_evidence_span(self.dim_id)]
         self.loader = PromptLoader()
 
@@ -493,22 +549,46 @@ class TestBuildExplanationPrompt:
 
     def test_returns_string(self):
         tpl = self._get_template()
-        result = build_explanation_prompt(self.decision, self.spans, self.rubric, tpl)
+        result = build_explanation_prompt(
+            self.decision,
+            self.observation,
+            self.spans,
+            self.rubric,
+            tpl,
+        )
         assert isinstance(result, str)
 
     def test_non_empty(self):
         tpl = self._get_template()
-        result = build_explanation_prompt(self.decision, self.spans, self.rubric, tpl)
+        result = build_explanation_prompt(
+            self.decision,
+            self.observation,
+            self.spans,
+            self.rubric,
+            tpl,
+        )
         assert len(result.strip()) > 0
 
     def test_contains_dimension_name(self):
         tpl = self._get_template()
-        result = build_explanation_prompt(self.decision, self.spans, self.rubric, tpl)
+        result = build_explanation_prompt(
+            self.decision,
+            self.observation,
+            self.spans,
+            self.rubric,
+            tpl,
+        )
         assert "Alpha Quality" in result
 
     def test_contains_score(self):
         tpl = self._get_template()
-        result = build_explanation_prompt(self.decision, self.spans, self.rubric, tpl)
+        result = build_explanation_prompt(
+            self.decision,
+            self.observation,
+            self.spans,
+            self.rubric,
+            tpl,
+        )
         assert "2" in result
 
 

@@ -51,6 +51,11 @@ from src.config.schema import (
     # Prompt
     PromptMetadataSchema,
     PromptFileSchema,
+    ScoringContextFileSchema,
+    # Chunking
+    ChunkingPolicyFileSchema,
+    # Bundle
+    BundleFileSchema,
 )
 
 CONFIGS_ROOT = Path("configs")
@@ -301,6 +306,26 @@ class TestTriggerSchema:
         assert trigger.pattern is not None
         assert trigger.exclusions == ["voice", "word_choice"]
 
+    def test_adjacent_drift_trigger_pattern(self):
+        trigger = TriggerSchema(
+            trigger_id="systematic_adjacent_drift",
+            type="adjacent_drift",
+            applies_to_dimensions=["*"],
+            description="Adjacent drift rule.",
+            pattern={
+                "score_gap": 1,
+                "min_matching_dimensions": 3,
+                "require_same_direction": True,
+            },
+            exclusions=[],
+            action="invoke_resolution",
+            priority=3,
+        )
+        assert trigger.pattern is not None
+        assert trigger.pattern.score_gap == 1
+        assert trigger.pattern.min_matching_dimensions == 3
+        assert trigger.pattern.require_same_direction is True
+
     def test_extra_field_rejected(self):
         with pytest.raises(ValidationError):
             TriggerSchema(
@@ -321,10 +346,12 @@ class TestAdjudicationFileSchema:
         schema = AdjudicationFileSchema(**data)
         assert schema.schema_version == "2.0"
         assert schema.adjudication_policy.policy_id == "asap_set8_default_adjudication"
-        assert len(schema.adjudication_policy.triggers) == 2
-        # First trigger uses threshold, second uses pattern
+        assert len(schema.adjudication_policy.triggers) == 3
+        # First trigger uses threshold, second/third use pattern payloads
         assert schema.adjudication_policy.triggers[0].threshold is not None
         assert schema.adjudication_policy.triggers[1].pattern is not None
+        assert schema.adjudication_policy.triggers[2].type == "adjacent_drift"
+        assert schema.adjudication_policy.triggers[2].pattern is not None
 
     def test_extra_field_rejected(self):
         with pytest.raises(ValidationError):
@@ -486,14 +513,46 @@ class TestPromptFileSchema:
         path = CONFIGS_ROOT / "prompts/evidence_extraction.yaml"
         data = yaml.safe_load(path.read_text())
         schema = PromptFileSchema(**data)
-        assert schema.metadata.template_version == "v1"
+        assert schema.metadata.template_version == "v2"
         assert "{{ dimension_name }}" in schema.prompt_template
 
     def test_validates_scoring_prompt(self):
         path = CONFIGS_ROOT / "prompts/scoring.yaml"
         data = yaml.safe_load(path.read_text())
         schema = PromptFileSchema(**data)
-        assert schema.metadata.template_version == "v2"
+        assert schema.metadata.template_version == "v3"
+
+
+# ── Chunking Policy Schema Tests ──────────────────────────────────────────────
+
+
+class TestChunkingPolicyFileSchema:
+    def test_validates_actual_chunking_policy_yaml(self):
+        path = CONFIGS_ROOT / "policies/chunking/asap_set8_chunking.yaml"
+        data = yaml.safe_load(path.read_text())
+        schema = ChunkingPolicyFileSchema(**data)
+        assert schema.schema_version == "2.0"
+        assert schema.chunking_policy.policy_id == "asap_set8_chunking_v1"
+        assert schema.chunking_policy.document_processing.token_threshold == 4000
+
+
+# ── Bundle Schema Tests ───────────────────────────────────────────────────────
+
+
+class TestBundleFileSchema:
+    def test_validates_baseline_bundle_yaml(self):
+        path = CONFIGS_ROOT / "bundles/asap_set8_baseline.bundle.yaml"
+        data = yaml.safe_load(path.read_text())
+        schema = BundleFileSchema(**data)
+        assert schema.artifact_bundle.provider_config is not None
+        stage_keys = set(schema.artifact_bundle.provider_config.stage_providers.keys())
+        assert "chunking" in stage_keys
+        assert "coverage_planning" in stage_keys
+        r2 = schema.artifact_bundle.provider_config.rater_providers["rater_2"]
+        assert r2.params["temperature"] == 0.0
+        assert r2.params["extra_body"]["thinking_budget"] == 512
+        assert schema.artifact_bundle.scoring_context_source_file == "prompts/scoring_context.yaml"
+        assert schema.artifact_bundle.chunking_source_file == "policies/chunking/asap_set8_chunking.yaml"
 
 
 # ── Cross-Config Validation ───────────────────────────────────────────────────
@@ -529,4 +588,7 @@ class TestAllActualConfigs:
     def test_all_prompt_files(self):
         for prompt_path in (CONFIGS_ROOT / "prompts").glob("*.yaml"):
             data = yaml.safe_load(prompt_path.read_text())
-            PromptFileSchema(**data)
+            if prompt_path.name == "scoring_context.yaml":
+                ScoringContextFileSchema(**data)
+            else:
+                PromptFileSchema(**data)

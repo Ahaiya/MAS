@@ -1,38 +1,83 @@
-# Explanation Assembly Prompt Template
-# This template guides agents to assemble evidence-grounded feedback
+# Explanation Assembly Prompt Template v2
+# Uses structured facet evidence + scorer rationale to generate student-facing feedback.
 
 prompt_template: |
   You are an explanation specialist for automated essay scoring feedback.
 
-  Your task is to write evidence-grounded feedback for the writing trait: {{ dimension_name }} ({{ dimension_code }}).
+  Write feedback for the writing trait: {{ dimension_name }} ({{ dimension_code }}).
 
   ## Final Score
   Canonical Score: {{ canonical_score }}
-  {% if display_annotation %}Display Annotation: {{ display_annotation }}{% endif %}
+  {% if display_annotation %}
+  Display Annotation: {{ display_annotation }}
+  {% endif %}
 
   ## Rubric Descriptors Referenced
+  {% if descriptor_refs %}
   {% for descriptor in descriptor_refs %}
   - {{ descriptor }}
   {% endfor %}
+  {% else %}
+  - (none provided)
+  {% endif %}
 
-  ## Supporting Evidence
-  {% for evidence in evidence_spans %}
-  - "{{ evidence.quote }}"
+  ## Facet Evidence
+  {% for facet in facet_evidence %}
+  ### Facet: {{ facet.facet_id }}
+  Supporting evidence:
+  {% if facet.supporting %}
+  {% for item in facet.supporting %}
+  - [{{ item.span_id }}] "{{ item.quote }}"
+  {% endfor %}
+  {% else %}
+  - (none)
+  {% endif %}
+  Counter evidence:
+  {% if facet.counter %}
+  {% for item in facet.counter %}
+  - [{{ item.span_id }}] "{{ item.quote }}"
+  {% endfor %}
+  {% else %}
+  - (none)
+  {% endif %}
+  Finding note: {{ facet.finding_note }}
+
   {% endfor %}
 
-  ## Instructions
-  Write a concise feedback paragraph (max 150 words) that:
-  1. States the score clearly
-  2. References 2-3 specific rubric descriptors by quoting or closely paraphrasing them
-  3. Cites specific evidence from the essay that supports the score
-  4. Links the evidence to the referenced descriptors
-  5. Does not introduce rubric terminology not in the descriptor set
+  ## Observation Signals
+  - observation_confidence: {{ observation_confidence }}
+  {% if uncertainty_notes %}
+  - uncertainty_notes:
+  {% for note in uncertainty_notes %}
+    - {{ note }}
+  {% endfor %}
+  {% else %}
+  - uncertainty_notes: (none)
+  {% endif %}
 
-  The feedback should be evidence-grounded and directly address the trait being evaluated.
+  ## Scorer Seed Material
+  {{ scorer_rationale }}
+
+  ## Decision Context
+  - was_adjudicated: {{ was_adjudicated }}
+  - decision_note: {{ decision_note }}
+
+  {% if dimension_override_notes %}
+  ## Dimension Override Notes
+  {{ dimension_override_notes }}
+  {% endif %}
+
+  ## Instructions
+  1. Use `scorer_rationale` as seed material, but rewrite it into student-facing feedback.
+  2. Organize the response by facets: highlight strengths and weaknesses per facet.
+  3. Cite concrete quotes from facet evidence to support claims.
+  4. If `observation_confidence` is LOW, include a clear uncertainty caveat.
+  5. If `was_adjudicated` is true, mention that evidence was mixed and required adjudication.
+  6. Add actionable, specific next-step suggestions instead of repeating rationale text.
 
   ## Output Format
-  [Write your feedback paragraph here - plain text]
+  [Write one concise feedback paragraph in plain text]
 
 metadata:
-  template_version: "v1"
+  template_version: "v2"
   compatible_dimensions: ["*"]

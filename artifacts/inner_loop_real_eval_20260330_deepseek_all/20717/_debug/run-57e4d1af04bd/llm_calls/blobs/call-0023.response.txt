@@ -1,0 +1,15 @@
+{
+  "proposed_score": 3,
+  "descriptor_refs": [
+    "Mechanical rather than fluid; occasional awkwardness.",
+    "good control over simple sentences, little over complex",
+    "lapses in stylistic control"
+  ],
+  "evidence_ids": [
+    "span-ext-cfb97af8fbda",
+    "span-ext-16a5ab589029",
+    "span-ext-72c844d85134"
+  ],
+  "confidence": 0.9,
+  "justification": "The essay demonstrates attempts at sentence variety (span-ext-72c844d85134), but frequent structural errors such as run-on sentences and comma splices (span-ext-cfb97af8fbda, span-ext-16a5ab589029) disrupt the flow. With 8 counter-evidence spans for structural control and flow rhythm versus only 4 supporting, the writing exhibits 'lapses in stylistic control' and 'little [control] over complex' sentences, aligning with Score 3 rather than the stronger control required for Score 4."
+}

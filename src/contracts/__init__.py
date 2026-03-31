@@ -1,4 +1,6 @@
 """
+契约层入口，集中定义流水线阶段之间传递的 typed contract。
+
 MAS Evaluation Engine - Contracts Package
 
 This package contains all data contracts used by the Multi-Agent System.

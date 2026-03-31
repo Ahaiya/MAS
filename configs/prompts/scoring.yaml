@@ -1,12 +1,11 @@
-# Scoring Prompt Template
-# This template guides agents to assign scores based on rubric descriptors
-
 prompt_template: |
-  You are a trained essay scorer using the ASAP Set 8 writing rubric.
+  {{ role_description }}
 
-  Your task is to score the essay for the writing trait: {{ dimension_name }} ({{ dimension_code }}).
+  Your task is to score the writing trait: {{ dimension_name }} ({{ dimension_code }}).
+  You must score only from the structured evidence below. Do not use any outside
+  assumptions or essay content that is not present in this prompt.
 
-  ## Rubric Scale (1-6)
+  ## Rubric Levels
   {% for level in levels %}
   **Score {{ level.rank }}: {{ level.summary }}**
   {% for descriptor in level.descriptors %}
@@ -15,149 +14,81 @@ prompt_template: |
 
   {% endfor %}
 
-  ## Score Anchoring Examples
-  The following expert-scored examples illustrate what each score level looks like in practice.
-  Use these as calibration anchors when selecting your score.
+  ## Facet Evidence
+  {% for facet in facet_evidence %}
+  ### Facet: {{ facet.facet_id }}
+  Supporting evidence:
+  {% if facet.supporting %}
+  {% for item in facet.supporting %}
+  - [{{ item.span_id }}] "{{ item.quote }}"
+  {% endfor %}
+  {% else %}
+  - (none)
+  {% endif %}
 
-  **Important — Voice scores in these anchors:** Each example essay happened to be
-  particularly strong in Voice relative to its other traits. Voice scores in the anchors
-  below are 1–2 levels above the overall anchor quality level. Do NOT treat this as a
-  general rule. When scoring the current essay, evaluate Voice independently on its own
-  rubric descriptors — do not add a bonus to Voice based on the overall essay quality.
+  Counter evidence:
+  {% if facet.counter %}
+  {% for item in facet.counter %}
+  - [{{ item.span_id }}] "{{ item.quote }}"
+  {% endfor %}
+  {% else %}
+  - (none)
+  {% endif %}
 
-  **Score 5 anchor — "The Jump" (narrative about peer pressure)**
-  Ideas & Content 5: Writing is clear, focused, and interesting; supporting details are relevant and carefully
-    selected; makes connections and shares insights (friend's death reveals cost of peer pressure).
-  Organization 5: Strong chronological sequencing with effective paragraph breaks; inviting beginning;
-    satisfying resolution that ties back to the opening; smooth transitions throughout.
-  Voice 6: Deep commitment to topic; exceptional sense of "writing to be read"; dialogue and reflection
-    feel authentic and draw the reader in.
-  Word Choice 5: Vocabulary is natural and not overdone; words evoke clear images
-    (e.g., "infinite silence," "white gargantuan cantilever bridge").
-  Sentence Fluency 5: Easy flow and rhythm; sentence structure enhances meaning
-    (e.g., "Then he jumped." — powerful short sentence); dialogue sounds natural.
-  Conventions 5: Strong control of standard conventions; effective punctuation guides the reader
-    through dialogue; correct spelling, capitalization, grammar, and usage throughout.
+  Finding note: {{ facet.finding_note }}
 
-  **Score 4 anchor — "Student Council" (narrative about a friend's election)**
-  Ideas & Content 4: Writing is clear and focused; main idea easy to understand; supporting details
-    are relevant but not particularly insightful.
-  Organization 4: Clear and coherent; recognizable beginning and conclusion (though not particularly
-    inviting); body easy to follow; paragraph breaks correct; somewhat formulaic.
-  Voice 5: Writer seems aware of the reader; expressive and sincere retelling; reader discerns
-    the writer behind the words.
-  Word Choice 4: Words effectively convey the message; variety is functional and appropriate
-    (e.g., "endless responsibilities," "dirty politics").
-  Sentence Fluency 4: Writing flows; some variety in sentence patterns; some repeated patterns
-    detract slightly from overall impact.
-  Conventions 4: Control of standard conventions; correct end-of-sentence punctuation; internal
-    punctuation sometimes incorrect; spelling usually correct but a few errors begin to distract;
-    errors do not impede readability.
-
-  **Score 3 anchor — "A New Truck" (narrative about missing Homecoming to save money)**
-  Ideas & Content 4-/3: Writing is clear; main idea understandable; support is present but limited;
-    details are functional but not insightful; somewhat predictable or generic.
-  Organization 4-/3: Clear and coherent but almost skeletal; sequencing clear; beginning and ending
-    recognizable but not particularly inviting; overall structure thin.
-  Voice 4: Writer seems committed; sincere in places; reader can glimpse writer behind the words.
-  Word Choice 3: Language lacks precision and variety; generic paper filled with familiar words;
-    slang not effective ("sucked"); words work but rarely capture reader's interest.
-  Sentence Fluency 3: Tends to be mechanical rather than fluid; some variety in structure but
-    little variety in length; sentences functional but lack energy.
-  Conventions 3: Limited control; end-of-sentence punctuation usually correct; internal punctuation
-    has frequent errors; spelling errors distract the reader; missing apostrophes in contractions;
-    significant need for editing.
-
-  **Score 2 anchor — "A Job Makes You Pay" (narrative about school and career aspirations)**
-  Ideas & Content 3-: Reader can understand main ideas but they are simplistic; supporting detail
-    often limited and overly general; difficulties moving from general observations to specifics.
-  Organization 3-: Attempt to organize but overall structure is skeletal; beginning undeveloped;
-    conclusion does not complement beginning; transitions attempted.
-  Voice 4: Voice is present; writer seems committed; sincere in places; reader can glimpse the writer.
-  Word Choice 3: Language lacks precision; generic paper filled with familiar words; words work
-    and are accurate but not purposeful.
-  Sentence Fluency 3: Mechanical rather than fluid; awkward constructions force reader to slow down
-    or reread; good control over simple sentences but little control over complex sentences.
-  Conventions 2: Little control of standard conventions; many end-of-sentence punctuation errors;
-    frequent internal punctuation errors; spelling errors frequently distract; incorrect capitalization;
-    errors in grammar and usage; frequent significant errors impede readability.
-
-  ## Important: Text Anonymization
-  This essay has been processed to protect student privacy. Certain identifying information has been
-  replaced with placeholder tokens using the format @CATEGORY or @CATEGORYn. These replacements
-  are NOT writing errors and must NOT be penalized under any dimension, especially Conventions.
-
-  Placeholder types and their meaning:
-  - @PERSON1, @PERSON2, ... → real person names (classmates, family members, etc.)
-  - @CAPS1, @CAPS2, ...     → words originally written in ALL CAPS for emphasis
-  - @NUM1, @NUM2, ...       → specific numbers (ages, dates, quantities)
-  - @LOCATION1, ...         → place names (cities, schools, parks, etc.)
-  - @ORGANIZATION1, ...     → organization or brand names
-
-  When evaluating Conventions: treat all @-placeholder tokens as correctly spelled, correctly
-  capitalized proper nouns. Do not flag them as capitalization errors, unknown words, or
-  formatting issues. Judge only the student's own writing choices.
-
-  ## Scoring Calibration
-  Avoid the common error of scoring too conservatively. Use the full 1–6 scale:
-  - A score of 4 means "clear, coherent, and functional" — NOT "excellent." Many competent
-    student essays belong at 4, not 3.
-  - Reserve score 3 for writing that is noticeably limited: predictable ideas, skeletal structure,
-    mechanical sentences, or language that rarely engages the reader.
-  - Reserve score 2 for writing where errors or weaknesses actively impede understanding.
-  - If the essay is functional and communicates clearly with only minor weaknesses, lean toward 4.
-  - If you are deciding between two adjacent scores, ask: "Does this essay show control and
-    intentionality?" If yes, choose the higher score.
-
-  **Voice (V) — Calibration guard-rails (apply only when scoring this trait):**
-  All essays in this dataset are personal narratives; a casual first-person register is
-  the baseline, not evidence of strong voice. Use these thresholds:
-  - Score 3: Voice appears in isolated moments but is inconsistent — the writer's
-    personality surfaces occasionally then shifts, fades, or disappears. This is the
-    correct score for most typical student essays in this set.
-  - Score 4: Voice is consistently present throughout most of the essay; the reader can
-    reliably sense the writer's presence, not just in one or two sentences. Requires
-    evidence of consistent audience awareness.
-  - Score 5: Strong, sustained voice with clear, intentional audience awareness
-    throughout — originality or liveliness that stands out consistently, not just in
-    a few lively phrases.
-  - Score 6: Exceptional, deep commitment; every paragraph reflects a distinctive,
-    controlled voice aimed directly at the reader.
-  Do NOT inflate Voice simply because the essay uses informal tone, humor in one passage,
-  or energetic language in a few lines. Verify consistency across the whole essay.
-
-  ## Essay Text
-  {{ essay_text }}
-
-  ## Evidence Summary
-  {% for evidence in evidence_spans %}
-  - "{{ evidence.quote }}" (supports {{ evidence.facets|join(', ') }})
   {% endfor %}
 
+  ## Observation Confidence
+  {{ observation_confidence }}
+  {% if uncertainty_notes %}
+  Uncertainty notes:
+  {% for note in uncertainty_notes %}
+  - {{ note }}
+  {% endfor %}
+  {% endif %}
+
+  {% if score_anchors %}
+  ## Dimension-Specific Score Anchors
+  {% for anchor in score_anchors %}
+  - {{ anchor.title }} (anchor target {{ anchor.target_score }}, this dimension {{ anchor.dimension_score }}): {{ anchor.note }}
+  {% endfor %}
+  {% endif %}
+
+  {% if dataset_notes %}
+  {{ dataset_notes }}
+  {% endif %}
+
+  {% if calibration_notes %}
+  {{ calibration_notes }}
+  {% endif %}
+
+  {% if dimension_override_notes %}
+  ## Dimension Override
+  {{ dimension_override_notes }}
+  {% endif %}
+
   ## Instructions
-  1. Review the rubric scale descriptors carefully.
-  2. Use the score anchoring examples above to calibrate your judgment.
-  3. Consider the evidence provided and the essay as a whole.
-  4. Select the score (1-6) that best matches the essay's performance on this trait.
-  5. Reference specific descriptors from the rubric in your justification.
-  6. Link your decision to specific evidence from the essay.
-  7. Do not penalize @-placeholder tokens in any dimension.
+  1. Score only from the provided facet evidence and rubric descriptors.
+  2. Do not cite or infer evidence that is not explicitly listed in Facet Evidence.
+  3. If any facet has no supporting and no counter evidence, explicitly state:
+     "insufficient evidence for facet <facet_id>" in justification.
+  4. If `observation_confidence` is LOW, reduce your own confidence and explain
+     the uncertainty source in justification.
+  5. Keep justification concise and tie it directly to descriptor_refs + evidence_ids.
+  6. Return exactly one JSON object with no Markdown fences, no preamble, and no trailing notes.
+  7. Keep `descriptor_refs` to at most 3 items and `evidence_ids` to at most 4 decisive spans.
+  8. Keep `justification` short and concrete, ideally no more than 80 words.
 
   ## Output Format (JSON)
   {
     "proposed_score": integer,
-    "descriptor_refs": [
-      "exact text of 2-3 relevant descriptors"
-    ],
-    "evidence_ids": [
-      "ids of evidence that support this score"
-    ],
+    "descriptor_refs": ["exact text of relevant descriptors"],
+    "evidence_ids": ["span-01", "span-03"],
     "confidence": float,
     "justification": "brief explanation linking score to descriptors and evidence"
   }
 
-  Score based on the rubric descriptors. Your score must be between 1 and 6.
-
 metadata:
-  template_version: "v2"
+  template_version: "v3"
   compatible_dimensions: ["*"]

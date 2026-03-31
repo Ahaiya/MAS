@@ -1,4 +1,6 @@
 """
+OpenAI 兼容 Provider 适配器，负责对接兼容 Chat Completions 的网关。
+
 OpenAI-compatible provider adapter.
 
 Supports any API endpoint that follows the OpenAI Chat Completions interface,
@@ -51,6 +53,7 @@ class OpenAICompatibleProvider(BaseProvider):
         api_key: str,
         model_id: str,
         api_base: Optional[str] = None,
+        default_params: Optional[Dict[str, Any]] = None,
         timeout: float = _DEFAULT_TIMEOUT,
         max_retries: int = _DEFAULT_MAX_RETRIES,
         retry_delay: float = _DEFAULT_RETRY_DELAY,
@@ -58,6 +61,7 @@ class OpenAICompatibleProvider(BaseProvider):
         self._api_key = api_key
         self._model_id = model_id
         self._api_base = api_base
+        self._default_params = dict(default_params or {})
         self._timeout = timeout
         self._max_retries = max_retries
         self._retry_delay = retry_delay
@@ -98,8 +102,9 @@ class OpenAICompatibleProvider(BaseProvider):
             "model": request.model_id or self._model_id,
             "messages": messages,
         }
-        if request.params:
-            call_kwargs.update(request.params)
+        merged_params = _merge_params(self._default_params, request.params)
+        if merged_params:
+            call_kwargs.update(merged_params)
         if request.output_schema is not None:
             call_kwargs["response_format"] = {"type": "json_object"}
 
@@ -179,3 +184,24 @@ class OpenAICompatibleProvider(BaseProvider):
             provider_name=self.name,
             model_id=request.model_id or self._model_id,
         )
+
+
+def _merge_params(
+    default_params: Dict[str, Any],
+    request_params: Dict[str, Any],
+) -> Dict[str, Any]:
+    """Merge provider defaults with per-request overrides.
+
+    Request params win. When both sides provide nested dicts (for example
+    ``extra_body``), merge that level as well so a retry can override only the
+    specific nested key it needs.
+    """
+    merged: Dict[str, Any] = dict(default_params or {})
+    for key, value in (request_params or {}).items():
+        if isinstance(merged.get(key), dict) and isinstance(value, dict):
+            nested = dict(merged[key])
+            nested.update(value)
+            merged[key] = nested
+        else:
+            merged[key] = value
+    return merged

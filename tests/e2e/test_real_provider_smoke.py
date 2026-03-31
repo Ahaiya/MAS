@@ -147,12 +147,12 @@ class TestRealExtractionSmoke:
         resolved = resolve_bundle(_BUNDLE_PATH)
         rubric = resolved.rubric_snapshot
 
-        from src.agents import coverage, preprocess
+        from src.agents import coverage, deterministic_chunker
         from src.contracts.request_models import EvaluationRequest
 
         raw_text = _SAMPLE_PATH.read_text(encoding="utf-8")
         req = EvaluationRequest(raw_text=raw_text, bundle_ref="smoke")
-        _, document = preprocess.run(req)
+        _, document = deterministic_chunker.run(req)
         plans = coverage.run(document, rubric)
 
         loader = PromptLoader()

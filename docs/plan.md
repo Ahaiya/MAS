@@ -74,8 +74,8 @@ MVP 成功标准：
 
 - [x] 创建基础运行脚本入口  
   输入: baseline 主链路目标、CLI 参数需求  
-  输出: `scripts/run_baseline.py`，支持 `--bundle`、`--provider`、`--input-file`、`--output-dir` 参数；`scripts/extract_sample.py`，支持从 TSV 提取样例  
-  验收: `python scripts/run_baseline.py --help && python scripts/extract_sample.py --help`  
+  输出: `tests/scripts/run_baseline.py`，支持 `--bundle`、`--provider`、`--input-file`、`--output-dir` 参数；`scripts/extract_sample.py` 为历史样例提取工具，当前仓库已移除  
+  验收: `python tests/scripts/run_baseline.py --help`  
   依赖: 项目元数据、测试骨架
 
 - [x] 从 `data/training_set_8.tsv` 提取 baseline 样例与 manifest  
@@ -185,7 +185,7 @@ MVP 成功标准：
 
 - [x] 实现 pipeline runner 与 CLI 主入口
   输入: 状态机骨架、mock workers、样例 manifest
-  输出: `src/pipeline/runner.py`、`src/pipeline/validators.py`、`scripts/run_baseline.py` 的可运行 mock 模式
+  输出: `src/pipeline/runner.py`、`src/pipeline/validators.py`、`tests/scripts/run_baseline.py` 的可运行 mock 模式
   验收: `python -m pytest tests/integration/test_mock_pipeline.py`
   依赖: mock workers、checkpoint hooks
 
@@ -262,7 +262,7 @@ MVP 成功标准：
 - [x] 打通至少一条真实 provider smoke path
   输入: 有效的 provider 凭据、`data/samples/sample_20716.txt`、baseline bundle  
   输出: `tests/e2e/test_real_provider_smoke.py`、真实调用产生的运行工件  
-  验收: `python -m pytest tests/e2e/test_real_provider_smoke.py -m real && python scripts/run_baseline.py --bundle configs/bundles/asap_set8_baseline.bundle.yaml --provider real --input-file data/samples/sample_20716.txt --output-dir artifacts/provider_smoke/sample_20716_real`  
+  验收: `python -m pytest tests/e2e/test_real_provider_smoke.py -m real && python tests/scripts/run_baseline.py --bundle configs/bundles/asap_set8_baseline.bundle.yaml --provider real --input-file data/samples/sample_20716.txt --output-dir artifacts/provider_smoke/sample_20716_real`  
   依赖: structured output guardrails
 
 - [x] 证明真实 provider 接入没有破坏 `mock` baseline
@@ -279,19 +279,19 @@ MVP 成功标准：
 - [x] 用普通路径样例完整跑通 baseline
   输入: `data/samples/sample_20716.txt`、baseline bundle、`mock` provider  
   输出: `artifacts/baseline/20716/mock/` 下的结构化结果、trace、intermediate states、feedback  
-  验收: `python scripts/run_baseline.py --bundle configs/bundles/asap_set8_baseline.bundle.yaml --provider mock --input-file data/samples/sample_20716.txt --output-dir artifacts/baseline/20716/mock`  
+  验收: `python tests/scripts/run_baseline.py --bundle configs/bundles/asap_set8_baseline.bundle.yaml --provider mock --input-file data/samples/sample_20716.txt --output-dir artifacts/baseline/20716/mock`  
   依赖: Phase 5 完成
 
 - [x] 用冲突样例触发 adjudication 路径
   输入: `data/samples/sample_20717.txt`、baseline bundle、`mock` provider  
   输出: `artifacts/baseline/20717/mock/` 下含 `ConflictRecord`、`AdjudicationRecord` 的结构化结果  
-  验收: `python scripts/run_baseline.py --bundle configs/bundles/asap_set8_baseline.bundle.yaml --provider mock --input-file data/samples/sample_20717.txt --output-dir artifacts/baseline/20717/mock`  
+  验收: `python tests/scripts/run_baseline.py --bundle configs/bundles/asap_set8_baseline.bundle.yaml --provider mock --input-file data/samples/sample_20717.txt --output-dir artifacts/baseline/20717/mock`  
   依赖: 普通路径样例已通过
 
 - [x] 校验输出 schema、trace closure 与 terminal validation
   输入: Phase 6 运行产物、全部 contract schema  
-  输出: `scripts/validate_run.py`、验证通过的 run 报告  
-  验收: `python scripts/validate_run.py --run-dir artifacts/baseline/20716/mock && python scripts/validate_run.py --run-dir artifacts/baseline/20717/mock --require-adjudication`  
+  输出: `tests/scripts/validate_run.py`、验证通过的 run 报告  
+  验收: `python tests/scripts/validate_run.py --run-dir artifacts/baseline/20716/mock && python tests/scripts/validate_run.py --run-dir artifacts/baseline/20717/mock --require-adjudication`  
   依赖: 两条 baseline 运行产物
 
 - [x] 导出 baseline golden snapshots
@@ -302,8 +302,8 @@ MVP 成功标准：
 
 - [x] 汇总单一 baseline 验收入口
   输入: baseline manifest、run validator、snapshot tests  
-  输出: `scripts/accept_baseline.py`  
-  验收: `python scripts/accept_baseline.py --bundle configs/bundles/asap_set8_baseline.bundle.yaml --manifest data/samples/baseline_manifest.yaml --provider mock`  
+  输出: `tests/scripts/accept_baseline.py`  
+  验收: `python tests/scripts/accept_baseline.py --bundle configs/bundles/asap_set8_baseline.bundle.yaml --manifest data/samples/baseline_manifest.yaml --provider mock`  
   依赖: golden snapshots、run validator
 
 阶段退出条件：至少一条 normal path 与一条 adjudication path 在 `mock` 模式下完整通过并生成 golden snapshots；存在单一 baseline 验收命令。  
@@ -313,7 +313,7 @@ MVP 成功标准：
 
 - [x] 创建 regression test entry 与 replay script
   输入: golden snapshots、trace metadata、baseline manifest  
-  输出: `scripts/replay_run.py`、`scripts/compare_snapshot.py`、`tests/integration/test_replay_and_regression.py`  
+  输出: `tests/scripts/replay_run.py`、`tests/scripts/compare_snapshot.py`、`tests/integration/test_replay_and_regression.py`  
   验收: `python -m pytest tests/integration/test_replay_and_regression.py`  
   依赖: Phase 6 完成
 
@@ -337,8 +337,8 @@ MVP 成功标准：
 
 - [x] 将统一验收入口升级为 baseline 回归入口
   输入: baseline manifest、snapshot 比对、可选真实 provider smoke  
-  输出: 支持回归模式的 `scripts/accept_baseline.py`  
-  验收: `python scripts/accept_baseline.py --bundle configs/bundles/asap_set8_baseline.bundle.yaml --manifest data/samples/baseline_manifest.yaml --provider mock --check-snapshots`  
+  输出: 支持回归模式的 `tests/scripts/accept_baseline.py`  
+  验收: `python tests/scripts/accept_baseline.py --bundle configs/bundles/asap_set8_baseline.bundle.yaml --manifest data/samples/baseline_manifest.yaml --provider mock --check-snapshots`  
   依赖: replay、compare snapshot、iteration guardrails
 
 阶段退出条件：后续 prompt/agent 优化已被 baseline snapshot、replay、QWK-ready export 与 consistency hooks 保护；若优化回归，能被统一入口立即拦截。  
@@ -349,13 +349,13 @@ MVP 成功标准：
 - [ ] 使用样例学生文本，完整跑通 `mock` 模式 MAS  
   输入: `data/samples/baseline_manifest.yaml`、baseline bundle、`MockProvider`  
   输出: manifest 内全部样例的运行工件  
-  验收: `python scripts/accept_baseline.py --bundle configs/bundles/asap_set8_baseline.bundle.yaml --manifest data/samples/baseline_manifest.yaml --provider mock`  
+  验收: `python tests/scripts/accept_baseline.py --bundle configs/bundles/asap_set8_baseline.bundle.yaml --manifest data/samples/baseline_manifest.yaml --provider mock`  
   依赖: Phase 6 完成
 
 - [ ] 验证输出结构满足 schema  
   输入: `artifacts/baseline/` 运行工件、全部 contract schema  
   输出: schema validation 报告  
-  验收: `python scripts/validate_run.py --run-dir artifacts/baseline/20716/mock && python scripts/validate_run.py --run-dir artifacts/baseline/20717/mock --require-adjudication`  
+  验收: `python tests/scripts/validate_run.py --run-dir artifacts/baseline/20716/mock && python tests/scripts/validate_run.py --run-dir artifacts/baseline/20717/mock --require-adjudication`  
   依赖: baseline 运行工件已生成
 
 - [ ] 验证 evidence / descriptor / score 引用链闭合  
@@ -367,19 +367,19 @@ MVP 成功标准：
 - [ ] 验证 adjudication / aggregation 路径至少可被触发一次  
   输入: `sample_20717` 运行工件、adjudication/aggregation policy 配置  
   输出: 含触发记录的校验结果  
-  验收: `python -m pytest tests/e2e/test_baseline_snapshots.py -k adjudication && python scripts/validate_run.py --run-dir artifacts/baseline/20717/mock --require-adjudication`  
+  验收: `python -m pytest tests/e2e/test_baseline_snapshots.py -k adjudication && python tests/scripts/validate_run.py --run-dir artifacts/baseline/20717/mock --require-adjudication`  
   依赖: adjudication path 已打通
 
 - [ ] 验证 `mock` 与 `real` provider 模式都可执行  
   输入: baseline bundle、样例文本、provider 配置  
   输出: `mock` 与 `real` 两种运行工件  
-  验收: `python scripts/accept_baseline.py --bundle configs/bundles/asap_set8_baseline.bundle.yaml --manifest data/samples/baseline_manifest.yaml --provider mock && python -m pytest tests/e2e/test_real_provider_smoke.py -m real`  
+  验收: `python tests/scripts/accept_baseline.py --bundle configs/bundles/asap_set8_baseline.bundle.yaml --manifest data/samples/baseline_manifest.yaml --provider mock && python -m pytest tests/e2e/test_real_provider_smoke.py -m real`  
   依赖: Phase 5 与 Phase 6 完成
 
 - [ ] 形成统一 baseline 验收命令  
   输入: manifest、snapshot、run validator、可选 real smoke  
   输出: 团队统一使用的单一命令  
-  验收: `python scripts/accept_baseline.py --bundle configs/bundles/asap_set8_baseline.bundle.yaml --manifest data/samples/baseline_manifest.yaml --provider mock --check-snapshots`  
+  验收: `python tests/scripts/accept_baseline.py --bundle configs/bundles/asap_set8_baseline.bundle.yaml --manifest data/samples/baseline_manifest.yaml --provider mock --check-snapshots`  
   依赖: 所有 integration 与 baseline tests 已就位
 
 ## 12. Definition of Done

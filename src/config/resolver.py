@@ -1,4 +1,6 @@
 """
+配置引用解析器，负责把 bundle 中的相对引用解析为可验证的工件路径。
+
 Config Resolver: Loads and validates artifact references from bundle YAML files.
 
 Responsibilities:
@@ -24,9 +26,12 @@ from src.config.freeze import compute_content_hash
 from src.config.schema import (
     AdjudicationFileSchema,
     AggregationFileSchema,
+    BundleFileSchema,
+    ChunkingPolicyFileSchema,
     ExplanationFileSchema,
     PromptFileSchema,
     RubricFileSchema,
+    ScoringContextFileSchema,
 )
 from src.contracts.artifact_bundle import (
     ArtifactBundle,
@@ -46,6 +51,8 @@ _SCHEMA_ROUTE: list[tuple[str, type]] = [
     ("policies/adjudication/", AdjudicationFileSchema),
     ("policies/aggregation/", AggregationFileSchema),
     ("policies/explanation/", ExplanationFileSchema),
+    ("policies/chunking/", ChunkingPolicyFileSchema),
+    ("prompts/scoring_context.yaml", ScoringContextFileSchema),
     ("prompts/", PromptFileSchema),
 ]
 
@@ -93,27 +100,28 @@ class ConfigResolver:
             raise ResolverError(f"Failed to parse bundle YAML {bundle_path}: {exc}") from exc
 
         try:
-            schema_version = SchemaVersion(str(raw["schema_version"]))
-            ab = raw["artifact_bundle"]
+            bundle_doc = BundleFileSchema(**raw)
+            schema_version = SchemaVersion(str(bundle_doc.schema_version))
+            ab = bundle_doc.artifact_bundle
 
             rubric_ref = ArtifactRef(
-                ref_uri=ab["rubric_core_ref"],
-                source_file=ab["rubric_source_file"],
+                ref_uri=ab.rubric_core_ref,
+                source_file=ab.rubric_source_file,
             )
             adj_ref = ArtifactRef(
-                ref_uri=ab["adjudication_policy_ref"],
-                source_file=ab["adjudication_source_file"],
+                ref_uri=ab.adjudication_policy_ref,
+                source_file=ab.adjudication_source_file,
             )
             agg_ref = ArtifactRef(
-                ref_uri=ab["aggregation_policy_ref"],
-                source_file=ab["aggregation_source_file"],
+                ref_uri=ab.aggregation_policy_ref,
+                source_file=ab.aggregation_source_file,
             )
             exp_ref = ArtifactRef(
-                ref_uri=ab["explanation_policy_ref"],
-                source_file=ab["explanation_source_file"],
+                ref_uri=ab.explanation_policy_ref,
+                source_file=ab.explanation_source_file,
             )
 
-            prompt_files: list[str] = ab.get("prompt_templates", []) or []
+            prompt_files: list[str] = list(ab.prompt_templates or [])
             prompt_refs = [
                 ArtifactRef(
                     ref_uri=f"ops://prompts/{Path(pf).stem}/v1",
@@ -122,23 +130,44 @@ class ConfigResolver:
                 for pf in prompt_files
             ]
 
+            chunking_ref = None
+            if ab.chunking_policy_ref and ab.chunking_source_file:
+                chunking_ref = ArtifactRef(
+                    ref_uri=ab.chunking_policy_ref,
+                    source_file=ab.chunking_source_file,
+                )
+
+            scoring_context_ref = None
+            if ab.scoring_context_ref and ab.scoring_context_source_file:
+                scoring_context_ref = ArtifactRef(
+                    ref_uri=ab.scoring_context_ref,
+                    source_file=ab.scoring_context_source_file,
+                )
+
             return ArtifactBundle(
-                bundle_id=ab["bundle_id"],
-                bundle_version=str(ab["bundle_version"]),
-                bundle_name=ab["bundle_name"],
-                description=ab["description"],
+                bundle_id=ab.bundle_id,
+                bundle_version=str(ab.bundle_version),
+                bundle_name=ab.bundle_name,
+                description=ab.description,
                 schema_version=schema_version,
                 rubric_ref=rubric_ref,
                 adjudication_policy_ref=adj_ref,
                 aggregation_policy_ref=agg_ref,
                 explanation_policy_ref=exp_ref,
                 prompt_refs=prompt_refs,
-                source_documents=ab.get("source_documents", []) or [],
-                validation_rules=ab.get("validation_rules", []) or [],
-                metadata=ab.get("metadata", {}) or {},
-                provider_config_raw=ab.get("provider_config") or None,
+                source_documents=list(ab.source_documents or []),
+                validation_rules=[
+                    rule.model_dump() if hasattr(rule, "model_dump") else dict(rule)
+                    for rule in (ab.validation_rules or [])
+                ],
+                metadata=dict(ab.metadata or {}),
+                provider_config_raw=(
+                    ab.provider_config.model_dump() if ab.provider_config is not None else None
+                ),
+                chunking_policy_ref=chunking_ref,
+                scoring_context_ref=scoring_context_ref,
             )
-        except (KeyError, ValueError) as exc:
+        except (ValidationError, KeyError, ValueError) as exc:
             raise ResolverError(f"Malformed bundle file {bundle_path}: {exc}") from exc
 
     def load_artifact(self, ref: ArtifactRef) -> ArtifactRef:

@@ -1,4 +1,6 @@
 """
+配置 Schema 定义，负责约束所有运行期 YAML 工件的结构与字段。
+
 Configuration Schema Definitions (P1T3)
 
 Pydantic v2 schemas for validating all runtime config YAML artifacts.
@@ -15,9 +17,9 @@ Schemas:
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 # ── Rubric Core Schemas ───────────────────────────────────────────────────────
@@ -136,16 +138,19 @@ class ThresholdSchema(BaseModel):
 
 
 class TriggerPatternSchema(BaseModel):
-    """Pattern specification for cusp-rule trigger."""
+    """Pattern specification for cross-dimension adjudication triggers."""
 
     model_config = ConfigDict(extra="forbid")
 
-    one_rater_all_scores: list[int]
-    other_rater_has_one_3_and_three_4s: bool
+    one_rater_all_scores: list[int] = []
+    other_rater_has_one_3_and_three_4s: bool = False
+    score_gap: int | None = None
+    min_matching_dimensions: int | None = None
+    require_same_direction: bool = False
 
 
 class TriggerSchema(BaseModel):
-    """An adjudication trigger (threshold-based or pattern-based)."""
+    """An adjudication trigger (threshold-based or cross-dimension pattern-based)."""
 
     model_config = ConfigDict(extra="forbid")
 
@@ -178,6 +183,7 @@ class ResolutionStrategySchema(BaseModel):
 
     default: str
     fallback_if_no_resolution: str
+    re_score_scope: Literal["all_dimensions", "conflicted_only"] = "all_dimensions"
 
 
 class AdjudicationPolicySchema(BaseModel):
@@ -317,6 +323,7 @@ class OutputConstraintsSchema(BaseModel):
     max_commentary_length_per_dimension: int
     require_evidence_score_chain: bool
     forbid_free_form_generation: bool
+    low_confidence_threshold: float = 0.5
 
 
 class ExplanationPolicySchema(BaseModel):
@@ -364,3 +371,190 @@ class PromptFileSchema(BaseModel):
 
     prompt_template: str
     metadata: PromptMetadataSchema
+
+
+# ── Scoring Context Schemas ───────────────────────────────────────────────────
+
+
+class ScoreAnchorDimensionSchema(BaseModel):
+    """Per-dimension anchor annotation used in scoring context."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    score: int
+    note: str
+
+
+class ScoreAnchorSchema(BaseModel):
+    """A single scored anchor example used for calibration."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    anchor_id: str
+    target_score: int
+    title: str
+    per_dimension: dict[str, ScoreAnchorDimensionSchema] = Field(default_factory=dict)
+
+
+class ScoringContextSchema(BaseModel):
+    """Dataset-level scoring context injected into scoring prompts."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    context_id: str
+    role_description: str
+    dataset_notes: str = ""
+    score_anchors: list[ScoreAnchorSchema] = Field(default_factory=list)
+    calibration_notes: str = ""
+    metadata: dict[str, Any] = Field(default_factory=dict)
+
+
+class ScoringContextFileSchema(BaseModel):
+    """Top-level schema for scoring context YAML files."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    schema_version: str
+    scoring_context: ScoringContextSchema
+
+
+# ── Chunking Policy Schemas ───────────────────────────────────────────────────
+
+
+class ChunkingDocumentProcessingSchema(BaseModel):
+    """Document-level chunking thresholds and hints."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    token_threshold: int
+    target_chunk_size_hint: str
+
+
+class ChunkingCoverageSchema(BaseModel):
+    """Coverage narrowing settings driven by chunking policy."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    default_top_k: int
+    fallback_to_full_scan_on_error: bool = True
+    per_dimension_top_k: dict[str, int] = Field(default_factory=dict)
+
+
+class ChunkingPolicySchema(BaseModel):
+    """Chunking + coverage planning policy."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    policy_id: str
+    document_processing: ChunkingDocumentProcessingSchema
+    coverage: ChunkingCoverageSchema
+    metadata: dict[str, Any] = Field(default_factory=dict)
+
+
+class ChunkingPolicyFileSchema(BaseModel):
+    """Top-level schema for a chunking policy YAML file."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    schema_version: str
+    chunking_policy: ChunkingPolicySchema
+
+
+# ── Bundle Schemas ────────────────────────────────────────────────────────────
+
+
+class ProviderEntryBundleSchema(BaseModel):
+    """Provider endpoint config declared inside bundle YAML."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    api_key_env: str
+    model: str = ""
+    api_base: str = ""
+    params: dict[str, Any] = Field(default_factory=dict)
+
+
+class ProviderConfigBundleSchema(BaseModel):
+    """Per-rater/per-stage provider routing declared in bundle YAML."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    default: ProviderEntryBundleSchema
+    rater_providers: dict[str, ProviderEntryBundleSchema] = Field(default_factory=dict)
+    stage_providers: dict[
+        Literal["chunking", "coverage_planning", "evidence_extraction", "feedback"],
+        ProviderEntryBundleSchema,
+    ] = Field(default_factory=dict)
+
+
+class BundleValidationRuleSchema(BaseModel):
+    """Validation rule record attached to artifact bundle."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    rule_id: str
+    type: str
+    description: str
+
+
+class ArtifactBundleSchema(BaseModel):
+    """Schema for the `artifact_bundle` section in bundle YAML."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    bundle_id: str
+    bundle_version: str
+    bundle_name: str
+    description: str
+
+    rubric_core_ref: str
+    rubric_source_file: str
+    adjudication_policy_ref: str
+    adjudication_source_file: str
+    aggregation_policy_ref: str
+    aggregation_source_file: str
+    explanation_policy_ref: str
+    explanation_source_file: str
+
+    operational_prompt_recipe_ref: str | None = None
+    prompt_templates: list[str] = Field(default_factory=list)
+
+    scoring_context_ref: str | None = None
+    scoring_context_source_file: str | None = None
+
+    chunking_policy_ref: str | None = None
+    chunking_source_file: str | None = None
+
+    freeze_hash: str | None = None
+    freeze_timestamp: str | None = None
+
+    source_documents: list[str] = Field(default_factory=list)
+    validation_rules: list[BundleValidationRuleSchema] = Field(default_factory=list)
+    provider_config: ProviderConfigBundleSchema | None = None
+    metadata: dict[str, Any] = Field(default_factory=dict)
+
+    @model_validator(mode="after")
+    def _validate_optional_ref_pairs(self) -> "ArtifactBundleSchema":
+        has_scoring_ref = bool(self.scoring_context_ref)
+        has_scoring_file = bool(self.scoring_context_source_file)
+        if has_scoring_ref != has_scoring_file:
+            raise ValueError(
+                "scoring_context_ref and scoring_context_source_file must be set together"
+            )
+
+        has_ref = bool(self.chunking_policy_ref)
+        has_file = bool(self.chunking_source_file)
+        if has_ref != has_file:
+            raise ValueError(
+                "chunking_policy_ref and chunking_source_file must be set together"
+            )
+        return self
+
+
+class BundleFileSchema(BaseModel):
+    """Top-level schema for bundle YAML files."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    schema_version: str
+    artifact_bundle: ArtifactBundleSchema

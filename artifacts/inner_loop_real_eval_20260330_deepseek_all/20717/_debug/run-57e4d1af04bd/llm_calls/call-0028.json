@@ -1,0 +1,40 @@
+{
+  "call_id": "call-0028",
+  "status": "succeeded",
+  "label": "feedback",
+  "provider_name": "openai_compatible",
+  "model_id": "?",
+  "started_at": "2026-03-30T14:41:45.022194+00:00",
+  "finished_at": "2026-03-30T14:41:51.037159+00:00",
+  "elapsed_ms": 6014.04,
+  "request": {
+    "system_path": null,
+    "prompt_path": "llm_calls/blobs/call-0028.prompt.txt",
+    "output_schema_path": null,
+    "params": {},
+    "prompt_chars": 4194,
+    "has_output_schema": false
+  },
+  "response": {
+    "content_path": "llm_calls/blobs/call-0028.response.txt",
+    "structured_path": null,
+    "usage": {
+      "prompt_tokens": 1010,
+      "completion_tokens": 142,
+      "total_tokens": 1152
+    },
+    "preview": "Your essay is well-organized, making it easy for the reader to follow your story. You have clear strengths in **sequencing**, using a chronological order that …"
+  },
+  "debug_context": {
+    "node_id": "node_feedback",
+    "stage_name": "feedback",
+    "dimension_id": "organization",
+    "decision_id": "dec-a9ae20a758e1",
+    "template_source": "/Users/ahai/Code/MAS/configs/prompts/explanation.yaml",
+    "template_version": "v2",
+    "used_override_template": false,
+    "evidence_span_count": 6
+  },
+  "call_path": "llm_calls/call-0028.json",
+  "error": null
+}

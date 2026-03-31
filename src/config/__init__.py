@@ -1,4 +1,6 @@
-"""Configuration loading and resolution module.
+"""配置子系统入口，负责装载、校验并解析驱动流水线运行的 bundle 配置。
+
+Configuration loading and resolution module.
 
 This module provides infrastructure for loading, validating, and resolving
 configuration bundles that drive the MAS evaluation system.

@@ -1,0 +1,40 @@
+{
+  "call_id": "call-0011",
+  "status": "succeeded",
+  "label": "evidence_extraction",
+  "provider_name": "openai_compatible",
+  "model_id": "?",
+  "started_at": "2026-03-30T14:30:16.362061+00:00",
+  "finished_at": "2026-03-30T14:30:42.803930+00:00",
+  "elapsed_ms": 26440.67,
+  "request": {
+    "system_path": null,
+    "prompt_path": "llm_calls/blobs/call-0011.prompt.txt",
+    "output_schema_path": "llm_calls/blobs/call-0011.schema.json",
+    "params": {},
+    "prompt_chars": 5823,
+    "has_output_schema": true
+  },
+  "response": {
+    "content_path": "llm_calls/blobs/call-0011.response.txt",
+    "structured_path": "llm_calls/blobs/call-0011.structured.json",
+    "usage": {
+      "prompt_tokens": 1342,
+      "completion_tokens": 890,
+      "total_tokens": 2232
+    },
+    "preview": "{     \"evidence_spans\": [         {             \"quote\": \"the dirt that sticks to your face, the sweat dripping from your forehead, and the gallons and gallons…"
+  },
+  "debug_context": {
+    "node_id": "node_extractor",
+    "stage_name": "evidence_extraction",
+    "dimension_id": "word_choice",
+    "plan_id": "plan-67f87a19ea77",
+    "document_id": "doc-00bfe0e4b101",
+    "template_source": "/Users/ahai/Code/MAS/configs/prompts/evidence_extraction.yaml",
+    "template_version": "v2",
+    "used_override_template": false
+  },
+  "call_path": "llm_calls/call-0011.json",
+  "error": null
+}

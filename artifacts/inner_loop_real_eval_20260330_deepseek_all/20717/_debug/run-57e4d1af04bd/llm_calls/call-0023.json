@@ -1,0 +1,41 @@
+{
+  "call_id": "call-0023",
+  "status": "succeeded",
+  "label": "rater_2",
+  "provider_name": "openai_compatible",
+  "model_id": "?",
+  "started_at": "2026-03-30T14:38:39.694961+00:00",
+  "finished_at": "2026-03-30T14:39:57.314268+00:00",
+  "elapsed_ms": 77618.51,
+  "request": {
+    "system_path": null,
+    "prompt_path": "llm_calls/blobs/call-0023.prompt.txt",
+    "output_schema_path": "llm_calls/blobs/call-0023.schema.json",
+    "params": {},
+    "prompt_chars": 10415,
+    "has_output_schema": true
+  },
+  "response": {
+    "content_path": "llm_calls/blobs/call-0023.response.txt",
+    "structured_path": "llm_calls/blobs/call-0023.structured.json",
+    "usage": {
+      "prompt_tokens": 2615,
+      "completion_tokens": 4400,
+      "total_tokens": 7015
+    },
+    "preview": "{   \"proposed_score\": 3,   \"descriptor_refs\": [     \"Mechanical rather than fluid; occasional awkwardness.\",     \"good control over simple sentences, little ov…"
+  },
+  "debug_context": {
+    "node_id": "node_scorer",
+    "stage_name": "scoring",
+    "dimension_id": "sentence_fluency",
+    "observation_id": "obs-2484af633a0c",
+    "rater_id": "rater_2",
+    "template_source": "/Users/ahai/Code/MAS/configs/prompts/scoring.yaml",
+    "template_version": "v3",
+    "used_override_template": false,
+    "evidence_span_count": 69
+  },
+  "call_path": "llm_calls/call-0023.json",
+  "error": null
+}

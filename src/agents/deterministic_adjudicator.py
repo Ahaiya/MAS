@@ -1,4 +1,6 @@
 """
+确定性裁决 Agent，在无真实 LLM 的模式下稳定地产出冲突裁决结果。
+
 Deterministic Adjudicator — deterministic conflict resolution and final decision production.
 
 For each ConflictRecord, produces an AdjudicationRecord with is_resolved=True
@@ -46,7 +48,7 @@ def _resolve_conflict(
     resolution_strategy = (
         policy.adjudication_policy
         .get("resolution_strategy", {})
-        .get("default", "use_rater_3_as_authoritative")
+        .get("default", "use_resolution_rater_as_authoritative")
     )
 
     # Gather the conflicting hypotheses; sort for determinism

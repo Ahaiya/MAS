@@ -1,0 +1,96 @@
+{
+  "evidence_spans": [
+    {
+      "quote": "the gallons and gallons of water you poor all over yourself",
+      "chunk_id": "unit-d5d353ae0c53",
+      "facets": [
+        "spelling"
+      ],
+      "support_type": "counter"
+    },
+    {
+      "quote": "through out your softball career",
+      "chunk_id": "unit-d5d353ae0c53",
+      "facets": [
+        "spelling"
+      ],
+      "support_type": "counter"
+    },
+    {
+      "quote": "Hood @CAPS1 @CAPS2 was my team name, I had played almost four years with this local team.",
+      "chunk_id": "unit-a0db0c6bfae5",
+      "facets": [
+        "punctuation",
+        "grammar_usage"
+      ],
+      "support_type": "counter"
+    },
+    {
+      "quote": "Many of these girls were like sisters to me they had treated me amazingly through out my years playing with them.",
+      "chunk_id": "unit-a0db0c6bfae5",
+      "facets": [
+        "punctuation",
+        "spelling"
+      ],
+      "support_type": "counter"
+    },
+    {
+      "quote": "girls that were so much better then me",
+      "chunk_id": "unit-a0db0c6bfae5",
+      "facets": [
+        "spelling"
+      ],
+      "support_type": "counter"
+    },
+    {
+      "quote": "maybe i could work hard enough",
+      "chunk_id": "unit-aa434102569d",
+      "facets": [
+        "capitalization"
+      ],
+      "support_type": "counter"
+    },
+    {
+      "quote": "I wanted this team to like me, I was playing all the possible ways in my head I could greet them so i didn't sound snobby or a grump.",
+      "chunk_id": "unit-9020b623f4bd",
+      "facets": [
+        "punctuation",
+        "capitalization"
+      ],
+      "support_type": "counter"
+    },
+    {
+      "quote": "I saw all the girls turn there heads to see what new fresh meat had arrived.",
+      "chunk_id": "unit-59b94fdf22f4",
+      "facets": [
+        "spelling"
+      ],
+      "support_type": "counter"
+    },
+    {
+      "quote": "Each and everyone of them told me their names, there favorite color, and a small fun fact about themselves.",
+      "chunk_id": "unit-59b94fdf22f4",
+      "facets": [
+        "spelling"
+      ],
+      "support_type": "counter"
+    },
+    {
+      "quote": "I found myself laughing through out my whole try out, there were no awkward moments and I enjoyed my time there.",
+      "chunk_id": "unit-59b94fdf22f4",
+      "facets": [
+        "spelling",
+        "punctuation"
+      ],
+      "support_type": "counter"
+    },
+    {
+      "quote": "if I had just gone and tried out, and had I not had fun and laughed, I would have decided to play with the @CAPS2.",
+      "chunk_id": "unit-e2e1eee7ca46",
+      "facets": [
+        "punctuation"
+      ],
+      "support_type": "counter"
+    }
+  ]
+}

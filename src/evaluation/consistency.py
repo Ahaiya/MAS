@@ -1,4 +1,6 @@
-"""Inter-agent consistency metrics for MAS scoring pipelines.
+"""一致性指标模块，负责计算多评分者之间的分歧与一致性统计。
+
+Inter-agent consistency metrics for MAS scoring pipelines.
 
 Computes agreement metrics across multiple score hypotheses for the same
 dimension. Used to detect systematic disagreement before adjudication and

@@ -1,9 +1,9 @@
 """
 Tests for deterministic workers used by the baseline pipeline (Phase 3, Task 3).
 
-Covers the deterministic preprocessing worker plus 8 baseline workers:
+Covers the deterministic chunking worker plus 8 baseline workers:
 - config_resolver: wraps real ConfigCompiler, returns ResolvedArtifactBundle
-- preprocess: EvaluationRequest -> (NormalizedRequest, NormalizedDocument)
+- deterministic_chunker: EvaluationRequest -> (NormalizedRequest, NormalizedDocument)
 - coverage: NormalizedDocument + RubricSnapshot -> List[CoveragePlan]
 - deterministic_extractor: CoveragePlan + NormalizedDocument -> List[EvidenceSpan]
 - observer: List[EvidenceSpan] + CoveragePlan -> DimensionObservation
@@ -35,13 +35,13 @@ from src.contracts.score_representation import create_score_representation
 from src.agents import (
     coverage,
     config_resolver,
+    deterministic_chunker,
     deterministic_adjudicator,
     feedback,
     deterministic_extractor,
     deterministic_consistency_checker,
     deterministic_scorer,
     observer,
-    preprocess,
 )
 
 
@@ -98,7 +98,7 @@ def policy():
                 "action": "invoke_resolution",
             }
         ],
-        "resolution_strategy": {"default": "use_rater_3_as_authoritative"},
+        "resolution_strategy": {"default": "use_resolution_rater_as_authoritative"},
     }
     return PolicySnapshot(
         adjudication_policy=adj,
@@ -119,7 +119,7 @@ def eval_request():
 
 @pytest.fixture
 def document(eval_request, rubric):
-    _, doc = preprocess.run(eval_request)
+    _, doc = deterministic_chunker.run(eval_request)
     return doc
 
 
@@ -184,7 +184,7 @@ class TestConfigResolver:
 
 class TestMockPreprocess:
     def test_returns_tuple_of_two_contracts(self, eval_request):
-        result = preprocess.run(eval_request)
+        result = deterministic_chunker.run(eval_request)
         assert isinstance(result, tuple)
         assert len(result) == 2
         norm_req, doc = result
@@ -192,42 +192,42 @@ class TestMockPreprocess:
         assert isinstance(doc, NormalizedDocument)
 
     def test_normalized_request_preserves_request_id(self, eval_request):
-        norm_req, _ = preprocess.run(eval_request)
+        norm_req, _ = deterministic_chunker.run(eval_request)
         assert norm_req.request_id == eval_request.request_id
 
     def test_normalized_request_preserves_bundle_ref(self, eval_request):
-        norm_req, _ = preprocess.run(eval_request)
+        norm_req, _ = deterministic_chunker.run(eval_request)
         assert norm_req.bundle_ref == eval_request.bundle_ref
 
     def test_document_has_non_empty_text_units(self, eval_request):
-        _, doc = preprocess.run(eval_request)
+        _, doc = deterministic_chunker.run(eval_request)
         assert len(doc.text_units) > 0
 
     def test_text_units_are_textunit_instances(self, eval_request):
-        _, doc = preprocess.run(eval_request)
+        _, doc = deterministic_chunker.run(eval_request)
         for unit in doc.text_units:
             assert isinstance(unit, TextUnit)
 
     def test_text_unit_offsets_are_valid(self, eval_request):
-        _, doc = preprocess.run(eval_request)
+        _, doc = deterministic_chunker.run(eval_request)
         for unit in doc.text_units:
             assert unit.end_offset > unit.start_offset
             assert unit.start_offset >= 0
             assert unit.end_offset <= len(doc.normalized_text)
 
     def test_text_units_text_matches_document_slice(self, eval_request):
-        _, doc = preprocess.run(eval_request)
+        _, doc = deterministic_chunker.run(eval_request)
         for unit in doc.text_units:
             expected = doc.normalized_text[unit.start_offset:unit.end_offset]
             assert unit.text == expected
 
     def test_document_char_count_matches_text(self, eval_request):
-        _, doc = preprocess.run(eval_request)
+        _, doc = deterministic_chunker.run(eval_request)
         assert doc.char_count == len(doc.normalized_text)
 
     def test_deterministic_same_input(self, eval_request):
-        r1, d1 = preprocess.run(eval_request)
-        r2, d2 = preprocess.run(eval_request)
+        r1, d1 = deterministic_chunker.run(eval_request)
+        r2, d2 = deterministic_chunker.run(eval_request)
         assert r1.request_id == r2.request_id
         assert d1.document_id == d2.document_id
         assert len(d1.text_units) == len(d2.text_units)
@@ -235,13 +235,13 @@ class TestMockPreprocess:
     def test_different_text_produces_different_document_id(self):
         req_a = EvaluationRequest(raw_text="Alpha text here.", bundle_ref="b@v1")
         req_b = EvaluationRequest(raw_text="Beta text here.", bundle_ref="b@v1")
-        _, doc_a = preprocess.run(req_a)
-        _, doc_b = preprocess.run(req_b)
+        _, doc_a = deterministic_chunker.run(req_a)
+        _, doc_b = deterministic_chunker.run(req_b)
         assert doc_a.document_id != doc_b.document_id
 
     def test_auto_generates_request_id_when_missing(self):
         req = EvaluationRequest(raw_text="Some text.", bundle_ref="b@v1")
-        norm_req, _ = preprocess.run(req)
+        norm_req, _ = deterministic_chunker.run(req)
         assert norm_req.request_id is not None
         assert len(norm_req.request_id) > 0
 
@@ -496,6 +496,48 @@ class TestMockConsistencyChecker:
         c1 = deterministic_consistency_checker.run(hyps, policy)
         c2 = deterministic_consistency_checker.run(hyps, policy)
         assert c1[0].conflict_id == c2[0].conflict_id
+
+    def test_policy_aware_adjacent_drift_conflict(self):
+        drift_policy = PolicySnapshot(
+            adjudication_policy={
+                "policy_id": "test_adjacent_drift",
+                "raters": {
+                    "required_independent_scores": 2,
+                    "rater_labels": ["rater_1", "rater_2"],
+                    "resolution_rater_label": "rater_3",
+                },
+                "triggers": [
+                    {
+                        "trigger_id": "systematic_adjacent_drift",
+                        "type": "adjacent_drift",
+                        "applies_to_dimensions": ["*"],
+                        "pattern": {
+                            "score_gap": 1,
+                            "min_matching_dimensions": 3,
+                            "require_same_direction": True,
+                        },
+                        "exclusions": [],
+                        "action": "invoke_resolution",
+                        "priority": 1,
+                    }
+                ],
+                "resolution_strategy": {"default": "use_resolution_rater_as_authoritative"},
+            },
+            aggregation_policy={},
+            explanation_policy={},
+            policy_version="v1",
+        )
+        hyps = [
+            _make_hypothesis("dim_001", "obs-1", "rater_1", 2),
+            _make_hypothesis("dim_001", "obs-1", "rater_2", 3),
+            _make_hypothesis("dim_002", "obs-2", "rater_1", 1),
+            _make_hypothesis("dim_002", "obs-2", "rater_2", 2),
+            _make_hypothesis("dim_003", "obs-3", "rater_1", 3),
+            _make_hypothesis("dim_003", "obs-3", "rater_2", 4),
+        ]
+        conflicts = deterministic_consistency_checker.run(hyps, drift_policy)
+        assert len(conflicts) == 3
+        assert all(c.conflict_type == ConflictType.ADJACENT_DRIFT for c in conflicts)
 
 
 # ── TestDeterministicAdjudicator ──────────────────────────────────────────────

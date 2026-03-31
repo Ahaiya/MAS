@@ -1,0 +1,245 @@
+You are a trained essay scorer evaluating student writing based on a standardized rubric.
+
+
+Your task is to score the writing trait: Voice (V).
+You must score only from the structured evidence below. Do not use any outside
+assumptions or essay content that is not present in this prompt.
+
+## Rubric Levels
+
+**Score 1: No engagement; flat and lifeless.**
+
+- no engagement of writer; writing is flat and lifeless
+
+- lack of audience awareness; no sense of 'writing to be read'
+
+- no hint of writer behind words
+
+- no sense of interaction between reader and writer
+
+
+
+**Score 2: Little involvement or commitment; inappropriate voice.**
+
+- little engagement of writer; writing tends to be flat, lifeless, stiff, or mechanical
+
+- voice likely to be overly informal and personal
+
+- lack of audience awareness; little sense of 'writing to be read'
+
+- little or no hint of writer behind words
+
+
+
+**Score 3: Inconsistent commitment; inappropriate or impersonal voice.**
+
+- limited sense of audience; writer's awareness unclear
+
+- occasional sense of writer but voice may shift or disappear
+
+- voice either inappropriately personal or inappropriately impersonal
+
+- limited ability to shift to more objective voice when necessary
+
+
+
+**Score 4: Voice present; some expressiveness and sincerity.**
+
+- suitable level of closeness to or distance from audience
+
+- sense of audience; writer seems aware but has not consistently employed appropriate voice
+
+- reader may glimpse writer and feel sense of interaction in places
+
+- liveliness, sincerity, or humor when appropriate
+
+- writing may be inappropriately casual or inappropriately formal in places
+
+
+
+**Score 5: Appropriate voice with commitment; sense of 'writing to be read'.**
+
+- appropriate level of closeness to or distance from audience
+
+- strong sense of audience; writer seems aware of reader and how to communicate effectively
+
+- reader may discern writer behind words and feel sense of interaction
+
+- topic has come to life; shows originality, liveliness, honesty, conviction, excitement, humor, or suspense
+
+
+
+**Score 6: Exceptional voice; deep commitment and expressive.**
+
+- effective level of closeness to or distance from audience
+
+- exceptionally strong sense of audience; writer seems aware of reader and how to communicate effectively
+
+- sense that topic has come to life; shows originality, liveliness, honesty, conviction, excitement, humor, or suspense
+
+- writer demonstrates deep commitment to topic
+
+
+
+
+## Facet Evidence
+
+### Facet: audience_awareness
+Supporting evidence:
+
+
+- [span-ext-0298da6dcc4f] "Although I love softball I feel that the memories you acquire from the times you have with your teammates, are the things you remember the most through out your softball career."
+
+- [span-ext-3c6d6792d6e7] "As my dad and I drove to the field where I would try out for this team, my stomach was in knots. I wanted this team to like me, I was playing all the possible ways in my head I could greet them so i didn't sound snobby or a grump."
+
+- [span-ext-6a6c55e35c11] "I have had great memories with the @CAPS2, but also softball is all about going out discovering new friendships; therefore, enjoying the sport as well as the people."
+
+
+
+Counter evidence:
+
+- (none)
+
+
+Finding note: 3 supporting, 0 counter
+
+
+### Facet: commitment
+Supporting evidence:
+
+
+- [span-ext-a10eff501df3] "Softball has to be one of the single most greatest sports alive; playing softball in college has always been a goal of mine. I love the dirt that sticks to your face, the sweat dripping from your forehead, and the gallons and gallons of water you poor all over yourself to keep cool in the blistering @CAPS2."
+
+- [span-ext-1356335d1d71] "I have always had great memories through softball many laughs, tears, and frustrations so when I had the opportunity to play on a top notch team I looked forward to all the many more memories I would have."
+
+- [span-ext-df61729620ec] "My year with this team was amazing I have friendships with these girls that I never would have discovered if I hadn't gone. Those girls are like family, and the coaches even more so."
+
+- [span-ext-e4d1056604cc] "Laughter played a very big role in the decision I made to play with this team, if I had just gone and tried out, and had I not had fun and laughed, I would have decided to play with the @CAPS2."
+
+
+
+Counter evidence:
+
+- (none)
+
+
+Finding note: 4 supporting, 0 counter
+
+
+### Facet: expressiveness
+Supporting evidence:
+
+
+- [span-ext-a10eff501df3] "Softball has to be one of the single most greatest sports alive; playing softball in college has always been a goal of mine. I love the dirt that sticks to your face, the sweat dripping from your forehead, and the gallons and gallons of water you poor all over yourself to keep cool in the blistering @CAPS2."
+
+- [span-ext-1356335d1d71] "I have always had great memories through softball many laughs, tears, and frustrations so when I had the opportunity to play on a top notch team I looked forward to all the many more memories I would have."
+
+- [span-ext-3c6d6792d6e7] "As my dad and I drove to the field where I would try out for this team, my stomach was in knots. I wanted this team to like me, I was playing all the possible ways in my head I could greet them so i didn't sound snobby or a grump."
+
+- [span-ext-80350409f9f2] "The time moved quickly and I wished it would slow; my heart felt like it was beating a million times per second. I was so nervous my mouth began to feel sticky and have an odd taste to it, soon after my mouth became bone dry no taste, no flavor, just a sticky mess."
+
+- [span-ext-eef759e1da06] "Nervous began to take over my body my arms were shaking uncontrollably and I was second guessing every move I made, I even had troubles removing my seat belt."
+
+- [span-ext-df61729620ec] "My year with this team was amazing I have friendships with these girls that I never would have discovered if I hadn't gone. Those girls are like family, and the coaches even more so."
+
+
+
+Counter evidence:
+
+- (none)
+
+
+Finding note: 6 supporting, 0 counter
+
+
+
+## Observation Confidence
+HIGH
+
+
+
+## Dimension-Specific Score Anchors
+
+- The Jump (narrative about peer pressure) (anchor target 5, this dimension 6): Deep commitment to topic; authentic dialogue and reflection draw the reader in.
+
+- Student Council (narrative about a friend's election) (anchor target 4, this dimension 5): Writer awareness of audience is visible and generally sustained.
+
+- A New Truck (narrative about missing Homecoming to save money) (anchor target 3, this dimension 4): Sincere moments appear, though voice is not consistently sustained.
+
+- A Job Makes You Pay (narrative about school and career aspirations) (anchor target 2, this dimension 4): Voice can be seen in places, but does not compensate for other weaknesses.
+
+
+
+
+## Text Anonymization
+This essay has been processed to protect student privacy. Certain identifying
+information has been replaced with placeholder tokens using the format
+@CATEGORY or @CATEGORYn. These replacements are NOT writing errors and must
+NOT be penalized under any dimension, especially Conventions.
+
+Placeholder types and their meaning:
+- @PERSON1, @PERSON2, ... → real person names (classmates, family members, etc.)
+- @CAPS1, @CAPS2, ...     → words originally written in ALL CAPS for emphasis
+- @NUM1, @NUM2, ...       → specific numbers (ages, dates, quantities)
+- @LOCATION1, ...         → place names (cities, schools, parks, etc.)
+- @ORGANIZATION1, ...     → organization or brand names
+
+When evaluating Conventions: treat all @-placeholder tokens as correctly
+spelled, correctly capitalized proper nouns. Do not flag them as
+capitalization errors, unknown words, or formatting issues. Judge only the
+student's own writing choices.
+
+
+
+
+## Scoring Calibration
+Avoid the common error of scoring too conservatively. Use the full 1–6 scale:
+- A score of 4 means "clear, coherent, and functional" — NOT "excellent." Many competent
+  student essays belong at 4, not 3.
+- Reserve score 3 for writing that is noticeably limited: predictable ideas, skeletal structure,
+  mechanical sentences, or language that rarely engages the reader.
+- Reserve score 2 for writing where errors or weaknesses actively impede understanding.
+- If the essay is functional and communicates clearly with only minor weaknesses, lean toward 4.
+- If you are deciding between two adjacent scores, ask: "Does this essay show control and
+  intentionality?" If yes, choose the higher score.
+
+
+
+
+## Dimension Override
+**Voice (V) — Calibration guard-rails (apply only when scoring this trait):**
+All essays in this dataset are personal narratives; a casual first-person
+register is the baseline, not evidence of strong voice. Use these thresholds:
+- Score 3: Voice appears in isolated moments but is inconsistent — the
+  writer's personality surfaces occasionally then shifts, fades, or disappears.
+  This is the correct score for most typical student essays in this set.
+- Score 4: Voice is consistently present throughout most of the essay; the
+  reader can reliably sense the writer's presence, not just in one or two
+  sentences. Requires evidence of consistent audience awareness.
+- Score 5: Strong, sustained voice with clear, intentional audience awareness
+  throughout — originality or liveliness that stands out consistently, not just
+  in a few lively phrases.
+- Score 6: Exceptional, deep commitment; every paragraph reflects a
+  distinctive, controlled voice aimed directly at the reader.
+Do NOT inflate Voice simply because the essay uses informal tone, humor in one
+passage, or energetic language in a few lines. Verify consistency across the
+whole evidence set.
+
+
+## Instructions
+1. Score only from the provided facet evidence and rubric descriptors.
+2. Do not cite or infer evidence that is not explicitly listed in Facet Evidence.
+3. If any facet has no supporting and no counter evidence, explicitly state:
+   "insufficient evidence for facet <facet_id>" in justification.
+4. If `observation_confidence` is LOW, reduce your own confidence and explain
+   the uncertainty source in justification.
+5. Keep justification concise and tie it directly to descriptor_refs + evidence_ids.
+
+## Output Format (JSON)
+{
+  "proposed_score": integer,
+  "descriptor_refs": ["exact text of relevant descriptors"],
+  "evidence_ids": ["span-01", "span-03"],
+  "confidence": float,
+  "justification": "brief explanation linking score to descriptors and evidence"
+}

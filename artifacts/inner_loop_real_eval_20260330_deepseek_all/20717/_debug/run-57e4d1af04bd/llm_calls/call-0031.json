@@ -1,0 +1,40 @@
+{
+  "call_id": "call-0031",
+  "status": "succeeded",
+  "label": "feedback",
+  "provider_name": "openai_compatible",
+  "model_id": "?",
+  "started_at": "2026-03-30T14:42:03.277887+00:00",
+  "finished_at": "2026-03-30T14:42:08.163449+00:00",
+  "elapsed_ms": 4884.9,
+  "request": {
+    "system_path": null,
+    "prompt_path": "llm_calls/blobs/call-0031.prompt.txt",
+    "output_schema_path": null,
+    "params": {},
+    "prompt_chars": 4137,
+    "has_output_schema": false
+  },
+  "response": {
+    "content_path": "llm_calls/blobs/call-0031.response.txt",
+    "structured_path": null,
+    "usage": {
+      "prompt_tokens": 1031,
+      "completion_tokens": 103,
+      "total_tokens": 1134
+    },
+    "preview": "Your word choice is functional and often creates clear images, like when you precisely describe your nerves with \"my stomach was in knots\" and \"my mouth became…"
+  },
+  "debug_context": {
+    "node_id": "node_feedback",
+    "stage_name": "feedback",
+    "dimension_id": "word_choice",
+    "decision_id": "dec-df4273f0aa60",
+    "template_source": "/Users/ahai/Code/MAS/configs/prompts/explanation.yaml",
+    "template_version": "v2",
+    "used_override_template": false,
+    "evidence_span_count": 14
+  },
+  "call_path": "llm_calls/call-0031.json",
+  "error": null
+}

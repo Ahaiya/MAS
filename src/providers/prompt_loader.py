@@ -1,4 +1,6 @@
 """
+Prompt 模板加载器，负责读取 YAML 模板并渲染各阶段 prompt。
+
 Prompt template loader — load Jinja2 YAML templates and render them.
 
 Responsibilities:
@@ -95,6 +97,25 @@ class PromptLoader:
             metadata=validated.metadata.model_dump(),
             source_path=str(file_path),
         )
+
+    def load_with_override(
+        self,
+        template_name: str,
+        dimension_id: str,
+        prompts_root: Union[str, Path] = "configs/prompts",
+    ) -> PromptTemplate:
+        """Load override template if present; otherwise load the global template.
+
+        Lookup order:
+        1) {prompts_root}/{template_name}_overrides/{dimension_id}.yaml
+        2) {prompts_root}/{template_name}.yaml
+        """
+        name = Path(template_name).stem
+        root = Path(prompts_root)
+        override_path = root / f"{name}_overrides" / f"{dimension_id}.yaml"
+        if override_path.exists():
+            return self.load(override_path)
+        return self.load(root / f"{name}.yaml")
 
     def render(self, template: PromptTemplate, context: Dict[str, Any]) -> str:
         """

@@ -17,6 +17,7 @@
 
 import csv
 import json
+import re
 import sys
 import textwrap
 import time
@@ -36,6 +37,7 @@ import typer
 from src.agents.config_resolver import run as resolve_bundle
 from src.contracts.artifact_bundle import ProviderEntryConfig
 from src.contracts.request_models import EvaluationRequest
+from src.debug import DebugBundleWriter
 from src.pipeline.runner import PipelineRunner
 from src.providers.factory import build_provider, build_provider_map
 from src.providers.logging_provider import LoggingProvider
@@ -62,6 +64,7 @@ _NODE_LABELS = {
     "node_extractor":           "证据抽取",
     "node_observer":            "证据整理",
     "node_scorer":              "双评审打分",
+    "node_resolution_scorer":   "冲突重评分",
     "node_consistency_checker": "一致性检验",
     "node_adjudicator":         "裁决",
     "node_feedback":            "反馈生成",
@@ -165,6 +168,32 @@ def _snapshot_stats(log_providers: list) -> tuple[int, int, float]:
     return calls, tokens, elapsed
 
 
+def _extract_stage_summaries(trace: dict) -> tuple[str | None, str | None]:
+    """Extract chunking/coverage summaries from node output_ref fields."""
+    node_traces = trace.get("node_traces", []) or []
+    preprocess = next((n for n in node_traces if n.get("node_id") == "node_preprocess"), None)
+    coverage = next((n for n in node_traces if n.get("node_id") == "node_coverage"), None)
+
+    chunk_summary = None
+    coverage_summary = None
+
+    if preprocess:
+        output_ref = preprocess.get("output_ref", "") or ""
+        m_chunks = re.search(r"chunks:(\d+)", output_ref)
+        m_method = re.search(r"method:([a-zA-Z0-9_]+)", output_ref)
+        if m_chunks:
+            method = m_method.group(1) if m_method else "unknown"
+            chunk_summary = f"chunks:{m_chunks.group(1)} ({method})"
+
+    if coverage:
+        output_ref = coverage.get("output_ref", "") or ""
+        m_cov = re.search(r"coverage:(\d+)->(\d+)", output_ref)
+        if m_cov:
+            coverage_summary = f"coverage: {m_cov.group(1)}→{m_cov.group(2)}"
+
+    return chunk_summary, coverage_summary
+
+
 def _wrap_providers(default_provider, rater_providers, stage_providers):
     log_list = []
     if default_provider is not None:
@@ -183,6 +212,11 @@ def _wrap_providers(default_provider, rater_providers, stage_providers):
         ws[stage] = lp
         log_list.append(lp)
     return wp, wr, ws, log_list
+
+
+def _set_debug_writer(log_providers: list, debug_writer: DebugBundleWriter | None) -> None:
+    for lp in log_providers:
+        lp.set_debug_writer(debug_writer)
 
 
 # ── 内部信息展示 ────────────────────────────────────────────────────────────────
@@ -445,8 +479,12 @@ def _save_report_md(essay_id, trace: dict, feedback: dict, tsv_row: dict | None,
 
 # ── 核心流水线执行 ──────────────────────────────────────────────────────────────
 
-def _init_providers(resolved, verbose: bool):
+def _init_providers(resolved, verbose: bool, mock_only: bool = False):
     """初始化 provider，返回 (default, raters, stages, log_providers)。"""
+    if mock_only:
+        typer.echo("[init] mock provider 模式：使用确定性 worker，不初始化 LLM provider")
+        return None, {}, {}, []
+
     default_provider = None
     rater_providers: dict = {}
     stage_providers: dict = {}
@@ -490,10 +528,38 @@ def _load_prompt_templates() -> dict:
         ("evidence_extraction", "evidence_extraction.yaml"),
         ("scoring", "scoring.yaml"),
         ("explanation", "explanation.yaml"),
+        ("chunking", "chunking.yaml"),
+        ("dimension_relevance", "dimension_relevance.yaml"),
     ]:
         tpl_path = configs_prompts / filename
         if tpl_path.exists():
             templates[name] = loader.load(tpl_path)
+
+    override_dir = configs_prompts / "evidence_extraction_overrides"
+    if override_dir.exists():
+        for override_path in sorted(override_dir.glob("*.yaml")):
+            dim_id = override_path.stem
+            templates[f"evidence_extraction_override_{dim_id}"] = loader.load(override_path)
+
+    scoring_override_dir = configs_prompts / "scoring_overrides"
+    if scoring_override_dir.exists():
+        for override_path in sorted(scoring_override_dir.glob("*.yaml")):
+            dim_id = override_path.stem
+            templates[f"scoring_override_{dim_id}"] = loader.load_with_override(
+                "scoring",
+                dim_id,
+                prompts_root=configs_prompts,
+            )
+
+    explanation_override_dir = configs_prompts / "explanation_overrides"
+    if explanation_override_dir.exists():
+        for override_path in sorted(explanation_override_dir.glob("*.yaml")):
+            dim_id = override_path.stem
+            templates[f"explanation_override_{dim_id}"] = loader.load_with_override(
+                "explanation",
+                dim_id,
+                prompts_root=configs_prompts,
+            )
     return templates
 
 
@@ -509,105 +575,248 @@ def _run_single(
     prompt_templates: dict,
     output_dir: Path,
     verbose: bool,
+    debug_bundle: bool = False,
 ) -> bool:
     """执行单篇评估，打印内部信息，返回是否成功。"""
     output_dir.mkdir(parents=True, exist_ok=True)
 
     stats_before = _snapshot_stats(log_providers)
+    debug_writer = None
+    debug_bundle_dir = None
+    if debug_bundle:
+        debug_writer = DebugBundleWriter(
+            output_dir / "_debug",
+            session_metadata={
+                "essay_id": essay_id,
+                "output_dir": str(output_dir),
+                "verbose": verbose,
+            },
+        )
+    _set_debug_writer(log_providers, debug_writer)
 
-    request = EvaluationRequest(
-        raw_text=essay_text,
-        bundle_ref=f"{resolved.artifact_bundle.bundle_id}@{resolved.artifact_bundle.bundle_version}",
-    )
-    runner = PipelineRunner(
-        resolved,
-        provider=default_provider,
-        rater_providers=rater_providers,
-        stage_providers=stage_providers,
-        prompt_templates=prompt_templates,
-    )
-    run_trace, feedback = runner.run(request)
+    try:
+        request = EvaluationRequest(
+            raw_text=essay_text,
+            bundle_ref=f"{resolved.artifact_bundle.bundle_id}@{resolved.artifact_bundle.bundle_version}",
+            metadata={
+                "essay_id": essay_id,
+                "source": str(output_dir),
+                "has_human_scores": bool(tsv_row),
+            },
+        )
+        runner = PipelineRunner(
+            resolved,
+            provider=default_provider,
+            rater_providers=rater_providers,
+            stage_providers=stage_providers,
+            prompt_templates=prompt_templates,
+            debug_writer=debug_writer,
+        )
+        run_trace, feedback = runner.run(request)
 
-    # 保存产出
-    trace_path = output_dir / "run_trace.json"
-    feedback_path = output_dir / "feedback.json"
-    hypotheses_path = output_dir / "hypotheses.json"
-    trace_path.write_text(json.dumps(run_trace.to_dict(), indent=2, ensure_ascii=False), encoding="utf-8")
-    feedback_path.write_text(json.dumps(feedback, indent=2, ensure_ascii=False), encoding="utf-8")
-    hypotheses_path.write_text(
-        json.dumps(
-            {"run_id": run_trace.run_id, "hypotheses": [h.to_dict() for h in runner.last_hypotheses]},
-            indent=2, ensure_ascii=False,
-        ),
-        encoding="utf-8",
-    )
+        # 保存产出
+        trace_path = output_dir / "run_trace.json"
+        feedback_path = output_dir / "feedback.json"
+        hypotheses_path = output_dir / "hypotheses.json"
+        spans_path = output_dir / "evidence_spans.json"
+        observations_path = output_dir / "observations.json"
+        conflicts_path = output_dir / "conflicts.json"
+        adjudication_records_path = output_dir / "adjudication_records.json"
+        trace_payload = run_trace.to_dict()
+        feedback_payload = feedback
+        hypotheses_payload = {
+            "run_id": run_trace.run_id,
+            "hypotheses": [h.to_dict() for h in runner.last_hypotheses],
+        }
+        spans_payload = {
+            "run_id": run_trace.run_id,
+            "evidence_spans": [s.to_dict() for s in runner.last_spans],
+        }
+        conflicts_payload = {
+            "run_id": run_trace.run_id,
+            "conflicts": [c.to_dict() for c in runner.last_conflicts],
+        }
+        adjudication_payload = {
+            "run_id": run_trace.run_id,
+            "adjudication_records": [
+                r.to_dict() for r in runner.last_adjudication_records
+            ],
+        }
+        trace_path.write_text(json.dumps(trace_payload, indent=2, ensure_ascii=False), encoding="utf-8")
+        feedback_path.write_text(json.dumps(feedback_payload, indent=2, ensure_ascii=False), encoding="utf-8")
+        hypotheses_path.write_text(
+            json.dumps(hypotheses_payload, indent=2, ensure_ascii=False),
+            encoding="utf-8",
+        )
+        spans_path.write_text(
+            json.dumps(spans_payload, indent=2, ensure_ascii=False),
+            encoding="utf-8",
+        )
+        document = runner.last_document
+        observations_payload = {
+            "run_id": run_trace.run_id,
+            "document_id": document.document_id if document is not None else None,
+            "observations": [o.to_dict() for o in runner.last_observations],
+            "coverage_plans": [p.to_dict() for p in runner.last_plans],
+            "text_units": [u.to_dict() for u in (document.text_units if document is not None else [])],
+        }
+        observations_path.write_text(
+            json.dumps(observations_payload, indent=2, ensure_ascii=False),
+            encoding="utf-8",
+        )
+        conflicts_path.write_text(
+            json.dumps(conflicts_payload, indent=2, ensure_ascii=False),
+            encoding="utf-8",
+        )
+        adjudication_records_path.write_text(
+            json.dumps(adjudication_payload, indent=2, ensure_ascii=False),
+            encoding="utf-8",
+        )
 
-    ok = run_trace.status.value == "completed"
+        if debug_writer is not None and debug_writer.output_dir is not None:
+            debug_writer.write_primary_artifact(
+                artifact_name="run_trace",
+                data=trace_payload,
+                summary="Canonical run trace for this evaluation",
+            )
+            debug_writer.write_primary_artifact(
+                artifact_name="feedback",
+                data=feedback_payload,
+                summary="Final feedback payload",
+            )
+            debug_writer.write_primary_artifact(
+                artifact_name="hypotheses",
+                data=hypotheses_payload,
+                summary=f"{len(hypotheses_payload['hypotheses'])} score hypotheses",
+            )
+            debug_writer.write_primary_artifact(
+                artifact_name="evidence_spans",
+                data=spans_payload,
+                summary=f"{len(spans_payload['evidence_spans'])} evidence spans",
+            )
+            debug_writer.write_primary_artifact(
+                artifact_name="observations",
+                data=observations_payload,
+                summary=f"{len(observations_payload['observations'])} observations",
+            )
+            debug_writer.write_primary_artifact(
+                artifact_name="conflicts",
+                data=conflicts_payload,
+                summary=f"{len(conflicts_payload['conflicts'])} conflicts",
+            )
+            debug_writer.write_primary_artifact(
+                artifact_name="adjudication_records",
+                data=adjudication_payload,
+                summary=(
+                    f"{len(adjudication_payload['adjudication_records'])} adjudication records"
+                ),
+            )
+            debug_writer.emit_event(
+                "run_finished",
+                status=run_trace.status.value,
+                terminal_validation_passed=run_trace.terminal_validation_passed,
+            )
 
-    trace_dict = json.loads(trace_path.read_text(encoding="utf-8"))
-    feedback_dict = json.loads(feedback_path.read_text(encoding="utf-8"))
+        ok = run_trace.status.value == "completed"
 
-    if verbose:
-        typer.echo("")
-        typer.echo("=" * 68)
-        typer.echo(f"  评价报告  —  样本 {essay_id}")
-        typer.echo("=" * 68)
-        started = trace_dict.get("started_at", "")
-        finished = trace_dict.get("finished_at", "")
-        typer.echo(f"  评价时间：{started[:19].replace('T', ' ')}  |  耗时：{_duration(started, finished)}")
-        typer.echo(f"  运行 ID ：{run_trace.run_id}")
-        typer.echo(f"  量规版本：{trace_dict.get('bundle_id', '')}@{trace_dict.get('bundle_version', '')}")
-        typer.echo(f"  状态    ：{'✅ completed' if ok else '❌ ' + run_trace.status.value}")
+        trace_dict = json.loads(trace_path.read_text(encoding="utf-8"))
+        feedback_dict = json.loads(feedback_path.read_text(encoding="utf-8"))
+        chunk_summary, coverage_summary = _extract_stage_summaries(trace_dict)
 
-        _print_node_timeline(trace_dict)
-        _print_agent_hypotheses(hypotheses_path)
+        if verbose:
+            typer.echo("")
+            typer.echo("=" * 68)
+            typer.echo(f"  评价报告  —  样本 {essay_id}")
+            typer.echo("=" * 68)
+            started = trace_dict.get("started_at", "")
+            finished = trace_dict.get("finished_at", "")
+            typer.echo(f"  评价时间：{started[:19].replace('T', ' ')}  |  耗时：{_duration(started, finished)}")
+            typer.echo(f"  运行 ID ：{run_trace.run_id}")
+            typer.echo(f"  量规版本：{trace_dict.get('bundle_id', '')}@{trace_dict.get('bundle_version', '')}")
+            typer.echo(f"  状态    ：{'✅ completed' if ok else '❌ ' + run_trace.status.value}")
+            if chunk_summary:
+                typer.echo(f"  分块摘要：{chunk_summary}")
+            if coverage_summary:
+                typer.echo(f"  覆盖摘要：{coverage_summary}")
 
-        # LLM 统计（本次增量）
-        c0, t0, e0 = stats_before
-        c1, t1, e1 = _snapshot_stats(log_providers)
-        typer.echo("")
-        typer.echo("  ── 本次 LLM 调用汇总 " + "─" * 52)
-        typer.echo(f"  总调用: {c1-c0}  |  总 Token: {t1-t0:,}  |  LLM 耗时: {e1-e0:.1f}s")
-        typer.echo(f"  {'角色':<22}  {'模型':<22}  {'调用':>4}  {'Token':>10}  {'耗时(s)':>8}")
-        typer.echo("  " + "─" * 72)
-        for lp in log_providers:
-            if lp.call_count > 0:
-                typer.echo(
-                    f"  {lp._label:<22}  {lp.model_id:<22}  {lp.call_count:>4}  "
-                    f"{lp.total_tokens:>10,}  {lp.total_elapsed:>8.1f}"
-                )
+            _print_node_timeline(trace_dict)
+            _print_agent_hypotheses(hypotheses_path)
 
-        if ok:
-            _print_score_table(trace_dict, feedback_dict, tsv_row)
-            _print_dimension_feedback(feedback_dict)
+            # LLM 统计（本次增量）
+            c0, t0, e0 = stats_before
+            c1, t1, e1 = _snapshot_stats(log_providers)
+            typer.echo("")
+            typer.echo("  ── 本次 LLM 调用汇总 " + "─" * 52)
+            typer.echo(f"  总调用: {c1-c0}  |  总 Token: {t1-t0:,}  |  LLM 耗时: {e1-e0:.1f}s")
+            typer.echo(f"  {'角色':<22}  {'模型':<22}  {'调用':>4}  {'Token':>10}  {'耗时(s)':>8}")
+            typer.echo("  " + "─" * 72)
+            for lp in log_providers:
+                if lp.call_count > 0:
+                    typer.echo(
+                        f"  {lp._label:<22}  {lp.model_id:<22}  {lp.call_count:>4}  "
+                        f"{lp.total_tokens:>10,}  {lp.total_elapsed:>8.1f}"
+                    )
+
+            if ok:
+                _print_score_table(trace_dict, feedback_dict, tsv_row)
+                _print_dimension_feedback(feedback_dict)
+            else:
+                typer.echo("\n  流水线未完成，失败节点：")
+                for node in run_trace.node_traces:
+                    if node.status.value != "success":
+                        typer.echo(f"    ❌ {node.node_id} — {node.error_message}")
         else:
-            typer.echo("\n  流水线未完成，失败节点：")
-            for node in run_trace.node_traces:
-                if node.status.value != "success":
-                    typer.echo(f"    ❌ {node.node_id} — {node.error_message}")
+            # 非 verbose：仅打印分数一行
+            dims = feedback_dict.get("dimensions", {})
+            scores = " ".join(str(_score(dims[k])) if k in dims else "?" for k, _, _ in _DIM_ORDER)
+            cinfo = _get_composite_info(feedback_dict)
+            if cinfo:
+                c_score, c_max, _ = cinfo
+                total_str = f"{c_score}/{c_max}"
+            else:
+                total_str = f"{sum(_score(dims[k]) for k, _, _ in _DIM_ORDER if k in dims)}/36"
+            status = "✅" if ok else "❌"
+            extras = []
+            if chunk_summary:
+                extras.append(chunk_summary)
+            if coverage_summary:
+                extras.append(coverage_summary)
+            suffix = f"  |  {'  |  '.join(extras)}" if extras else ""
+            typer.echo(f"  {status}  [{scores}]  合计={total_str}{suffix}")
 
-    else:
-        # 非 verbose：仅打印分数一行
-        dims = feedback_dict.get("dimensions", {})
-        scores = " ".join(str(_score(dims[k])) if k in dims else "?" for k, _, _ in _DIM_ORDER)
-        cinfo = _get_composite_info(feedback_dict)
-        if cinfo:
-            c_score, c_max, _ = cinfo
-            total_str = f"{c_score}/{c_max}"
+        if ok and verbose:
+            report_path = _save_report_md(essay_id, trace_dict, feedback_dict, tsv_row, output_dir)
+            if debug_writer is not None and debug_writer.output_dir is not None:
+                debug_writer.write_text("report.md", report_path.read_text(encoding="utf-8"))
+            typer.echo("")
+            typer.echo("  产出文件：")
+            for p in [
+                trace_path,
+                feedback_path,
+                hypotheses_path,
+                spans_path,
+                observations_path,
+                conflicts_path,
+                adjudication_records_path,
+                report_path,
+            ]:
+                typer.echo(f"    {p}")
+            if debug_bundle and debug_writer is not None and debug_writer.output_dir is not None:
+                typer.echo(f"    {debug_writer.output_dir / 'viewer' / 'index.html'}")
+            typer.echo("=" * 68)
         else:
-            total_str = f"{sum(_score(dims[k]) for k, _, _ in _DIM_ORDER if k in dims)}/36"
-        status = "✅" if ok else "❌"
-        typer.echo(f"  {status}  [{scores}]  合计={total_str}")
+            report_path = None
 
-    if ok and verbose:
-        report_path = _save_report_md(essay_id, trace_dict, feedback_dict, tsv_row, output_dir)
-        typer.echo("")
-        typer.echo("  产出文件：")
-        for p in [trace_path, feedback_path, hypotheses_path, report_path]:
-            typer.echo(f"    {p}")
-        typer.echo("=" * 68)
+        if debug_writer is not None and debug_writer.output_dir is not None:
+            debug_bundle_dir = debug_writer.finalize()
+            typer.echo(f"  调试包: {debug_bundle_dir}")
+            typer.echo(f"  Viewer : {debug_bundle_dir / 'viewer' / 'index.html'}")
 
-    return ok
+        return ok
+    finally:
+        if debug_writer is not None and debug_writer.output_dir is not None and debug_bundle_dir is None:
+            debug_bundle_dir = debug_writer.finalize()
+        _set_debug_writer(log_providers, None)
 
 
 # ── 主命令 ─────────────────────────────────────────────────────────────────────
@@ -650,6 +859,14 @@ def main(
         True, "--verbose/--no-verbose", "-v",
         help="显示详细内部信息（节点轨迹、评审员假设、LLM 统计）。",
     ),
+    mock_provider: bool = typer.Option(
+        False, "--mock-provider",
+        help="强制使用 mock 模式（不调用任何 LLM provider）。",
+    ),
+    debug_bundle: bool = typer.Option(
+        False, "--debug-bundle",
+        help="开发排障模式：额外输出单次运行 debug bundle（事件流、LLM 请求响应、viewer）。",
+    ),
 ) -> None:
     """MAS 统一评估入口。提供 --essay-id 为单篇模式，否则为批量模式。"""
 
@@ -686,7 +903,11 @@ def main(
     typer.echo(f"[init] {resolved.get_version_info()}")
 
     # ── 初始化 providers ──────────────────────────────────────────────────────
-    default_provider, rater_providers, stage_providers, log_providers = _init_providers(resolved, verbose)
+    default_provider, rater_providers, stage_providers, log_providers = _init_providers(
+        resolved,
+        verbose,
+        mock_only=mock_provider,
+    )
 
     # ── 加载 prompt 模板 ──────────────────────────────────────────────────────
     prompt_templates = _load_prompt_templates()
@@ -727,6 +948,7 @@ def main(
                 prompt_templates=prompt_templates,
                 output_dir=essay_out,
                 verbose=verbose,
+                debug_bundle=debug_bundle,
             )
             if ok:
                 results["success"].append(eid)

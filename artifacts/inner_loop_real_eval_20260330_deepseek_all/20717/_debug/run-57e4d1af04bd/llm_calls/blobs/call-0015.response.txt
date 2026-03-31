@@ -1,0 +1,18 @@
+{
+  "proposed_score": 5,
+  "descriptor_refs": [
+    "Clear, focused, interesting with strong support.",
+    "main ideas stand out",
+    "supporting, relevant, carefully selected details",
+    "thorough, balanced explanation/exploration of topic"
+  ],
+  "evidence_ids": [
+    "span-ext-9d30ddb2d448",
+    "span-ext-de750c7be931",
+    "span-ext-9ed50ecb0d5f",
+    "span-ext-4295724968b9",
+    "span-ext-8fa7e74da5a4"
+  ],
+  "confidence": 0.9,
+  "justification": "The essay demonstrates a clear main idea regarding the value of teammates and memories over comfort (span-ext-9d30ddb2d448, span-ext-de750c7be931). Supporting details are relevant and carefully selected, including specific sensory descriptions and internal emotional states (span-ext-9ed50ecb0d5f). The topic is explored thoroughly, showing a progression from internal conflict to a reasoned decision based on experience (span-ext-4295724968b9, span-ext-8fa7e74da5a4). This aligns with Score 5 descriptors for strong support and thorough exploration."
+}

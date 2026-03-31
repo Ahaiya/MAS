@@ -1,4 +1,6 @@
 """
+Provider 抽象层，定义模型调用请求、响应与错误边界。
+
 Provider interface — capability boundary definition.
 
 This module defines ONLY the transport-level abstractions:
@@ -44,6 +46,7 @@ class LLMRequest:
         model_id      : Optional model identifier override.
         params        : Provider-specific call parameters (temperature, max_tokens, …).
         output_schema : Optional JSON schema dict requesting structured output.
+        metadata      : Optional non-provider metadata for tracing / debug tools.
     """
 
     prompt: str
@@ -51,6 +54,7 @@ class LLMRequest:
     model_id: Optional[str] = None
     params: Dict[str, Any] = field(default_factory=dict)
     output_schema: Optional[Dict[str, Any]] = None
+    metadata: Dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         if not self.prompt:

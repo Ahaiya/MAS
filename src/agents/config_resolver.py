@@ -1,4 +1,6 @@
 """
+配置解析 Agent，负责把 bundle YAML 编译成运行期可直接使用的冻结配置。
+
 Config Resolver — wraps the real ConfigCompiler.
 
 This worker never calls an LLM. It compiles a bundle YAML file into a frozen

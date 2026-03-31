@@ -1,4 +1,6 @@
 """
+Provider 注册表，负责维护 provider 名称到实现类的映射关系。
+
 Provider adapter registry.
 
 Provides a simple name → class mapping so the pipeline can select a provider

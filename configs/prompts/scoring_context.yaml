@@ -1,0 +1,131 @@
+schema_version: "2.0"
+
+scoring_context:
+  context_id: "asap_set8_scoring_context_v1"
+  role_description: >
+    You are a trained essay scorer evaluating student writing based on a
+    standardized rubric.
+
+  dataset_notes: |
+    ## Text Anonymization
+    This essay has been processed to protect student privacy. Certain identifying
+    information has been replaced with placeholder tokens using the format
+    @CATEGORY or @CATEGORYn. These replacements are NOT writing errors and must
+    NOT be penalized under any dimension, especially Conventions.
+
+    Placeholder types and their meaning:
+    - @PERSON1, @PERSON2, ... → real person names (classmates, family members, etc.)
+    - @CAPS1, @CAPS2, ...     → words originally written in ALL CAPS for emphasis
+    - @NUM1, @NUM2, ...       → specific numbers (ages, dates, quantities)
+    - @LOCATION1, ...         → place names (cities, schools, parks, etc.)
+    - @ORGANIZATION1, ...     → organization or brand names
+
+    When evaluating Conventions: treat all @-placeholder tokens as correctly
+    spelled, correctly capitalized proper nouns. Do not flag them as
+    capitalization errors, unknown words, or formatting issues. Judge only the
+    student's own writing choices.
+
+  score_anchors:
+    - anchor_id: "score_5_the_jump"
+      target_score: 5
+      title: "The Jump (narrative about peer pressure)"
+      per_dimension:
+        ideas_content:
+          score: 5
+          note: "Writing is clear, focused, and interesting; details are relevant and insightful."
+        organization:
+          score: 5
+          note: "Strong chronology, effective paragraphing, inviting opening, satisfying resolution."
+        voice:
+          score: 6
+          note: "Deep commitment to topic; authentic dialogue and reflection draw the reader in."
+        word_choice:
+          score: 5
+          note: "Vocabulary is natural, precise, and image-evoking without sounding forced."
+        sentence_fluency:
+          score: 5
+          note: "Flow and rhythm are smooth; sentence structure reinforces meaning."
+        conventions:
+          score: 5
+          note: "Strong control of punctuation, capitalization, grammar, and usage."
+
+    - anchor_id: "score_4_student_council"
+      target_score: 4
+      title: "Student Council (narrative about a friend's election)"
+      per_dimension:
+        ideas_content:
+          score: 4
+          note: "Clear main idea with relevant support, but limited insight."
+        organization:
+          score: 4
+          note: "Clear beginning/body/ending and coherent flow, though somewhat formulaic."
+        voice:
+          score: 5
+          note: "Writer awareness of audience is visible and generally sustained."
+        word_choice:
+          score: 4
+          note: "Functional variety with mostly effective and appropriate vocabulary."
+        sentence_fluency:
+          score: 4
+          note: "Readable flow with some variety; repeated patterns mildly reduce impact."
+        conventions:
+          score: 4
+          note: "Generally controlled conventions; occasional internal punctuation and spelling issues."
+
+    - anchor_id: "score_3_new_truck"
+      target_score: 3
+      title: "A New Truck (narrative about missing Homecoming to save money)"
+      per_dimension:
+        ideas_content:
+          score: 3
+          note: "Understandable and supported, but ideas are limited and predictable."
+        organization:
+          score: 3
+          note: "Recognizable sequence and structure, but development remains thin."
+        voice:
+          score: 4
+          note: "Sincere moments appear, though voice is not consistently sustained."
+        word_choice:
+          score: 3
+          note: "Language is generic with limited precision and variety."
+        sentence_fluency:
+          score: 3
+          note: "Sentences are functional but often mechanical and low-energy."
+        conventions:
+          score: 3
+          note: "Limited control; recurring punctuation/spelling issues distract readers."
+
+    - anchor_id: "score_2_job_makes_pay"
+      target_score: 2
+      title: "A Job Makes You Pay (narrative about school and career aspirations)"
+      per_dimension:
+        ideas_content:
+          score: 2
+          note: "Main ideas are simplistic and support is often general or underdeveloped."
+        organization:
+          score: 2
+          note: "Attempts at structure are present but skeletal and weakly connected."
+        voice:
+          score: 4
+          note: "Voice can be seen in places, but does not compensate for other weaknesses."
+        word_choice:
+          score: 3
+          note: "Word use is mostly familiar and accurate, but not purposeful."
+        sentence_fluency:
+          score: 3
+          note: "Mechanical flow with awkward constructions and weak complex sentence control."
+        conventions:
+          score: 2
+          note: "Frequent significant errors in punctuation, spelling, capitalization, and usage."
+
+  calibration_notes: |
+    ## Scoring Calibration
+    Avoid the common error of scoring too conservatively. Use the full 1–6 scale:
+    - A score of 4 means "clear, coherent, and functional" — NOT "excellent." Many competent
+      student essays belong at 4, not 3.
+    - Reserve score 3 for writing that is noticeably limited: predictable ideas, skeletal structure,
+      mechanical sentences, or language that rarely engages the reader.
+    - Reserve score 2 for writing where errors or weaknesses actively impede understanding.
+    - If the essay is functional and communicates clearly with only minor weaknesses, lean toward 4.
+    - If you are deciding between two adjacent scores, ask: "Does this essay show control and
+      intentionality?" If yes, choose the higher score.

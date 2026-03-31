@@ -66,9 +66,10 @@ explanation_policy:
     display_annotation_field: "display_annotation"
 
   output_constraints:
-    max_commentary_length_per_dimension: 150
+    max_commentary_length_per_dimension: 5000
     require_evidence_score_chain: true
     forbid_free_form_generation: true
+    low_confidence_threshold: 0.5
 
   metadata:
     source_document: "docs/Example.md"

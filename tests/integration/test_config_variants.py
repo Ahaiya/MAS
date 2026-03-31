@@ -256,6 +256,21 @@ class TestAdjudicationVariants:
             "action": "invoke_resolution",
         }
 
+    def _adjacent_drift_trigger(self, min_matching_dimensions: int) -> dict:
+        return {
+            "trigger_id": "adj_drift",
+            "type": "adjacent_drift",
+            "priority": 1,
+            "applies_to_dimensions": ["*"],
+            "exclusions": [],
+            "pattern": {
+                "score_gap": 1,
+                "min_matching_dimensions": min_matching_dimensions,
+                "require_same_direction": True,
+            },
+            "action": "invoke_resolution",
+        }
+
     def test_tight_threshold_catches_small_diff(self):
         # threshold >0: diff of 1 triggers conflict
         policy = _make_policy(triggers=[self._trigger(0)])
@@ -309,6 +324,33 @@ class TestAdjudicationVariants:
         conflict_dims = {c.dimension_id for c in conflicts}
         assert "dim_r1" in conflict_dims
         assert "dim_r2" not in conflict_dims
+
+    def test_adjacent_drift_variant_is_config_driven(self):
+        policy = _make_policy(triggers=[self._adjacent_drift_trigger(3)])
+        hyps = [
+            _hyp("dim_r1", "rater_a", 4, "s4"),
+            _hyp("dim_r1", "rater_b", 3, "s4"),
+            _hyp("dim_r2", "rater_a", 3, "s4"),
+            _hyp("dim_r2", "rater_b", 2, "s4"),
+            _hyp("dim_r3", "rater_a", 2, "s4"),
+            _hyp("dim_r3", "rater_b", 1, "s4"),
+        ]
+        conflicts = evaluate_all_triggers(hyps, policy)
+        assert len(conflicts) == 3
+
+    def test_adjacent_drift_threshold_changes_behavior(self):
+        strict_policy = _make_policy(triggers=[self._adjacent_drift_trigger(3)])
+        loose_policy = _make_policy(triggers=[self._adjacent_drift_trigger(4)])
+        hyps = [
+            _hyp("dim_r1", "rater_a", 4, "s4"),
+            _hyp("dim_r1", "rater_b", 3, "s4"),
+            _hyp("dim_r2", "rater_a", 3, "s4"),
+            _hyp("dim_r2", "rater_b", 2, "s4"),
+            _hyp("dim_r3", "rater_a", 2, "s4"),
+            _hyp("dim_r3", "rater_b", 1, "s4"),
+        ]
+        assert len(evaluate_all_triggers(hyps, strict_policy)) == 3
+        assert evaluate_all_triggers(hyps, loose_policy) == []
 
 
 # ── Tests: aggregation weight variants ────────────────────────────────────────

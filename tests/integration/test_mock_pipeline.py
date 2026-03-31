@@ -29,7 +29,15 @@ from src.contracts.scoring import (
 from src.contracts.score_representation import create_score_representation
 from src.contracts.trace import RunTrace, RunStatus, NodeStatus
 
-from src.agents import config_resolver
+from src.agents import (
+    config_resolver,
+    coverage,
+    deterministic_adjudicator,
+    deterministic_chunker,
+    deterministic_consistency_checker,
+    deterministic_extractor,
+    observer,
+)
 from src.pipeline.runner import PipelineRunner
 from src.pipeline.validators import (
     validate_coverage_plans,
@@ -167,6 +175,16 @@ class TestPipelineNormalPath:
             assert "final_score" in entry
             assert isinstance(entry["final_score"], int)
 
+    def test_feedback_dimension_has_stage_m_fields(self, pipeline_result, bundle):
+        _, feedback = pipeline_result
+        rubric = bundle.rubric_snapshot
+        for dim in rubric.dimensions:
+            entry = feedback["dimensions"][dim["dimension_id"]]
+            assert "scorer_rationale" in entry
+            assert isinstance(entry["scorer_rationale"], str)
+            assert "was_adjudicated" in entry
+            assert isinstance(entry["was_adjudicated"], bool)
+
     def test_feedback_scores_within_scale_range(self, pipeline_result, bundle):
         _, feedback = pipeline_result
         rubric = bundle.rubric_snapshot
@@ -210,6 +228,136 @@ class TestPipelineNormalPath:
         rt2, _ = runner.run(request)
         assert [nt.node_id for nt in rt1.node_traces] == [
             nt.node_id for nt in rt2.node_traces
+        ]
+
+    def test_mock_preprocess_output_ref_contains_chunk_summary(self, pipeline_result):
+        run_trace, _ = pipeline_result
+        preprocess = next(nt for nt in run_trace.node_traces if nt.node_id == "node_preprocess")
+        assert preprocess.output_ref is not None
+        assert "|chunks:" in preprocess.output_ref
+        assert "|method:rule" in preprocess.output_ref
+
+    def test_mock_coverage_output_ref_contains_narrowing_summary(self, pipeline_result):
+        run_trace, _ = pipeline_result
+        coverage_node = next(nt for nt in run_trace.node_traces if nt.node_id == "node_coverage")
+        assert coverage_node.output_ref is not None
+        assert "coverage:" in coverage_node.output_ref
+        assert "->" in coverage_node.output_ref
+
+    def test_mock_extractor_output_ref_contains_match_stats(self, pipeline_result):
+        run_trace, _ = pipeline_result
+        extractor_node = next(nt for nt in run_trace.node_traces if nt.node_id == "node_extractor")
+        assert extractor_node.output_ref is not None
+        assert extractor_node.output_ref.startswith("spans:")
+        assert "(exact:" in extractor_node.output_ref
+        assert "fuzzy:" in extractor_node.output_ref
+        assert "unmatched:" in extractor_node.output_ref
+
+
+class TestMockDefaults:
+    def test_normalized_document_new_fields_have_defaults(self):
+        request = EvaluationRequest(
+            raw_text=SAMPLE_TEXT,
+            bundle_ref="asap_set8_baseline@v1",
+            request_id="test-doc-defaults",
+        )
+        _, document = deterministic_chunker.run(request)
+        assert document.document_type == "unknown"
+        assert document.token_estimate == 0
+        assert all(unit.chunk_title is None for unit in document.text_units)
+        assert all(unit.chunk_method == "rule" for unit in document.text_units)
+
+    def test_mock_coverage_is_full_scan_with_empty_relevance_scores(self, bundle):
+        request = EvaluationRequest(
+            raw_text=SAMPLE_TEXT,
+            bundle_ref="asap_set8_baseline@v1",
+            request_id="test-coverage-defaults",
+        )
+        _, document = deterministic_chunker.run(request)
+        plans = coverage.run(document, bundle.rubric_snapshot)
+        all_unit_ids = [u.unit_id for u in document.text_units]
+
+        for plan in plans:
+            assert plan.coverage_strategy == "full_scan"
+            assert plan.target_unit_ids == all_unit_ids
+            assert plan.relevance_scores == {}
+
+    def test_dimension_observation_new_field_has_default(self, bundle):
+        request = EvaluationRequest(
+            raw_text=SAMPLE_TEXT,
+            bundle_ref="asap_set8_baseline@v1",
+            request_id="test-observation-defaults",
+        )
+        _, document = deterministic_chunker.run(request)
+        plans = coverage.run(document, bundle.rubric_snapshot)
+        first_plan = plans[0]
+        spans = deterministic_extractor.run(first_plan, document)
+        obs = observer.run(spans, first_plan)
+        assert obs.coverage_miss_span_ids == []
+
+    def test_mock_evidence_span_fields_are_legal(self, runner):
+        request = EvaluationRequest(
+            raw_text=SAMPLE_TEXT,
+            bundle_ref="asap_set8_baseline@v1",
+            request_id="test-span-fields-legal",
+        )
+        runner.run(request)
+        spans = runner.last_spans
+        assert spans
+        for span in spans:
+            assert span.extraction_note is not None
+            assert span.support_type in {"supporting", "counter", "neutral"}
+            if span.scope.value == "span":
+                assert span.unit_id is not None
+            else:
+                assert span.unit_id is None
+
+    def test_mock_hypothesis_evidence_ids_are_valid(self, runner):
+        request = EvaluationRequest(
+            raw_text=SAMPLE_TEXT,
+            bundle_ref="asap_set8_baseline@v1",
+            request_id="test-hyp-evidence-ids",
+        )
+        runner.run(request)
+
+        valid_span_ids = {span.span_id for span in runner.last_spans}
+        assert valid_span_ids
+        assert runner.last_hypotheses
+        for hyp in runner.last_hypotheses:
+            assert all(span_id in valid_span_ids for span_id in hyp.evidence_span_ids)
+
+    def test_mock_reconciliation_matches_deterministic_checker(self, runner):
+        request = EvaluationRequest(
+            raw_text=SAMPLE_TEXT,
+            bundle_ref="asap_set8_baseline@v1",
+            request_id="test-reconciliation-checker",
+        )
+        runner.run(request)
+        expected = deterministic_consistency_checker.run(
+            runner.last_hypotheses,
+            runner._bundle.policy_snapshot,  # noqa: SLF001 - integration assertion
+        )
+        assert [c.to_dict() for c in runner.last_conflicts] == [
+            c.to_dict() for c in expected
+        ]
+
+    def test_mock_reconciliation_decisions_match_deterministic_adjudicator(self, runner):
+        request = EvaluationRequest(
+            raw_text=SAMPLE_TEXT,
+            bundle_ref="asap_set8_baseline@v1",
+            request_id="test-reconciliation-adjudicator",
+        )
+        runner.run(request)
+        expected_adj, expected_decisions = deterministic_adjudicator.run(
+            runner.last_conflicts,
+            runner.last_hypotheses,
+            runner._bundle.policy_snapshot,  # noqa: SLF001 - integration assertion
+        )
+        assert [r.to_dict() for r in runner.last_adjudication_records] == [
+            r.to_dict() for r in expected_adj
+        ]
+        assert [d.to_dict() for d in runner.last_decisions] == [
+            d.to_dict() for d in expected_decisions
         ]
 
 

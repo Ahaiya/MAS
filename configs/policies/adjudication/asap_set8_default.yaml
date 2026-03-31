@@ -8,7 +8,7 @@ adjudication_policy:
   policy_id: "asap_set8_default_adjudication"
   policy_version: "v1"
   policy_name: "ASAP Set 8 Default Double/Triple Score Resolution"
-  description: "Default adjudication policy for ASAP Set 8 with non-adjacency and cusp rules"
+  description: "Default adjudication policy for ASAP Set 8 with non-adjacency, cusp, and adjacent-drift rules"
 
   raters:
     required_independent_scores: 2
@@ -45,6 +45,21 @@ adjudication_policy:
       action: "invoke_resolution"
       priority: 2
 
+    # Trigger 3: Systematic Adjacent Drift
+    # If one rater is exactly one point higher/lower on 3+ traits in the same
+    # direction, treat it as a boundary drift and invoke resolution.
+    - trigger_id: "systematic_adjacent_drift"
+      type: "adjacent_drift"
+      applies_to_dimensions: ["*"]
+      description: "Three or more adjacent disagreements in the same direction trigger resolution"
+      pattern:
+        score_gap: 1
+        min_matching_dimensions: 3
+        require_same_direction: true
+      exclusions: []
+      action: "invoke_resolution"
+      priority: 3
+
   output_policy:
     preserve_all_candidates: true
     preserve_trigger_reason: true
@@ -52,9 +67,10 @@ adjudication_policy:
     preserve_conflict_metadata: true
 
   resolution_strategy:
-    default: "use_rater_3_as_authoritative"
+    default: "use_resolution_rater_as_authoritative"
     fallback_if_no_resolution: "average_of_raters"
+    re_score_scope: "all_dimensions"
 
   metadata:
     source_document: "docs/Adjudication_Rules.md"
-    version_timestamp: "2026-03-12"
+    version_timestamp: "2026-03-31"

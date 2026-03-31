@@ -1,4 +1,6 @@
 """
+流水线导出模块，负责把最终决策整理成稳定的结构化输出。
+
 Pipeline Export — structured output assembly.
 
 Explicitly separates trait-level dimension outputs from the optional

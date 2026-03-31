@@ -1,0 +1,365 @@
+{
+  "run_id": "run-8f1a264a5754",
+  "evidence_spans": [
+    {
+      "span_id": "span-c282cf9372dc",
+      "document_id": "doc-f34ce0393252",
+      "unit_id": null,
+      "text_quote": null,
+      "start_offset": null,
+      "end_offset": null,
+      "scope": "global",
+      "dimension_id": "ideas_content",
+      "facet_ids": [
+        "clarity_focus"
+      ],
+      "extraction_note": "deterministic",
+      "support_type": "supporting"
+    },
+    {
+      "span_id": "span-4090b7021aa0",
+      "document_id": "doc-f34ce0393252",
+      "unit_id": null,
+      "text_quote": null,
+      "start_offset": null,
+      "end_offset": null,
+      "scope": "global",
+      "dimension_id": "ideas_content",
+      "facet_ids": [
+        "main_idea_salience"
+      ],
+      "extraction_note": "deterministic",
+      "support_type": "supporting"
+    },
+    {
+      "span_id": "span-910983d4fde9",
+      "document_id": "doc-f34ce0393252",
+      "unit_id": null,
+      "text_quote": null,
+      "start_offset": null,
+      "end_offset": null,
+      "scope": "global",
+      "dimension_id": "ideas_content",
+      "facet_ids": [
+        "support_relevance"
+      ],
+      "extraction_note": "deterministic",
+      "support_type": "supporting"
+    },
+    {
+      "span_id": "span-062ea60686ec",
+      "document_id": "doc-f34ce0393252",
+      "unit_id": null,
+      "text_quote": null,
+      "start_offset": null,
+      "end_offset": null,
+      "scope": "global",
+      "dimension_id": "ideas_content",
+      "facet_ids": [
+        "development_depth"
+      ],
+      "extraction_note": "deterministic",
+      "support_type": "supporting"
+    },
+    {
+      "span_id": "span-8f1272032a7a",
+      "document_id": "doc-f34ce0393252",
+      "unit_id": null,
+      "text_quote": null,
+      "start_offset": null,
+      "end_offset": null,
+      "scope": "global",
+      "dimension_id": "ideas_content",
+      "facet_ids": [
+        "audience_purpose_fit"
+      ],
+      "extraction_note": "deterministic",
+      "support_type": "supporting"
+    },
+    {
+      "span_id": "span-dc492cac45a4",
+      "document_id": "doc-f34ce0393252",
+      "unit_id": null,
+      "text_quote": null,
+      "start_offset": null,
+      "end_offset": null,
+      "scope": "global",
+      "dimension_id": "organization",
+      "facet_ids": [
+        "sequencing"
+      ],
+      "extraction_note": "deterministic",
+      "support_type": "supporting"
+    },
+    {
+      "span_id": "span-5c33d7a2e676",
+      "document_id": "doc-f34ce0393252",
+      "unit_id": null,
+      "text_quote": null,
+      "start_offset": null,
+      "end_offset": null,
+      "scope": "global",
+      "dimension_id": "organization",
+      "facet_ids": [
+        "beginning_closure"
+      ],
+      "extraction_note": "deterministic",
+      "support_type": "supporting"
+    },
+    {
+      "span_id": "span-f81a4b194ab6",
+      "document_id": "doc-f34ce0393252",
+      "unit_id": null,
+      "text_quote": null,
+      "start_offset": null,
+      "end_offset": null,
+      "scope": "global",
+      "dimension_id": "organization",
+      "facet_ids": [
+        "transitions"
+      ],
+      "extraction_note": "deterministic",
+      "support_type": "supporting"
+    },
+    {
+      "span_id": "span-52c42770d819",
+      "document_id": "doc-f34ce0393252",
+      "unit_id": null,
+      "text_quote": null,
+      "start_offset": null,
+      "end_offset": null,
+      "scope": "global",
+      "dimension_id": "organization",
+      "facet_ids": [
+        "detail_placement"
+      ],
+      "extraction_note": "deterministic",
+      "support_type": "supporting"
+    },
+    {
+      "span_id": "span-34dfcc382208",
+      "document_id": "doc-f34ce0393252",
+      "unit_id": null,
+      "text_quote": null,
+      "start_offset": null,
+      "end_offset": null,
+      "scope": "global",
+      "dimension_id": "voice",
+      "facet_ids": [
+        "audience_awareness"
+      ],
+      "extraction_note": "deterministic",
+      "support_type": "supporting"
+    },
+    {
+      "span_id": "span-a677f25cd575",
+      "document_id": "doc-f34ce0393252",
+      "unit_id": null,
+      "text_quote": null,
+      "start_offset": null,
+      "end_offset": null,
+      "scope": "global",
+      "dimension_id": "voice",
+      "facet_ids": [
+        "commitment"
+      ],
+      "extraction_note": "deterministic",
+      "support_type": "supporting"
+    },
+    {
+      "span_id": "span-cb64deb7dc41",
+      "document_id": "doc-f34ce0393252",
+      "unit_id": null,
+      "text_quote": null,
+      "start_offset": null,
+      "end_offset": null,
+      "scope": "global",
+      "dimension_id": "voice",
+      "facet_ids": [
+        "expressiveness"
+      ],
+      "extraction_note": "deterministic",
+      "support_type": "supporting"
+    },
+    {
+      "span_id": "span-bcd8fcc6716d",
+      "document_id": "doc-f34ce0393252",
+      "unit_id": null,
+      "text_quote": null,
+      "start_offset": null,
+      "end_offset": null,
+      "scope": "global",
+      "dimension_id": "word_choice",
+      "facet_ids": [
+        "precision"
+      ],
+      "extraction_note": "deterministic",
+      "support_type": "supporting"
+    },
+    {
+      "span_id": "span-c3096751a36a",
+      "document_id": "doc-f34ce0393252",
+      "unit_id": null,
+      "text_quote": null,
+      "start_offset": null,
+      "end_offset": null,
+      "scope": "global",
+      "dimension_id": "word_choice",
+      "facet_ids": [
+        "variety"
+      ],
+      "extraction_note": "deterministic",
+      "support_type": "supporting"
+    },
+    {
+      "span_id": "span-ad92e2060afb",
+      "document_id": "doc-f34ce0393252",
+      "unit_id": null,
+      "text_quote": null,
+      "start_offset": null,
+      "end_offset": null,
+      "scope": "global",
+      "dimension_id": "word_choice",
+      "facet_ids": [
+        "imagery"
+      ],
+      "extraction_note": "deterministic",
+      "support_type": "supporting"
+    },
+    {
+      "span_id": "span-a0949bf778b6",
+      "document_id": "doc-f34ce0393252",
+      "unit_id": null,
+      "text_quote": null,
+      "start_offset": null,
+      "end_offset": null,
+      "scope": "global",
+      "dimension_id": "word_choice",
+      "facet_ids": [
+        "appropriateness"
+      ],
+      "extraction_note": "deterministic",
+      "support_type": "supporting"
+    },
+    {
+      "span_id": "span-7749757c62db",
+      "document_id": "doc-f34ce0393252",
+      "unit_id": null,
+      "text_quote": null,
+      "start_offset": null,
+      "end_offset": null,
+      "scope": "global",
+      "dimension_id": "sentence_fluency",
+      "facet_ids": [
+        "flow_rhythm"
+      ],
+      "extraction_note": "deterministic",
+      "support_type": "supporting"
+    },
+    {
+      "span_id": "span-ee186870aef1",
+      "document_id": "doc-f34ce0393252",
+      "unit_id": null,
+      "text_quote": null,
+      "start_offset": null,
+      "end_offset": null,
+      "scope": "global",
+      "dimension_id": "sentence_fluency",
+      "facet_ids": [
+        "sentence_variety"
+      ],
+      "extraction_note": "deterministic",
+      "support_type": "supporting"
+    },
+    {
+      "span_id": "span-5885376ee2ce",
+      "document_id": "doc-f34ce0393252",
+      "unit_id": null,
+      "text_quote": null,
+      "start_offset": null,
+      "end_offset": null,
+      "scope": "global",
+      "dimension_id": "sentence_fluency",
+      "facet_ids": [
+        "structural_control"
+      ],
+      "extraction_note": "deterministic",
+      "support_type": "supporting"
+    },
+    {
+      "span_id": "span-90ab59dfeb05",
+      "document_id": "doc-f34ce0393252",
+      "unit_id": null,
+      "text_quote": null,
+      "start_offset": null,
+      "end_offset": null,
+      "scope": "global",
+      "dimension_id": "conventions",
+      "facet_ids": [
+        "punctuation"
+      ],
+      "extraction_note": "deterministic",
+      "support_type": "supporting"
+    },
+    {
+      "span_id": "span-4684106c87ef",
+      "document_id": "doc-f34ce0393252",
+      "unit_id": null,
+      "text_quote": null,
+      "start_offset": null,
+      "end_offset": null,
+      "scope": "global",
+      "dimension_id": "conventions",
+      "facet_ids": [
+        "spelling"
+      ],
+      "extraction_note": "deterministic",
+      "support_type": "supporting"
+    },
+    {
+      "span_id": "span-1f10a0ec939a",
+      "document_id": "doc-f34ce0393252",
+      "unit_id": null,
+      "text_quote": null,
+      "start_offset": null,
+      "end_offset": null,
+      "scope": "global",
+      "dimension_id": "conventions",
+      "facet_ids": [
+        "capitalization"
+      ],
+      "extraction_note": "deterministic",
+      "support_type": "supporting"
+    },
+    {
+      "span_id": "span-fe6e07811a53",
+      "document_id": "doc-f34ce0393252",
+      "unit_id": null,
+      "text_quote": null,
+      "start_offset": null,
+      "end_offset": null,
+      "scope": "global",
+      "dimension_id": "conventions",
+      "facet_ids": [
+        "grammar_usage"
+      ],
+      "extraction_note": "deterministic",
+      "support_type": "supporting"
+    },
+    {
+      "span_id": "span-3f2077698674",
+      "document_id": "doc-f34ce0393252",
+      "unit_id": null,
+      "text_quote": null,
+      "start_offset": null,
+      "end_offset": null,
+      "scope": "global",
+      "dimension_id": "conventions",
+      "facet_ids": [
+        "readability_impact"
+      ],
+      "extraction_note": "deterministic",
+      "support_type": "supporting"
+    }
+  ]
+}

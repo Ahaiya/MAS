@@ -1,4 +1,6 @@
-"""LoggingProvider — transparent wrapper that prints LLM call details to the terminal.
+"""日志 Provider 包装器，负责把每次 LLM 调用的关键信息输出到终端和调试包。
+
+LoggingProvider — transparent wrapper that prints LLM call details to the terminal.
 
 Wraps any BaseProvider and logs each complete() call without modifying the
 underlying provider or any pipeline code.  Printed fields per call:
@@ -24,10 +26,14 @@ from __future__ import annotations
 
 import json
 import sys
+import threading
 import time
-from typing import TextIO
+from typing import TYPE_CHECKING, TextIO
 
 from src.providers.base import BaseProvider, LLMRequest, LLMResponse, ProviderCapability
+
+if TYPE_CHECKING:
+    from src.debug.bundle import DebugBundleWriter
 
 
 def _smart_preview(content: str) -> str:
@@ -69,6 +75,7 @@ class LoggingProvider(BaseProvider):
         inner: BaseProvider,
         label: str = "",
         file: TextIO | None = None,
+        debug_writer: "DebugBundleWriter | None" = None,
     ) -> None:
         """
         Args:
@@ -81,9 +88,11 @@ class LoggingProvider(BaseProvider):
         self._inner = inner
         self._label = label
         self._file = file if file is not None else sys.stdout
+        self._debug_writer = debug_writer
         self._call_count: int = 0
         self._total_tokens: int = 0
         self._total_elapsed: float = 0.0
+        self._lock = threading.Lock()
 
     # ── BaseProvider interface ─────────────────────────────────────────────────
 
@@ -96,12 +105,13 @@ class LoggingProvider(BaseProvider):
         return self._inner.capabilities
 
     def complete(self, request: LLMRequest) -> LLMResponse:
-        self._call_count += 1
+        with self._lock:
+            self._call_count += 1
+            call_no = self._call_count
 
-        # Resolve model name: request override > inner provider attribute > "?"
-        model = getattr(self._inner, "_model_id", "?") or "?"
-        if request.model_id:
-            model = request.model_id
+        # Resolve model name consistently across nested wrappers.
+        # Priority: request override > wrapped provider chain > "?"
+        model = request.model_id or self.model_id
 
         structured_tag = "  [json]" if request.output_schema else ""
         prompt_len = len(request.prompt)
@@ -109,18 +119,53 @@ class LoggingProvider(BaseProvider):
 
         # ── Pre-call line ──────────────────────────────────────────────────────
         print(
-            f"         ▶ {label_col}  #{self._call_count:<3}  "
+            f"         ▶ {label_col}  #{call_no:<3}  "
             f"{model:<20}  {prompt_len:>5} p-chars{structured_tag}",
             file=self._file,
             flush=True,
         )
 
+        debug_call_id = None
+        if self._debug_writer is not None:
+            try:
+                debug_call_id = self._debug_writer.record_llm_call_started(
+                    label=self._label or "llm",
+                    provider_name=self.name,
+                    model_id=model,
+                    request=request,
+                )
+            except Exception as exc:
+                print(
+                    f"[debug-warning] failed to record llm_call_started: {exc}",
+                    file=sys.stderr,
+                    flush=True,
+                )
+
         t0 = time.time()
-        response = self._inner.complete(request)
+        try:
+            response = self._inner.complete(request)
+        except Exception as exc:
+            elapsed = time.time() - t0
+            if self._debug_writer is not None and debug_call_id is not None:
+                try:
+                    self._debug_writer.record_llm_call_error(
+                        call_id=debug_call_id,
+                        error=exc,
+                        elapsed_ms=elapsed * 1000.0,
+                    )
+                except Exception as debug_exc:
+                    print(
+                        f"[debug-warning] failed to record llm_call_error: {debug_exc}",
+                        file=sys.stderr,
+                        flush=True,
+                    )
+            raise
+
         elapsed = time.time() - t0
 
-        self._total_tokens += response.usage.total_tokens
-        self._total_elapsed += elapsed
+        with self._lock:
+            self._total_tokens += response.usage.total_tokens
+            self._total_elapsed += elapsed
 
         u = response.usage
 
@@ -133,18 +178,37 @@ class LoggingProvider(BaseProvider):
             flush=True,
         )
 
+        if self._debug_writer is not None and debug_call_id is not None:
+            try:
+                self._debug_writer.record_llm_call_finished(
+                    call_id=debug_call_id,
+                    response=response,
+                    elapsed_ms=elapsed * 1000.0,
+                )
+            except Exception as exc:
+                print(
+                    f"[debug-warning] failed to record llm_call_finished: {exc}",
+                    file=sys.stderr,
+                    flush=True,
+                )
+
         return response
 
     # ── Cumulative stats ───────────────────────────────────────────────────────
 
     @property
     def model_id(self) -> str:
-        """Model identifier of the wrapped provider (穿透嵌套包装层查找 _model_id)。"""
+        """Model identifier of the wrapped provider."""
         p = self._inner
-        while p is not None:
-            mid = getattr(p, "_model_id", None)
-            if mid:
-                return mid
+        visited: set[int] = set()
+        while p is not None and id(p) not in visited:
+            visited.add(id(p))
+            public_mid = getattr(p, "model_id", None)
+            if isinstance(public_mid, str) and public_mid and public_mid != "?":
+                return public_mid
+            private_mid = getattr(p, "_model_id", None)
+            if isinstance(private_mid, str) and private_mid:
+                return private_mid
             p = getattr(p, "_inner", None)
         return "?"
 
@@ -162,3 +226,7 @@ class LoggingProvider(BaseProvider):
     def total_elapsed(self) -> float:
         """Cumulative wall-clock seconds spent inside complete() calls."""
         return self._total_elapsed
+
+    def set_debug_writer(self, debug_writer: "DebugBundleWriter | None") -> None:
+        """Attach or detach the per-run debug bundle writer."""
+        self._debug_writer = debug_writer

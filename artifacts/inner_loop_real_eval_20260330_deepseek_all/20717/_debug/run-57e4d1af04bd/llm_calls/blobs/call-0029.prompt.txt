@@ -1,0 +1,139 @@
+You are an explanation specialist for automated essay scoring feedback.
+
+Write feedback for the writing trait: Sentence Fluency (S).
+
+## Final Score
+Canonical Score: 3
+
+
+## Rubric Descriptors Referenced
+
+
+- Mechanical rather than fluid; occasional awkwardness.
+
+- good control over simple sentences, little over complex
+
+- lapses in stylistic control
+
+- lapses in stylistic control; dialogue may sound stilted
+
+- sentences functional but lack energy
+
+- some passages invite fluid oral reading; others do not
+
+- some variety but falls into repetitive patterns
+
+
+
+## Facet Evidence
+
+### Facet: flow_rhythm
+Supporting evidence:
+
+
+- [span-ext-72c844d85134] "Softball has to be one of the single most greatest sports alive; playing softball in college has always been a goal of mine. I love the dirt that sticks to your face, the sweat dripping from your forehead, and the gallons and gallons of water you poor all over yourself to keep cool in the blistering @CAPS2."
+
+- [span-ext-7a1fed15b8ec] "As I approached the field it felt like time was in slow motion, walking by I saw all the girls turn there heads to see what new fresh meat had arrived."
+
+- [span-ext-840b9908004c] "Each and everyone of them told me their names, there favorite color, and a small fun fact about themselves."
+
+- [span-ext-f2ebdc7e9687] "I have had great memories with the @CAPS2, but also softball is all about going out discovering new friendships; therefore, enjoying the sport as well as the people."
+
+
+Counter evidence:
+
+
+- [span-ext-0f5bdd84d81f] "Although I love softball I feel that the memories you acquire from the times you have with your teammates, are the things you remember the most through out your softball career."
+
+- [span-ext-9156299b6d32] "I wanted this team to like me, I was playing all the possible ways in my head I could greet them so i didn't sound snobby or a grump."
+
+- [span-ext-ebafd7b61640] "I was so nervous my mouth began to feel sticky and have an odd taste to it, soon after my mouth became bone dry no taste, no flavor, just a sticky mess."
+
+- [span-ext-cfb97af8fbda] "Nervous began to take over my body my arms were shaking uncontrollably and I was second guessing every move I made, I even had troubles removing my seat belt."
+
+- [span-ext-3af8299cc25c] "My first thought was to run; that was it I didn't want to go, I was done I wanted home I was ready to start my year with the @CAPS2, I just couldn't take it."
+
+- [span-ext-b8c3fde9f574] "I found myself laughing through out my whole try out, there were no awkward moments and I enjoyed my time there."
+
+- [span-ext-16a5ab589029] "My year with this team was amazing I have friendships with these girls that I never would have discovered if I hadn't gone."
+
+- [span-ext-1ecf9d561d1c] "Laughter played a very big role in the decision I made to play with this team, if I had just gone and tried out, and had I not had fun and laughed, I would have decided to play with the @CAPS2."
+
+
+Finding note: 4 supporting, 8 counter
+
+
+### Facet: sentence_variety
+Supporting evidence:
+
+
+- [span-ext-72c844d85134] "Softball has to be one of the single most greatest sports alive; playing softball in college has always been a goal of mine. I love the dirt that sticks to your face, the sweat dripping from your forehead, and the gallons and gallons of water you poor all over yourself to keep cool in the blistering @CAPS2."
+
+- [span-ext-7a1fed15b8ec] "As I approached the field it felt like time was in slow motion, walking by I saw all the girls turn there heads to see what new fresh meat had arrived."
+
+- [span-ext-840b9908004c] "Each and everyone of them told me their names, there favorite color, and a small fun fact about themselves."
+
+- [span-ext-f2ebdc7e9687] "I have had great memories with the @CAPS2, but also softball is all about going out discovering new friendships; therefore, enjoying the sport as well as the people."
+
+
+Counter evidence:
+
+- (none)
+
+Finding note: 4 supporting, 0 counter
+
+
+### Facet: structural_control
+Supporting evidence:
+
+- (none)
+
+Counter evidence:
+
+
+- [span-ext-0f5bdd84d81f] "Although I love softball I feel that the memories you acquire from the times you have with your teammates, are the things you remember the most through out your softball career."
+
+- [span-ext-9156299b6d32] "I wanted this team to like me, I was playing all the possible ways in my head I could greet them so i didn't sound snobby or a grump."
+
+- [span-ext-ebafd7b61640] "I was so nervous my mouth began to feel sticky and have an odd taste to it, soon after my mouth became bone dry no taste, no flavor, just a sticky mess."
+
+- [span-ext-cfb97af8fbda] "Nervous began to take over my body my arms were shaking uncontrollably and I was second guessing every move I made, I even had troubles removing my seat belt."
+
+- [span-ext-3af8299cc25c] "My first thought was to run; that was it I didn't want to go, I was done I wanted home I was ready to start my year with the @CAPS2, I just couldn't take it."
+
+- [span-ext-b8c3fde9f574] "I found myself laughing through out my whole try out, there were no awkward moments and I enjoyed my time there."
+
+- [span-ext-16a5ab589029] "My year with this team was amazing I have friendships with these girls that I never would have discovered if I hadn't gone."
+
+- [span-ext-1ecf9d561d1c] "Laughter played a very big role in the decision I made to play with this team, if I had just gone and tried out, and had I not had fun and laughed, I would have decided to play with the @CAPS2."
+
+
+Finding note: 0 supporting, 8 counter
+
+
+
+## Observation Signals
+- observation_confidence: HIGH
+
+- uncertainty_notes: (none)
+
+
+## Scorer Seed Material
+The essay shows mixed sentence fluency. Supporting evidence demonstrates some variety and fluid passages (span-ext-72c844d85134, span-ext-7a1fed15b8ec), but counter evidence reveals significant awkward constructions, run-on sentences, and structural issues (span-ext-0f5bdd84d81f, span-ext-9156299b6d32, span-ext-ebafd7b61640, span-ext-cfb97af8fbda, span-ext-3af8299cc25c). The 4:8 ratio of supporting to counter evidence for flow_rhythm, combined with 8 counter examples for structural_control, indicates mechanical rather than fluid writing with occasional awkwardness, aligning with Score 3 descriptors.
+
+## Decision Context
+- was_adjudicated: False
+- decision_note: no conflict, rater_1 score used (raters converged)
+
+
+
+## Instructions
+1. Use `scorer_rationale` as seed material, but rewrite it into student-facing feedback.
+2. Organize the response by facets: highlight strengths and weaknesses per facet.
+3. Cite concrete quotes from facet evidence to support claims.
+4. If `observation_confidence` is LOW, include a clear uncertainty caveat.
+5. If `was_adjudicated` is true, mention that evidence was mixed and required adjudication.
+6. Add actionable, specific next-step suggestions instead of repeating rationale text.
+
+## Output Format
+[Write one concise feedback paragraph in plain text]

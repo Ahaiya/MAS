@@ -1,4 +1,6 @@
 """
+流水线校验器，负责在关键阶段前后检查 contract 不变量。
+
 Pipeline Validators — pre/post-stage invariant checks.
 
 Each validator is a pure function that raises ValueError when an expected

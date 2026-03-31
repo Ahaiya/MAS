@@ -1,0 +1,17 @@
+{
+  "proposed_score": 5,
+  "descriptor_refs": [
+    "accurate, specific words; word choices energize writing",
+    "fresh, vivid expression; slang purposeful and effective",
+    "words that evoke clear images; figurative language may be used"
+  ],
+  "evidence_ids": [
+    "span-ext-eb8299340daf",
+    "span-ext-6e20e4b0cbd1",
+    "span-ext-bce27a65e942",
+    "span-ext-284b735c57b5",
+    "span-ext-e532f245d89f"
+  ],
+  "confidence": 0.9,
+  "justification": "The essay demonstrates Score 5 Word Choice through strong precision and imagery. Evidence shows 'accurate, specific words' that 'energize writing' via sensory details like 'bone dry' and 'sticky mess' (span-ext-eb8299340daf). Vivid expressions such as 'stomach was in knots' (span-ext-bce27a65e942) and 'fresh meat' (span-ext-284b735c57b5) align with 'words that evoke clear images' and 'fresh, vivid expression'. Although appropriateness counter-evidence notes homophone errors, the vocabulary selection remains 'striking and varied but natural', showing control and intentionality that outweighs mechanical slips, consistent with the Score 5 anchor."
+}

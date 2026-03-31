@@ -1,0 +1,40 @@
+{
+    "evidence_spans": [
+        {
+            "quote": "Softball has to be one of the single most greatest sports alive; playing softball in college has always been a goal of mine. I love the dirt that sticks to your face, the sweat dripping from your forehead, and the gallons and gallons of water you poor all over yourself to keep cool in the blistering @CAPS2.",
+            "chunk_id": "unit-d5d353ae0c53",
+            "facets": ["beginning_closure"],
+            "support_type": "supporting"
+        },
+        {
+            "quote": "As my dad and I drove to the field where I would try out for this team, my stomach was in knots. I wanted this team to like me, I was playing all the possible ways in my head I could greet them so i didn't sound snobby or a grump.",
+            "chunk_id": "unit-9020b623f4bd",
+            "facets": ["sequencing"],
+            "support_type": "supporting"
+        },
+        {
+            "quote": "As I approached the field it felt like time was in slow motion, walking by I saw all the girls turn there heads to see what new fresh meat had arrived.",
+            "chunk_id": "unit-59b94fdf22f4",
+            "facets": ["sequencing", "transitions"],
+            "support_type": "supporting"
+        },
+        {
+            "quote": "I found myself laughing through out my whole try out, there were no awkward moments and I enjoyed my time there. I couldn't wait to go back, I now had made new friends, friends I knew I would grow close with.",
+            "chunk_id": "unit-59b94fdf22f4",
+            "facets": ["detail_placement"],
+            "support_type": "supporting"
+        },
+        {
+            "quote": "My year with this team was amazing I have friendships with these girls that I never would have discovered if I hadn't gone. Those girls are like family, and the coaches even more so.",
+            "chunk_id": "unit-e2e1eee7ca46",
+            "facets": ["beginning_closure"],
+            "support_type": "supporting"
+        },
+        {
+            "quote": "Laughter played a very big role in the decision I made to play with this team, if I had just gone and tried out, and had I not had fun and laughed, I would have decided to play with the @CAPS2.",
+            "chunk_id": "unit-e2e1eee7ca46",
+            "facets": ["detail_placement"],
+            "support_type": "supporting"
+        }
+    ]
+}

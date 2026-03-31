@@ -1,4 +1,6 @@
 """
+Provider 守护层，负责补充重试、超时和解析失败保护。
+
 Provider guardrails — retry, timeout, and parse-failure protection.
 
 GuardedProvider wraps any BaseProvider and adds:

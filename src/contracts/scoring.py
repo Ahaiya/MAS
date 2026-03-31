@@ -1,4 +1,6 @@
 """
+评分与裁决契约，定义假设、冲突、裁决与最终决定等核心结构。
+
 Scoring and Adjudication Contracts
 
 Defines the intermediate data shapes for the multi-rater scoring, conflict
@@ -47,13 +49,15 @@ def _check_no_extra(data: Dict[str, Any], allowed: frozenset, cls_name: str) -> 
 class ConflictType(str, Enum):
     """Type of scoring conflict detected by the Consistency Checker.
 
-    NON_ADJACENT – scores differ by more than allowed adjacent range (from policy).
-    CUSP         – at least one score is on a policy-defined boundary between levels.
-    OTHER        – other policy-defined conflict type.
+    NON_ADJACENT   – scores differ by more than allowed adjacent range (from policy).
+    CUSP           – at least one score is on a policy-defined boundary between levels.
+    ADJACENT_DRIFT – multiple adjacent disagreements drift in the same direction.
+    OTHER          – other policy-defined conflict type.
     """
 
     NON_ADJACENT = "non_adjacent"
     CUSP = "cusp"
+    ADJACENT_DRIFT = "adjacent_drift"
     OTHER = "other"
 
 

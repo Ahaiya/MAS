@@ -1,4 +1,6 @@
 """
+结构化输出规范化模块，负责把原始模型文本解析为稳定 JSON 结构。
+
 Structured output normalization.
 
 Takes raw text content from a provider response and normalises it into a dict:

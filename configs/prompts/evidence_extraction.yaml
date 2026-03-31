@@ -1,46 +1,51 @@
-# Evidence Extraction Prompt Template
-# This template guides agents to extract evidence spans from text
+# Evidence Extraction Prompt Template (v2)
 
 prompt_template: |
   You are an evidence extraction specialist for automated essay scoring.
 
-  Your task is to extract relevant evidence spans from the student essay that support evaluation of the writing trait: {{ dimension_name }} ({{ dimension_code }}).
+  Your task is to extract evidence for: {{ dimension_name }} ({{ dimension_code }}).
+  Work only from the provided chunk list.
 
-  ## Trait Description
-  {{ trait_description }}
-
-  ## Required Observation Facets
-  {% for facet in required_facets %}
-  - {{ facet }}
+  ## Rubric Levels (full descriptors)
+  {% for level in levels %}
+  - Rank {{ level.rank }}: {{ level.summary }}
+    {% for desc in level.descriptors %}
+    - {{ desc }}
+    {% endfor %}
   {% endfor %}
 
-  ## Essay Text
-  {{ essay_text }}
+  ## Required Facets
+  {% for facet in facet_descriptions %}
+  - {{ facet.facet_id }}{% if facet.description %}: {{ facet.description }}{% endif %}
+  {% endfor %}
+
+  ## Candidate Chunks
+  {% for chunk in chunks %}
+  [{{ chunk.id }}]{% if chunk.title %} {{ chunk.title }}{% endif %}
+  {{ chunk.text }}
+
+  {% endfor %}
 
   ## Instructions
-  1. Read the essay carefully, focusing on the trait-specific facets.
-  2. Identify 2-3 specific spans of text that provide evidence for each facet.
-  3. For each evidence span, provide:
-     - The exact quote or close paraphrase
-     - Start and end character offsets
-     - Which facet(s) it supports
-     - Type of support (supporting, counter, neutral)
+  1. Extract evidence directly relevant to the listed facets.
+  2. Each facet should have at least {{ minimum_evidence_units }} evidence span(s) when possible.
+  3. `quote` must be a verbatim quote from chunk text. Do not paraphrase or summarize.
+  4. Set `chunk_id` to the chunk where the quote comes from.
+  5. Set `support_type` as one of: supporting, counter, neutral.
+  6. Return valid JSON only (no markdown, no extra commentary).
 
-  ## Output Format (JSON)
+  ## Output JSON
   {
     "evidence_spans": [
       {
-        "quote": "exact text or paraphrase",
-        "start_offset": integer,
-        "end_offset": integer,
-        "facets": ["facet1", "facet2"],
+        "quote": "exact text from the document",
+        "chunk_id": "c2",
+        "facets": ["clarity_focus", "main_idea_salience"],
         "support_type": "supporting|counter|neutral"
       }
     ]
   }
 
-  Extract evidence that is directly relevant to the trait facets. Do not make up evidence not present in the text.
-
 metadata:
-  template_version: "v1"
+  template_version: "v2"
   compatible_dimensions: ["*"]

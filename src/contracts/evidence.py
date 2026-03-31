@@ -1,4 +1,6 @@
 """
+证据与观察契约，定义抽取阶段和观察阶段之间传递的数据形状。
+
 Evidence and Observation Contracts
 
 Defines the intermediate data shapes for the evidence extraction and
@@ -82,6 +84,8 @@ class EvidenceSpan:
         dimension_id: Opaque dimension identifier from rubric config.
         facet_ids: Rubric facets this span is relevant to (opaque IDs from config).
         extraction_note: Optional extraction-time comment (e.g., uncertainty flag).
+        support_type: Support polarity for this evidence span:
+                      "supporting" | "counter" | "neutral".
     """
 
     span_id: str
@@ -94,6 +98,7 @@ class EvidenceSpan:
     dimension_id: str
     facet_ids: List[str]
     extraction_note: Optional[str]
+    support_type: str = "supporting"
 
     def __post_init__(self) -> None:
         if self.scope == EvidenceScope.SPAN:
@@ -107,6 +112,11 @@ class EvidenceSpan:
                     f"EvidenceSpan '{self.span_id}': end_offset ({self.end_offset}) "
                     f"must be > start_offset ({self.start_offset})."
                 )
+        if self.support_type not in {"supporting", "counter", "neutral"}:
+            raise ValueError(
+                f"EvidenceSpan '{self.span_id}': support_type must be one of "
+                "'supporting' | 'counter' | 'neutral'."
+            )
 
     def span_length(self) -> Optional[int]:
         """Character length of this span, or None for GLOBAL-scope spans."""
@@ -126,6 +136,7 @@ class EvidenceSpan:
             "dimension_id": self.dimension_id,
             "facet_ids": list(self.facet_ids),
             "extraction_note": self.extraction_note,
+            "support_type": self.support_type,
         }
 
     @classmethod
@@ -135,7 +146,7 @@ class EvidenceSpan:
             frozenset({
                 "span_id", "document_id", "unit_id", "text_quote",
                 "start_offset", "end_offset", "scope", "dimension_id",
-                "facet_ids", "extraction_note",
+                "facet_ids", "extraction_note", "support_type",
             }),
             "EvidenceSpan",
         )
@@ -150,6 +161,7 @@ class EvidenceSpan:
             dimension_id=data["dimension_id"],
             facet_ids=list(data.get("facet_ids") or []),
             extraction_note=data.get("extraction_note"),
+            support_type=str(data.get("support_type") or "supporting"),
         )
 
 
@@ -224,6 +236,8 @@ class DimensionObservation:
         facet_findings: Per-facet evidence breakdowns (one per required facet).
         observation_confidence: Overall confidence in this observation's completeness.
         uncertainty_notes: Free-text notes about coverage gaps or ambiguities.
+        coverage_miss_span_ids: Span IDs found by extraction whose unit_id fell
+                                outside this dimension's planned target units.
     """
 
     observation_id: str
@@ -234,6 +248,7 @@ class DimensionObservation:
     facet_findings: List[FacetFinding]
     observation_confidence: ObservationConfidence
     uncertainty_notes: List[str]
+    coverage_miss_span_ids: List[str] = field(default_factory=list)
 
     def get_facet_finding(self, facet_id: str) -> Optional[FacetFinding]:
         """Return the FacetFinding for the given facet_id, or None."""
@@ -262,6 +277,7 @@ class DimensionObservation:
             "facet_findings": [ff.to_dict() for ff in self.facet_findings],
             "observation_confidence": self.observation_confidence.value,
             "uncertainty_notes": list(self.uncertainty_notes),
+            "coverage_miss_span_ids": list(self.coverage_miss_span_ids),
         }
 
     @classmethod
@@ -272,6 +288,7 @@ class DimensionObservation:
                 "observation_id", "document_id", "dimension_id",
                 "supporting_span_ids", "counter_span_ids", "facet_findings",
                 "observation_confidence", "uncertainty_notes",
+                "coverage_miss_span_ids",
             }),
             "DimensionObservation",
         )
@@ -286,4 +303,5 @@ class DimensionObservation:
             ],
             observation_confidence=ObservationConfidence(data["observation_confidence"]),
             uncertainty_notes=list(data.get("uncertainty_notes") or []),
+            coverage_miss_span_ids=list(data.get("coverage_miss_span_ids") or []),
         )

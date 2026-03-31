@@ -20,7 +20,7 @@ import pytest
 _PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 _GOLDEN_DIR = _PROJECT_ROOT / "tests" / "golden"
 _SRC_DIR = _PROJECT_ROOT / "src"
-_SCRIPTS = _PROJECT_ROOT / "scripts"
+_SCRIPTS = _PROJECT_ROOT / "tests" / "scripts"
 _BUNDLE = _PROJECT_ROOT / "configs" / "bundles" / "asap_set8_baseline.bundle.yaml"
 _MANIFEST = _PROJECT_ROOT / "data" / "samples" / "baseline_manifest.yaml"
 

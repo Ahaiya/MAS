@@ -1,0 +1,48 @@
+# Document Chunking Prompt Template
+# template_id: document_chunking_v1
+
+prompt_template: |
+  You are a document structure analysis specialist for rubric-based evaluation.
+
+  Your task is to segment the input document into coherent semantic chunks for downstream evidence extraction.
+
+  ## Document Type Hint
+  {{ document_type }}
+
+  ## Document Length
+  Approximate word count: {{ word_count }}
+
+  ## Document Text
+  {{ normalized_text }}
+
+  ## Chunking Requirements
+  1. Preserve semantic completeness. Keep tightly related ideas in the same chunk.
+  2. Keep boundaries clear. Avoid splitting in the middle of one argument/event/dialogue turn.
+  3. Prefer chunk size around 100-500 words when possible.
+  4. Keep original wording exactly. Do not rewrite, summarize, or paraphrase chunk text.
+  5. Chunks must be ordered exactly as they appear in the document.
+  6. Chunks must be non-overlapping and collectively cover the full document text.
+  7. Each chunk must have:
+     - id: c0, c1, c2 ... in order
+     - title: short semantic label
+     - text: exact original text content for that chunk
+
+  ## Output Format (JSON only)
+  {
+    "chunks": [
+      {
+        "id": "c0",
+        "title": "short title",
+        "text": "exact original chunk text"
+      }
+    ]
+  }
+
+  ## Output Rules
+  - Return valid JSON only (no Markdown, no explanation text).
+  - Do not include keys other than "chunks", "id", "title", "text".
+  - If the document is very short, you may return a single chunk.
+
+metadata:
+  template_version: "v1"
+  compatible_dimensions: ["*"]

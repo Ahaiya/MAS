@@ -1,4 +1,6 @@
 """
+Rubric 核心策略模块，负责维度遍历、量尺读取与描述符检索。
+
 Rubric Core Policy — config-driven dimension traversal.
 
 Provides traversal utilities for rubric dimensions, ensuring all agents

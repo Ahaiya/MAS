@@ -1,4 +1,6 @@
 """
+Provider 工厂，负责按配置装配真实 provider 及其包装层。
+
 Provider Factory — builds BaseProvider instances from ProviderEntryConfig.
 
 Reads model, api_base, and API key from the config entry plus environment
@@ -55,6 +57,7 @@ def build_provider(entry: ProviderEntryConfig) -> BaseProvider:
         api_key=api_key,
         model_id=model,
         api_base=api_base,
+        default_params=entry.params,
         timeout=timeout,
         max_retries=0,  # retries handled by GuardedProvider
     )

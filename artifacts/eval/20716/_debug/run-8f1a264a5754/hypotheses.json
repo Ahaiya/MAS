@@ -1,0 +1,325 @@
+{
+  "run_id": "run-8f1a264a5754",
+  "hypotheses": [
+    {
+      "hypothesis_id": "hyp-45dec7a49eb9",
+      "observation_id": "obs-2004631acc91",
+      "dimension_id": "ideas_content",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 1,
+        "display_annotation": null,
+        "display_score": "1",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "ideas are extremely limited or unclear",
+        "development is minimal or nonexistent",
+        "paper is too short to demonstrate development"
+      ],
+      "evidence_span_ids": [
+        "span-c282cf9372dc",
+        "span-4090b7021aa0",
+        "span-910983d4fde9",
+        "span-062ea60686ec",
+        "span-8f1272032a7a"
+      ],
+      "rationale": "Deterministic score 1 for ideas_content by rater_1",
+      "confidence": 0.8
+    },
+    {
+      "hypothesis_id": "hyp-268f51d238a8",
+      "observation_id": "obs-2004631acc91",
+      "dimension_id": "ideas_content",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 2,
+        "display_annotation": null,
+        "display_score": "2",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "purpose and main ideas may require extensive inferences",
+        "minimal development; insufficient details",
+        "irrelevant details clutter the text",
+        "extensive repetition of detail"
+      ],
+      "evidence_span_ids": [
+        "span-c282cf9372dc",
+        "span-4090b7021aa0",
+        "span-910983d4fde9",
+        "span-062ea60686ec",
+        "span-8f1272032a7a"
+      ],
+      "rationale": "Deterministic score 2 for ideas_content by rater_2",
+      "confidence": 0.8
+    },
+    {
+      "hypothesis_id": "hyp-c6d5541d1d54",
+      "observation_id": "obs-273ef7da5275",
+      "dimension_id": "organization",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "clear sequencing and paragraph breaks",
+        "organization may be predictable",
+        "recognizable, developed beginning not particularly inviting",
+        "developed conclusion may lack subtlety",
+        "body easy to follow with details fitting where placed",
+        "transitions may be stilted or formulaic",
+        "organization helps reader despite some weaknesses"
+      ],
+      "evidence_span_ids": [
+        "span-dc492cac45a4",
+        "span-5c33d7a2e676",
+        "span-f81a4b194ab6",
+        "span-52c42770d819"
+      ],
+      "rationale": "Deterministic score 4 for organization by rater_1",
+      "confidence": 0.8
+    },
+    {
+      "hypothesis_id": "hyp-c1e53191af02",
+      "observation_id": "obs-273ef7da5275",
+      "dimension_id": "organization",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 6,
+        "display_annotation": null,
+        "display_score": "6",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "effective, perhaps creative, sequencing and paragraph breaks",
+        "strong, inviting beginning that draws reader in",
+        "strong, satisfying sense of resolution or closure",
+        "smooth, effective transitions among all elements",
+        "details fit where placed"
+      ],
+      "evidence_span_ids": [
+        "span-dc492cac45a4",
+        "span-5c33d7a2e676",
+        "span-f81a4b194ab6",
+        "span-52c42770d819"
+      ],
+      "rationale": "Deterministic score 6 for organization by rater_2",
+      "confidence": 0.8
+    },
+    {
+      "hypothesis_id": "hyp-696229a13c51",
+      "observation_id": "obs-7ac0e6136c3f",
+      "dimension_id": "voice",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 3,
+        "display_annotation": null,
+        "display_score": "3",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "limited sense of audience; writer's awareness unclear",
+        "occasional sense of writer but voice may shift or disappear",
+        "voice either inappropriately personal or inappropriately impersonal",
+        "limited ability to shift to more objective voice when necessary"
+      ],
+      "evidence_span_ids": [
+        "span-34dfcc382208",
+        "span-a677f25cd575",
+        "span-cb64deb7dc41"
+      ],
+      "rationale": "Deterministic score 3 for voice by rater_1",
+      "confidence": 0.8
+    },
+    {
+      "hypothesis_id": "hyp-436d2e3abf9e",
+      "observation_id": "obs-7ac0e6136c3f",
+      "dimension_id": "voice",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 6,
+        "display_annotation": null,
+        "display_score": "6",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "effective level of closeness to or distance from audience",
+        "exceptionally strong sense of audience; writer seems aware of reader and how to communicate effectively",
+        "sense that topic has come to life; shows originality, liveliness, honesty, conviction, excitement, humor, or suspense",
+        "writer demonstrates deep commitment to topic"
+      ],
+      "evidence_span_ids": [
+        "span-34dfcc382208",
+        "span-a677f25cd575",
+        "span-cb64deb7dc41"
+      ],
+      "rationale": "Deterministic score 6 for voice by rater_2",
+      "confidence": 0.8
+    },
+    {
+      "hypothesis_id": "hyp-c8e1df7ec512",
+      "observation_id": "obs-8f11d4420869",
+      "dimension_id": "word_choice",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 6,
+        "display_annotation": null,
+        "display_score": "6",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "accurate, strong, specific words; powerful words energize writing",
+        "fresh, original expression; slang purposeful and effective",
+        "vocabulary that is striking and varied but natural and not overdone",
+        "ordinary words used in unusual way",
+        "words that evoke strong images; figurative language may be used"
+      ],
+      "evidence_span_ids": [
+        "span-bcd8fcc6716d",
+        "span-c3096751a36a",
+        "span-ad92e2060afb",
+        "span-a0949bf778b6"
+      ],
+      "rationale": "Deterministic score 6 for word_choice by rater_1",
+      "confidence": 0.8
+    },
+    {
+      "hypothesis_id": "hyp-9f915303dc49",
+      "observation_id": "obs-8f11d4420869",
+      "dimension_id": "word_choice",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 2,
+        "display_annotation": null,
+        "display_score": "2",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "words that are colorless, flat, or imprecise",
+        "monotonous repetition or overwhelming reliance on worn expressions",
+        "images that are fuzzy or absent altogether"
+      ],
+      "evidence_span_ids": [
+        "span-bcd8fcc6716d",
+        "span-c3096751a36a",
+        "span-ad92e2060afb",
+        "span-a0949bf778b6"
+      ],
+      "rationale": "Deterministic score 2 for word_choice by rater_2",
+      "confidence": 0.8
+    },
+    {
+      "hypothesis_id": "hyp-5d3075e719f5",
+      "observation_id": "obs-552f1a484a69",
+      "dimension_id": "sentence_fluency",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 1,
+        "display_annotation": null,
+        "display_score": "1",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "text does not invite smooth oral reading",
+        "confusing word order often jarring and irregular",
+        "sentence structure frequently obscures meaning",
+        "sentences are disjointed, confusing, or rambling"
+      ],
+      "evidence_span_ids": [
+        "span-7749757c62db",
+        "span-ee186870aef1",
+        "span-5885376ee2ce"
+      ],
+      "rationale": "Deterministic score 1 for sentence_fluency by rater_1",
+      "confidence": 0.8
+    },
+    {
+      "hypothesis_id": "hyp-0d35ce929480",
+      "observation_id": "obs-552f1a484a69",
+      "dimension_id": "sentence_fluency",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "natural sound; reader moves easily but lacks rhythm and grace",
+        "some repeated patterns that detract from impact",
+        "strong control over simple sentences, variable over complex",
+        "occasional lapses in stylistic control",
+        "dialogue sounds natural for most part but may be stilted"
+      ],
+      "evidence_span_ids": [
+        "span-7749757c62db",
+        "span-ee186870aef1",
+        "span-5885376ee2ce"
+      ],
+      "rationale": "Deterministic score 4 for sentence_fluency by rater_2",
+      "confidence": 0.8
+    },
+    {
+      "hypothesis_id": "hyp-66b1fdb6c97e",
+      "observation_id": "obs-6bc89426c34e",
+      "dimension_id": "conventions",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "control over conventions used, though wide range not demonstrated",
+        "correct end-of-sentence punctuation; internal sometimes incorrect",
+        "spelling usually correct, especially on common words",
+        "correct capitalization; errors, if any, are minor",
+        "occasional lapses in grammar and usage; not severe enough to distort meaning",
+        "moderate need for editing"
+      ],
+      "evidence_span_ids": [
+        "span-90ab59dfeb05",
+        "span-4684106c87ef",
+        "span-1f10a0ec939a",
+        "span-fe6e07811a53",
+        "span-3f2077698674"
+      ],
+      "rationale": "Deterministic score 4 for conventions by rater_1",
+      "confidence": 0.8
+    },
+    {
+      "hypothesis_id": "hyp-aeffa2f68b69",
+      "observation_id": "obs-6bc89426c34e",
+      "dimension_id": "conventions",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "control over conventions used, though wide range not demonstrated",
+        "correct end-of-sentence punctuation; internal sometimes incorrect",
+        "spelling usually correct, especially on common words",
+        "correct capitalization; errors, if any, are minor",
+        "occasional lapses in grammar and usage; not severe enough to distort meaning",
+        "moderate need for editing"
+      ],
+      "evidence_span_ids": [
+        "span-90ab59dfeb05",
+        "span-4684106c87ef",
+        "span-1f10a0ec939a",
+        "span-fe6e07811a53",
+        "span-3f2077698674"
+      ],
+      "rationale": "Deterministic score 4 for conventions by rater_2",
+      "confidence": 0.8
+    }
+  ]
+}

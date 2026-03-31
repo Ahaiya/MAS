@@ -1,0 +1,156 @@
+{
+  "essay_id": "20716",
+  "run_id": "run-3ac19bd9a622",
+  "dimension_count": 6,
+  "per_dimension": {
+    "conventions": {
+      "coverage_recall_rate": {
+        "rate": null,
+        "in_target_spans": 0,
+        "out_target_spans": 0,
+        "assessable_spans": 0,
+        "unknown_unit_spans": 5
+      },
+      "coverage_precision_rate": {
+        "rate": 0.0,
+        "used_target_units": 0,
+        "target_unit_count": 42
+      },
+      "chunk_boundary_quality": {
+        "cross_chunk_span_ratio": null,
+        "boundary_failure_ratio": null,
+        "cross_chunk_spans": 0,
+        "unmatched_quote_spans": 0,
+        "boundary_ok_spans": 0,
+        "assessable_quote_spans": 0
+      }
+    },
+    "ideas_content": {
+      "coverage_recall_rate": {
+        "rate": null,
+        "in_target_spans": 0,
+        "out_target_spans": 0,
+        "assessable_spans": 0,
+        "unknown_unit_spans": 5
+      },
+      "coverage_precision_rate": {
+        "rate": 0.0,
+        "used_target_units": 0,
+        "target_unit_count": 42
+      },
+      "chunk_boundary_quality": {
+        "cross_chunk_span_ratio": null,
+        "boundary_failure_ratio": null,
+        "cross_chunk_spans": 0,
+        "unmatched_quote_spans": 0,
+        "boundary_ok_spans": 0,
+        "assessable_quote_spans": 0
+      }
+    },
+    "organization": {
+      "coverage_recall_rate": {
+        "rate": null,
+        "in_target_spans": 0,
+        "out_target_spans": 0,
+        "assessable_spans": 0,
+        "unknown_unit_spans": 4
+      },
+      "coverage_precision_rate": {
+        "rate": 0.0,
+        "used_target_units": 0,
+        "target_unit_count": 42
+      },
+      "chunk_boundary_quality": {
+        "cross_chunk_span_ratio": null,
+        "boundary_failure_ratio": null,
+        "cross_chunk_spans": 0,
+        "unmatched_quote_spans": 0,
+        "boundary_ok_spans": 0,
+        "assessable_quote_spans": 0
+      }
+    },
+    "sentence_fluency": {
+      "coverage_recall_rate": {
+        "rate": null,
+        "in_target_spans": 0,
+        "out_target_spans": 0,
+        "assessable_spans": 0,
+        "unknown_unit_spans": 3
+      },
+      "coverage_precision_rate": {
+        "rate": 0.0,
+        "used_target_units": 0,
+        "target_unit_count": 42
+      },
+      "chunk_boundary_quality": {
+        "cross_chunk_span_ratio": null,
+        "boundary_failure_ratio": null,
+        "cross_chunk_spans": 0,
+        "unmatched_quote_spans": 0,
+        "boundary_ok_spans": 0,
+        "assessable_quote_spans": 0
+      }
+    },
+    "voice": {
+      "coverage_recall_rate": {
+        "rate": null,
+        "in_target_spans": 0,
+        "out_target_spans": 0,
+        "assessable_spans": 0,
+        "unknown_unit_spans": 3
+      },
+      "coverage_precision_rate": {
+        "rate": 0.0,
+        "used_target_units": 0,
+        "target_unit_count": 42
+      },
+      "chunk_boundary_quality": {
+        "cross_chunk_span_ratio": null,
+        "boundary_failure_ratio": null,
+        "cross_chunk_spans": 0,
+        "unmatched_quote_spans": 0,
+        "boundary_ok_spans": 0,
+        "assessable_quote_spans": 0
+      }
+    },
+    "word_choice": {
+      "coverage_recall_rate": {
+        "rate": null,
+        "in_target_spans": 0,
+        "out_target_spans": 0,
+        "assessable_spans": 0,
+        "unknown_unit_spans": 4
+      },
+      "coverage_precision_rate": {
+        "rate": 0.0,
+        "used_target_units": 0,
+        "target_unit_count": 42
+      },
+      "chunk_boundary_quality": {
+        "cross_chunk_span_ratio": null,
+        "boundary_failure_ratio": null,
+        "cross_chunk_spans": 0,
+        "unmatched_quote_spans": 0,
+        "boundary_ok_spans": 0,
+        "assessable_quote_spans": 0
+      }
+    }
+  },
+  "overall": {
+    "coverage_recall_rate": {
+      "rate": null,
+      "in_target_spans": 0,
+      "assessable_spans": 0
+    },
+    "coverage_precision_rate": {
+      "rate": 0.0,
+      "used_target_units": 0,
+      "target_unit_count": 252
+    },
+    "chunk_boundary_quality": {
+      "cross_chunk_span_ratio": null,
+      "boundary_failure_ratio": null,
+      "assessable_quote_spans": 0
+    }
+  }
+}

@@ -4,9 +4,10 @@ Tests for Adjudication Trigger Evaluation (Phase 4, Task 2).
 Verifies that:
 1. score_distance triggers fire when |score1 - score2| exceeds threshold.
 2. pattern_match (cusp) triggers fire when cross-dimension score patterns match.
-3. Dimension filtering (applies_to, exclusions) works correctly.
-4. All thresholds, patterns, and dimension lists come from config.
-5. consistency_checker.run() delegates to evaluate_all_triggers().
+3. adjacent_drift triggers fire when same-direction adjacent disagreements accumulate.
+4. Dimension filtering (applies_to, exclusions) works correctly.
+5. All thresholds, patterns, and dimension lists come from config.
+6. reconciliation.run() delegates to evaluate_all_triggers().
 
 Zero-hardcoding: all fixtures use synthetic dimension IDs, rater labels,
 and score values — no real trait names or ASAP-specific data.
@@ -23,11 +24,12 @@ from src.contracts.scoring import (
     ScoreHypothesis,
 )
 from src.policies.adjudication import (
+    evaluate_adjacent_drift_trigger,
     evaluate_all_triggers,
     evaluate_pattern_match_trigger,
     evaluate_score_distance_trigger,
 )
-from src.agents import consistency_checker
+from src.agents import reconciliation
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
@@ -93,6 +95,31 @@ def _pattern_trigger(
     }
 
 
+def _adjacent_drift_trigger(
+    trigger_id: str = "t_adjacent_drift",
+    applies_to: list | None = None,
+    score_gap: int = 1,
+    min_matching_dimensions: int = 3,
+    require_same_direction: bool = True,
+    exclusions: list | None = None,
+    action: str = "invoke_resolution",
+    priority: int = 3,
+) -> dict:
+    return {
+        "trigger_id": trigger_id,
+        "type": "adjacent_drift",
+        "applies_to_dimensions": applies_to or ["*"],
+        "pattern": {
+            "score_gap": score_gap,
+            "min_matching_dimensions": min_matching_dimensions,
+            "require_same_direction": require_same_direction,
+        },
+        "exclusions": exclusions or [],
+        "action": action,
+        "priority": priority,
+    }
+
+
 def _policy(*triggers: dict) -> PolicySnapshot:
     return PolicySnapshot(
         adjudication_policy={
@@ -103,7 +130,7 @@ def _policy(*triggers: dict) -> PolicySnapshot:
                 "resolution_rater_label": "rater_3",
             },
             "triggers": list(triggers),
-            "resolution_strategy": {"default": "use_rater_3_as_authoritative"},
+            "resolution_strategy": {"default": "use_resolution_rater_as_authoritative"},
         },
         aggregation_policy={},
         explanation_policy={},
@@ -399,6 +426,93 @@ class TestPatternMatchTrigger:
         assert ids1 == ids2
 
 
+# ── Adjacent Drift Trigger Tests ──────────────────────────────────────────────
+
+
+class TestAdjacentDriftTrigger:
+    def test_no_conflict_when_adjacent_count_below_threshold(self):
+        trigger = _adjacent_drift_trigger(min_matching_dimensions=3)
+        hyps = [
+            _hyp("d1", "r1", 4), _hyp("d1", "r2", 5),
+            _hyp("d2", "r1", 2), _hyp("d2", "r2", 3),
+        ]
+        conflicts = evaluate_adjacent_drift_trigger(trigger, hyps)
+        assert conflicts == []
+
+    def test_conflict_when_three_adjacent_diffs_share_direction(self):
+        trigger = _adjacent_drift_trigger(min_matching_dimensions=3)
+        hyps = [
+            _hyp("d1", "r1", 4), _hyp("d1", "r2", 5),
+            _hyp("d2", "r1", 4), _hyp("d2", "r2", 5),
+            _hyp("d3", "r1", 2), _hyp("d3", "r2", 3),
+        ]
+        conflicts = evaluate_adjacent_drift_trigger(trigger, hyps)
+        assert len(conflicts) == 3
+        assert all(c.conflict_type == ConflictType.ADJACENT_DRIFT for c in conflicts)
+
+    def test_no_conflict_when_direction_is_mixed_and_required(self):
+        trigger = _adjacent_drift_trigger(min_matching_dimensions=3)
+        hyps = [
+            _hyp("d1", "r1", 4), _hyp("d1", "r2", 5),
+            _hyp("d2", "r1", 5), _hyp("d2", "r2", 4),
+            _hyp("d3", "r1", 2), _hyp("d3", "r2", 3),
+        ]
+        conflicts = evaluate_adjacent_drift_trigger(trigger, hyps)
+        assert conflicts == []
+
+    def test_conflict_when_direction_is_mixed_but_not_required(self):
+        trigger = _adjacent_drift_trigger(
+            min_matching_dimensions=3,
+            require_same_direction=False,
+        )
+        hyps = [
+            _hyp("d1", "r1", 4), _hyp("d1", "r2", 5),
+            _hyp("d2", "r1", 5), _hyp("d2", "r2", 4),
+            _hyp("d3", "r1", 2), _hyp("d3", "r2", 3),
+        ]
+        conflicts = evaluate_adjacent_drift_trigger(trigger, hyps)
+        assert len(conflicts) == 3
+
+    def test_uses_resolution_path_from_action(self):
+        trigger = _adjacent_drift_trigger(
+            min_matching_dimensions=3,
+            action="human_review",
+        )
+        hyps = [
+            _hyp("d1", "r1", 4), _hyp("d1", "r2", 5),
+            _hyp("d2", "r1", 4), _hyp("d2", "r2", 5),
+            _hyp("d3", "r1", 2), _hyp("d3", "r2", 3),
+        ]
+        conflicts = evaluate_adjacent_drift_trigger(trigger, hyps)
+        assert all(c.recommended_path == ResolutionPath.HUMAN_REVIEW for c in conflicts)
+
+    def test_respects_dimension_filters(self):
+        trigger = _adjacent_drift_trigger(
+            applies_to=["d1", "d2", "d3"],
+            exclusions=["d3"],
+            min_matching_dimensions=2,
+        )
+        hyps = [
+            _hyp("d1", "r1", 4), _hyp("d1", "r2", 5),
+            _hyp("d2", "r1", 4), _hyp("d2", "r2", 5),
+            _hyp("d3", "r1", 2), _hyp("d3", "r2", 3),
+        ]
+        conflicts = evaluate_adjacent_drift_trigger(trigger, hyps)
+        assert len(conflicts) == 2
+        assert {c.dimension_id for c in conflicts} == {"d1", "d2"}
+
+    def test_deterministic(self):
+        trigger = _adjacent_drift_trigger(min_matching_dimensions=3)
+        hyps = [
+            _hyp("d1", "r1", 4), _hyp("d1", "r2", 5),
+            _hyp("d2", "r1", 4), _hyp("d2", "r2", 5),
+            _hyp("d3", "r1", 2), _hyp("d3", "r2", 3),
+        ]
+        c1 = evaluate_adjacent_drift_trigger(trigger, hyps)
+        c2 = evaluate_adjacent_drift_trigger(trigger, hyps)
+        assert [c.conflict_id for c in c1] == [c.conflict_id for c in c2]
+
+
 # ── Combined / evaluate_all_triggers Tests ────────────────────────────────────
 
 
@@ -462,22 +576,56 @@ class TestEvaluateAllTriggers:
         conflicts = evaluate_all_triggers(hyps, policy)
         assert conflicts == []
 
+    def test_adjacent_drift_only(self):
+        policy = _policy(_adjacent_drift_trigger(min_matching_dimensions=3))
+        hyps = [
+            _hyp("d1", "r1", 4), _hyp("d1", "r2", 5),
+            _hyp("d2", "r1", 4), _hyp("d2", "r2", 5),
+            _hyp("d3", "r1", 2), _hyp("d3", "r2", 3),
+        ]
+        conflicts = evaluate_all_triggers(hyps, policy)
+        assert len(conflicts) == 3
+        assert all(c.conflict_type == ConflictType.ADJACENT_DRIFT for c in conflicts)
 
-# ── Integration: consistency_checker.run() ────────────────────────────────────
+    def test_higher_priority_trigger_wins_for_same_pair(self):
+        policy = _policy(
+            _adjacent_drift_trigger(
+                trigger_id="adj_high_priority",
+                min_matching_dimensions=3,
+                priority=2,
+            ),
+            _adjacent_drift_trigger(
+                trigger_id="adj_low_priority",
+                min_matching_dimensions=3,
+                priority=3,
+            ),
+        )
+        hyps = [
+            _hyp("d1", "r1", 4), _hyp("d1", "r2", 3),
+            _hyp("d2", "r1", 4), _hyp("d2", "r2", 3),
+            _hyp("d3", "r1", 4), _hyp("d3", "r2", 3),
+        ]
+        conflicts = evaluate_all_triggers(hyps, policy)
+        assert len(conflicts) == 3
+        assert all(c.conflict_type == ConflictType.ADJACENT_DRIFT for c in conflicts)
+        assert all(c.trigger_rule_id == "adj_high_priority" for c in conflicts)
+
+
+# ── Integration: reconciliation.run() ────────────────────────────────────────
 
 
 class TestConsistencyCheckerRun:
     def test_delegates_to_evaluate_all_triggers(self):
         policy = _policy(_score_distance_trigger(operator=">", value=1))
         hyps = [_hyp("d1", "r1", 1), _hyp("d1", "r2", 4)]
-        conflicts = consistency_checker.run(hyps, policy)
+        conflicts = reconciliation.run(hyps, policy).conflicts
         assert len(conflicts) == 1
         assert isinstance(conflicts[0], ConflictRecord)
 
     def test_no_conflicts(self):
         policy = _policy(_score_distance_trigger(operator=">", value=1))
         hyps = [_hyp("d1", "r1", 3), _hyp("d1", "r2", 3)]
-        conflicts = consistency_checker.run(hyps, policy)
+        conflicts = reconciliation.run(hyps, policy).conflicts
         assert conflicts == []
 
     def test_handles_cusp_trigger(self):
@@ -491,6 +639,6 @@ class TestConsistencyCheckerRun:
             _hyp("d1", "r1", 5), _hyp("d1", "r2", 4),
             _hyp("d2", "r1", 5), _hyp("d2", "r2", 5),
         ]
-        conflicts = consistency_checker.run(hyps, policy)
+        conflicts = reconciliation.run(hyps, policy).conflicts
         assert len(conflicts) == 2
         assert all(c.conflict_type == ConflictType.CUSP for c in conflicts)

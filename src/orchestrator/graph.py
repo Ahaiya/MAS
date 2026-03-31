@@ -1,4 +1,6 @@
 """
+状态图模块，负责维护流水线合法状态迁移与历史记录。
+
 State Graph — runtime state machine for the evaluation pipeline.
 
 StateGraph enforces the legal transition matrix defined in states.py.

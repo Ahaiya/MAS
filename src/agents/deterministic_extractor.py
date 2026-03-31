@@ -1,4 +1,6 @@
 """
+确定性证据抽取 Agent，在 mock 模式下按规则构造 EvidenceSpan。
+
 Deterministic Evidence Extractor — deterministic EvidenceSpan generation.
 
 Produces one GLOBAL-scope EvidenceSpan per required facet in the CoveragePlan.
@@ -49,6 +51,7 @@ def run(plan: CoveragePlan, document: NormalizedDocument) -> List[EvidenceSpan]:
                 dimension_id=plan.dimension_id,
                 facet_ids=[facet_id],
                 extraction_note="deterministic",
+                support_type="supporting",
             )
         )
     return spans

@@ -1,0 +1,343 @@
+{
+  "run_id": "run-99d1e061af1b",
+  "bundle_id": "asap_set8_baseline",
+  "bundle_version": "2026-03-12",
+  "provider_mode": "mock",
+  "session_metadata": {
+    "essay_id": "20716",
+    "output_dir": "/Users/ahai/Code/MAS/artifacts/eval/20716",
+    "verbose": false
+  },
+  "event_counts": {
+    "run_started": 1,
+    "artifact_emitted": 26,
+    "node_started": 8,
+    "node_finished": 8,
+    "route_decision": 2,
+    "run_finished": 1
+  },
+  "node_count": 8,
+  "llm_call_count": 0,
+  "llm_total_tokens": 0,
+  "llm_total_elapsed_ms": 0.0,
+  "nodes": [
+    {
+      "node_id": "node_preprocess",
+      "node_type": "preprocess",
+      "status": "success",
+      "input_ref": "req-8bcf9cb8eb67",
+      "output_ref": "doc-f34ce0393252|chunks:42|method:rule",
+      "error_message": null,
+      "started_at": "2026-03-30T12:50:10.644902+00:00",
+      "finished_at": "2026-03-30T12:50:10.645547+00:00",
+      "artifacts": [
+        {
+          "artifact_name": "input_request",
+          "path": "node_artifacts/node_preprocess/input_request.json",
+          "format": "json",
+          "summary": "Original evaluation request"
+        },
+        {
+          "artifact_name": "output_normalized_request",
+          "path": "node_artifacts/node_preprocess/output_normalized_request.json",
+          "format": "json",
+          "summary": "NormalizedRequest produced by preprocess"
+        },
+        {
+          "artifact_name": "output_document",
+          "path": "node_artifacts/node_preprocess/output_document.json",
+          "format": "json",
+          "summary": "NormalizedDocument with 42 text units"
+        }
+      ],
+      "routes": [],
+      "fallbacks": [],
+      "llm_call_ids": [],
+      "llm_call_count": 0,
+      "llm_total_tokens": 0,
+      "llm_total_elapsed_ms": 0
+    },
+    {
+      "node_id": "node_coverage",
+      "node_type": "coverage",
+      "status": "success",
+      "input_ref": "doc-f34ce0393252",
+      "output_ref": "plans:6 coverage:252->252",
+      "error_message": null,
+      "started_at": "2026-03-30T12:50:10.645581+00:00",
+      "finished_at": "2026-03-30T12:50:10.646228+00:00",
+      "artifacts": [
+        {
+          "artifact_name": "input_document",
+          "path": "node_artifacts/node_coverage/input_document.json",
+          "format": "json",
+          "summary": "Input document for coverage planning"
+        },
+        {
+          "artifact_name": "output_coverage_plans",
+          "path": "node_artifacts/node_coverage/output_coverage_plans.json",
+          "format": "json",
+          "summary": "6 coverage plans"
+        }
+      ],
+      "routes": [],
+      "fallbacks": [],
+      "llm_call_ids": [],
+      "llm_call_count": 0,
+      "llm_total_tokens": 0,
+      "llm_total_elapsed_ms": 0
+    },
+    {
+      "node_id": "node_extractor",
+      "node_type": "extract",
+      "status": "success",
+      "input_ref": "plans:6",
+      "output_ref": "spans:24 (exact:0, fuzzy:0, unmatched:0)",
+      "error_message": null,
+      "started_at": "2026-03-30T12:50:10.646272+00:00",
+      "finished_at": "2026-03-30T12:50:10.647237+00:00",
+      "artifacts": [
+        {
+          "artifact_name": "input_coverage_plans",
+          "path": "node_artifacts/node_extractor/input_coverage_plans.json",
+          "format": "json",
+          "summary": "6 plans entering extraction"
+        },
+        {
+          "artifact_name": "output_spans_by_dimension",
+          "path": "node_artifacts/node_extractor/output_spans_by_dimension.json",
+          "format": "json",
+          "summary": "6 dimension buckets"
+        },
+        {
+          "artifact_name": "output_spans_flat",
+          "path": "node_artifacts/node_extractor/output_spans_flat.json",
+          "format": "json",
+          "summary": "24 evidence spans"
+        }
+      ],
+      "routes": [],
+      "fallbacks": [],
+      "llm_call_ids": [],
+      "llm_call_count": 0,
+      "llm_total_tokens": 0,
+      "llm_total_elapsed_ms": 0
+    },
+    {
+      "node_id": "node_observer",
+      "node_type": "observe",
+      "status": "success",
+      "input_ref": "spans:24",
+      "output_ref": "obs:6",
+      "error_message": null,
+      "started_at": "2026-03-30T12:50:10.647286+00:00",
+      "finished_at": "2026-03-30T12:50:10.648076+00:00",
+      "artifacts": [
+        {
+          "artifact_name": "input_spans_by_dimension",
+          "path": "node_artifacts/node_observer/input_spans_by_dimension.json",
+          "format": "json",
+          "summary": "6 dimension buckets"
+        },
+        {
+          "artifact_name": "output_observations",
+          "path": "node_artifacts/node_observer/output_observations.json",
+          "format": "json",
+          "summary": "6 dimension observations"
+        }
+      ],
+      "routes": [],
+      "fallbacks": [],
+      "llm_call_ids": [],
+      "llm_call_count": 0,
+      "llm_total_tokens": 0,
+      "llm_total_elapsed_ms": 0
+    },
+    {
+      "node_id": "node_scorer",
+      "node_type": "score",
+      "status": "success",
+      "input_ref": "obs:6",
+      "output_ref": "hyps:12",
+      "error_message": null,
+      "started_at": "2026-03-30T12:50:10.648111+00:00",
+      "finished_at": "2026-03-30T12:50:10.648780+00:00",
+      "artifacts": [
+        {
+          "artifact_name": "input_observations",
+          "path": "node_artifacts/node_scorer/input_observations.json",
+          "format": "json",
+          "summary": "6 observations entering scorer"
+        },
+        {
+          "artifact_name": "output_hypotheses",
+          "path": "node_artifacts/node_scorer/output_hypotheses.json",
+          "format": "json",
+          "summary": "12 score hypotheses"
+        }
+      ],
+      "routes": [],
+      "fallbacks": [],
+      "llm_call_ids": [],
+      "llm_call_count": 0,
+      "llm_total_tokens": 0,
+      "llm_total_elapsed_ms": 0
+    },
+    {
+      "node_id": "node_consistency_checker",
+      "node_type": "check_consistency",
+      "status": "success",
+      "input_ref": "hyps:12",
+      "output_ref": "conflicts:4",
+      "error_message": null,
+      "started_at": "2026-03-30T12:50:10.648825+00:00",
+      "finished_at": "2026-03-30T12:50:10.649300+00:00",
+      "artifacts": [
+        {
+          "artifact_name": "input_hypotheses",
+          "path": "node_artifacts/node_consistency_checker/input_hypotheses.json",
+          "format": "json",
+          "summary": "12 hypotheses entering consistency checker"
+        },
+        {
+          "artifact_name": "output_conflicts",
+          "path": "node_artifacts/node_consistency_checker/output_conflicts.json",
+          "format": "json",
+          "summary": "4 conflicts detected"
+        }
+      ],
+      "routes": [
+        {
+          "router_name": "route_after_consistency_check",
+          "from_state": "consistency_checked",
+          "to_state": "adjudicated",
+          "rationale": "Route selected from consistency checker output",
+          "metadata": {
+            "conflict_count": 4
+          }
+        }
+      ],
+      "fallbacks": [],
+      "llm_call_ids": [],
+      "llm_call_count": 0,
+      "llm_total_tokens": 0,
+      "llm_total_elapsed_ms": 0
+    },
+    {
+      "node_id": "node_adjudicator",
+      "node_type": "adjudicate",
+      "status": "success",
+      "input_ref": "conflicts:4",
+      "output_ref": "decisions:6",
+      "error_message": null,
+      "started_at": "2026-03-30T12:50:10.649381+00:00",
+      "finished_at": "2026-03-30T12:50:10.650191+00:00",
+      "artifacts": [
+        {
+          "artifact_name": "input_conflicts",
+          "path": "node_artifacts/node_adjudicator/input_conflicts.json",
+          "format": "json",
+          "summary": "4 conflicts entering adjudicator"
+        },
+        {
+          "artifact_name": "input_hypotheses",
+          "path": "node_artifacts/node_adjudicator/input_hypotheses.json",
+          "format": "json",
+          "summary": "12 hypotheses available to adjudicator"
+        },
+        {
+          "artifact_name": "output_adjudications",
+          "path": "node_artifacts/node_adjudicator/output_adjudications.json",
+          "format": "json",
+          "summary": "4 adjudication records"
+        },
+        {
+          "artifact_name": "output_decisions",
+          "path": "node_artifacts/node_adjudicator/output_decisions.json",
+          "format": "json",
+          "summary": "6 final decisions"
+        }
+      ],
+      "routes": [
+        {
+          "router_name": "route_after_adjudication",
+          "from_state": "adjudicated",
+          "to_state": "feedback_rendered",
+          "rationale": "Route selected from adjudication outcome",
+          "metadata": {
+            "adjudication_count": 4
+          }
+        }
+      ],
+      "fallbacks": [],
+      "llm_call_ids": [],
+      "llm_call_count": 0,
+      "llm_total_tokens": 0,
+      "llm_total_elapsed_ms": 0
+    },
+    {
+      "node_id": "node_feedback",
+      "node_type": "feedback",
+      "status": "success",
+      "input_ref": "decisions:6",
+      "output_ref": "dims:6",
+      "error_message": null,
+      "started_at": "2026-03-30T12:50:10.650298+00:00",
+      "finished_at": "2026-03-30T12:50:10.651003+00:00",
+      "artifacts": [
+        {
+          "artifact_name": "input_decisions",
+          "path": "node_artifacts/node_feedback/input_decisions.json",
+          "format": "json",
+          "summary": "6 decisions entering feedback"
+        },
+        {
+          "artifact_name": "output_feedback",
+          "path": "node_artifacts/node_feedback/output_feedback.json",
+          "format": "json",
+          "summary": "6 dimension feedback blocks"
+        },
+        {
+          "artifact_name": "output_composite",
+          "path": "node_artifacts/node_feedback/output_composite.json",
+          "format": "json",
+          "summary": "Composite decision written into feedback"
+        }
+      ],
+      "routes": [],
+      "fallbacks": [],
+      "llm_call_ids": [],
+      "llm_call_count": 0,
+      "llm_total_tokens": 0,
+      "llm_total_elapsed_ms": 0
+    }
+  ],
+  "llm_calls": [],
+  "primary_artifacts": [
+    {
+      "artifact_name": "run_trace",
+      "path": "run_trace.json",
+      "summary": "Canonical run trace for this evaluation"
+    },
+    {
+      "artifact_name": "feedback",
+      "path": "feedback.json",
+      "summary": "Final feedback payload"
+    },
+    {
+      "artifact_name": "hypotheses",
+      "path": "hypotheses.json",
+      "summary": "12 score hypotheses"
+    },
+    {
+      "artifact_name": "evidence_spans",
+      "path": "evidence_spans.json",
+      "summary": "24 evidence spans"
+    },
+    {
+      "artifact_name": "observations",
+      "path": "observations.json",
+      "summary": "6 observations"
+    }
+  ]
+}

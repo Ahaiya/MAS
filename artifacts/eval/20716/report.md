@@ -2,22 +2,22 @@
 
 | 项目 | 内容 |
 |------|------|
-| 评价时间 | 2026-03-27 02:21:24 |
-| 耗时 | 12分12秒 |
-| 运行 ID | `run-1d4aedb56855` |
+| 评价时间 | 2026-03-30 07:45:34 |
+| 耗时 | 16分3秒 |
+| 运行 ID | `run-4ea41c6e803b` |
 | 量规版本 | `asap_set8_baseline@2026-03-12` |
 
 ## 执行过程
 
 | 步骤 | 状态 | 耗时 | 输出 |
 |------|------|------|------|
-| ✅ 文档预处理 | success | 0秒 | `doc-f34ce0393252` |
-| ✅ 维度覆盖确认 | success | 0秒 | `plans:6` |
-| ✅ 证据抽取 | success | 2分15秒 | `spans:55` |
+| ✅ 文档预处理 | success | 3秒 | `doc-f34ce0393252|chunks:42|method:rule` |
+| ✅ 维度覆盖确认 | success | 3秒 | `plans:6 coverage:252->252` |
+| ✅ 证据抽取 | success | 2分14秒 | `spans:51` |
 | ✅ 证据整理 | success | 0秒 | `obs:6` |
-| ✅ 双评审打分 | success | 9分21秒 | `hyps:12` |
+| ✅ 双评审打分 | success | 13分7秒 | `hyps:12` |
 | ✅ 一致性检验 | success | 0秒 | `conflicts:0` |
-| ✅ 反馈生成 | success | 34秒 | `dims:6` |
+| ✅ 反馈生成 | success | 33秒 | `dims:6` |
 
 > **一致性结论：** 两位评审员完全一致，无需裁决
 
@@ -39,56 +39,56 @@
 
 ### 💡 Ideas & Content — 4/6　良好
 
+- Clear main ideas with relevant but limited support.
 - clear main ideas
 - easily identifiable purpose
-- supporting details are relevant but may be overly general or limited
 
-Your essay received a score of 4 for Ideas and Content. You establish a **clear main idea** about using jokes to cheer up a friend's mother, and your **purpose is easily identifiable**. Your **supporting details are relevant**, such as using the "Boo" joke twice and explaining the mother's grief, which directly connects to your purpose. However, some details are **overly general or limited**, like stating his parents "laughed for like five minutes" or the conclusion about cleaning your room, which do not strongly develop the central idea.
+Your essay received a score of 4 for Ideas and Content. You establish a **clear main idea** about using jokes to cheer up a friend's mother, and your 
 
 
 ### 📐 Organization — 3/6　中等
 
+- Attempted organization; inconsistent or skeletal structure.
 - attempts at sequencing and paragraph breaks but order occasionally unclear
 - beginning and ending present but undeveloped or too obvious
-- structure is skeletal or too rigid
 
-Your essay scored a 3 in Organization. The structure is skeletal, with a clear but basic sequence of events and paragraph breaks. However, the order is occasionally unclear, such as when the new student (@LOCATION1/@ORGANIZATION1) is introduced abruptly during the movie announcement, which disrupts the flow. Furthermore, while you have a distinct beginning and ending, they are too obvious and undeveloped. The essay opens by stating a friend's mom "was a grouch" and ends abruptly with "gosh darn it. FIN," which does not provide a reflective or developed conclusion. These issues show an attempt to organize your narrative, but the structure remains too rigid and occasionally confusing.
+Your essay received a score of 3 for Organization. This score reflects an **attempted organization with a skeletal structure**, featuring **a beginnin
 
 
 ### 🎤 Voice — 4/6　良好
 
-- Liveliness, sincerity, or humor when appropriate
 - Reader may glimpse writer and feel sense of interaction in places
-- Reader may glimpse writer and feel sense of interaction in places.
+- Sense of audience; writer seems aware but has not consistently employed appropriate voice
+- Voice present; some expressiveness and sincerity
 
-Your essay received a score of 4 for Voice. The writing shows "liveliness" and a clear "sense of interaction," as you effectively use dialogue to bring scenes to life, such as when you tell the "boo who" joke to your friend's parents. This creates a sincere and engaging glimpse into your personality. However, the voice is inconsistent, becoming "inappropriately casual in places," as seen in phrases like "gosh darn it" and "@CAPS1 sounds like a plan," which can distract from the overall tone. While your expressive moments are strong, this mix of formality levels holds your score back from the highest level.
+Your essay received a score of 4 for Voice. The reader can "glimpse writer and feel sense of interaction in places," and you show a developing "sense 
 
 
 ### 📝 Word Choice — 3/6　中等
 
-- Lacks precision and variety; generic paper.
-- Reliance on cliches and overused expressions.
-- Words that work but rarely capture reader's interest.
+- expression seems mundane and general
+- expression seems mundane and general; slang not effective
+- reliance on cliches and overused expressions
 
-Your Word Choice score is 3. The writing relies on cliches and overused expressions, resulting in language that works but rarely captures the reader's interest. For example, phrases like "cracking up so hard" and "gosh darn it" are generic and lack precision. Furthermore, the repetition of constructions like "She never laughed and she never smiled" and "laugh and laugh" demonstrates a limited vocabulary variety, making the expression seem mundane. While your words are generally accurate, this reliance on common phrases prevents your word choice from becoming engaging or distinctive.
+Your essay received a score of 3 for Word Choice. The expression often seems mundane and general, relying on cliches and overused phrases that rarely 
 
 
 ### 🔄 Sentence Fluency — 3/6　中等
 
-- good control over simple sentences, little over complex
-- sentence patterns that are monotonous
-- sentences functional but lack energy
+- Choppy or rambling; awkward constructions.
+- Good control over simple sentences, little over complex
+- Mechanical rather than fluid; occasional awkwardness
 
-Your score for Sentence Fluency is 3. Your writing shows "good control over simple sentences," but overall, the "sentence patterns are monotonous" and "significant portions [are] difficult to follow or read aloud." For example, you often connect many ideas with "and" or "so," creating long, rambling sentences like, "I said @CAPS1 so we went around the whole school...we heard the bell ring and we ran to our class." This makes the writing choppy. While some dialogue passages read fluidly, others become tangled, such as "He asked me what was so funny i told him that i thought his mom didn't like me..." where missing punctuation and clauses strung together interrupt the flow.
+Your essay received a score of 3 for Sentence Fluency. The writing shows **good control over simple sentences**, but there is a **significant number o
 
 
 ### ✏️ Conventions — 3/6　中等
 
+- capitalization inconsistent or often incorrect
 - end-of-sentence punctuation usually correct; internal punctuation has frequent errors
-- little control over basic conventions
-- many end-of-sentence errors; frequent internal punctuation errors
+- errors in grammar and usage do not block meaning but distract reader
 
-Your essay received a score of 3 for Conventions. This score reflects **"little control over basic conventions"** with a **"significant need for editing."** Specifically, there are **"many end-of-sentence errors"** and **"frequent internal punctuation errors,"** which disrupt the flow of your story. For example, you consistently run sentences together without correct punctuation, as in: "We sat in the back of the classroom its only @PERSON2 and I..." and "That made my friend laugh we were cracking up so hard..." Additionally, the frequent omission of quotation marks and commas in dialogue, like in the extended joke about "boo," makes passages difficult to follow. These consistent errors distract the reader and are the key reason for this score.
+Your essay received a score of 3 in Conventions. This score reflects that you have "some control over basic conventions," but "errors in grammar and u
 
 ---
-*由 MAS 自动评价系统生成 | 运行 ID: `run-1d4aedb56855`*
+*由 MAS 自动评价系统生成 | 运行 ID: `run-4ea41c6e803b`*
