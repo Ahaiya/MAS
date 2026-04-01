@@ -1,8 +1,4 @@
-"""评测兼容层入口，保留历史 `src.evaluation` 导入路径。
-
-实际实现已经迁移到 `src.outer_loop.metrics`，这里继续暴露同名能力，
-避免现有脚本、测试和外部调用在第二轮结构调整中被打断。
-"""
+"""外环指标子包，集中放置评测导出、一致性分析与 QWK 计算能力。"""
 
 from src.outer_loop.metrics.consistency import (
     ConsistencyReport,
@@ -31,3 +27,4 @@ __all__ = [
     "qwk",
     "qwk_for_dimension",
 ]
+

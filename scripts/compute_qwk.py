@@ -37,9 +37,9 @@ if str(_PROJECT_ROOT) not in sys.path:
 
 import typer
 
-from src.evaluation.consistency import compute_consistency
-from src.evaluation.export import export_run
-from src.evaluation.qwk import qwk_for_dimension
+from src.outer_loop.metrics.consistency import compute_consistency
+from src.outer_loop.metrics.export import export_run
+from src.outer_loop.metrics.qwk import qwk_for_dimension
 
 app = typer.Typer(
     name="compute-qwk",
@@ -142,7 +142,7 @@ def _load_mas_scores(
 ) -> dict[str, dict[str, int]]:
     """Return {essay_id: {dimension_id: mas_score}} from feedback.json files.
 
-    Uses src/evaluation/export.py (export_run) which handles both the real
+    Uses src/outer_loop/metrics/export.py (export_run) which handles both the real
     provider format (canonical_score) and mock format (final_score).
     """
     result: dict[str, dict[str, int]] = {}

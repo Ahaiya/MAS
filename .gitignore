@@ -1,0 +1,14 @@
+# macOS / Finder
+.DS_Store
+
+# Python bytecode / caches
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+
+# Test / coverage artifacts
+.coverage
+.pytest_cache/
+
