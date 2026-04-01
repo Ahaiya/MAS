@@ -129,13 +129,14 @@
 ## Phase 1：外环核心基础设施
 
 > 1.1 和 1.2 可并行，1.3 依赖前两者的接口。
+> 状态：已完成（2026-04-01）
 
 ### Task 1.1｜实验日志（experiment_log.py）
 
 **新建文件**：`src/outer_loop/experiments/experiment_log.py`
 
 **步骤**：
-- [ ] 定义 `IterationRecord` dataclass，字段与 `outer_loop_design.md §2` 完全对齐：
+- [x] 定义 `IterationRecord` dataclass，字段与 `outer_loop_design.md §2` 完全对齐：
   ```python
   @dataclass
   class IterationRecord:
@@ -151,16 +152,16 @@
       next_hypothesis: str
       config_snapshot_path: str
   ```
-- [ ] 实现 `ExperimentLog` 类：
-  - [ ] `load(path: Path) -> ExperimentLog`（文件不存在时初始化为空）
-  - [ ] `append(record: IterationRecord)` — 追加并立即写盘（YAML）
-  - [ ] `latest() -> IterationRecord | None`
-  - [ ] `last_n(n: int) -> list[IterationRecord]` — 供 Agent context 截取
-  - [ ] `count_consecutive_no_improvement(unit: str) -> int` — 判断强制转移条件
-  - [ ] `is_forbidden_unit(unit: str) -> bool` — QWK 下降时的禁区标记
-  - [ ] `mark_forbidden(unit: str, reason: str)` — 写入禁区记录
-  - [ ] `consecutive_no_improvement_global() -> int` — 全局连续无改善轮数（判断探索模式）
-  - [ ] `next_iteration_id() -> int`
+- [x] 实现 `ExperimentLog` 类：
+  - [x] `load(path: Path) -> ExperimentLog`（文件不存在时初始化为空）
+  - [x] `append(record: IterationRecord)` — 追加并立即写盘（YAML）
+  - [x] `latest() -> IterationRecord | None`
+  - [x] `last_n(n: int) -> list[IterationRecord]` — 供 Agent context 截取
+  - [x] `count_consecutive_no_improvement(unit: str) -> int` — 判断强制转移条件
+  - [x] `is_forbidden_unit(unit: str) -> bool` — QWK 下降时的禁区标记
+  - [x] `mark_forbidden(unit: str, reason: str)` — 写入禁区记录
+  - [x] `consecutive_no_improvement_global() -> int` — 全局连续无改善轮数（判断探索模式）
+  - [x] `next_iteration_id() -> int`
 
 **验收**：
 - 空文件初始化 → append 一条 → load → latest 返回刚追加的记录
@@ -173,7 +174,7 @@
 **新建文件**：`src/outer_loop/optimization/config_patcher.py`
 
 **步骤**：
-- [ ] 定义 `ChangeProposal` dataclass（与 `outer_loop_design.md §5.1` 对齐）：
+- [x] 定义 `ChangeProposal` dataclass（与 `outer_loop_design.md §5.1` 对齐）：
   ```python
   @dataclass
   class ChangeProposal:
@@ -184,20 +185,20 @@
       new_value: Any
       rationale: str
   ```
-- [ ] 实现 `ConfigPatcher` 类：
-  - [ ] 内置白名单（`outer_loop_design.md §5.3` 全部条目）
-  - [ ] 内置 bundle 文件保护字段集合：`{"model", "model_id"}`，写入时拦截
-  - [ ] `validate(proposal: ChangeProposal) -> tuple[bool, str]` — 仅校验，不执行
-  - [ ] `apply(proposal: ChangeProposal, iter_id: str) -> tuple[bool, str]`：
+- [x] 实现 `ConfigPatcher` 类：
+  - [x] 内置白名单（`outer_loop_design.md §5.3` 全部条目）
+  - [x] 内置 bundle 文件保护字段集合：`{"model", "model_id"}`，写入时拦截
+  - [x] `validate(proposal: ChangeProposal) -> tuple[bool, str]` — 仅校验，不执行
+  - [x] `apply(proposal: ChangeProposal, iter_id: str) -> tuple[bool, str]`：
     1. 白名单校验（失败 → 返回错误，不执行）
     2. 保护字段校验（target_path 不得包含保护字段名）
     3. 快照当前 `configs/` → `experiments/snapshots/iter_{iter_id}/configs/`
     4. 执行 patch（YAML 嵌套字段定位 + 写入）
     5. 格式验证（`yaml.safe_load` 验证合法性）
     6. 失败回退（从快照恢复，记录失败原因）
-  - [ ] `rollback(iter_id: str) -> bool` — 从指定快照恢复 configs/
-  - [ ] `_prune_old_snapshots(keep: int = 20)` — 保留最近 N 轮快照
-- [ ] 快照路径：`experiments/snapshots/iter_{iter_id}/configs/`（仅快照 `configs/` 目录）
+  - [x] `rollback(iter_id: str) -> bool` — 从指定快照恢复 configs/
+  - [x] `_prune_old_snapshots(keep: int = 20)` — 保留最近 N 轮快照
+- [x] 快照路径：`experiments/snapshots/iter_{iter_id}/configs/`（仅快照 `configs/` 目录）
 
 **验收**：
 - 白名单外文件写入 → 被拒绝，configs 未变动
@@ -212,14 +213,14 @@
 **新建文件**：`src/outer_loop/optimization/search_policy.py`
 
 **步骤**：
-- [ ] 实现 `SearchPolicy` 类（封装 `outer_loop_design.md §4.2` 全部软策略规则）：
-  - [ ] `should_force_transfer(log: ExperimentLog, unit: str) -> bool` — 同一 unit 连续 2 次无改善
-  - [ ] `should_rollback(prev_qwk: float, new_qwk: float) -> bool` — 下降超过 0.03
-  - [ ] `is_exploration_mode(log: ExperimentLog) -> bool` — 全局连续 5 轮无改善
-  - [ ] `is_forbidden_unit(log: ExperimentLog, unit: str) -> bool`
-  - [ ] `get_priority_layer(unit: str) -> int` — P1/P2/P3/P4 层级判断
-  - [ ] `should_escalate_layer(log: ExperimentLog, probes: dict) -> bool` — 上游问题未收敛时拦截下游探索
-- [ ] 定义优先级层映射（配置化，不硬编码具体 unit 名）：
+- [x] 实现 `SearchPolicy` 类（封装 `outer_loop_design.md §4.2` 全部软策略规则）：
+  - [x] `should_force_transfer(log: ExperimentLog, unit: str) -> bool` — 同一 unit 连续 2 次无改善
+  - [x] `should_rollback(prev_qwk: float, new_qwk: float) -> bool` — 下降超过 0.03
+  - [x] `is_exploration_mode(log: ExperimentLog) -> bool` — 全局连续 5 轮无改善
+  - [x] `is_forbidden_unit(log: ExperimentLog, unit: str) -> bool`
+  - [x] `get_priority_layer(unit: str) -> int` — P1/P2/P3/P4 层级判断
+  - [x] `should_escalate_layer(log: ExperimentLog, probes: dict) -> bool` — 上游问题未收敛时拦截下游探索
+- [x] 定义优先级层映射（配置化，不硬编码具体 unit 名）：
   ```python
   PRIORITY_LAYERS = {
       "scoring": 1,
@@ -236,6 +237,7 @@
 ## Phase 2：外环 Agent 主循环
 
 > 2.1 可先于 1.3 开始（只需接口设计完成）。2.2 依赖 Phase 0 和 Phase 1 全部。
+> 状态：已完成（2026-04-01）
 
 ### Task 2.1｜Agent Prompts
 
@@ -244,14 +246,14 @@
 - `src/outer_loop/prompts/outer_loop_user_template.md`
 
 **步骤**：
-- [ ] System prompt 包含：
+- [x] System prompt 包含：
   - 角色定义（MAS 外环优化 Agent）
   - 当前优化目标（per-dimension QWK ≥ 0.8，composite QWK ≥ 0.8）
   - 可用动作：提交 ChangeProposal（YAML 格式）、选择本轮探针
   - 搜索空间约束（§4.2 全部规则的自然语言版本）
   - 单变更原则
   - 输出格式规范（结构化 YAML block）
-- [ ] User prompt 模板（Jinja2-style 变量占位）包含：
+- [x] User prompt 模板（Jinja2-style 变量占位）包含：
   - `{{ experiment_log_summary }}` — 最近 N 轮摘要
   - `{{ current_config_snapshot }}` — 当前关键配置字段的摘要
   - `{{ available_probes }}` — 探针列表及其说明
@@ -268,8 +270,8 @@
 **新建文件**：`src/outer_loop/agent.py`
 
 **步骤**：
-- [ ] 定义 `OuterLoopAgent` 类，依赖注入：`ExperimentLog`, `ConfigPatcher`, `SearchPolicy`, provider
-- [ ] 实现 `run_one_iteration(iter_id: str) -> IterationRecord`，按 5 个 Phase 执行：
+- [x] 定义 `OuterLoopAgent` 类，依赖注入：`ExperimentLog`, `ConfigPatcher`, `SearchPolicy`, provider
+- [x] 实现 `run_one_iteration(iter_id: str) -> IterationRecord`，按 5 个 Phase 执行：
   - **Phase 1 读取**：加载 experiment_log 摘要 + 当前配置快照
   - **Phase 2 决策**：填充 user_prompt → 调用 LLM → 解析 `ChangeProposal`（YAML block 提取）
   - **Phase 3 执行**：
@@ -279,10 +281,10 @@
     - `run_probes(selected_probes, artifacts_dir)`
   - **Phase 4 复盘**：将探针结果填入 user_prompt → 调用 LLM → 解析 verdict + next_hypothesis
   - **Phase 5 归档**：`ExperimentLog.append(record)` + `_prune_old_snapshots()`
-- [ ] 实现 `run_loop(max_iterations: int, stop_on_target: bool = True)`：
+- [x] 实现 `run_loop(max_iterations: int, stop_on_target: bool = True)`：
   - 逐轮调用 `run_one_iteration()`
   - 终止条件：QWK 达标 / 达到 max_iterations / 外部中断信号
-- [ ] 实现 `run_cold_start()` — 冷启动分支（见 Task 2.3）
+- [x] 实现 `run_cold_start()` — 冷启动分支（见 Task 2.3）
 
 **验收**：使用 mock provider 完成一轮完整迭代，experiment_log 中增加一条记录，configs 有对应快照。
 
@@ -291,13 +293,13 @@
 ### Task 2.3｜冷启动流程
 
 **步骤**：
-- [ ] 在 `OuterLoopAgent.run_loop()` 入口检测：`experiment_log.count() == 0` → 进入冷启动
-- [ ] 冷启动流程：
+- [x] 在 `OuterLoopAgent.run_loop()` 入口检测：`experiment_log.count() == 0` → 进入冷启动
+- [x] 冷启动流程：
   1. 调用 `batch_eval(all_training_ids, iter_id="cold_start")`
   2. 运行全部探针，产出初始诊断报告（写入 `experiments/probes/cold_start_diagnostics.json`）
   3. 读取 `experiments/cold_start_notes.md`（不存在时跳过）
   4. 产出第一条 ChangeProposal，写入 `experiments/iter_001_proposal.yaml`（供人工审查）
-- [ ] 新建 `experiments/cold_start_notes.md`：包含人工初始观察的模板注释
+- [x] 新建 `experiments/cold_start_notes.md`：包含人工初始观察的模板注释
 
 **验收**：冷启动后 `experiments/probes/cold_start_diagnostics.json` 存在，内含全部探针结果。
 
@@ -308,7 +310,7 @@
 **新建文件**：`scripts/outer_loop.py`
 
 **步骤**：
-- [ ] 实现 typer CLI，子命令：
+- [x] 实现 typer CLI，子命令：
   - `run` — 启动外环循环
     - `--max-iterations INT`
     - `--bundle PATH`（默认 `asap_set8_baseline.bundle.yaml`）
@@ -323,27 +325,33 @@
 ---
 
 ## Phase 3：可选补充（提升可靠性）
+> 状态：已完成（2026-04-01）
 
 ### Task 3.1｜Provider system prompt 通道独立化（低优先级）
 
 **目标**：将 agent 调用的 system prompt 从 prompt template 中拆出，成为独立可调优的配置层
 
 **步骤**：
-- [ ] 调研 `src/agents/scorer.py`、`extractor.py` 的 prompt 构造方式
-- [ ] 评估改动范围；如影响超过 3 个 agent 则单独立项，不在本轮做
+- [x] 调研 `src/agents/scorer.py`、`extractor.py` 的 prompt 构造方式
+- [x] 评估改动范围；如影响超过 3 个 agent 则单独立项，不在本轮做
+
+**结果**：
+- 已完成范围评估，结论为影响超过 3 个 agent，按计划单独立项，不在本轮重构。
+- 评估文档：`docs/phase3_prompt_channel_assessment.md`
 
 ---
 
 ### Task 3.2｜configs/ 目录补充
 
 **步骤**：
-- [ ] 检查并创建 `configs/prompts/tasks/`（task-specific scoring_context 落点）
-- [ ] 检查并创建 `configs/rubrics/source/`（量规原文永久只读落点）
-- [ ] 在 bundle YAML 中添加对应路径引用（如需）
+- [x] 检查并创建 `configs/prompts/tasks/`（task-specific scoring_context 落点）
+- [x] 检查并创建 `configs/rubrics/source/`（量规原文永久只读落点）
+- [x] 在 bundle YAML 中添加对应路径引用（如需）
 
 ---
 
 ## Phase 4：测试覆盖
+> 状态：已完成（2026-04-01）
 
 | Task | 测试文件 | 关键用例 |
 |------|---------|---------|
@@ -354,6 +362,15 @@
 | 1.2 | `tests/unit/outer_loop/test_config_patcher.py` | 白名单拦截；保护字段拦截；快照与回退；YAML 合法性 |
 | 1.3 | `tests/unit/outer_loop/test_search_policy.py` | 每条规则的触发/不触发路径 |
 | 2.2 | `tests/integration/test_outer_loop_iteration.py` | mock provider 完整一轮迭代；log 追加；快照存在 |
+
+**执行勾选**：
+- [x] 0.1｜`tests/unit/pipeline/test_retry_config.py`
+- [x] 0.2｜`tests/unit/experiments/test_batch_runner.py`
+- [x] 0.3｜`tests/unit/outer_loop/test_probes.py`
+- [x] 1.1｜`tests/unit/outer_loop/test_experiment_log.py`
+- [x] 1.2｜`tests/unit/outer_loop/test_config_patcher.py`
+- [x] 1.3｜`tests/unit/outer_loop/test_search_policy.py`
+- [x] 2.2｜`tests/integration/test_outer_loop_iteration.py`
 
 ---
 

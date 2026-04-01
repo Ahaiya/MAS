@@ -1,1 +1,17 @@
-"""外环优化子包预留位，后续用于 prompt、policy 和 provider 调优。"""
+"""Outer-loop optimization primitives."""
+
+from .config_patcher import (
+    ChangeProposal,
+    ConfigPatcher,
+    DEFAULT_ALLOWED_FILE_PATTERNS,
+)
+from .search_policy import PRIORITY_LAYERS, SearchPolicy, SearchPolicyThresholds
+
+__all__ = [
+    "ChangeProposal",
+    "ConfigPatcher",
+    "DEFAULT_ALLOWED_FILE_PATTERNS",
+    "PRIORITY_LAYERS",
+    "SearchPolicy",
+    "SearchPolicyThresholds",
+]

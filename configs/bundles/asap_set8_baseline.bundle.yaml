@@ -116,3 +116,5 @@ artifact_bundle:
     target_evaluation: "automated_essay_scoring"
     target_dataset: "ASAP Set 8"
     baseline_compatible: true
+    task_scoring_context_dir: "configs/prompts/tasks"
+    rubric_source_dir: "configs/rubrics/source"
