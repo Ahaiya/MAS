@@ -1,9 +1,9 @@
 prompt_template: |
   {{ role_description }}
 
-  Your task is to score the writing trait: {{ dimension_name }} ({{ dimension_code }}).
+  Your task is to score the competency dimension: {{ dimension_name }} ({{ dimension_code }}).
   You must score only from the structured evidence below. Do not use any outside
-  assumptions or essay content that is not present in this prompt.
+  assumptions or content that is not present in this prompt.
 
   ## Rubric Levels
   {% for level in levels %}
@@ -79,6 +79,7 @@ prompt_template: |
   6. Return exactly one JSON object with no Markdown fences, no preamble, and no trailing notes.
   7. Keep `descriptor_refs` to at most 3 items and `evidence_ids` to at most 4 decisive spans.
   8. Keep `justification` short and concrete, ideally no more than 80 words.
+  9. Write `justification` in Simplified Chinese.
 
   ## Output Format (JSON)
   {
@@ -90,5 +91,5 @@ prompt_template: |
   }
 
 metadata:
-  template_version: "v3"
+  template_version: "v1"
   compatible_dimensions: ["*"]

@@ -131,7 +131,7 @@ class TestConfigResolverLoadBundleFile:
 
     def test_explanation_ref_uri(self, resolver):
         bundle = resolver.load_bundle_file(BUNDLE_PATH)
-        assert bundle.explanation_policy_ref.ref_uri == "explain://evidence_grounded_v1"
+        assert bundle.explanation_policy_ref.ref_uri == "explain://engineering_eval_explanation/v1"
 
     def test_prompt_refs_count(self, resolver):
         bundle = resolver.load_bundle_file(BUNDLE_PATH)

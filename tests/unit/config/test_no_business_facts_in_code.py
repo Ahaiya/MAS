@@ -289,7 +289,7 @@ class TestCompositeFormulaFromConfig:
 class TestDisplayAnnotationFromConfig:
     def test_baseline_annotation_policy_matches_config(self, compiled_base):
         exp_data = yaml.safe_load(
-            (CONFIGS_ROOT / "policies/explanation/evidence_grounded_v1.yaml").read_text()
+            (CONFIGS_ROOT / "policies/explanation/engineering_eval_explanation.yaml").read_text()
         )
         config_policy = exp_data["explanation_policy"]["display_annotation_policy"]
         snapshot_policy = compiled_base.policy_snapshot.explanation_policy[

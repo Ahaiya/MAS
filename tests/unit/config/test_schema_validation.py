@@ -470,11 +470,11 @@ class TestRenderSectionSchema:
 
 class TestExplanationFileSchema:
     def test_validates_actual_explanation_yaml(self):
-        path = CONFIGS_ROOT / "policies/explanation/evidence_grounded_v1.yaml"
+        path = CONFIGS_ROOT / "policies/explanation/engineering_eval_explanation.yaml"
         data = yaml.safe_load(path.read_text())
         schema = ExplanationFileSchema(**data)
         assert schema.schema_version == "2.0"
-        assert schema.explanation_policy.policy_id == "evidence_grounded_v1"
+        assert schema.explanation_policy.policy_id == "engineering_eval_explanation"
         assert len(schema.explanation_policy.render_sections) == 4
         assert schema.explanation_policy.requirements.require_evidence_links is True
         assert schema.explanation_policy.citation_rules.allow_synthetic_summary is False
@@ -581,7 +581,7 @@ class TestAllActualConfigs:
         AggregationFileSchema(**data)
 
     def test_explanation_file(self):
-        path = CONFIGS_ROOT / "policies/explanation/evidence_grounded_v1.yaml"
+        path = CONFIGS_ROOT / "policies/explanation/engineering_eval_explanation.yaml"
         data = yaml.safe_load(path.read_text())
         ExplanationFileSchema(**data)
 

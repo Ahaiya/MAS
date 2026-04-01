@@ -1,0 +1,15 @@
+schema_version: "2.0"
+
+chunking_policy:
+  policy_id: "engineering_eval_chunking"
+  document_processing:
+    token_threshold: 4000
+    target_chunk_size_hint: "TODO"
+  coverage:
+    default_top_k: 5
+    fallback_to_full_scan_on_error: true
+    per_dimension_top_k:
+      TODO_dimension: 5
+  metadata:
+    owner: "TODO"
+    note: "TODO"

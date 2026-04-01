@@ -1,14 +1,10 @@
-# Evidence-Grounded Explanation Policy v1
-# Source: docs/Example.md
-# This policy governs how explanations are assembled and rendered
-
 schema_version: "2.0"
 
 explanation_policy:
-  policy_id: "evidence_grounded_v1"
+  policy_id: "engineering_eval_explanation"
   policy_version: "v1"
-  policy_name: "Evidence-Grounded Explanation"
-  description: "Explanations must reference rubric descriptors and textual evidence"
+  policy_name: "Engineering Evaluation Explanation"
+  description: "Explanations must align with rubric descriptors and cite concrete task evidence"
 
   requirements:
     require_descriptor_alignment: true
@@ -19,7 +15,7 @@ explanation_policy:
   render_sections:
     - section_id: "dimension_score"
       type: "score_with_annotation"
-      description: "Display canonical score with optional display annotation"
+      description: "Display the canonical dimension score with optional display annotation"
       fields:
         - "dimension_name"
         - "canonical_score"
@@ -27,25 +23,25 @@ explanation_policy:
 
     - section_id: "rubric_alignment"
       type: "descriptor_based_commentary"
-      description: "Commentary that references specific rubric descriptors"
+      description: "Commentary that explains how observed performance aligns with rubric descriptors"
       requirements:
-        - "must quote or paraphrase relevant descriptors from rubric"
-        - "must link descriptors to observed evidence"
-        - "must not introduce rubric terminology not in descriptor set"
+        - "must quote or paraphrase the relevant rubric descriptors"
+        - "must connect each judgment to concrete observed evidence"
+        - "must not introduce evaluation criteria outside the rubric"
       template_style: "structured_paragraph"
 
     - section_id: "evidence_summary"
-      type: "textual_evidence_citations"
-      description: "Citations of specific text spans that support the score"
+      type: "artifact_evidence_citations"
+      description: "Citations of concrete task artifacts or observed evidence that support the score"
       requirements:
         - "must provide at least minimum_evidence_units per dimension"
-        - "must include direct quotes or close paraphrases"
-        - "must link each evidence to specific facet or descriptor"
-        - "may include span offsets for precision"
+        - "must cite concrete artifacts, excerpts, or observable outputs from the submission"
+        - "must link each cited evidence item to a specific observation point or rubric descriptor"
+        - "may include source locations, artifact identifiers, or span offsets for traceability"
 
     - section_id: "uncertainty_note"
       type: "conditional_uncertainty"
-      description: "Note when confidence is low or observation incomplete"
+      description: "Note when confidence is low, evidence coverage is incomplete, or adjudication was required"
       render_when:
         - "observation_confidence_below_threshold"
         - "coverage_gaps_exist"
@@ -54,7 +50,7 @@ explanation_policy:
 
   citation_rules:
     descriptor_citation_style: "direct_reference"
-    evidence_citation_style: "quoted_span_with_context"
+    evidence_citation_style: "artifact_excerpt_with_context"
     min_citations_per_dimension: 1
     allow_synthetic_summary: false
 
@@ -72,5 +68,5 @@ explanation_policy:
     low_confidence_threshold: 0.5
 
   metadata:
-    source_document: "docs/Example.md"
-    version_timestamp: "2026-03-12"
+    source_document: "docs/outer_loop_design.md"
+    version_timestamp: "2026-04-01"

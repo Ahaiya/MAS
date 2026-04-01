@@ -42,6 +42,7 @@ prompt_template: |
   - Return valid JSON only (no Markdown, no explanation text).
   - Do not include keys other than "chunks", "id", "title", "text".
   - If the document is very short, you may return a single chunk.
+  - Write each chunk `title` in Simplified Chinese. Do not translate the `text` field — it must remain verbatim original text.
 
 metadata:
   template_version: "v1"

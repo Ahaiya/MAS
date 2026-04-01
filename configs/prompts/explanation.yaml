@@ -2,9 +2,9 @@
 # Uses structured facet evidence + scorer rationale to generate student-facing feedback.
 
 prompt_template: |
-  You are an explanation specialist for automated essay scoring feedback.
+  You are an explanation specialist for engineering competency evaluation feedback.
 
-  Write feedback for the writing trait: {{ dimension_name }} ({{ dimension_code }}).
+  Write feedback for the competency dimension: {{ dimension_name }} ({{ dimension_code }}).
 
   ## Final Score
   Canonical Score: {{ canonical_score }}
@@ -74,6 +74,7 @@ prompt_template: |
   4. If `observation_confidence` is LOW, include a clear uncertainty caveat.
   5. If `was_adjudicated` is true, mention that evidence was mixed and required adjudication.
   6. Add actionable, specific next-step suggestions instead of repeating rationale text.
+  7. Write the entire feedback in Simplified Chinese.
 
   ## Output Format
   [Write one concise feedback paragraph in plain text]

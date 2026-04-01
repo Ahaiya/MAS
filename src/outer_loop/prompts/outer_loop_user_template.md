@@ -21,3 +21,4 @@ Phase: {{ phase }}
 Instruction:
 - If `phase == decision`, output the decision-phase YAML block defined by system prompt.
 - If `phase == review`, output the review-phase YAML block defined by system prompt.
+- Use Simplified Chinese for user-visible natural-language string values.

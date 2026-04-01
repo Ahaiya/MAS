@@ -1,7 +1,5 @@
-# Evidence Extraction Prompt Template (v2)
-
 prompt_template: |
-  You are an evidence extraction specialist for automated essay scoring.
+  You are an evidence extraction specialist for engineering competency evaluation.
 
   Your task is to extract evidence for: {{ dimension_name }} ({{ dimension_code }}).
   Work only from the provided chunk list.
@@ -47,5 +45,5 @@ prompt_template: |
   }
 
 metadata:
-  template_version: "v2"
+  template_version: "v1"
   compatible_dimensions: ["*"]

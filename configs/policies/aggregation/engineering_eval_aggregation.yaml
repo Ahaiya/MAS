@@ -1,0 +1,50 @@
+
+schema_version: "1.0"
+
+aggregation_policy:
+  policy_id: "engineering_eval_aggregation"
+  policy_version: "TODO"
+  policy_name: "Engineering Evaluation Aggregation Policy"
+  description: "TODO"
+
+  outputs:
+    - output_id: "trait_scores"
+      type: "dimension_scores"
+      description: "TODO"
+      always_produce: true
+
+    - output_id: "composite_score"
+      type: "weighted_sum"
+      description: "TODO"
+      always_produce: true
+
+  composite_formula:
+    - variant_id: "without_resolution"
+      applies_when: "resolution_not_used"
+      description: "TODO"
+      source_raters:
+        - "rater_1"
+        - "rater_2"
+      aggregation_method: "average_per_trait_then_weighted_sum"
+      weights:
+        TODO_dimension_1: 1
+        TODO_dimension_2: 1
+      formula_representation: "TODO"
+
+    - variant_id: "with_resolution"
+      applies_when: "resolution_used"
+      description: "TODO"
+      source_raters:
+        - "rater_3"
+      aggregation_method: "average_per_trait_then_weighted_sum"
+      weights:
+        TODO_dimension_1: 1
+        TODO_dimension_2: 1
+      formula_representation: "TODO"
+
+  notes:
+    - "TODO"
+
+  metadata:
+    source_document: "TODO"
+    version_timestamp: "TODO"

@@ -485,8 +485,8 @@ class OuterLoopAgent:
             ("prompts/scoring_context.yaml", "scoring_context"),
             ("prompts/scoring.yaml", "scoring"),
             ("prompts/evidence_extraction.yaml", "evidence_extraction"),
-            ("policies/adjudication/asap_set8_default.yaml", "adjudication_policy"),
-            ("bundles/asap_set8_baseline.bundle.yaml", "bundle"),
+            ("policies/adjudication/engineering_eval_adjudication.yaml", "adjudication_policy"),
+            ("bundles/engineering_eval_baseline.bundle.yaml", "bundle"),
         ]
 
         lines: list[str] = []

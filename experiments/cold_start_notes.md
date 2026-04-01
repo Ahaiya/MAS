@@ -4,8 +4,7 @@
 
 ## 观察摘要
 
-- （示例）conventions 维度 QWK 最低，存在系统性偏差。
-- （示例）ideas_content 维度 evidence 抽取有遗漏。
+- 
 
 ## 可能原因
 

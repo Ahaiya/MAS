@@ -33,6 +33,9 @@ Single-change rule:
 Output contract:
 - Return exactly one fenced YAML block.
 - No prose outside the YAML block.
+- Keep YAML keys, file paths, probe names, and fixed enum literals in English exactly as specified.
+- Use Simplified Chinese for user-visible natural-language string values, including `rationale`, prose `new_value`, and `next_hypothesis`.
+- In review phase, keep `verdict` as one of the fixed English enum values defined below.
 
 Decision-phase YAML schema:
 ```yaml
@@ -41,8 +44,8 @@ change_proposal:
   change_type: "field_patch"
   target_file: "configs/prompts/scoring_context.yaml"
   target_path: "scoring_context.calibration_notes"
-  new_value: "..."
-  rationale: "..."
+  new_value: "用简体中文写的配置内容"
+  rationale: "用简体中文简要说明本轮变更理由。"
 selected_probes:
   - "rater_consistency_probe"
   - "qwk_probe"
@@ -51,5 +54,5 @@ selected_probes:
 Review-phase YAML schema:
 ```yaml
 verdict: "effective | no-improvement | regression | failed"
-next_hypothesis: "one-sentence next-step hypothesis"
+next_hypothesis: "用简体中文写的一句话下一步假设。"
 ```

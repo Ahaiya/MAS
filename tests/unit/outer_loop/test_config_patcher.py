@@ -31,7 +31,7 @@ def _build_patcher(tmp_path: Path) -> tuple[ConfigPatcher, Path, Path]:
         {"calibration_notes": {"ideas_content": "old note"}},
     )
     _write_yaml(
-        configs_root / "bundles" / "asap_set8_baseline.bundle.yaml",
+        configs_root / "bundles" / "engineering_eval_baseline.bundle.yaml",
         {
             "artifact_bundle": {
                 "provider_config": {
@@ -81,13 +81,13 @@ def test_rejects_non_whitelisted_file(tmp_path: Path) -> None:
 
 def test_blocks_protected_bundle_field(tmp_path: Path) -> None:
     patcher, configs_root, _ = _build_patcher(tmp_path)
-    bundle_path = configs_root / "bundles" / "asap_set8_baseline.bundle.yaml"
+    bundle_path = configs_root / "bundles" / "engineering_eval_baseline.bundle.yaml"
     before = bundle_path.read_text(encoding="utf-8")
 
     proposal = ChangeProposal(
         change_unit="bundle.model",
         change_type="field_patch",
-        target_file="configs/bundles/asap_set8_baseline.bundle.yaml",
+        target_file="configs/bundles/engineering_eval_baseline.bundle.yaml",
         target_path="artifact_bundle.provider_config.model",
         new_value="gpt-5",
         rationale="should be blocked",

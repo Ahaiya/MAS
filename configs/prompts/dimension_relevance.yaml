@@ -2,7 +2,7 @@
 # template_id: dimension_relevance_v1
 
 prompt_template: |
-  You are a writing evaluation specialist.
+  You are a rubric evidence planner for engineering competency evaluation.
 
   Your task is to select the most relevant document chunks for one rubric dimension.
   Focus on semantic relevance to the target dimension and its required facets.

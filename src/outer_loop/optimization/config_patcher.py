@@ -19,10 +19,10 @@ DEFAULT_ALLOWED_FILE_PATTERNS: tuple[str, ...] = (
     "configs/prompts/evidence_extraction.yaml",
     "configs/prompts/evidence_extraction_overrides/*.yaml",
     "configs/prompts/explanation.yaml",
-    "configs/policies/adjudication/asap_set8_default.yaml",
-    "configs/policies/chunking/asap_set8_chunking.yaml",
-    "configs/policies/aggregation/asap_set8_composite.yaml",
-    "configs/bundles/asap_set8_baseline.bundle.yaml",
+    "configs/policies/adjudication/engineering_eval_adjudication.yaml",
+    "configs/policies/chunking/engineering_eval_chunking.yaml",
+    "configs/policies/aggregation/engineering_eval_aggregation.yaml",
+    "configs/bundles/engineering_eval_baseline.bundle.yaml",
 )
 
 

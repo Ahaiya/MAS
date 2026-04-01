@@ -1,0 +1,112 @@
+# Engineering Evaluation Baseline Artifact Bundle
+# Placeholder scaffold copied from the archived baseline structure.
+
+schema_version: "1.0"
+
+artifact_bundle:
+  bundle_id: "engineering_eval_baseline"
+  bundle_version: "v1"
+  bundle_name: "Engineering Evaluation Baseline Bundle"
+  description: "解决复杂工程问题能力评价 bundle"
+
+  # Artifact References
+  rubric_core_ref: "rubric://engineering_eval_task_rubric/v1"
+  rubric_source_file: "rubrics/tasks/TODO_task_rubric.yaml"
+
+  adjudication_policy_ref: "policy://engineering_eval_adjudication/v1"
+  adjudication_source_file: "policies/adjudication/engineering_eval_adjudication.yaml"
+
+  aggregation_policy_ref: "policy://engineering_eval_aggregation/v1"
+  aggregation_source_file: "policies/aggregation/engineering_eval_aggregation.yaml"
+
+  explanation_policy_ref: "explain://engineering_eval_explanation/v1"
+  explanation_source_file: "policies/explanation/engineering_eval_explanation.yaml"
+
+  operational_prompt_recipe_ref: "ops://prompts/engineering_eval_baseline/v1"
+  prompt_templates:
+    - "prompts/evidence_extraction.yaml"
+    - "prompts/scoring.yaml"
+    - "prompts/explanation.yaml"
+    - "prompts/chunking.yaml"
+    - "prompts/dimension_relevance.yaml"
+
+  scoring_context_ref: "context://engineering_eval_task_scoring/v1"
+  scoring_context_source_file: "prompts/tasks/TODO_task_scoring_context.yaml"
+
+  chunking_policy_ref: "policy://engineering_eval_chunking/v1"
+  chunking_source_file: "policies/chunking/engineering_eval_chunking.yaml"
+
+  # Version Closure
+  freeze_hash: "TBD"
+  freeze_timestamp: "TODO"
+
+  # Source Documentation References
+  source_documents:
+    - "TODO"
+
+  # Bundle Validation
+  validation_rules:
+    - rule_id: "all_refs_resolvable"
+      type: "reference_resolution"
+      description: "All artifact references must resolve to existing files"
+    - rule_id: "schema_version_consistent"
+      type: "version_check"
+      description: "All artifacts must use consistent schema version"
+    - rule_id: "scale_consistent"
+      type: "cross_artifact_check"
+      description: "Rubric scale must match adjudication and aggregation expectations"
+
+  provider_config:
+    default:
+      model: "TODO"
+      api_base: "TODO"
+      api_key_env: "TODO"
+
+    rater_providers:
+      rater_1:
+        model: "TODO"
+        api_base: "TODO"
+        api_key_env: "TODO"
+      rater_2:
+        model: "TODO"
+        api_base: "TODO"
+        api_key_env: "TODO"
+        params:
+          temperature: 0.0
+          max_tokens: 2048
+          extra_body:
+            enable_thinking: true
+            thinking_budget: 512
+      rater_3:
+        model: "TODO"
+        api_base: "TODO"
+        api_key_env: "TODO"
+
+    stage_providers:
+      chunking:
+        model: "TODO"
+        api_base: "TODO"
+        api_key_env: "TODO"
+      coverage_planning:
+        model: "TODO"
+        api_base: "TODO"
+        api_key_env: "TODO"
+      evidence_extraction:
+        model: "TODO"
+        api_base: "TODO"
+        api_key_env: "TODO"
+      feedback:
+        model: "TODO"
+        api_base: "TODO"
+        api_key_env: "TODO"
+
+  operational_params:
+    max_retries: 2
+
+  metadata:
+    created_by: "TODO"
+    target_evaluation: "TODO"
+    target_dataset: "TODO"
+    baseline_compatible: true
+    task_scoring_context_dir: "configs/prompts/tasks"
+    rubric_source_dir: "configs/rubrics/source"

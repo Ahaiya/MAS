@@ -82,8 +82,8 @@ class TestArtifactBundle:
             "policies/aggregation/asap_set8_composite.yaml"
         )
         exp_ref = create_artifact_ref(
-            "explain://evidence_grounded_v1",
-            "policies/explanation/evidence_grounded_v1.yaml"
+            "explain://engineering_eval_explanation/v1",
+            "policies/explanation/engineering_eval_explanation.yaml"
         )
         prompt_ref = create_artifact_ref(
             "ops://prompts/evidence_extraction/v1",
