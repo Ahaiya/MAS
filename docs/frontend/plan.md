@@ -1,5 +1,7 @@
 # 前端开发计划
 
+> 状态说明（2026-04-01）：本文档描述的是已下线的历史结果展示前端方案。对应的正式结果页与配套 API 代码已从仓库移除，当前仅保留 debug viewer。
+
 > 本文档基于 `docs/frontend/design.md`、`docs/frontend/mas_system_overview.md` 及后端代码库实际结构生成。
 > 仅描述意图与规划，不修改任何现有文件。
 
