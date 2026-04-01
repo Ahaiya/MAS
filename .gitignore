@@ -12,3 +12,8 @@ __pycache__/
 .coverage
 .pytest_cache/
 
+# Outer-loop dynamic artifacts
+experiments/snapshots/**
+!experiments/snapshots/.gitkeep
+experiments/probes/**
+!experiments/probes/.gitkeep

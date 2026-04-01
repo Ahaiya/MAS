@@ -82,6 +82,8 @@ from src.pipeline.validators import (
 )
 from src.policies.aggregation import compute_composite
 
+DEFAULT_CHECKPOINT_MAX_RETRIES = 2
+
 
 def _get_rater_ids(bundle: ResolvedArtifactBundle) -> List[str]:
     """Read required rater IDs from the adjudication policy (config-driven)."""
@@ -261,6 +263,16 @@ class PipelineRunner:
         """Read optional scoring context snapshot (introduced in Stage K)."""
         raw = getattr(self._bundle.policy_snapshot, "scoring_context", None)
         return raw if isinstance(raw, dict) else None
+
+    def _checkpoint_max_retries(self) -> int:
+        """Read max_retries from bundle operational params with safe fallback."""
+        op_params = getattr(self._bundle, "operational_params", None)
+        if op_params is None:
+            return DEFAULT_CHECKPOINT_MAX_RETRIES
+        max_retries = getattr(op_params, "max_retries", None)
+        if isinstance(max_retries, int) and max_retries >= 0:
+            return max_retries
+        return DEFAULT_CHECKPOINT_MAX_RETRIES
 
     @staticmethod
     def _token_threshold_from_policy(chunking_policy: Optional[dict]) -> int:
@@ -480,7 +492,7 @@ class PipelineRunner:
 
         graph = StateGraph()
         store = TraceStore(run_id, bundle_id, bundle_version, request_id)
-        ckpt_mgr = CheckpointManager(run_id, max_retries=2)
+        ckpt_mgr = CheckpointManager(run_id, max_retries=self._checkpoint_max_retries())
 
         # Carry-forward pipeline data
         self._last_request = request

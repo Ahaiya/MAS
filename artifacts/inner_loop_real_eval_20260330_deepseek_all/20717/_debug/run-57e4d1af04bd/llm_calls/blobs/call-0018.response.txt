@@ -1,7 +1,0 @@
-{
-    "proposed_score": 5,
-    "descriptor_refs": ["appropriate level of closeness to or distance from audience", "strong sense of audience; writer seems aware of reader and how to communicate effectively", "reader may discern writer behind words and feel sense of interaction", "topic has come to life; shows originality, liveliness, honesty, conviction, excitement, humor, or suspense"],
-    "evidence_ids": ["span-ext-0298da6dcc4f", "span-ext-3c6d6792d6e7", "span-ext-6a6c55e35c11", "span-ext-a10eff501df3", "span-ext-1356335d1d71", "span-ext-df61729620ec", "span-ext-e4d1056604cc", "span-ext-80350409f9f2", "span-ext-eef759e1da06"],
-    "confidence": 0.9,
-    "justification": "The evidence demonstrates consistent audience awareness (e.g., 'I wanted this team to like me' [span-ext-3c6d6792d6e7], 'enjoying the sport as well as the people' [span-ext-6a6c55e35c11]), deep commitment to the topic (e.g., 'Softball has to be one of the single most greatest sports alive' [span-ext-a10eff501df3], 'friendships... that I never would have discovered' [span-ext-df61729620ec]), and expressive language throughout (e.g., vivid physical descriptions of nervousness [span-ext-80350409f9f2, span-ext-eef759e1da06], emotional reflections on memories [span-ext-1356335d1d71]). This meets the Score 5 threshold of sustained voice with intentional audience awareness and liveliness that stands out consistently across multiple facets."
-}

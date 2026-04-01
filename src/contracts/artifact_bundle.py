@@ -57,6 +57,13 @@ class ProviderConfig:
     stage_providers: Dict[str, ProviderEntryConfig] = field(default_factory=dict)
 
 
+@dataclass(frozen=True)
+class OperationalParams:
+    """Runtime operational knobs declared by bundle and consumed by pipeline."""
+
+    max_retries: int = 2
+
+
 class SchemaVersion(Enum):
     """Supported schema versions for artifact bundles."""
     V2_0 = "2.0"
@@ -131,6 +138,8 @@ class ArtifactBundle:
 
     # Raw provider_config dict parsed from bundle YAML (structured by compiler)
     provider_config_raw: Optional[Dict[str, Any]] = None
+    # Raw operational_params dict parsed from bundle YAML (structured by compiler)
+    operational_params_raw: Optional[Dict[str, Any]] = None
     # Optional chunking policy reference parsed from bundle YAML
     chunking_policy_ref: Optional[ArtifactRef] = None
     # Optional scoring context reference parsed from bundle YAML
@@ -263,6 +272,8 @@ class ResolvedArtifactBundle:
 
     # Structured provider configuration (None if not declared in bundle)
     provider_config: Optional[ProviderConfig] = None
+    # Structured operational params (None if not declared in bundle)
+    operational_params: Optional[OperationalParams] = None
 
     def get_version_info(self) -> str:
         """Get formatted version information for logging."""

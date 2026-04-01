@@ -164,6 +164,11 @@ class ConfigResolver:
                 provider_config_raw=(
                     ab.provider_config.model_dump() if ab.provider_config is not None else None
                 ),
+                operational_params_raw=(
+                    ab.operational_params.model_dump()
+                    if ab.operational_params is not None
+                    else None
+                ),
                 chunking_policy_ref=chunking_ref,
                 scoring_context_ref=scoring_context_ref,
             )

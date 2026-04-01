@@ -487,6 +487,14 @@ class ProviderConfigBundleSchema(BaseModel):
     ] = Field(default_factory=dict)
 
 
+class OperationalParamsBundleSchema(BaseModel):
+    """Runtime operational knobs declared in bundle YAML."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    max_retries: int = Field(ge=0)
+
+
 class BundleValidationRuleSchema(BaseModel):
     """Validation rule record attached to artifact bundle."""
 
@@ -531,6 +539,7 @@ class ArtifactBundleSchema(BaseModel):
     source_documents: list[str] = Field(default_factory=list)
     validation_rules: list[BundleValidationRuleSchema] = Field(default_factory=list)
     provider_config: ProviderConfigBundleSchema | None = None
+    operational_params: OperationalParamsBundleSchema | None = None
     metadata: dict[str, Any] = Field(default_factory=dict)
 
     @model_validator(mode="after")

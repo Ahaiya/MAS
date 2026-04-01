@@ -107,6 +107,9 @@ artifact_bundle:
         api_base: ""
         api_key_env: "FEEDBACK_API_KEY"
 
+  operational_params:
+    max_retries: 2
+
   # Metadata
   metadata:
     created_by: "Phase 1 Task 1 execution"

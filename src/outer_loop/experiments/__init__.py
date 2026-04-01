@@ -1,2 +1,5 @@
-"""外环实验子包预留位，后续用于批量评测编排、试验记录与回放。"""
+"""Outer-loop experiment orchestration utilities."""
 
+from .batch_runner import RunResult, batch_eval
+
+__all__ = ["RunResult", "batch_eval"]

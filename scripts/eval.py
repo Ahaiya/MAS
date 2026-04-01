@@ -36,9 +36,11 @@ import typer
 
 from src.agents.config_resolver import run as resolve_bundle
 from src.contracts.artifact_bundle import ProviderEntryConfig
-from src.contracts.request_models import EvaluationRequest
-from src.debug import DebugBundleWriter
-from src.pipeline.runner import PipelineRunner
+from src.outer_loop.experiments.batch_runner import (
+    RunResult,
+    batch_eval,
+    run_single_eval,
+)
 from src.providers.factory import build_provider, build_provider_map
 from src.providers.logging_provider import LoggingProvider
 from src.providers.prompt_loader import PromptLoader
@@ -212,11 +214,6 @@ def _wrap_providers(default_provider, rater_providers, stage_providers):
         ws[stage] = lp
         log_list.append(lp)
     return wp, wr, ws, log_list
-
-
-def _set_debug_writer(log_providers: list, debug_writer: DebugBundleWriter | None) -> None:
-    for lp in log_providers:
-        lp.set_debug_writer(debug_writer)
 
 
 # ── 内部信息展示 ────────────────────────────────────────────────────────────────
@@ -576,247 +573,132 @@ def _run_single(
     output_dir: Path,
     verbose: bool,
     debug_bundle: bool = False,
-) -> bool:
-    """执行单篇评估，打印内部信息，返回是否成功。"""
+) -> RunResult:
+    """执行单篇评估并打印内部信息。"""
     output_dir.mkdir(parents=True, exist_ok=True)
 
     stats_before = _snapshot_stats(log_providers)
-    debug_writer = None
-    debug_bundle_dir = None
+    result = run_single_eval(
+        essay_id=essay_id,
+        essay_text=essay_text,
+        tsv_row=tsv_row,
+        resolved=resolved,
+        default_provider=default_provider,
+        rater_providers=rater_providers,
+        stage_providers=stage_providers,
+        log_providers=log_providers,
+        prompt_templates=prompt_templates,
+        output_dir=output_dir,
+        verbose=verbose,
+        debug_bundle=debug_bundle,
+    )
+
+    ok = result.success
+    trace_dict = result.trace_dict
+    feedback_dict = result.feedback_dict
+
+    trace_path = output_dir / "run_trace.json"
+    feedback_path = output_dir / "feedback.json"
+    hypotheses_path = output_dir / "hypotheses.json"
+    spans_path = output_dir / "evidence_spans.json"
+    observations_path = output_dir / "observations.json"
+    conflicts_path = output_dir / "conflicts.json"
+    adjudication_records_path = output_dir / "adjudication_records.json"
+
+    chunk_summary, coverage_summary = _extract_stage_summaries(trace_dict)
+
+    if verbose:
+        typer.echo("")
+        typer.echo("=" * 68)
+        typer.echo(f"  评价报告  —  样本 {essay_id}")
+        typer.echo("=" * 68)
+        started = trace_dict.get("started_at", "")
+        finished = trace_dict.get("finished_at", "")
+        run_id = trace_dict.get("run_id", "")
+        status_value = trace_dict.get("status", "unknown")
+        typer.echo(f"  评价时间：{started[:19].replace('T', ' ')}  |  耗时：{_duration(started, finished)}")
+        typer.echo(f"  运行 ID ：{run_id}")
+        typer.echo(f"  量规版本：{trace_dict.get('bundle_id', '')}@{trace_dict.get('bundle_version', '')}")
+        typer.echo(f"  状态    ：{'✅ completed' if ok else '❌ ' + status_value}")
+        if chunk_summary:
+            typer.echo(f"  分块摘要：{chunk_summary}")
+        if coverage_summary:
+            typer.echo(f"  覆盖摘要：{coverage_summary}")
+
+        _print_node_timeline(trace_dict)
+        _print_agent_hypotheses(hypotheses_path)
+
+        c0, t0, e0 = stats_before
+        c1, t1, e1 = _snapshot_stats(log_providers)
+        typer.echo("")
+        typer.echo("  ── 本次 LLM 调用汇总 " + "─" * 52)
+        typer.echo(f"  总调用: {c1-c0}  |  总 Token: {t1-t0:,}  |  LLM 耗时: {e1-e0:.1f}s")
+        typer.echo(f"  {'角色':<22}  {'模型':<22}  {'调用':>4}  {'Token':>10}  {'耗时(s)':>8}")
+        typer.echo("  " + "─" * 72)
+        for lp in log_providers:
+            if lp.call_count > 0:
+                typer.echo(
+                    f"  {lp._label:<22}  {lp.model_id:<22}  {lp.call_count:>4}  "
+                    f"{lp.total_tokens:>10,}  {lp.total_elapsed:>8.1f}"
+                )
+
+        if ok:
+            _print_score_table(trace_dict, feedback_dict, tsv_row)
+            _print_dimension_feedback(feedback_dict)
+        else:
+            typer.echo("\n  流水线未完成，失败节点：")
+            for node in trace_dict.get("node_traces", []):
+                if node.get("status") != "success":
+                    typer.echo(f"    ❌ {node.get('node_id')} — {node.get('error_message')}")
+    else:
+        dims = feedback_dict.get("dimensions", {})
+        scores = " ".join(str(_score(dims[k])) if k in dims else "?" for k, _, _ in _DIM_ORDER)
+        cinfo = _get_composite_info(feedback_dict)
+        if cinfo:
+            c_score, c_max, _ = cinfo
+            total_str = f"{c_score}/{c_max}"
+        else:
+            total_str = f"{sum(_score(dims[k]) for k, _, _ in _DIM_ORDER if k in dims)}/36"
+        status = "✅" if ok else "❌"
+        extras = []
+        if chunk_summary:
+            extras.append(chunk_summary)
+        if coverage_summary:
+            extras.append(coverage_summary)
+        suffix = f"  |  {'  |  '.join(extras)}" if extras else ""
+        typer.echo(f"  {status}  [{scores}]  合计={total_str}{suffix}")
+
+    if ok and verbose:
+        report_path = _save_report_md(essay_id, trace_dict, feedback_dict, tsv_row, output_dir)
+        typer.echo("")
+        typer.echo("  产出文件：")
+        for path in [
+            trace_path,
+            feedback_path,
+            hypotheses_path,
+            spans_path,
+            observations_path,
+            conflicts_path,
+            adjudication_records_path,
+            report_path,
+        ]:
+            typer.echo(f"    {path}")
+        if debug_bundle:
+            run_id = trace_dict.get("run_id", "")
+            debug_dir = output_dir / "_debug" / run_id
+            viewer = debug_dir / "viewer" / "index.html"
+            if viewer.exists():
+                typer.echo(f"    {viewer}")
+        typer.echo("=" * 68)
+
     if debug_bundle:
-        debug_writer = DebugBundleWriter(
-            output_dir / "_debug",
-            session_metadata={
-                "essay_id": essay_id,
-                "output_dir": str(output_dir),
-                "verbose": verbose,
-            },
-        )
-    _set_debug_writer(log_providers, debug_writer)
-
-    try:
-        request = EvaluationRequest(
-            raw_text=essay_text,
-            bundle_ref=f"{resolved.artifact_bundle.bundle_id}@{resolved.artifact_bundle.bundle_version}",
-            metadata={
-                "essay_id": essay_id,
-                "source": str(output_dir),
-                "has_human_scores": bool(tsv_row),
-            },
-        )
-        runner = PipelineRunner(
-            resolved,
-            provider=default_provider,
-            rater_providers=rater_providers,
-            stage_providers=stage_providers,
-            prompt_templates=prompt_templates,
-            debug_writer=debug_writer,
-        )
-        run_trace, feedback = runner.run(request)
-
-        # 保存产出
-        trace_path = output_dir / "run_trace.json"
-        feedback_path = output_dir / "feedback.json"
-        hypotheses_path = output_dir / "hypotheses.json"
-        spans_path = output_dir / "evidence_spans.json"
-        observations_path = output_dir / "observations.json"
-        conflicts_path = output_dir / "conflicts.json"
-        adjudication_records_path = output_dir / "adjudication_records.json"
-        trace_payload = run_trace.to_dict()
-        feedback_payload = feedback
-        hypotheses_payload = {
-            "run_id": run_trace.run_id,
-            "hypotheses": [h.to_dict() for h in runner.last_hypotheses],
-        }
-        spans_payload = {
-            "run_id": run_trace.run_id,
-            "evidence_spans": [s.to_dict() for s in runner.last_spans],
-        }
-        conflicts_payload = {
-            "run_id": run_trace.run_id,
-            "conflicts": [c.to_dict() for c in runner.last_conflicts],
-        }
-        adjudication_payload = {
-            "run_id": run_trace.run_id,
-            "adjudication_records": [
-                r.to_dict() for r in runner.last_adjudication_records
-            ],
-        }
-        trace_path.write_text(json.dumps(trace_payload, indent=2, ensure_ascii=False), encoding="utf-8")
-        feedback_path.write_text(json.dumps(feedback_payload, indent=2, ensure_ascii=False), encoding="utf-8")
-        hypotheses_path.write_text(
-            json.dumps(hypotheses_payload, indent=2, ensure_ascii=False),
-            encoding="utf-8",
-        )
-        spans_path.write_text(
-            json.dumps(spans_payload, indent=2, ensure_ascii=False),
-            encoding="utf-8",
-        )
-        document = runner.last_document
-        observations_payload = {
-            "run_id": run_trace.run_id,
-            "document_id": document.document_id if document is not None else None,
-            "observations": [o.to_dict() for o in runner.last_observations],
-            "coverage_plans": [p.to_dict() for p in runner.last_plans],
-            "text_units": [u.to_dict() for u in (document.text_units if document is not None else [])],
-        }
-        observations_path.write_text(
-            json.dumps(observations_payload, indent=2, ensure_ascii=False),
-            encoding="utf-8",
-        )
-        conflicts_path.write_text(
-            json.dumps(conflicts_payload, indent=2, ensure_ascii=False),
-            encoding="utf-8",
-        )
-        adjudication_records_path.write_text(
-            json.dumps(adjudication_payload, indent=2, ensure_ascii=False),
-            encoding="utf-8",
-        )
-
-        if debug_writer is not None and debug_writer.output_dir is not None:
-            debug_writer.write_primary_artifact(
-                artifact_name="run_trace",
-                data=trace_payload,
-                summary="Canonical run trace for this evaluation",
-            )
-            debug_writer.write_primary_artifact(
-                artifact_name="feedback",
-                data=feedback_payload,
-                summary="Final feedback payload",
-            )
-            debug_writer.write_primary_artifact(
-                artifact_name="hypotheses",
-                data=hypotheses_payload,
-                summary=f"{len(hypotheses_payload['hypotheses'])} score hypotheses",
-            )
-            debug_writer.write_primary_artifact(
-                artifact_name="evidence_spans",
-                data=spans_payload,
-                summary=f"{len(spans_payload['evidence_spans'])} evidence spans",
-            )
-            debug_writer.write_primary_artifact(
-                artifact_name="observations",
-                data=observations_payload,
-                summary=f"{len(observations_payload['observations'])} observations",
-            )
-            debug_writer.write_primary_artifact(
-                artifact_name="conflicts",
-                data=conflicts_payload,
-                summary=f"{len(conflicts_payload['conflicts'])} conflicts",
-            )
-            debug_writer.write_primary_artifact(
-                artifact_name="adjudication_records",
-                data=adjudication_payload,
-                summary=(
-                    f"{len(adjudication_payload['adjudication_records'])} adjudication records"
-                ),
-            )
-            debug_writer.emit_event(
-                "run_finished",
-                status=run_trace.status.value,
-                terminal_validation_passed=run_trace.terminal_validation_passed,
-            )
-
-        ok = run_trace.status.value == "completed"
-
-        trace_dict = json.loads(trace_path.read_text(encoding="utf-8"))
-        feedback_dict = json.loads(feedback_path.read_text(encoding="utf-8"))
-        chunk_summary, coverage_summary = _extract_stage_summaries(trace_dict)
-
-        if verbose:
-            typer.echo("")
-            typer.echo("=" * 68)
-            typer.echo(f"  评价报告  —  样本 {essay_id}")
-            typer.echo("=" * 68)
-            started = trace_dict.get("started_at", "")
-            finished = trace_dict.get("finished_at", "")
-            typer.echo(f"  评价时间：{started[:19].replace('T', ' ')}  |  耗时：{_duration(started, finished)}")
-            typer.echo(f"  运行 ID ：{run_trace.run_id}")
-            typer.echo(f"  量规版本：{trace_dict.get('bundle_id', '')}@{trace_dict.get('bundle_version', '')}")
-            typer.echo(f"  状态    ：{'✅ completed' if ok else '❌ ' + run_trace.status.value}")
-            if chunk_summary:
-                typer.echo(f"  分块摘要：{chunk_summary}")
-            if coverage_summary:
-                typer.echo(f"  覆盖摘要：{coverage_summary}")
-
-            _print_node_timeline(trace_dict)
-            _print_agent_hypotheses(hypotheses_path)
-
-            # LLM 统计（本次增量）
-            c0, t0, e0 = stats_before
-            c1, t1, e1 = _snapshot_stats(log_providers)
-            typer.echo("")
-            typer.echo("  ── 本次 LLM 调用汇总 " + "─" * 52)
-            typer.echo(f"  总调用: {c1-c0}  |  总 Token: {t1-t0:,}  |  LLM 耗时: {e1-e0:.1f}s")
-            typer.echo(f"  {'角色':<22}  {'模型':<22}  {'调用':>4}  {'Token':>10}  {'耗时(s)':>8}")
-            typer.echo("  " + "─" * 72)
-            for lp in log_providers:
-                if lp.call_count > 0:
-                    typer.echo(
-                        f"  {lp._label:<22}  {lp.model_id:<22}  {lp.call_count:>4}  "
-                        f"{lp.total_tokens:>10,}  {lp.total_elapsed:>8.1f}"
-                    )
-
-            if ok:
-                _print_score_table(trace_dict, feedback_dict, tsv_row)
-                _print_dimension_feedback(feedback_dict)
-            else:
-                typer.echo("\n  流水线未完成，失败节点：")
-                for node in run_trace.node_traces:
-                    if node.status.value != "success":
-                        typer.echo(f"    ❌ {node.node_id} — {node.error_message}")
-        else:
-            # 非 verbose：仅打印分数一行
-            dims = feedback_dict.get("dimensions", {})
-            scores = " ".join(str(_score(dims[k])) if k in dims else "?" for k, _, _ in _DIM_ORDER)
-            cinfo = _get_composite_info(feedback_dict)
-            if cinfo:
-                c_score, c_max, _ = cinfo
-                total_str = f"{c_score}/{c_max}"
-            else:
-                total_str = f"{sum(_score(dims[k]) for k, _, _ in _DIM_ORDER if k in dims)}/36"
-            status = "✅" if ok else "❌"
-            extras = []
-            if chunk_summary:
-                extras.append(chunk_summary)
-            if coverage_summary:
-                extras.append(coverage_summary)
-            suffix = f"  |  {'  |  '.join(extras)}" if extras else ""
-            typer.echo(f"  {status}  [{scores}]  合计={total_str}{suffix}")
-
-        if ok and verbose:
-            report_path = _save_report_md(essay_id, trace_dict, feedback_dict, tsv_row, output_dir)
-            if debug_writer is not None and debug_writer.output_dir is not None:
-                debug_writer.write_text("report.md", report_path.read_text(encoding="utf-8"))
-            typer.echo("")
-            typer.echo("  产出文件：")
-            for p in [
-                trace_path,
-                feedback_path,
-                hypotheses_path,
-                spans_path,
-                observations_path,
-                conflicts_path,
-                adjudication_records_path,
-                report_path,
-            ]:
-                typer.echo(f"    {p}")
-            if debug_bundle and debug_writer is not None and debug_writer.output_dir is not None:
-                typer.echo(f"    {debug_writer.output_dir / 'viewer' / 'index.html'}")
-            typer.echo("=" * 68)
-        else:
-            report_path = None
-
-        if debug_writer is not None and debug_writer.output_dir is not None:
-            debug_bundle_dir = debug_writer.finalize()
+        run_id = trace_dict.get("run_id", "")
+        debug_bundle_dir = output_dir / "_debug" / run_id
+        if debug_bundle_dir.exists():
             typer.echo(f"  调试包: {debug_bundle_dir}")
             typer.echo(f"  Viewer : {debug_bundle_dir / 'viewer' / 'index.html'}")
 
-        return ok
-    finally:
-        if debug_writer is not None and debug_writer.output_dir is not None and debug_bundle_dir is None:
-            debug_bundle_dir = debug_writer.finalize()
-        _set_debug_writer(log_providers, None)
+    return result
 
 
 # ── 主命令 ─────────────────────────────────────────────────────────────────────
@@ -936,21 +818,43 @@ def main(
         tsv_row = all_rows.get(eid) if all_rows else None
 
         try:
-            ok = _run_single(
-                essay_id=eid,
-                essay_text=essay_text,
-                tsv_row=tsv_row,
-                resolved=resolved,
-                default_provider=default_provider,
-                rater_providers=rater_providers,
-                stage_providers=stage_providers,
-                log_providers=log_providers,
-                prompt_templates=prompt_templates,
-                output_dir=essay_out,
-                verbose=verbose,
-                debug_bundle=debug_bundle,
-            )
-            if ok:
+            if single_mode:
+                run_result = _run_single(
+                    essay_id=eid,
+                    essay_text=essay_text,
+                    tsv_row=tsv_row,
+                    resolved=resolved,
+                    default_provider=default_provider,
+                    rater_providers=rater_providers,
+                    stage_providers=stage_providers,
+                    log_providers=log_providers,
+                    prompt_templates=prompt_templates,
+                    output_dir=essay_out,
+                    verbose=verbose,
+                    debug_bundle=debug_bundle,
+                )
+            else:
+                run_result = batch_eval(
+                    sample_ids=[eid],
+                    bundle_path=bundle,
+                    tsv_path=source,
+                    output_base=output_base,
+                    iter_id=None,
+                    mock_provider=mock_provider,
+                    debug_bundle=debug_bundle,
+                    delay_seconds=0.0,
+                    verbose=verbose,
+                    run_single_fn=_run_single,
+                    rows_by_id=all_rows,
+                    resolved_bundle=resolved,
+                    default_provider=default_provider,
+                    rater_providers=rater_providers,
+                    stage_providers=stage_providers,
+                    log_providers=log_providers,
+                    prompt_templates=prompt_templates,
+                )[0]
+
+            if run_result.success:
                 results["success"].append(eid)
             else:
                 results["failed"].append(eid)

@@ -29,6 +29,7 @@ from src.config.freeze import compute_bundle_hash
 from src.config.resolver import ConfigResolver, ResolverError
 from src.contracts.artifact_bundle import (
     ArtifactBundle,
+    OperationalParams,
     PolicySnapshot,
     ProviderConfig,
     ProviderEntryConfig,
@@ -137,6 +138,7 @@ class ConfigCompiler:
 
         # Step 4b: Build ProviderConfig from raw dict (if present in bundle)
         provider_config = _build_provider_config(bundle.provider_config_raw)
+        operational_params = _build_operational_params(bundle.operational_params_raw)
 
         # Step 5: Build frozen ArtifactBundle (with freeze_hash set)
         resolved_at = datetime.now(timezone.utc)
@@ -157,6 +159,7 @@ class ConfigCompiler:
             validation_rules=bundle.validation_rules,
             metadata=bundle.metadata,
             provider_config_raw=bundle.provider_config_raw,
+            operational_params_raw=bundle.operational_params_raw,
             chunking_policy_ref=loaded_chunking,
             scoring_context_ref=loaded_scoring_context,
         )
@@ -167,6 +170,7 @@ class ConfigCompiler:
             policy_snapshot=policy_snapshot,
             prompt_templates=prompt_templates,
             provider_config=provider_config,
+            operational_params=operational_params,
             resolved_at=resolved_at,
             resolver_version=COMPILER_VERSION,
             total_hash=total_hash,
@@ -208,6 +212,21 @@ def _build_provider_config(raw: dict[str, Any] | None) -> ProviderConfig | None:
         )
     except (KeyError, TypeError) as exc:
         raise ConfigCompileError(f"Malformed provider_config in bundle: {exc}") from exc
+
+
+def _build_operational_params(raw: dict[str, Any] | None) -> OperationalParams | None:
+    """Parse operational params from bundle YAML into typed runtime config."""
+    if raw is None:
+        return None
+    try:
+        max_retries = raw.get("max_retries")
+        if not isinstance(max_retries, int):
+            raise TypeError("max_retries must be int")
+        if max_retries < 0:
+            raise ValueError("max_retries must be >= 0")
+        return OperationalParams(max_retries=max_retries)
+    except (AttributeError, TypeError, ValueError) as exc:
+        raise ConfigCompileError(f"Malformed operational_params in bundle: {exc}") from exc
 
 
 def _build_rubric_snapshot(rubric_file_data: dict[str, Any]) -> RubricSnapshot:
