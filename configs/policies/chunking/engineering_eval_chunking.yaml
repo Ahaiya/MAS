@@ -4,12 +4,14 @@ chunking_policy:
   policy_id: "engineering_eval_chunking"
   document_processing:
     token_threshold: 4000
-    target_chunk_size_hint: "TODO"
+    target_chunk_size_hint: "200-600 words per chunk; preserve dialogue turn boundaries and topic transitions"
   coverage:
     default_top_k: 5
     fallback_to_full_scan_on_error: true
     per_dimension_top_k:
-      TODO_dimension: 5
+      user_needs_analysis: 6
+      solution_generation: 6
+      engineering_ethics: 5
   metadata:
-    owner: "TODO"
-    note: "TODO"
+    owner: "engineering_eval"
+    note: "工程项目对话记录的分块策略，按对话轮次和主题边界分割"

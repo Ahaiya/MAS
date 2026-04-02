@@ -33,7 +33,7 @@ def test_all_probes_return_probe_result_on_single_essay(tmp_path: Path) -> None:
     output_base = tmp_path / "artifacts" / "eval"
     batch_eval(
         sample_ids=["1001"],
-        bundle_path=Path("configs/bundles/asap_set8_baseline.bundle.yaml"),
+        bundle_path=Path("configs/bundles/engineering_eval_baseline.bundle.yaml"),
         tsv_path=tsv_path,
         output_base=output_base,
         mock_provider=True,
@@ -59,4 +59,4 @@ def test_probe_returns_empty_metrics_when_required_json_missing(tmp_path: Path) 
     result = run_probe("coverage_probe", artifacts_dir)
     assert result.probe_name == "coverage_probe"
     assert result.metrics == {}
-    assert result.essay_count == 0
+    assert result.sample_count == 0

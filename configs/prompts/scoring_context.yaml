@@ -1,8 +1,7 @@
-schema_version: "1.0"
-
+schema_version: '1.0'
 scoring_context:
-  context_id: "engineering_eval_default"
-  role_description: "你是一名基于评价量规进行解决工程问题能力评估的评分员。"
-  dataset_notes: ""
+  context_id: engineering_eval_default
+  role_description: 你是一名基于评价量规进行解决工程问题能力评估的评分员。
+  dataset_notes: ''
   score_anchors: []
-  calibration_notes: ""
+  calibration_notes: '校准说明：优先奖励对问题边界、关键约束与证据链的清晰分析，再考虑表达润色。'

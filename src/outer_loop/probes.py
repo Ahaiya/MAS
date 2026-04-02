@@ -14,12 +14,9 @@ from src.outer_loop.metrics.consistency import compute_consistency
 from src.outer_loop.metrics.qwk import qwk_for_dimension
 
 _DIM_ORDER = [
-    "ideas_content",
-    "organization",
-    "voice",
-    "word_choice",
-    "sentence_fluency",
-    "conventions",
+    "user_needs_analysis",
+    "solution_generation",
+    "engineering_ethics",
 ]
 
 _PROBE_ARTIFACT_HINTS = {
@@ -36,9 +33,9 @@ _PROBE_ARTIFACT_HINTS = {
 @dataclass
 class ProbeResult:
     probe_name: str
-    essay_count: int
+    sample_count: int
     metrics: dict[str, float | int | None]
-    per_essay: dict[str, dict] | None = None
+    per_sample: dict[str, dict] | None = None
 
 
 def _safe_div(numerator: int | float, denominator: int | float) -> float | None:
@@ -102,27 +99,27 @@ def _load_json(path: Path) -> dict[str, Any] | None:
     return None
 
 
-def _looks_like_essay_dir(path: Path) -> bool:
+def _looks_like_sample_dir(path: Path) -> bool:
     return any((path / filename).exists() for filename in _PROBE_ARTIFACT_HINTS)
 
 
-def _collect_essay_dirs(artifacts_dir: Path) -> list[tuple[str, Path]]:
+def _collect_sample_dirs(artifacts_dir: Path) -> list[tuple[str, Path]]:
     artifacts_dir = Path(artifacts_dir)
     if not artifacts_dir.exists() or not artifacts_dir.is_dir():
         return []
 
-    if _looks_like_essay_dir(artifacts_dir):
+    if _looks_like_sample_dir(artifacts_dir):
         return [(artifacts_dir.name, artifacts_dir)]
 
     level_1 = sorted(p for p in artifacts_dir.iterdir() if p.is_dir())
-    direct = [(p.name, p) for p in level_1 if _looks_like_essay_dir(p)]
+    direct = [(p.name, p) for p in level_1 if _looks_like_sample_dir(p)]
     if direct:
         return direct
 
     nested: list[tuple[str, Path]] = []
     for parent in level_1:
         for child in sorted(p for p in parent.iterdir() if p.is_dir()):
-            if _looks_like_essay_dir(child):
+            if _looks_like_sample_dir(child):
                 nested.append((child.name, child))
     return nested
 
@@ -130,21 +127,21 @@ def _collect_essay_dirs(artifacts_dir: Path) -> list[tuple[str, Path]]:
 def _empty_probe(probe_name: str) -> ProbeResult:
     return ProbeResult(
         probe_name=probe_name,
-        essay_count=0,
+        sample_count=0,
         metrics={},
-        per_essay={},
+        per_sample={},
     )
 
 
 def coverage_probe(artifacts_dir: Path, **_: Any) -> ProbeResult:
-    per_essay: dict[str, dict[str, Any]] = {}
+    per_sample: dict[str, dict[str, Any]] = {}
     recall_values: list[float] = []
     precision_values: list[float] = []
     boundary_values: list[float] = []
 
-    for essay_id, essay_dir in _collect_essay_dirs(artifacts_dir):
+    for sample_id, sample_dir in _collect_sample_dirs(artifacts_dir):
         try:
-            payload = compute_metrics_for_essay(essay_dir)
+            payload = compute_metrics_for_essay(sample_dir)
         except Exception:
             continue
 
@@ -166,34 +163,34 @@ def coverage_probe(artifacts_dir: Path, **_: Any) -> ProbeResult:
         if boundary is not None:
             boundary_values.append(boundary)
 
-        per_essay[essay_id] = {
+        per_sample[sample_id] = {
             "coverage_recall_rate": recall,
             "coverage_precision_rate": precision,
             "chunk_boundary_quality": boundary,
         }
 
-    if not per_essay:
+    if not per_sample:
         return _empty_probe("coverage_probe")
 
     return ProbeResult(
         probe_name="coverage_probe",
-        essay_count=len(per_essay),
+        sample_count=len(per_sample),
         metrics={
             "coverage_recall_rate": _mean(recall_values),
             "coverage_precision_rate": _mean(precision_values),
             "chunk_boundary_quality": _mean(boundary_values),
         },
-        per_essay=per_essay,
+        per_sample=per_sample,
     )
 
 
 def evidence_quality_probe(artifacts_dir: Path, **_: Any) -> ProbeResult:
-    per_essay: dict[str, dict[str, Any]] = {}
+    per_sample: dict[str, dict[str, Any]] = {}
     quote_alignment_values: list[float] = []
     facet_completeness_values: list[float] = []
 
-    for essay_id, essay_dir in _collect_essay_dirs(artifacts_dir):
-        spans_data = _load_json(essay_dir / "evidence_spans.json")
+    for sample_id, sample_dir in _collect_sample_dirs(artifacts_dir):
+        spans_data = _load_json(sample_dir / "evidence_spans.json")
         if spans_data is None:
             continue
         spans = list(spans_data.get("evidence_spans") or [])
@@ -207,7 +204,7 @@ def evidence_quality_probe(artifacts_dir: Path, **_: Any) -> ProbeResult:
                 aligned_spans += 1
         quote_alignment_rate = _safe_div(aligned_spans, total_spans)
 
-        observations_data = _load_json(essay_dir / "observations.json")
+        observations_data = _load_json(sample_dir / "observations.json")
         total_facets = 0
         complete_facets = 0
         if observations_data is not None:
@@ -225,23 +222,23 @@ def evidence_quality_probe(artifacts_dir: Path, **_: Any) -> ProbeResult:
         if facet_completeness_rate is not None:
             facet_completeness_values.append(facet_completeness_rate)
 
-        per_essay[essay_id] = {
+        per_sample[sample_id] = {
             "quote_alignment_rate": quote_alignment_rate,
             "facet_completeness_rate": facet_completeness_rate,
             "span_count": total_spans,
         }
 
-    if not per_essay:
+    if not per_sample:
         return _empty_probe("evidence_quality_probe")
 
     return ProbeResult(
         probe_name="evidence_quality_probe",
-        essay_count=len(per_essay),
+        sample_count=len(per_sample),
         metrics={
             "quote_alignment_rate": _mean(quote_alignment_values),
             "facet_completeness_rate": _mean(facet_completeness_values),
         },
-        per_essay=per_essay,
+        per_sample=per_sample,
     )
 
 
@@ -262,12 +259,12 @@ def _normalize_confidence(value: Any) -> float | None:
 
 
 def observation_confidence_probe(artifacts_dir: Path, **_: Any) -> ProbeResult:
-    per_essay: dict[str, dict[str, Any]] = {}
+    per_sample: dict[str, dict[str, Any]] = {}
     mean_values: list[float] = []
     low_ratio_values: list[float] = []
 
-    for essay_id, essay_dir in _collect_essay_dirs(artifacts_dir):
-        observations_data = _load_json(essay_dir / "observations.json")
+    for sample_id, sample_dir in _collect_sample_dirs(artifacts_dir):
+        observations_data = _load_json(sample_dir / "observations.json")
         if observations_data is None:
             continue
         observations = list(observations_data.get("observations") or [])
@@ -296,31 +293,31 @@ def observation_confidence_probe(artifacts_dir: Path, **_: Any) -> ProbeResult:
         if low_confidence_ratio is not None:
             low_ratio_values.append(low_confidence_ratio)
 
-        per_essay[essay_id] = {
+        per_sample[sample_id] = {
             "observation_count": len(observations),
             "mean_confidence": mean_confidence,
             "low_confidence_ratio": low_confidence_ratio,
         }
 
-    if not per_essay:
+    if not per_sample:
         return _empty_probe("observation_confidence_probe")
 
     return ProbeResult(
         probe_name="observation_confidence_probe",
-        essay_count=len(per_essay),
+        sample_count=len(per_sample),
         metrics={
             "mean_confidence": _mean(mean_values),
             "low_confidence_ratio": _mean(low_ratio_values),
         },
-        per_essay=per_essay,
+        per_sample=per_sample,
     )
 
 
-def _load_hypotheses_by_dimension(essay_dir: Path) -> tuple[str, dict[str, list[int]]] | None:
-    data = _load_json(essay_dir / "hypotheses.json")
+def _load_hypotheses_by_dimension(sample_dir: Path) -> tuple[str, dict[str, list[int]]] | None:
+    data = _load_json(sample_dir / "hypotheses.json")
     if data is None:
         return None
-    run_id = _as_non_empty_str(data.get("run_id")) or essay_dir.name
+    run_id = _as_non_empty_str(data.get("run_id")) or sample_dir.name
     grouped: dict[str, list[int]] = {}
     for item in list(data.get("hypotheses") or []):
         dim_id = _as_non_empty_str(item.get("dimension_id"))
@@ -338,12 +335,12 @@ def _load_hypotheses_by_dimension(essay_dir: Path) -> tuple[str, dict[str, list[
 
 
 def rater_consistency_probe(artifacts_dir: Path, **_: Any) -> ProbeResult:
-    per_essay: dict[str, dict[str, Any]] = {}
+    per_sample: dict[str, dict[str, Any]] = {}
     overall_values: list[float] = []
     per_dimension_values: dict[str, list[float]] = {}
 
-    for essay_id, essay_dir in _collect_essay_dirs(artifacts_dir):
-        loaded = _load_hypotheses_by_dimension(essay_dir)
+    for sample_id, sample_dir in _collect_sample_dirs(artifacts_dir):
+        loaded = _load_hypotheses_by_dimension(sample_dir)
         if loaded is None:
             continue
         run_id, grouped = loaded
@@ -358,14 +355,14 @@ def rater_consistency_probe(artifacts_dir: Path, **_: Any) -> ProbeResult:
         overall_disagreement = 1.0 - report.overall_agreement_ratio
         overall_values.append(overall_disagreement)
 
-        per_essay[essay_id] = {
+        per_sample[sample_id] = {
             "overall_disagreement_rate": overall_disagreement,
             "dimensions_with_conflict": report.dimensions_with_conflict,
             "total_conflict_count": report.total_conflict_count,
             "per_dimension_disagreement": per_dim,
         }
 
-    if not per_essay:
+    if not per_sample:
         return _empty_probe("rater_consistency_probe")
 
     metrics: dict[str, float | int | None] = {
@@ -373,7 +370,7 @@ def rater_consistency_probe(artifacts_dir: Path, **_: Any) -> ProbeResult:
         "avg_dimensions_with_conflict": _mean(
             [
                 _as_float(item.get("dimensions_with_conflict"))
-                for item in per_essay.values()
+                for item in per_sample.values()
             ]
         ),
     }
@@ -382,27 +379,27 @@ def rater_consistency_probe(artifacts_dir: Path, **_: Any) -> ProbeResult:
 
     return ProbeResult(
         probe_name="rater_consistency_probe",
-        essay_count=len(per_essay),
+        sample_count=len(per_sample),
         metrics=metrics,
-        per_essay=per_essay,
+        per_sample=per_sample,
     )
 
 
 def conflict_pattern_probe(artifacts_dir: Path, **_: Any) -> ProbeResult:
-    per_essay: dict[str, dict[str, Any]] = {}
+    per_sample: dict[str, dict[str, Any]] = {}
     total_conflicts = 0
-    essays_with_conflicts = 0
+    samples_with_conflicts = 0
     type_counts: dict[str, int] = {}
 
-    for essay_id, essay_dir in _collect_essay_dirs(artifacts_dir):
-        data = _load_json(essay_dir / "conflicts.json")
+    for sample_id, sample_dir in _collect_sample_dirs(artifacts_dir):
+        data = _load_json(sample_dir / "conflicts.json")
         if data is None:
             continue
 
         conflicts = list(data.get("conflicts") or [])
         conflict_count = len(conflicts)
         if conflict_count > 0:
-            essays_with_conflicts += 1
+            samples_with_conflicts += 1
         total_conflicts += conflict_count
 
         local_counts: dict[str, int] = {}
@@ -411,39 +408,39 @@ def conflict_pattern_probe(artifacts_dir: Path, **_: Any) -> ProbeResult:
             local_counts[conflict_type] = local_counts.get(conflict_type, 0) + 1
             type_counts[conflict_type] = type_counts.get(conflict_type, 0) + 1
 
-        per_essay[essay_id] = {
+        per_sample[sample_id] = {
             "conflict_count": conflict_count,
             "conflict_types": local_counts,
             "triggered": conflict_count > 0,
         }
 
-    if not per_essay:
+    if not per_sample:
         return _empty_probe("conflict_pattern_probe")
 
     metrics: dict[str, float | int | None] = {
         "total_conflicts": total_conflicts,
-        "essays_with_conflicts": essays_with_conflicts,
-        "conflict_trigger_rate": _safe_div(essays_with_conflicts, len(per_essay)),
+        "samples_with_conflicts": samples_with_conflicts,
+        "conflict_trigger_rate": _safe_div(samples_with_conflicts, len(per_sample)),
     }
     for conflict_type, count in type_counts.items():
         metrics[f"conflict_type_{conflict_type}_ratio"] = _safe_div(count, total_conflicts)
 
     return ProbeResult(
         probe_name="conflict_pattern_probe",
-        essay_count=len(per_essay),
+        sample_count=len(per_sample),
         metrics=metrics,
-        per_essay=per_essay,
+        per_sample=per_sample,
     )
 
 
 def resolution_cost_probe(artifacts_dir: Path, **_: Any) -> ProbeResult:
-    per_essay: dict[str, dict[str, Any]] = {}
+    per_sample: dict[str, dict[str, Any]] = {}
     third_rates: list[float] = []
     fallback_rates: list[float] = []
     total_records = 0
 
-    for essay_id, essay_dir in _collect_essay_dirs(artifacts_dir):
-        data = _load_json(essay_dir / "adjudication_records.json")
+    for sample_id, sample_dir in _collect_sample_dirs(artifacts_dir):
+        data = _load_json(sample_dir / "adjudication_records.json")
         if data is None:
             continue
 
@@ -461,7 +458,7 @@ def resolution_cost_probe(artifacts_dir: Path, **_: Any) -> ProbeResult:
             if (not is_resolved) or ("fallback" in path):
                 fallback_count += 1
 
-        feedback = _load_json(essay_dir / "feedback.json")
+        feedback = _load_json(sample_dir / "feedback.json")
         dimensions = (feedback or {}).get("dimensions") or {}
         dimension_count = len(dimensions) if isinstance(dimensions, dict) else 0
         if dimension_count <= 0:
@@ -475,7 +472,7 @@ def resolution_cost_probe(artifacts_dir: Path, **_: Any) -> ProbeResult:
         if fallback_rate is not None:
             fallback_rates.append(fallback_rate)
 
-        per_essay[essay_id] = {
+        per_sample[sample_id] = {
             "adjudication_count": record_count,
             "third_rater_count": third_rater_count,
             "fallback_count": fallback_count,
@@ -483,29 +480,29 @@ def resolution_cost_probe(artifacts_dir: Path, **_: Any) -> ProbeResult:
             "fallback_rate": fallback_rate,
         }
 
-    if not per_essay:
+    if not per_sample:
         return _empty_probe("resolution_cost_probe")
 
     return ProbeResult(
         probe_name="resolution_cost_probe",
-        essay_count=len(per_essay),
+        sample_count=len(per_sample),
         metrics={
             "total_adjudication_records": total_records,
             "third_rater_trigger_rate": _mean(third_rates),
             "fallback_rate": _mean(fallback_rates),
         },
-        per_essay=per_essay,
+        per_sample=per_sample,
     )
 
 
 def feedback_grounding_probe(artifacts_dir: Path, **_: Any) -> ProbeResult:
-    per_essay: dict[str, dict[str, Any]] = {}
+    per_sample: dict[str, dict[str, Any]] = {}
     closure_values: list[float] = []
     violations_values: list[float] = []
-    essays_with_violations = 0
+    samples_with_violations = 0
 
-    for essay_id, essay_dir in _collect_essay_dirs(artifacts_dir):
-        feedback = _load_json(essay_dir / "feedback.json")
+    for sample_id, sample_dir in _collect_sample_dirs(artifacts_dir):
+        feedback = _load_json(sample_dir / "feedback.json")
         if feedback is None:
             continue
 
@@ -525,55 +522,117 @@ def feedback_grounding_probe(artifacts_dir: Path, **_: Any) -> ProbeResult:
         violations = list(feedback.get("violations") or [])
         violation_count = len(violations)
         if violation_count > 0:
-            essays_with_violations += 1
+            samples_with_violations += 1
 
         if closure_rate is not None:
             closure_values.append(closure_rate)
         violations_values.append(float(violation_count))
 
-        per_essay[essay_id] = {
+        per_sample[sample_id] = {
             "descriptor_evidence_closure_rate": closure_rate,
             "violation_count": violation_count,
             "dimension_count": total_dimensions,
         }
 
-    if not per_essay:
+    if not per_sample:
         return _empty_probe("feedback_grounding_probe")
 
     return ProbeResult(
         probe_name="feedback_grounding_probe",
-        essay_count=len(per_essay),
+        sample_count=len(per_sample),
         metrics={
             "descriptor_evidence_closure_rate": _mean(closure_values),
-            "avg_violations_per_essay": _mean(violations_values),
-            "violations_trigger_rate": _safe_div(essays_with_violations, len(per_essay)),
+            "avg_violations_per_sample": _mean(violations_values),
+            "violations_trigger_rate": _safe_div(samples_with_violations, len(per_sample)),
         },
-        per_essay=per_essay,
+        per_sample=per_sample,
     )
 
 
-def _load_human_scores(
+def _first_present_int(row: dict[str, Any], keys: list[str]) -> int | None:
+    for key in keys:
+        value = _as_int(row.get(key))
+        if value is not None:
+            return value
+    return None
+
+
+def _sample_id_from_row(row: dict[str, Any]) -> str:
+    return (
+        _as_non_empty_str(row.get("sample_id"))
+        or _as_non_empty_str(row.get("essay_id"))
+        or ""
+    )
+
+
+def _score_range(scores: list[int]) -> tuple[int, int] | None:
+    if not scores:
+        return None
+    min_score = min(scores)
+    max_score = max(scores)
+    if min_score >= max_score:
+        return None
+    return min_score, max_score
+
+
+def _load_reference_scores(
     tsv_path: Path,
 ) -> dict[str, dict[str, tuple[int | None, int | None]]]:
     result: dict[str, dict[str, tuple[int | None, int | None]]] = {}
     if not tsv_path.exists():
         return result
 
-    with tsv_path.open(encoding="latin-1") as fh:
+    with tsv_path.open(encoding="utf-8") as fh:
         reader = csv.DictReader(fh, delimiter="\t")
         for row in reader:
-            essay_id = (row.get("essay_id") or "").strip()
-            if not essay_id:
+            sample_id = _sample_id_from_row(row)
+            if not sample_id:
                 continue
 
             scores: dict[str, tuple[int | None, int | None]] = {}
-            for idx, dim_id in enumerate(_DIM_ORDER, start=1):
-                r1 = _as_int(row.get(f"rater1_trait{idx}"))
-                r2 = _as_int(row.get(f"rater2_trait{idx}"))
+            for dim_id in _DIM_ORDER:
+                r1 = _first_present_int(
+                    row,
+                    [
+                        f"rater1_{dim_id}",
+                        f"human_rater1_{dim_id}",
+                        f"{dim_id}_rater1",
+                    ],
+                )
+                r2 = _first_present_int(
+                    row,
+                    [
+                        f"rater2_{dim_id}",
+                        f"human_rater2_{dim_id}",
+                        f"{dim_id}_rater2",
+                    ],
+                )
+                if r1 is None and r2 is None:
+                    single_score = _first_present_int(
+                        row,
+                        [
+                            dim_id,
+                            f"human_{dim_id}",
+                            f"gold_{dim_id}",
+                            f"label_{dim_id}",
+                        ],
+                    )
+                    r1 = single_score
+                    r2 = single_score
                 scores[dim_id] = (r1, r2)
 
-            scores["_total"] = (_as_int(row.get("domain1_score")), None)
-            result[essay_id] = scores
+            scores["_total"] = (
+                _first_present_int(
+                    row,
+                    [
+                        "composite_score",
+                        "total_score",
+                        "human_total_score",
+                    ],
+                ),
+                None,
+            )
+            result[sample_id] = scores
     return result
 
 
@@ -592,13 +651,13 @@ def _pick_human_score(
 
 
 def _load_mas_scores_for_qwk(
-    essay_dir: Path,
+    sample_dir: Path,
 ) -> tuple[dict[str, int], int | None] | None:
-    feedback = _load_json(essay_dir / "feedback.json")
+    feedback = _load_json(sample_dir / "feedback.json")
     if feedback is None:
         return None
 
-    trace = _load_json(essay_dir / "run_trace.json")
+    trace = _load_json(sample_dir / "run_trace.json")
     if trace is not None and trace.get("status") not in (None, "completed"):
         return None
 
@@ -632,47 +691,47 @@ def qwk_probe(
     if rater not in {"rater1", "rater2", "average"}:
         raise ValueError("rater must be one of: rater1, rater2, average")
 
-    human_scores = _load_human_scores(Path(tsv_path))
-    if not human_scores:
+    reference_scores = _load_reference_scores(Path(tsv_path))
+    if not reference_scores:
         return _empty_probe("qwk_probe")
 
-    per_essay: dict[str, dict[str, Any]] = {}
+    per_sample: dict[str, dict[str, Any]] = {}
     y_true_by_dim: dict[str, list[int]] = {dim_id: [] for dim_id in _DIM_ORDER}
     y_pred_by_dim: dict[str, list[int]] = {dim_id: [] for dim_id in _DIM_ORDER}
     composite_true: list[int] = []
     composite_pred: list[int] = []
 
-    for essay_id, essay_dir in _collect_essay_dirs(artifacts_dir):
-        if essay_id not in human_scores:
+    for sample_id, sample_dir in _collect_sample_dirs(artifacts_dir):
+        if sample_id not in reference_scores:
             continue
-        loaded = _load_mas_scores_for_qwk(essay_dir)
+        loaded = _load_mas_scores_for_qwk(sample_dir)
         if loaded is None:
             continue
         mas_scores, mas_composite = loaded
-        human = human_scores[essay_id]
+        reference = reference_scores[sample_id]
 
         dim_pairs: dict[str, dict[str, int | None]] = {}
         for dim_id in _DIM_ORDER:
-            human_pair = human.get(dim_id, (None, None))
-            y_true = _pick_human_score(human_pair[0], human_pair[1], rater)
+            reference_pair = reference.get(dim_id, (None, None))
+            y_true = _pick_human_score(reference_pair[0], reference_pair[1], rater)
             y_pred = mas_scores.get(dim_id)
-            dim_pairs[dim_id] = {"human": y_true, "mas": y_pred}
+            dim_pairs[dim_id] = {"reference": y_true, "mas": y_pred}
             if y_true is not None and y_pred is not None:
                 y_true_by_dim[dim_id].append(y_true)
                 y_pred_by_dim[dim_id].append(y_pred)
 
-        human_total, _ = human.get("_total", (None, None))
-        if human_total is not None and mas_composite is not None:
-            composite_true.append(human_total)
+        reference_total, _ = reference.get("_total", (None, None))
+        if reference_total is not None and mas_composite is not None:
+            composite_true.append(reference_total)
             composite_pred.append(mas_composite)
 
-        per_essay[essay_id] = {
+        per_sample[sample_id] = {
             "dimensions": dim_pairs,
-            "human_composite": human_total,
+            "reference_composite": reference_total,
             "mas_composite": mas_composite,
         }
 
-    if not per_essay:
+    if not per_sample:
         return _empty_probe("qwk_probe")
 
     metrics: dict[str, float | int | None] = {}
@@ -681,29 +740,43 @@ def qwk_probe(
         y_pred = y_pred_by_dim[dim_id]
         metrics[f"n_{dim_id}"] = len(y_true)
         if len(y_true) >= 2:
-            result = qwk_for_dimension(dim_id, y_true, y_pred, min_score=1, max_score=6)
-            metrics[f"qwk_{dim_id}"] = result.qwk
+            score_range = _score_range(y_true + y_pred)
+            if score_range is None:
+                metrics[f"qwk_{dim_id}"] = None
+            else:
+                result = qwk_for_dimension(
+                    dim_id,
+                    y_true,
+                    y_pred,
+                    min_score=score_range[0],
+                    max_score=score_range[1],
+                )
+                metrics[f"qwk_{dim_id}"] = result.qwk
         else:
             metrics[f"qwk_{dim_id}"] = None
 
     metrics["n_composite"] = len(composite_true)
     if len(composite_true) >= 2:
-        composite = qwk_for_dimension(
-            "composite",
-            composite_true,
-            composite_pred,
-            min_score=10,
-            max_score=60,
-        )
-        metrics["qwk_composite"] = composite.qwk
+        composite_range = _score_range(composite_true + composite_pred)
+        if composite_range is None:
+            metrics["qwk_composite"] = None
+        else:
+            composite = qwk_for_dimension(
+                "composite",
+                composite_true,
+                composite_pred,
+                min_score=composite_range[0],
+                max_score=composite_range[1],
+            )
+            metrics["qwk_composite"] = composite.qwk
     else:
         metrics["qwk_composite"] = None
 
     return ProbeResult(
         probe_name="qwk_probe",
-        essay_count=len(per_essay),
+        sample_count=len(per_sample),
         metrics=metrics,
-        per_essay=per_essay,
+        per_sample=per_sample,
     )
 
 
@@ -738,14 +811,14 @@ def _extract_token_count(metadata: dict[str, Any]) -> int:
 
 
 def cost_probe(artifacts_dir: Path, **_: Any) -> ProbeResult:
-    per_essay: dict[str, dict[str, Any]] = {}
+    per_sample: dict[str, dict[str, Any]] = {}
     latency_values: list[float] = []
     retry_values: list[float] = []
     token_values: list[float] = []
     stage_latencies: dict[str, list[float]] = {}
 
-    for essay_id, essay_dir in _collect_essay_dirs(artifacts_dir):
-        trace = _load_json(essay_dir / "run_trace.json")
+    for sample_id, sample_dir in _collect_sample_dirs(artifacts_dir):
+        trace = _load_json(sample_dir / "run_trace.json")
         if trace is None:
             continue
 
@@ -779,7 +852,7 @@ def cost_probe(artifacts_dir: Path, **_: Any) -> ProbeResult:
             retry_values.append(retry_rate)
         token_values.append(float(total_tokens))
 
-        per_essay[essay_id] = {
+        per_sample[sample_id] = {
             "total_latency_seconds": total_latency,
             "retry_count": retry_count,
             "retry_rate": retry_rate,
@@ -787,7 +860,7 @@ def cost_probe(artifacts_dir: Path, **_: Any) -> ProbeResult:
             "node_count": len(node_traces),
         }
 
-    if not per_essay:
+    if not per_sample:
         return _empty_probe("cost_probe")
 
     metrics: dict[str, float | int | None] = {
@@ -800,9 +873,9 @@ def cost_probe(artifacts_dir: Path, **_: Any) -> ProbeResult:
 
     return ProbeResult(
         probe_name="cost_probe",
-        essay_count=len(per_essay),
+        sample_count=len(per_sample),
         metrics=metrics,
-        per_essay=per_essay,
+        per_sample=per_sample,
     )
 
 

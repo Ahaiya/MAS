@@ -28,12 +28,9 @@ from src.providers.base import (
 )
 
 _DIM_ORDER = [
-    "ideas_content",
-    "organization",
-    "voice",
-    "word_choice",
-    "sentence_fluency",
-    "conventions",
+    "user_needs_analysis",
+    "solution_generation",
+    "engineering_ethics",
 ]
 
 _DEFAULT_PROBE_DESCRIPTIONS: dict[str, str] = {
@@ -82,21 +79,20 @@ class RuleBasedOuterLoopProvider(BaseProvider):
                 "```yaml\n"
                 "verdict: \"no-improvement\"\n"
                 "next_hypothesis: "
-                "\"Shift to a nearby scoring or extraction unit with clearer probe signal.\"\n"
+                "\"转向相邻的评分或证据链路配置单元，继续寻找更清晰的探针信号。\"\n"
                 "```"
             )
         else:
             content = (
                 "```yaml\n"
                 "change_proposal:\n"
-                "  change_unit: \"scoring.calibration_notes.ideas_content\"\n"
+                "  change_unit: \"scoring.calibration_notes.user_needs_analysis\"\n"
                 "  change_type: \"field_patch\"\n"
                 "  target_file: \"configs/prompts/scoring_context.yaml\"\n"
                 "  target_path: \"scoring_context.calibration_notes\"\n"
                 "  new_value: "
-                "\"Calibration update: reward clear controlling idea and relevant evidence "
-                "before style polish.\"\n"
-                "  rationale: \"Baseline scaffold proposal for smoke runs.\"\n"
+                "\"校准说明：优先奖励对问题边界、关键约束和证据链的清晰分析，再考虑表达润色。\"\n"
+                "  rationale: \"用于 smoke run 的工程评价基线提案。\"\n"
                 "selected_probes:\n"
                 "  - \"rater_consistency_probe\"\n"
                 "  - \"qwk_probe\"\n"
@@ -650,13 +646,13 @@ class OuterLoopAgent:
 
     def _fallback_decision(self, reason: str) -> tuple[ChangeProposal, list[str]]:
         proposal = ChangeProposal(
-            change_unit="scoring.calibration_notes.ideas_content",
+            change_unit="scoring.calibration_notes.user_needs_analysis",
             change_type="field_patch",
             target_file="configs/prompts/scoring_context.yaml",
             target_path="scoring_context.calibration_notes",
             new_value=(
-                "Fallback calibration note: prioritize controlling idea clarity, "
-                "relevant supporting evidence, and penalties only when weakness is consistent."
+                "回退校准说明：优先关注问题界定、关键约束识别和证据链完整性，"
+                "仅在证据反复显示不足时再放大扣分。"
             ),
             rationale=f"Fallback proposal generated because {reason}.",
         )
@@ -706,18 +702,33 @@ class OuterLoopAgent:
         if self._training_sample_ids is not None:
             return list(self._training_sample_ids)
 
-        if not self.training_set_path.exists():
-            raise FileNotFoundError(f"Training TSV not found: {self.training_set_path}")
+        path = self.training_set_path
 
-        ids: list[str] = []
-        with self.training_set_path.open(encoding="latin-1") as fh:
-            reader = csv.DictReader(fh, delimiter="\t")
-            for row in reader:
-                essay_id = (row.get("essay_id") or "").strip()
-                if essay_id:
-                    ids.append(essay_id)
-        if not ids:
-            raise ValueError(f"No essay_id found in TSV: {self.training_set_path}")
+        if path.is_dir():
+            ids = [f.stem for f in sorted(path.glob("*.md"))]
+            if not ids:
+                raise ValueError(f"No .md files found in directory: {path}")
+        elif path.suffix.lower() == ".md":
+            if not path.exists():
+                raise FileNotFoundError(f"Sample file not found: {path}")
+            ids = [path.stem]
+        else:
+            if not path.exists():
+                raise FileNotFoundError(f"Training set not found: {path}")
+            ids = []
+            with path.open(encoding="latin-1") as fh:
+                reader = csv.DictReader(fh, delimiter="\t")
+                for row in reader:
+                    sample_id = (
+                        (row.get("sample_id") or "").strip()
+                        or (row.get("essay_id") or "").strip()
+                    )
+                    if sample_id:
+                        ids.append(sample_id)
+            if not ids:
+                raise ValueError(
+                    f"No sample_id or essay_id found in TSV: {path}"
+                )
 
         self._training_sample_ids = ids
         return list(ids)
@@ -752,7 +763,7 @@ class OuterLoopAgent:
         serialized: dict[str, Any] = {}
         for name, result in probes.items():
             serialized[name] = {
-                "essay_count": result.essay_count,
+                "sample_count": result.sample_count,
                 "metrics": dict(result.metrics),
             }
         return serialized
@@ -773,6 +784,7 @@ class OuterLoopAgent:
         return self._as_float(probe_results.get("qwk_composite"))
 
     def _is_target_reached(self, probe_results: dict[str, Any]) -> bool:
+        """Target is composite QWK >= target_qwk (design doc: composite is the primary signal)."""
         qwk_payload = probe_results.get("qwk_probe")
         if not isinstance(qwk_payload, dict):
             return False
@@ -781,14 +793,7 @@ class OuterLoopAgent:
             return False
 
         qwk_composite = self._as_float(metrics.get("qwk_composite"))
-        if qwk_composite is None or qwk_composite < self.target_qwk:
-            return False
-
-        for dim_id in _DIM_ORDER:
-            qwk_dim = self._as_float(metrics.get(f"qwk_{dim_id}"))
-            if qwk_dim is None or qwk_dim < self.target_qwk:
-                return False
-        return True
+        return qwk_composite is not None and qwk_composite >= self.target_qwk
 
     def _proposal_to_dict(self, proposal: ChangeProposal) -> dict[str, Any]:
         return {

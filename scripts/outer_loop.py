@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import json
+import os
 import sys
 from pathlib import Path
 from typing import Annotated, Any
@@ -28,12 +29,48 @@ from src.providers.factory import build_provider
 
 app = typer.Typer(name="outer-loop", help="Outer-loop optimization controls.")
 
-_DEFAULT_BUNDLE = _PROJECT_ROOT / "configs" / "bundles" / "asap_set8_baseline.bundle.yaml"
-_DEFAULT_TRAINING_SET = _PROJECT_ROOT / "data" / "training_set_8.tsv"
+_DEFAULT_BUNDLE = _PROJECT_ROOT / "configs" / "bundles" / "engineering_eval_baseline.bundle.yaml"
+# Default: single .md file or a directory of .md files; TSV also accepted for legacy ASAP use.
+_DEFAULT_TRAINING_SET = _PROJECT_ROOT / "data" / "1组—虚拟故居重建计划.md"
 _DEFAULT_EXPERIMENT_LOG = _PROJECT_ROOT / "experiments" / "experiment_log.yaml"
 _DEFAULT_EXPERIMENTS_DIR = _PROJECT_ROOT / "experiments"
 _DEFAULT_ARTIFACTS_BASE = _PROJECT_ROOT / "artifacts" / "eval"
 _DEFAULT_PROMPTS_DIR = _PROJECT_ROOT / "src" / "outer_loop" / "prompts"
+
+
+def _maybe_float_env(name: str) -> float | None:
+    raw = os.environ.get(name, "").strip()
+    if not raw:
+        return None
+    return float(raw)
+
+
+def _maybe_int_env(name: str) -> int | None:
+    raw = os.environ.get(name, "").strip()
+    if not raw:
+        return None
+    return int(raw)
+
+
+def _build_outer_loop_provider():
+    params: dict[str, Any] = {}
+
+    temperature = _maybe_float_env("OUTER_LOOP_TEMPERATURE")
+    if temperature is not None:
+        params["temperature"] = temperature
+
+    max_tokens = _maybe_int_env("OUTER_LOOP_MAX_TOKENS")
+    if max_tokens is not None:
+        params["max_tokens"] = max_tokens
+
+    return build_provider(
+        ProviderEntryConfig(
+            api_key_env="OUTER_LOOP_API_KEY",
+            model=os.environ.get("OUTER_LOOP_MODEL", "").strip(),
+            api_base=os.environ.get("OUTER_LOOP_API_BASE", "").strip(),
+            params=params,
+        )
+    )
 
 
 def _extract_qwk_composite(probe_results: dict[str, Any]) -> float | None:
@@ -71,7 +108,7 @@ def _build_agent(
     if mock_agent:
         provider = RuleBasedOuterLoopProvider()
     else:
-        provider = build_provider(ProviderEntryConfig(api_key_env="LLM_API_KEY"))
+        provider = _build_outer_loop_provider()
 
     return OuterLoopAgent(
         experiment_log=experiment_log,
@@ -174,9 +211,9 @@ def probe(
 
     payload = {
         "probe_name": result.probe_name,
-        "essay_count": result.essay_count,
+        "sample_count": result.sample_count,
         "metrics": result.metrics,
-        "per_essay": result.per_essay,
+        "per_sample": result.per_sample,
     }
     typer.echo(json.dumps(payload, indent=2, ensure_ascii=False))
 

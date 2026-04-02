@@ -45,6 +45,32 @@ def _load_tsv(tsv_path: Path) -> dict[str, dict[str, str]]:
     return rows
 
 
+def _load_md_file(md_path: Path) -> dict[str, dict[str, str]]:
+    """Load a single .md file as a one-entry sample dict."""
+    essay_id = md_path.stem
+    essay_text = md_path.read_text(encoding="utf-8")
+    return {essay_id: {"essay": essay_text, "essay_id": essay_id}}
+
+
+def _load_md_dir(md_dir: Path) -> dict[str, dict[str, str]]:
+    """Load all .md files in a directory as sample rows keyed by file stem."""
+    rows: dict[str, dict[str, str]] = {}
+    for md_file in sorted(md_dir.glob("*.md")):
+        essay_id = md_file.stem
+        essay_text = md_file.read_text(encoding="utf-8")
+        rows[essay_id] = {"essay": essay_text, "essay_id": essay_id}
+    return rows
+
+
+def _load_samples(samples_path: Path) -> dict[str, dict[str, str]]:
+    """Load samples from a .md file, a directory of .md files, or a TSV file."""
+    if samples_path.is_dir():
+        return _load_md_dir(samples_path)
+    if samples_path.suffix.lower() == ".md":
+        return _load_md_file(samples_path)
+    return _load_tsv(samples_path)
+
+
 def _wrap_providers(
     default_provider: Any | None,
     rater_providers: dict[str, Any],
@@ -355,7 +381,7 @@ def batch_eval(
         return []
 
     output_base = Path(output_base)
-    rows = rows_by_id if rows_by_id is not None else _load_tsv(Path(tsv_path))
+    rows = rows_by_id if rows_by_id is not None else _load_samples(Path(tsv_path))
     resolved = resolved_bundle if resolved_bundle is not None else resolve_bundle(bundle_path)
 
     if prompt_templates is None:
@@ -382,11 +408,11 @@ def batch_eval(
         sample_id = str(raw_sample_id)
         row = rows.get(sample_id)
         if row is None:
-            raise ValueError(f"essay_id '{sample_id}' not found in TSV: {tsv_path}")
+            raise ValueError(f"sample_id '{sample_id}' not found in samples source: {tsv_path}")
 
         essay_text = row.get("essay") or ""
         if not essay_text.strip():
-            raise ValueError(f"essay_id '{sample_id}' has empty essay text in TSV: {tsv_path}")
+            raise ValueError(f"sample_id '{sample_id}' has empty essay text in: {tsv_path}")
 
         sample_output_dir = _output_dir_for(
             output_base=output_base,

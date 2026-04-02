@@ -13,7 +13,7 @@ def _record(iteration: int, changed_unit: str, verdict: str) -> IterationRecord:
         changed_unit=changed_unit,
         change_description="test",
         target_file="configs/prompts/scoring_context.yaml",
-        target_path="calibration_notes.ideas_content",
+        target_path="calibration_notes.problem_analysis",
         probe_used=["coverage_probe"],
         probe_results={},
         verdict=verdict,
@@ -29,7 +29,7 @@ def _log(tmp_path: Path) -> ExperimentLog:
 def test_should_force_transfer_after_two_consecutive_failures(tmp_path: Path) -> None:
     log = _log(tmp_path)
     policy = SearchPolicy()
-    unit = "scoring.calibration_notes.ideas_content"
+    unit = "scoring.calibration_notes.problem_analysis"
 
     log.append(_record(1, unit, "no-improvement"))
     assert policy.should_force_transfer(log, unit) is False

@@ -1,0 +1,303 @@
+{
+  "run_id": "run-9c9997883073",
+  "hypotheses": [
+    {
+      "hypothesis_id": "hyp-score-8e7be695de0e",
+      "observation_id": "obs-233919ae4f68",
+      "dimension_id": "problem_analysis",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "能够识别并分析多数关键要素与约束条件",
+        "具备系统整体观，能分析各组成部分的相互作用",
+        "能基于数据和原理进行逻辑推理，偶有批判性反思"
+      ],
+      "evidence_span_ids": [
+        "span-ext-46c385cead0b",
+        "span-ext-d8806f9265b0",
+        "span-ext-f25e175baaa6",
+        "span-ext-90b74bdb0060"
+      ],
+      "rationale": "证据显示：1) 识别了技术、数据、情感等多维问题要素[span-ext-46c385cead0b]；2) 系统思维清晰，详细拆解模块并分析相互作用[span-ext-d8806f9265b0, span-ext-f25e175baaa6]；3) 包含对自身分析方法的批判性反思[span-ext-90b74bdb0060]。符合4分描述，但未达到5分的多维度深度分析及持续批判性反思标准。",
+      "confidence": 0.9
+    },
+    {
+      "hypothesis_id": "hyp-score-a68637c502d3",
+      "observation_id": "obs-233919ae4f68",
+      "dimension_id": "problem_analysis",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 5,
+        "display_annotation": null,
+        "display_score": "5",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "从技术、社会、环境等多维视角全面界定问题",
+        "系统性思维突出，能揭示子系统间的深层相互作用",
+        "能精准定位用户核心痛点与隐性需求"
+      ],
+      "evidence_span_ids": [
+        "span-ext-46c385cead0b",
+        "span-ext-d62c5d18896c",
+        "span-ext-f25e175baaa6",
+        "span-ext-90b74bdb0060"
+      ],
+      "rationale": "证据显示能从技术、情感、社会多维界定问题（span-ext-46c385cead0b, d62c5d18896c），精准定位用户痛点。系统架构设计清晰，揭示模块间深层作用（span-ext-f25e175baaa6）。批判性反思虽指出不足，但未达持续监控方法论的 6 分标准，故评 5 分。",
+      "confidence": 0.95
+    },
+    {
+      "hypothesis_id": "hyp-score-3cd1723664e9",
+      "observation_id": "obs-5674b78e6172",
+      "dimension_id": "solution_design",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 5,
+        "display_annotation": null,
+        "display_score": "5",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "技术架构完善，有效整合多学科知识",
+        "原型验证充分，可行性分析有数据支持",
+        "生成多个备选方案并进行系统性比较优化"
+      ],
+      "evidence_span_ids": [
+        "span-ext-4898429a65d9",
+        "span-ext-1302b1168717",
+        "span-ext-25a0e72eb2d0",
+        "span-ext-e76cf669e127"
+      ],
+      "rationale": "方案提出了清晰的金字塔分层技术架构（5大核心模块+2大扩展模块），并说明了模块划分的可持续性优势。进行了多维度可行性分析（技术、性能、风险）并提供了具体技术栈选择。针对核心问题提出了三个协同的解决方案组合（场景智能还原、记忆线索触发、数字遗产传承），展现出系统性设计。",
+      "confidence": 0.9
+    },
+    {
+      "hypothesis_id": "hyp-score-b88f87743ba7",
+      "observation_id": "obs-5674b78e6172",
+      "dimension_id": "solution_design",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 5,
+        "display_annotation": null,
+        "display_score": "5",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "技术架构完善，有效整合多学科知识",
+        "原型验证充分，可行性分析有数据支持",
+        "展现出明显的工程创新性"
+      ],
+      "evidence_span_ids": [
+        "span-ext-1bcc5eccff9f",
+        "span-ext-1302b1168717",
+        "span-ext-25a0e72eb2d0",
+        "span-ext-828abb999945"
+      ],
+      "rationale": "方案构建了清晰的金字塔分层架构与 7 大模块，整合了 AI、图数据库等多学科知识。可行性分析涵盖技术、风险及伦理维度，并指定了具体技术栈（如 NeRF、Transformer）。设计体现了松耦合与可持续性，具有明显的工程创新性，符合 5 分标准。",
+      "confidence": 0.95
+    },
+    {
+      "hypothesis_id": "hyp-score-8edb3704ef22",
+      "observation_id": "obs-8de5d05539de",
+      "dimension_id": "project_execution",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "计划合理可执行，风险管理有效，决策有据可依",
+        "时间表清晰，任务分解合理，资源分配明确",
+        "风险识别较系统，有针对性应对措施"
+      ],
+      "evidence_span_ids": [
+        "span-ext-3804ea05c49e",
+        "span-ext-01c526ea280b",
+        "span-ext-be66ab1a8320",
+        "span-ext-e49d5f9e265a"
+      ],
+      "rationale": "学生制定了清晰的MVP功能选择计划（span-ext-3804ea05c49e），基于多维度评估进行决策（span-ext-01c526ea280b），系统识别了隐私、法律、情感风险并提出了具体应对措施（span-ext-be66ab1a8320），决策整合了用户洞察和专家建议（span-ext-e49d5f9e265a）。",
+      "confidence": 0.9
+    },
+    {
+      "hypothesis_id": "hyp-score-7db6d058aeb4",
+      "observation_id": "obs-8de5d05539de",
+      "dimension_id": "project_execution",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "计划合理可执行，风险管理有效，决策有据可依。",
+        "风险识别较系统，有针对性应对措施",
+        "能整合多源信息支撑决策"
+      ],
+      "evidence_span_ids": [
+        "span-ext-3804ea05c49e",
+        "span-ext-be66ab1a8320",
+        "span-ext-01c526ea280b",
+        "span-ext-e49d5f9e265a"
+      ],
+      "rationale": "学生基于多维度评估（痛点、市场、难度）筛选核心功能并定义 MVP，决策逻辑清晰且整合了专家建议与用户洞察。风险识别涵盖隐私、法律及情感伤害，并提出了区块链加密、法务审核等针对性应对措施。虽未展示详细时间表，但计划与决策质量符合‘有据可依、管理有效’的 4 分标准。",
+      "confidence": 0.9
+    },
+    {
+      "hypothesis_id": "hyp-score-d3d896e80c74",
+      "observation_id": "obs-0617c9eea571",
+      "dimension_id": "technical_proficiency",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "能根据问题需求合理评估和选择技术工具",
+        "在设计中有效应用相关标准和规范",
+        "能设计数据采集方案并得出有效结论"
+      ],
+      "evidence_span_ids": [
+        "span-ext-2d427da3dad2",
+        "span-ext-fcaf68664ff4",
+        "span-ext-07b16567ba4e",
+        "span-ext-b9b32bc1ca4c"
+      ],
+      "rationale": "证据显示：基于需求分析选择分层架构和模块化工具（span-ext-2d427da3dad2, span-ext-fcaf68664ff4）；设计中考虑了安全合规、鲁棒性等标准（span-ext-07b16567ba4e）；通过文件列表和工作流机制设计了系统化的数据/代码管理方案（span-ext-b9b32bc1ca4c, span-ext-c911d5c782e3）。这符合评分4的描述。",
+      "confidence": 0.9
+    },
+    {
+      "hypothesis_id": "hyp-score-a8cba46a422a",
+      "observation_id": "obs-0617c9eea571",
+      "dimension_id": "technical_proficiency",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "能根据问题需求合理评估和选择技术工具",
+        "在设计中有效应用相关标准和规范",
+        "能设计数据采集方案并得出有效结论"
+      ],
+      "evidence_span_ids": [
+        "span-ext-2d427da3dad2",
+        "span-ext-07b16567ba4e",
+        "span-ext-b9b32bc1ca4c",
+        "span-ext-fec72baca2ba"
+      ],
+      "rationale": "证据显示能根据需求合理选择架构工具（金字塔分层），有效应用安全合规与鲁棒性标准，并设计了具体的文件列表与工作流调度方案。虽未达二次开发或深度合规审查水平，但已满足合理选用工具、遵循标准及有效数据分析的四级要求。",
+      "confidence": 0.9
+    },
+    {
+      "hypothesis_id": "hyp-score-edec68c6c03b",
+      "observation_id": "obs-85c3651b5bb3",
+      "dimension_id": "communication_teamwork",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 4,
+        "display_annotation": null,
+        "display_score": "4",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "在团队中角色清晰，能有效合作达成目标",
+        "书面和口头表达清晰准确，能传达工程概念"
+      ],
+      "evidence_span_ids": [
+        "span-ext-4e5c985b73c2",
+        "span-ext-61081386a999",
+        "span-ext-41f8cbca1204",
+        "span-ext-a8a4b4d58ea9"
+      ],
+      "rationale": "团队协作方面，证据显示能吸收专家建议形成有效架构（span-ext-4e5c985b73c2）。沟通清晰度方面，多个证据表明能准确表达系统类型判断（span-ext-61081386a999）、深入解释可持续设计（span-ext-41f8cbca1204）和硬件策略（span-ext-a8a4b4d58ea9），符合4分描述。",
+      "confidence": 1.0
+    },
+    {
+      "hypothesis_id": "hyp-score-df6d8f8c3807",
+      "observation_id": "obs-85c3651b5bb3",
+      "dimension_id": "communication_teamwork",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 5,
+        "display_annotation": null,
+        "display_score": "5",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "积极推动团队协作，善于整合不同观点",
+        "表达逻辑严密，能针对不同受众调整表达方式"
+      ],
+      "evidence_span_ids": [
+        "span-ext-4e5c985b73c2",
+        "span-ext-41f8cbca1204",
+        "span-ext-3807bdc7faad",
+        "span-ext-e1c1d3150099"
+      ],
+      "rationale": "证据显示受评者巧妙融合专家建议形成架构（span-ext-4e5c985b73c2），体现整合观点能力。对系统类型、数据流及文件组织的解释非常清晰、深入且专业（span-ext-41f8cbca1204, span-ext-3807bdc7faad），逻辑严密，符合 5 分标准。",
+      "confidence": 0.95
+    },
+    {
+      "hypothesis_id": "hyp-score-bc176c63987f",
+      "observation_id": "obs-be10dfd25ff7",
+      "dimension_id": "professional_responsibility",
+      "rater_id": "rater_1",
+      "score": {
+        "canonical_score": 5,
+        "display_annotation": null,
+        "display_score": "5",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "对工程伦理原则的理解深入，能做出负责任决策",
+        "能识别AI伦理相关挑战（算法偏见、隐私保护等）",
+        "积极推动工程实践与可持续发展目标对齐"
+      ],
+      "evidence_span_ids": [
+        "span-ext-56867c3dacd1",
+        "span-ext-49d14b5c5050",
+        "span-ext-4a2ee76d2edd",
+        "span-ext-0a413c5cb874"
+      ],
+      "rationale": "证据显示学生深入理解并应用伦理框架分析AI伦理挑战（隐私、算法偏见、情感伤害），提出具体改进措施（情感安全筛、记忆校准）。同时，通过松耦合架构设计积极推动技术可持续性，体现了较强的职业责任感和主动的可持续思维。",
+      "confidence": 0.95
+    },
+    {
+      "hypothesis_id": "hyp-score-0a3e3f0bb1cd",
+      "observation_id": "obs-be10dfd25ff7",
+      "dimension_id": "professional_responsibility",
+      "rater_id": "rater_2",
+      "score": {
+        "canonical_score": 5,
+        "display_annotation": null,
+        "display_score": "5",
+        "scale_ref": "ordinal_6"
+      },
+      "descriptor_refs": [
+        "对工程伦理原则的理解深入，能做出负责任决策",
+        "能识别 AI 伦理相关挑战（算法偏见、隐私保护等）",
+        "积极推动工程实践与可持续发展目标对齐"
+      ],
+      "evidence_span_ids": [
+        "span-ext-56867c3dacd1",
+        "span-ext-49d14b5c5050",
+        "span-ext-0a413c5cb874",
+        "span-ext-a6d6da1bc43a"
+      ],
+      "rationale": "学生运用伦理四维框架系统评估风险，识别算法偏见、隐私及情感伤害等 AI 伦理挑战，并提出“情感安全筛”等具体决策。架构设计体现技术可持续性，合规报告展现对法律与社会责任的深入理解，符合 5 分标准。",
+      "confidence": 0.95
+    }
+  ]
+}

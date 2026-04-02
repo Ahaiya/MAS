@@ -1,0 +1,69 @@
+{
+  "run_id": "run-258e30398019",
+  "adjudication_records": [
+    {
+      "adjudication_id": "adj-991fb3995335",
+      "conflict_id": "conflict-d9fe5406074c",
+      "dimension_id": "communication_teamwork",
+      "resolution_path": "third_rater",
+      "policy_rule_id": "non_adjacent_dimension_scores",
+      "resolved_score": {
+        "canonical_score": 1,
+        "display_annotation": null,
+        "display_score": "1",
+        "scale_ref": "ordinal_6"
+      },
+      "resolver_hypothesis_id": "hyp-408649daa73d",
+      "resolution_note": "Deterministic resolution via use_resolution_rater_as_authoritative; winner: rater_1",
+      "is_resolved": true
+    },
+    {
+      "adjudication_id": "adj-647b42087510",
+      "conflict_id": "conflict-9baf18c0f2b4",
+      "dimension_id": "professional_responsibility",
+      "resolution_path": "third_rater",
+      "policy_rule_id": "non_adjacent_dimension_scores",
+      "resolved_score": {
+        "canonical_score": 6,
+        "display_annotation": null,
+        "display_score": "6",
+        "scale_ref": "ordinal_6"
+      },
+      "resolver_hypothesis_id": "hyp-0a55b24462d6",
+      "resolution_note": "Deterministic resolution via use_resolution_rater_as_authoritative; winner: rater_1",
+      "is_resolved": true
+    },
+    {
+      "adjudication_id": "adj-189b9cdebf2e",
+      "conflict_id": "conflict-6844bc556afa",
+      "dimension_id": "project_execution",
+      "resolution_path": "third_rater",
+      "policy_rule_id": "non_adjacent_dimension_scores",
+      "resolved_score": {
+        "canonical_score": 1,
+        "display_annotation": null,
+        "display_score": "1",
+        "scale_ref": "ordinal_6"
+      },
+      "resolver_hypothesis_id": "hyp-971a51bf6fbd",
+      "resolution_note": "Deterministic resolution via use_resolution_rater_as_authoritative; winner: rater_2",
+      "is_resolved": true
+    },
+    {
+      "adjudication_id": "adj-29f1964fbc8a",
+      "conflict_id": "conflict-59c8b409e575",
+      "dimension_id": "technical_proficiency",
+      "resolution_path": "third_rater",
+      "policy_rule_id": "non_adjacent_dimension_scores",
+      "resolved_score": {
+        "canonical_score": 1,
+        "display_annotation": null,
+        "display_score": "1",
+        "scale_ref": "ordinal_6"
+      },
+      "resolver_hypothesis_id": "hyp-8d907844719f",
+      "resolution_note": "Deterministic resolution via use_resolution_rater_as_authoritative; winner: rater_2",
+      "is_resolved": true
+    }
+  ]
+}

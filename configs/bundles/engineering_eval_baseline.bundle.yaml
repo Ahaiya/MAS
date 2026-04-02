@@ -1,17 +1,16 @@
 # Engineering Evaluation Baseline Artifact Bundle
-# Placeholder scaffold copied from the archived baseline structure.
 
-schema_version: "1.0"
+schema_version: "2.0"
 
 artifact_bundle:
   bundle_id: "engineering_eval_baseline"
   bundle_version: "v1"
   bundle_name: "Engineering Evaluation Baseline Bundle"
-  description: "解决复杂工程问题能力评价 bundle"
+  description: "解决复杂工程问题能力评价 bundle（六维度 A-F，1-6 分制）"
 
   # Artifact References
   rubric_core_ref: "rubric://engineering_eval_task_rubric/v1"
-  rubric_source_file: "rubrics/tasks/TODO_task_rubric.yaml"
+  rubric_source_file: "rubrics/tasks/engineering_eval_task_rubric.yaml"
 
   adjudication_policy_ref: "policy://engineering_eval_adjudication/v1"
   adjudication_source_file: "policies/adjudication/engineering_eval_adjudication.yaml"
@@ -31,18 +30,18 @@ artifact_bundle:
     - "prompts/dimension_relevance.yaml"
 
   scoring_context_ref: "context://engineering_eval_task_scoring/v1"
-  scoring_context_source_file: "prompts/tasks/TODO_task_scoring_context.yaml"
+  scoring_context_source_file: "prompts/scoring_context.yaml"
 
   chunking_policy_ref: "policy://engineering_eval_chunking/v1"
   chunking_source_file: "policies/chunking/engineering_eval_chunking.yaml"
 
   # Version Closure
   freeze_hash: "TBD"
-  freeze_timestamp: "TODO"
+  freeze_timestamp: "2026-04-01"
 
-  # Source Documentation References
+  # Source Documentation
   source_documents:
-    - "TODO"
+    - "configs/rubrics/source/rubric.md"
 
   # Bundle Validation
   validation_rules:
@@ -56,57 +55,80 @@ artifact_bundle:
       type: "cross_artifact_check"
       description: "Rubric scale must match adjudication and aggregation expectations"
 
+  # Provider Configuration — the bundle owns model routing; .env holds secrets
+  # plus global defaults for outer-loop and fallback scenarios.
   provider_config:
     default:
-      model: "TODO"
-      api_base: "TODO"
-      api_key_env: "TODO"
+      model: "deepseek-chat"
+      api_base: "https://api.deepseek.com/v1"
+      api_key_env: "LLM_API_KEY"
+      params:
+        temperature: 0.0
+        max_tokens: 1536
 
     rater_providers:
       rater_1:
-        model: "TODO"
-        api_base: "TODO"
-        api_key_env: "TODO"
+        model: "deepseek-chat"
+        api_base: "https://api.deepseek.com/v1"
+        api_key_env: "RATER_1_API_KEY"
+        params:
+          temperature: 0.0
+          max_tokens: 1536
       rater_2:
-        model: "TODO"
-        api_base: "TODO"
-        api_key_env: "TODO"
+        model: "qwen3.5-plus"
+        api_base: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+        api_key_env: "RATER_2_API_KEY"
         params:
           temperature: 0.0
           max_tokens: 2048
           extra_body:
             enable_thinking: true
-            thinking_budget: 512
+            thinking_budget: 768
       rater_3:
-        model: "TODO"
-        api_base: "TODO"
-        api_key_env: "TODO"
+        model: "deepseek-chat"
+        api_base: "https://api.deepseek.com/v1"
+        api_key_env: "RATER_3_API_KEY"
+        params:
+          temperature: 0.0
+          max_tokens: 1536
 
     stage_providers:
       chunking:
-        model: "TODO"
-        api_base: "TODO"
-        api_key_env: "TODO"
+        model: "deepseek-chat"
+        api_base: "https://api.deepseek.com/v1"
+        api_key_env: "CHUNKING_API_KEY"
+        params:
+          temperature: 0.0
+          max_tokens: 3072
       coverage_planning:
-        model: "TODO"
-        api_base: "TODO"
-        api_key_env: "TODO"
+        model: "deepseek-chat"
+        api_base: "https://api.deepseek.com/v1"
+        api_key_env: "COVERAGE_API_KEY"
+        params:
+          temperature: 0.0
+          max_tokens: 768
       evidence_extraction:
-        model: "TODO"
-        api_base: "TODO"
-        api_key_env: "TODO"
+        model: "deepseek-chat"
+        api_base: "https://api.deepseek.com/v1"
+        api_key_env: "EXTRACTOR_API_KEY"
+        params:
+          temperature: 0.0
+          max_tokens: 3072
       feedback:
-        model: "TODO"
-        api_base: "TODO"
-        api_key_env: "TODO"
+        model: "deepseek-chat"
+        api_base: "https://api.deepseek.com/v1"
+        api_key_env: "FEEDBACK_API_KEY"
+        params:
+          temperature: 0.1
+          max_tokens: 1536
 
   operational_params:
     max_retries: 2
 
   metadata:
-    created_by: "TODO"
-    target_evaluation: "TODO"
-    target_dataset: "TODO"
+    created_by: "engineering_eval_setup"
+    target_evaluation: "complex_engineering_problem_solving"
+    target_dataset: "engineering_project_dialogue_records"
     baseline_compatible: true
-    task_scoring_context_dir: "configs/prompts/tasks"
+    task_scoring_context_dir: "configs/prompts"
     rubric_source_dir: "configs/rubrics/source"

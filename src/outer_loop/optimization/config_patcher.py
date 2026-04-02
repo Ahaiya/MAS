@@ -19,9 +19,11 @@ DEFAULT_ALLOWED_FILE_PATTERNS: tuple[str, ...] = (
     "configs/prompts/evidence_extraction.yaml",
     "configs/prompts/evidence_extraction_overrides/*.yaml",
     "configs/prompts/explanation.yaml",
+    "configs/prompts/explanation_overrides/*.yaml",
     "configs/policies/adjudication/engineering_eval_adjudication.yaml",
     "configs/policies/chunking/engineering_eval_chunking.yaml",
     "configs/policies/aggregation/engineering_eval_aggregation.yaml",
+    "configs/policies/explanation/engineering_eval_explanation.yaml",
     "configs/bundles/engineering_eval_baseline.bundle.yaml",
 )
 
@@ -109,9 +111,8 @@ class ConfigPatcher:
         if not snapshot_configs.exists():
             return False
 
-        if self.configs_root.exists():
-            shutil.rmtree(self.configs_root)
-        shutil.copytree(snapshot_configs, self.configs_root)
+        self.configs_root.mkdir(parents=True, exist_ok=True)
+        shutil.copytree(snapshot_configs, self.configs_root, dirs_exist_ok=True)
         return True
 
     def _prune_old_snapshots(self, keep: int = 20) -> None:
@@ -249,8 +250,26 @@ class ConfigPatcher:
         if snapshot_root.exists():
             shutil.rmtree(snapshot_root)
         snapshot_root.mkdir(parents=True, exist_ok=True)
-        shutil.copytree(self.configs_root, snapshot_configs)
+        shutil.copytree(
+            self.configs_root,
+            snapshot_configs,
+            ignore=self._snapshot_ignore,
+        )
         return snapshot_configs
+
+    def _snapshot_ignore(self, directory: str, names: list[str]) -> set[str]:
+        current = Path(directory)
+        try:
+            relative = current.resolve().relative_to(self.configs_root.resolve())
+        except ValueError:
+            return set()
+
+        ignored: set[str] = set()
+        if relative == Path(".") and "archive" in names:
+            ignored.add("archive")
+        if relative == Path("rubrics") and "source" in names:
+            ignored.add("source")
+        return ignored
 
 
 __all__ = [

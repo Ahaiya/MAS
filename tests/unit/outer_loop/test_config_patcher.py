@@ -28,7 +28,7 @@ def _build_patcher(tmp_path: Path) -> tuple[ConfigPatcher, Path, Path]:
 
     _write_yaml(
         configs_root / "prompts" / "scoring_context.yaml",
-        {"calibration_notes": {"ideas_content": "old note"}},
+        {"calibration_notes": {"problem_analysis": "old note"}},
     )
     _write_yaml(
         configs_root / "bundles" / "engineering_eval_baseline.bundle.yaml",
@@ -48,6 +48,11 @@ def _build_patcher(tmp_path: Path) -> tuple[ConfigPatcher, Path, Path]:
     (configs_root / "rubrics" / "source").mkdir(parents=True, exist_ok=True)
     (configs_root / "rubrics" / "source" / "rubric.md").write_text(
         "readonly rubric",
+        encoding="utf-8",
+    )
+    (configs_root / "archive" / "legacy_eval").mkdir(parents=True, exist_ok=True)
+    (configs_root / "archive" / "legacy_eval" / "legacy.yaml").write_text(
+        "legacy: true\n",
         encoding="utf-8",
     )
 
@@ -103,10 +108,10 @@ def test_applies_valid_patch_and_creates_snapshot(tmp_path: Path) -> None:
     target_path = configs_root / "prompts" / "scoring_context.yaml"
 
     proposal = ChangeProposal(
-        change_unit="scoring.calibration_notes.ideas_content",
+        change_unit="scoring.calibration_notes.problem_analysis",
         change_type="field_patch",
         target_file="configs/prompts/scoring_context.yaml",
-        target_path="calibration_notes.ideas_content",
+        target_path="calibration_notes.problem_analysis",
         new_value="new note",
         rationale="improve alignment",
     )
@@ -115,12 +120,14 @@ def test_applies_valid_patch_and_creates_snapshot(tmp_path: Path) -> None:
     assert "snapshot" in message
 
     current = _read_yaml(target_path)
-    assert current["calibration_notes"]["ideas_content"] == "new note"
+    assert current["calibration_notes"]["problem_analysis"] == "new note"
 
     snapshot_file = snapshots_root / "iter_001" / "configs" / "prompts" / "scoring_context.yaml"
     assert snapshot_file.exists()
     snap = _read_yaml(snapshot_file)
-    assert snap["calibration_notes"]["ideas_content"] == "old note"
+    assert snap["calibration_notes"]["problem_analysis"] == "old note"
+    assert not (snapshots_root / "iter_001" / "configs" / "archive").exists()
+    assert not (snapshots_root / "iter_001" / "configs" / "rubrics" / "source").exists()
 
 
 def test_invalid_yaml_overwrite_triggers_rollback(tmp_path: Path) -> None:
@@ -150,18 +157,20 @@ def test_rollback_restores_snapshot_state(tmp_path: Path) -> None:
     target_path = configs_root / "prompts" / "scoring_context.yaml"
 
     proposal = ChangeProposal(
-        change_unit="scoring.calibration_notes.ideas_content",
+        change_unit="scoring.calibration_notes.problem_analysis",
         change_type="field_patch",
         target_file="configs/prompts/scoring_context.yaml",
-        target_path="calibration_notes.ideas_content",
+        target_path="calibration_notes.problem_analysis",
         new_value="first update",
         rationale="test rollback",
     )
     ok, _ = patcher.apply(proposal, iter_id="001")
     assert ok is True
-    assert _read_yaml(target_path)["calibration_notes"]["ideas_content"] == "first update"
+    assert _read_yaml(target_path)["calibration_notes"]["problem_analysis"] == "first update"
 
-    _write_yaml(target_path, {"calibration_notes": {"ideas_content": "manual drift"}})
+    _write_yaml(target_path, {"calibration_notes": {"problem_analysis": "manual drift"}})
     restored = patcher.rollback("001")
     assert restored is True
-    assert _read_yaml(target_path)["calibration_notes"]["ideas_content"] == "old note"
+    assert _read_yaml(target_path)["calibration_notes"]["problem_analysis"] == "old note"
+    assert (configs_root / "archive" / "legacy_eval" / "legacy.yaml").exists()
+    assert (configs_root / "rubrics" / "source" / "rubric.md").exists()

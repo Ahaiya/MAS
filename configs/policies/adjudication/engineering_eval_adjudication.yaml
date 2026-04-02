@@ -1,11 +1,10 @@
-
-schema_version: "1.0"
+schema_version: "2.0"
 
 adjudication_policy:
   policy_id: "engineering_eval_adjudication"
-  policy_version: "TODO"
+  policy_version: "v1"
   policy_name: "Engineering Evaluation Adjudication Policy"
-  description: "TODO"
+  description: "工程能力评价双评审裁决策略：非相邻分歧与系统性偏移触发第三方评审。"
 
   raters:
     required_independent_scores: 2
@@ -16,46 +15,29 @@ adjudication_policy:
     resolution_rater_label: "rater_3"
 
   triggers:
-    - trigger_id: "TODO"
+    # 触发规则 1：任意维度分差 > 1 时触发裁决
+    - trigger_id: "non_adjacent_dimension_scores"
       type: "score_distance"
-      applies_to_dimensions:
-        - "TODO"
-      description: "TODO"
+      applies_to_dimensions: ["*"]
+      description: "任意维度评审员1与评审员2分差大于1时触发裁决"
       threshold:
-        operator: "TODO"
+        operator: ">"
         value: 1
       action: "invoke_resolution"
       priority: 1
 
-    - trigger_id: "TODO"
-      type: "pattern_match"
-      applies_to_dimensions:
-        - "TODO"
-      description: "TODO"
-      pattern:
-        one_rater_all_scores:
-          - 4
-          - 4
-          - 4
-          - 4
-        other_rater_has_one_3_and_three_4s: true
-      exclusions:
-        - "TODO"
-      action: "invoke_resolution"
-      priority: 2
-
-    - trigger_id: "TODO"
+    # 触发规则 2：三个或以上维度在同一方向存在相邻分歧时触发裁决
+    - trigger_id: "systematic_adjacent_drift"
       type: "adjacent_drift"
-      applies_to_dimensions:
-        - "TODO"
-      description: "TODO"
+      applies_to_dimensions: ["*"]
+      description: "三个或以上维度在同一方向存在相邻分歧（差1分）时触发裁决"
       pattern:
         score_gap: 1
         min_matching_dimensions: 3
         require_same_direction: true
       exclusions: []
       action: "invoke_resolution"
-      priority: 3
+      priority: 2
 
   output_policy:
     preserve_all_candidates: true
@@ -64,10 +46,10 @@ adjudication_policy:
     preserve_conflict_metadata: true
 
   resolution_strategy:
-    default: "TODO"
-    fallback_if_no_resolution: "TODO"
+    default: "use_resolution_rater_as_authoritative"
+    fallback_if_no_resolution: "average_of_raters"
     re_score_scope: "all_dimensions"
 
   metadata:
-    source_document: "TODO"
-    version_timestamp: "TODO"
+    source_document: "configs/rubrics/source/rubric.md"
+    version_timestamp: "2026-04-01"
