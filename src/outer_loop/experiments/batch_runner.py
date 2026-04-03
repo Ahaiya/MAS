@@ -107,12 +107,7 @@ def _set_debug_writer(
 
 def _init_providers(
     resolved: ResolvedArtifactBundle,
-    *,
-    mock_only: bool = False,
 ) -> tuple[Any | None, dict[str, Any], dict[str, Any], list[LoggingProvider]]:
-    if mock_only:
-        return None, {}, {}, []
-
     default_provider = None
     rater_providers: dict[str, Any] = {}
     stage_providers: dict[str, Any] = {}
@@ -356,7 +351,6 @@ def batch_eval(
     output_base: Path,
     iter_id: str | None = None,
     *,
-    mock_provider: bool = False,
     debug_bundle: bool = False,
     delay_seconds: float = 0.0,
     verbose: bool = False,
@@ -391,14 +385,14 @@ def batch_eval(
         rater_providers is None
         or stage_providers is None
         or log_providers is None
-        or (default_provider is None and not mock_provider and resolved.provider_config is None)
+        or (default_provider is None and resolved.provider_config is None)
     ):
         (
             default_provider,
             rater_providers,
             stage_providers,
             log_providers,
-        ) = _init_providers(resolved, mock_only=mock_provider)
+        ) = _init_providers(resolved)
 
     run_fn = run_single_fn or run_single_eval
     results: list[RunResult] = []

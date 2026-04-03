@@ -261,7 +261,7 @@ class TestTraceStore:
         rt = store.build_run_trace(
             status=RunStatus.COMPLETED,
             terminal_validation_passed=True,
-            replay_metadata={"provider": "mock"},
+            replay_metadata={"provider": "openai_compatible"},
         )
         assert isinstance(rt, RunTrace)
         assert rt.run_id == "run-001"
@@ -273,7 +273,7 @@ class TestTraceStore:
         assert rt.finished_at is not None
         assert len(rt.node_traces) == 1
         assert rt.terminal_validation_passed is True
-        assert rt.replay_metadata["provider"] == "mock"
+        assert rt.replay_metadata["provider"] == "openai_compatible"
 
     def test_build_run_trace_failed(self, store):
         store.record_force_fail("fatal")

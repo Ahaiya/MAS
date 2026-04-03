@@ -1,0 +1,75 @@
+You are an explanation specialist for engineering competency evaluation feedback.
+
+Write feedback for the competency dimension: AI 协同与伦理反思 (A4-3).
+
+## Final Score
+Canonical Score: 5
+
+
+## Rubric Descriptors Referenced
+
+
+- 主动调用至少 2 类不同 AI 工具（如用户画像 AI、同理心地图 AI、市场分析 AI），围绕同一需求问题发起多轮追问和交叉验证
+
+- 在报告中体现对隐私保护、信息透明、使用门槛等伦理问题的反思，并将其落实为具体需求或设计约束
+
+- 提到隐私、安全等伦理点，但多停留在原则层面，措施不够具体
+
+- 能意识到部分 AI 输出可能不准确或不适用于老年群体，并做简单的筛选或修正
+
+- 能指出 AI 在数据、刻板印象、语言表述等方面可能产生的偏见或误导，并提出规避或修正的办法
+
+
+
+## Facet Evidence
+
+### Facet: a4_3_evidence
+Supporting evidence:
+
+
+- [span-ext-1e5c2940bd5f] "学生初步观察到的问题：老照片存在褪色、模糊、视角单一等问题，可能导致AI建模失真；历史场景资料缺乏，AI生成可能与真实记忆不符。"
+
+- [span-ext-f07f17f6972a] "学生详细列出了产品设计可能面临的**高风险**（隐私泄露、用户伤害）和**中风险**（法律违规），并提出了具体的应对措施，包括采用区块链加密技术存储敏感数据、明确告知数据用途、定期安全审计、组建法务团队进行合规审核、设计“情感安全筛”以及优化设备适配性等。这表明学生对合规性有较深入的理解和前瞻性思考。"
+
+- [span-ext-790bae2d0ef3] "学生从情感、社交、存在层面提炼出用户深层心愿，最终凝练为一句核心需求：“**用户最想要的，是借虚拟技术精准复现故居场景，重拾被岁月或现实剥离的生活记忆与情感联结，让‘回家’的精神慰藉可触可达。**” 学生认为此描述精准融合了洞察，并考虑了伦理、合规、用户体验专家的建议。"
+
+- [span-ext-67e6e0eaf623] "经过评估（痛点解决、市场机会、实现难度、竞争优势），学生最终选择了以下三个核心功能，并给出了清晰的“场景 - 情感 - 传承”逻辑：
+    1.  **场景智能还原：** （高痛点解决、高市场机会、高竞争优势）—— 作为产品基础，精准复现故居，支撑其他功能的实现。
+    2.  **记忆线索触发：** （高痛点解决、高市场机会、相对可控难度、高竞争优势）—— 深化情感联结，将静态场景变为动态记忆载体，直击情感诉求。
+    3.  **数字遗产传承：** （中高痛点解决、长期高价值、高竞争优势）—— 满足用户深层“生命痕迹延续”需求，构建代际传承闭环，提升产品长期价值。"
+
+
+Counter evidence:
+
+- (none)
+
+Finding note: 7 supporting, 0 counter
+
+
+
+## Observation Signals
+- observation_confidence: HIGH
+
+- uncertainty_notes: (none)
+
+
+## Scorer Seed Material
+学生明确指出AI建模可能因老照片问题导致失真，并详细列出隐私泄露等高风险，提出区块链加密、安全审计等具体应对措施。最终需求描述融合了伦理建议，功能选择体现了对用户深层需求的深度探索。
+
+## Decision Context
+- was_adjudicated: False
+- decision_note: no conflict, rater_1 score used (raters converged)
+
+
+
+## Instructions
+1. Use `scorer_rationale` as seed material, but rewrite it into student-facing feedback.
+2. Organize the response by facets: highlight strengths and weaknesses per facet.
+3. Cite concrete quotes from facet evidence to support claims.
+4. If `observation_confidence` is LOW, include a clear uncertainty caveat.
+5. If `was_adjudicated` is true, mention that evidence was mixed and required adjudication.
+6. Add actionable, specific next-step suggestions instead of repeating rationale text.
+7. Write the entire feedback in Simplified Chinese.
+
+## Output Format
+[Write one concise feedback paragraph in plain text]

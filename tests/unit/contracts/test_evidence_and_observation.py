@@ -106,6 +106,7 @@ class TestEvidenceSpan:
         assert span_a.end_offset == 44
         assert span_a.scope == EvidenceScope.SPAN
         assert span_a.support_type == "supporting"
+        assert span_a.source_type == "unknown"
         assert "facet_x" in span_a.facet_ids
         # dimension_id is opaque — no hardcoded trait name
         assert isinstance(span_a.dimension_id, str)
@@ -207,6 +208,23 @@ class TestEvidenceSpan:
                 extraction_note=None,
                 support_type="invalid",
             )
+
+    def test_source_fields_roundtrip(self):
+        span = EvidenceSpan(
+            span_id="span-human",
+            document_id="doc-001",
+            unit_id="unit-001",
+            text_quote="human text",
+            start_offset=0,
+            end_offset=10,
+            scope=EvidenceScope.SPAN,
+            dimension_id="dim_alpha",
+            facet_ids=["facet_x"],
+            extraction_note=None,
+            source_type="human",
+            source_label="human_input",
+        )
+        assert EvidenceSpan.from_dict(span.to_dict()) == span
 
     def test_from_dict_missing_support_type_defaults_supporting(self):
         span = EvidenceSpan.from_dict(

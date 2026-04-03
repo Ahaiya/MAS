@@ -112,6 +112,68 @@ def _document() -> NormalizedDocument:
     )
 
 
+def _dialogue_document() -> NormalizedDocument:
+    human_text = "学生自己写的分析。"
+    ai_text = "AI 帮学生总结的分析。"
+    normalized = f"{human_text} {ai_text}"
+    human_end = len(human_text)
+    ai_start = human_end + 1
+    ai_end = ai_start + len(ai_text)
+    units = [
+        TextUnit(
+            unit_id="u1",
+            document_id="doc1",
+            text=human_text,
+            start_offset=0,
+            end_offset=human_end,
+            unit_type="chunk",
+            sequence_index=0,
+            chunk_title="Human",
+            chunk_method="rule",
+            source_type="human",
+            source_label="human_input",
+        ),
+        TextUnit(
+            unit_id="u2",
+            document_id="doc1",
+            text=ai_text,
+            start_offset=ai_start,
+            end_offset=ai_end,
+            unit_type="chunk",
+            sequence_index=1,
+            chunk_title="AI",
+            chunk_method="rule",
+            source_type="ai",
+            source_label="training_chat_response",
+        ),
+    ]
+    return NormalizedDocument(
+        document_id="doc1",
+        request_id="req1",
+        normalized_text=normalized,
+        text_units=units,
+        char_count=len(normalized),
+        word_count=len(normalized.split()),
+        document_metadata={
+            "source_spans": [
+                {
+                    "source_type": "human",
+                    "source_label": "human_input",
+                    "start_offset": 0,
+                    "end_offset": human_end,
+                },
+                {
+                    "source_type": "ai",
+                    "source_label": "training_chat_response",
+                    "start_offset": ai_start,
+                    "end_offset": ai_end,
+                },
+            ]
+        },
+        document_type="dialogue",
+    )
+
+
 def _plan(*, strategy: str, target_ids: list[str]) -> CoveragePlan:
     return CoveragePlan(
         plan_id="plan1",
@@ -131,7 +193,7 @@ def _extraction_template() -> PromptTemplate:
         "Min {{ minimum_evidence_units }}\n"
         "Facets:{% for f in facet_descriptions %}[{{ f.facet_id }}]{% endfor %}\n"
         "Levels:{% for l in levels %}[{{ l.rank }} {{ l.summary }}]{% endfor %}\n"
-        "Chunks:{% for c in chunks %}[{{ c.id }}]{{ c.title }}::{{ c.text }}{% endfor %}\n"
+        "Chunks:{% for c in chunks %}[{{ c.id }}]{{ c.title }}|{{ c.source_type }}|{{ c.source_label }}::{{ c.text }}{% endfor %}\n"
     )
 
 
@@ -253,6 +315,27 @@ def test_chunk_id_assists_matching(monkeypatch: pytest.MonkeyPatch):
     assert span.end_offset is not None
 
 
+def test_ai_authored_evidence_is_filtered_out():
+    provider = _CaptureProvider(
+        {
+            "evidence_spans": [
+                {"quote": "AI 帮学生总结的分析。", "chunk_id": "u2", "facets": ["facet_a"], "support_type": "supporting"}
+            ]
+        }
+    )
+    spans = extractor.run(
+        _plan(strategy="targeted", target_ids=["u2"]),
+        _dialogue_document(),
+        _rubric(),
+        provider,
+        _extraction_template(),
+    )
+
+    extracted = [span for span in spans if span.extraction_note != "provider_fallback:no_evidence"]
+    assert extracted == []
+    assert any(span.facet_ids == ["facet_a"] for span in spans)
+
+
 def test_facet_fallback_still_works():
     provider = _CaptureProvider(
         {
@@ -286,3 +369,17 @@ def test_override_template_used_when_present():
     assert provider.last_request is not None
     assert "OVERRIDE-TPL" in provider.last_request.prompt
     assert "DEFAULT-TPL" not in provider.last_request.prompt
+
+
+def test_prompt_includes_chunk_source_metadata():
+    provider = _CaptureProvider({"evidence_spans": []})
+    extractor.run(
+        _plan(strategy="targeted", target_ids=["u2"]),
+        _dialogue_document(),
+        _rubric(),
+        provider,
+        _extraction_template(),
+    )
+    assert provider.last_request is not None
+    assert "|ai|" in provider.last_request.prompt
+    assert "training_chat_response" in provider.last_request.prompt

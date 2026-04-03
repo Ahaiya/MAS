@@ -1,0 +1,41 @@
+{
+  "call_id": "call-0008",
+  "status": "succeeded",
+  "label": "rater_1",
+  "provider_name": "openai_compatible",
+  "model_id": "deepseek-chat",
+  "started_at": "2026-04-02T11:35:41.165666+00:00",
+  "finished_at": "2026-04-02T11:35:48.413388+00:00",
+  "elapsed_ms": 7245.75,
+  "request": {
+    "system_path": null,
+    "prompt_path": "llm_calls/blobs/call-0008.prompt.txt",
+    "output_schema_path": "llm_calls/blobs/call-0008.schema.json",
+    "params": {},
+    "prompt_chars": 4287,
+    "has_output_schema": true
+  },
+  "response": {
+    "content_path": "llm_calls/blobs/call-0008.response.txt",
+    "structured_path": "llm_calls/blobs/call-0008.structured.json",
+    "usage": {
+      "prompt_tokens": 1493,
+      "completion_tokens": 193,
+      "total_tokens": 1686
+    },
+    "preview": "{     \"proposed_score\": 3,     \"descriptor_refs\": [\"主要识别出 1-2 类典型用户，描述集中在表层特征（年龄、是否会用手机等）；有使用 AI 工具，但更多是被动接受结果，对不同群体的差异和情境缺乏深入分析。\"],     \"evidence_ids\": [\"span…"
+  },
+  "debug_context": {
+    "node_id": "node_scorer",
+    "stage_name": "scoring",
+    "dimension_id": "a4_1",
+    "observation_id": "obs-6a2c454dc927",
+    "rater_id": "rater_1",
+    "template_source": "/Users/ahai/Code/MAS/configs/prompts/scoring.yaml",
+    "template_version": "v1",
+    "used_override_template": false,
+    "evidence_span_count": 64
+  },
+  "call_path": "llm_calls/call-0008.json",
+  "error": null
+}

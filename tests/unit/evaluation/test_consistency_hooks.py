@@ -13,7 +13,6 @@ from src.evaluation.consistency import (
 )
 
 _PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent.parent
-_GOLDEN_DIR = _PROJECT_ROOT / "tests" / "golden"
 
 
 class TestDimensionConsistency:
@@ -121,24 +120,36 @@ class TestExtractHypothesesFromTrace:
         result = extract_hypotheses_from_trace(trace)
         assert isinstance(result, dict)
 
-    def test_golden_snapshot_trace_parseable(self):
-        snap_path = _GOLDEN_DIR / "sample_20716.mock.json"
-        if not snap_path.exists():
-            pytest.skip("Golden snapshot not present")
-
-        snap = json.loads(snap_path.read_text())
+    def test_snapshot_trace_parseable(self, tmp_path):
+        snap_path = tmp_path / "sample_20716.snapshot.json"
+        snap_path.write_text(
+            json.dumps(
+                {
+                    "run_trace": {
+                        "node_traces": [
+                            {
+                                "node_id": "node_scorer",
+                                "status": "success",
+                                "output_ref": "hyps:6",
+                            }
+                        ]
+                    }
+                },
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+        snap = json.loads(snap_path.read_text(encoding="utf-8"))
         trace = snap.get("run_trace", {})
         result = extract_hypotheses_from_trace(trace)
         assert isinstance(result, dict)
 
 
 class TestConsistencyWithGoldenData:
-    def test_deterministic_scorer_hypotheses_consistency(self):
-        """Simulate what mock scorer produces: 2 hypotheses per dimension."""
-        # Mock scorer produces exactly 2 score hypotheses per dimension
-        # by design (from deterministic_scorer.py). Both are set to score=2 for most dims.
+    def test_two_rater_hypotheses_consistency(self):
+        """Simulate a two-rater setting: one score list per dimension."""
         # Simulate 6 dimensions, 2 hypotheses each, adjacent scores
         hyps = {f"dim_{i}": [i + 1, i + 1] for i in range(6)}
-        report = compute_consistency("run-mock-sim", hyps)
+        report = compute_consistency("run-sim", hyps)
         assert report.total_conflict_count == 0
         assert report.overall_agreement_ratio == pytest.approx(1.0)

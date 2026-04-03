@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """Compute coverage diagnostics from evaluation artifacts.
 
+Recommended unified entry:
+  python -m scripts metrics coverage --eval-dir ...
+
 Outputs three metrics per essay:
 1) coverage_recall_rate
 2) coverage_precision_rate

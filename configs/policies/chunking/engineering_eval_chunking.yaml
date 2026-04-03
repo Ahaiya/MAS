@@ -9,9 +9,9 @@ chunking_policy:
     default_top_k: 5
     fallback_to_full_scan_on_error: true
     per_dimension_top_k:
-      user_needs_analysis: 6
-      solution_generation: 6
-      engineering_ethics: 5
+      a4_1: 6
+      a4_2: 6
+      a4_3: 6
   metadata:
     owner: "engineering_eval"
-    note: "工程项目对话记录的分块策略，按对话轮次和主题边界分割"
+    note: "A4 任务的工程项目对话记录分块策略，按对话轮次和主题边界分割，并服务于 A4-1/A4-2/A4-3 三个观测点的覆盖规划"

@@ -1,0 +1,40 @@
+{
+  "call_id": "call-0005",
+  "status": "succeeded",
+  "label": "evidence_extraction",
+  "provider_name": "openai_compatible",
+  "model_id": "deepseek-chat",
+  "started_at": "2026-04-02T11:24:41.202365+00:00",
+  "finished_at": "2026-04-02T11:25:58.938478+00:00",
+  "elapsed_ms": 77732.35,
+  "request": {
+    "system_path": null,
+    "prompt_path": "llm_calls/blobs/call-0005.prompt.txt",
+    "output_schema_path": "llm_calls/blobs/call-0005.schema.json",
+    "params": {},
+    "prompt_chars": 97131,
+    "has_output_schema": true
+  },
+  "response": {
+    "content_path": "llm_calls/blobs/call-0005.response.txt",
+    "structured_path": "llm_calls/blobs/call-0005.structured.json",
+    "usage": {
+      "prompt_tokens": 48542,
+      "completion_tokens": 2524,
+      "total_tokens": 51066
+    },
+    "preview": "{     \"evidence_spans\": [         {             \"quote\": \"请你分析一下70+老年人的特征和需求\",             \"chunk_id\": \"unit-7f644e8b02c6\",             \"facets\": [\"a4_1_eviden…"
+  },
+  "debug_context": {
+    "node_id": "node_extractor",
+    "stage_name": "evidence_extraction",
+    "dimension_id": "a4_1",
+    "plan_id": "plan-1f33487ae48e",
+    "document_id": "doc-917f9fcd6d2a",
+    "template_source": "/Users/ahai/Code/MAS/configs/prompts/evidence_extraction.yaml",
+    "template_version": "v1",
+    "used_override_template": false
+  },
+  "call_path": "llm_calls/call-0005.json",
+  "error": null
+}

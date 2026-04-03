@@ -1,0 +1,24 @@
+schema_version: "2.0"
+
+scoring_context:
+  context_id: "task_a4_scoring_context"
+  role_description: ""
+  dataset_notes: ""
+  score_anchors: []
+  calibration_notes: ""
+  metadata:
+    task_id: "a4"
+    status: "cold_start"
+    source_dimension_code: "A"
+    source_dimension_name: "问题认知与分析能力"
+    source_indicator_id: "A4"
+    source_indicator_name: "用户需求与痛点分析"
+    source_document: "docs/A4.docx"
+    observation_point_ids:
+      - "a4_1"
+      - "a4_2"
+      - "a4_3"
+    observation_point_codes:
+      - "A4-1"
+      - "A4-2"
+      - "A4-3"

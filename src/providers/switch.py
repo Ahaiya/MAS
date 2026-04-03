@@ -5,9 +5,7 @@ Provider switch — factory functions for selecting providers by name.
 
 `create_provider(name)` instantiates a provider from the default registry.
 `create_provider_from_env()` reads the LLM_PROVIDER environment variable
-(defaulting to "mock") and delegates to `create_provider`.
-
-The default registry is pre-populated with "mock" in src/providers/__init__.py.
+(defaulting to "openai_compatible") and resolves a real provider.
 """
 
 from __future__ import annotations
@@ -33,7 +31,7 @@ def create_provider(name: str, **kwargs: object) -> BaseProvider:
     Instantiate the provider registered under name in the default registry.
 
     Args:
-        name  : Registered provider name (e.g. "mock", "openai_compatible").
+        name  : Registered provider name (e.g. "openai_compatible").
         kwargs: Forwarded to the provider class constructor.
 
     Returns:
@@ -49,7 +47,7 @@ def create_provider_from_env(**kwargs: object) -> BaseProvider:
     """
     Instantiate a provider using the LLM_PROVIDER environment variable.
 
-    Defaults to "mock" when LLM_PROVIDER is not set.
+    Defaults to "openai_compatible" when LLM_PROVIDER is not set.
 
     Args:
         kwargs: Forwarded to the provider class constructor.
@@ -64,11 +62,7 @@ def create_provider_from_env(**kwargs: object) -> BaseProvider:
     Raises:
         KeyError: If LLM_PROVIDER names an unsupported provider.
     """
-    name = os.environ.get("LLM_PROVIDER", "mock")
-    registry = get_registry()
-
-    if name in registry.list_names():
-        return registry.get(name, **kwargs)
+    name = os.environ.get("LLM_PROVIDER", "openai_compatible").strip() or "openai_compatible"
 
     if name in _OPENAI_COMPATIBLE_ENV_ALIASES:
         entry = ProviderEntryConfig(
@@ -77,6 +71,10 @@ def create_provider_from_env(**kwargs: object) -> BaseProvider:
             api_base=os.environ.get("LLM_API_BASE", ""),
         )
         return build_provider(entry)
+
+    registry = get_registry()
+    if name in registry.list_names():
+        return registry.get(name, **kwargs)
 
     raise KeyError(
         f"No provider registered under '{name}'. "

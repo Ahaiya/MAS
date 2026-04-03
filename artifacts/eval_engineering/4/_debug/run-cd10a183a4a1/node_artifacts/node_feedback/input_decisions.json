@@ -1,0 +1,88 @@
+[
+  {
+    "decision_id": "dec-58e89703c608",
+    "dimension_id": "a4_1",
+    "final_score": {
+      "canonical_score": 3,
+      "display_annotation": null,
+      "display_score": "3",
+      "scale_ref": "ordinal_5"
+    },
+    "primary_hypothesis_id": "hyp-score-35649759f8d5",
+    "adjudication_id": null,
+    "evidence_span_ids": [
+      "span-ext-3eab54f02ce3",
+      "span-ext-786dc4609bf0",
+      "span-ext-7d2d50704204",
+      "span-ext-c0bac9e2c328",
+      "span-ext-f74fbf953bb0"
+    ],
+    "descriptor_refs": [
+      "主要识别出 1-2 类典型用户，描述集中在表层特征（年龄、是否会用手机等）；有使用 AI 工具，但更多是被动接受结果，对不同群体的差异和情境缺乏深入分析。",
+      "对不同群体的差异、约束和潜在冲突分析仍较薄弱",
+      "开始尝试区分少量用户或相关方，但仍主要停留在表层特征描述"
+    ],
+    "decision_confidence": 0.9,
+    "decision_note": "no conflict, rater_1 score used (raters converged)"
+  },
+  {
+    "decision_id": "dec-2f9dc25e0410",
+    "dimension_id": "a4_2",
+    "final_score": {
+      "canonical_score": 2,
+      "display_annotation": null,
+      "display_score": "2",
+      "scale_ref": "ordinal_5"
+    },
+    "primary_hypothesis_id": "hyp-score-7f6ecf8ccdb9",
+    "adjudication_id": "adj-ea0f95c61996",
+    "evidence_span_ids": [
+      "span-ext-41fb6038d0ad",
+      "span-ext-5ba4e68721ca",
+      "span-ext-5bf06ca2218d",
+      "span-ext-92ac099a2d71",
+      "span-ext-b85e1d452e37",
+      "span-ext-dcd8bb2244d1"
+    ],
+    "descriptor_refs": [
+      "对 AI 结果有初步参考，但尚未形成明确的核心痛点、排序依据或可验证需求",
+      "痛点识别较为清晰，能结合 AI 输出举出多个具体例子",
+      "能初步说明痛点与功能的对应关系，有部分可落地的功能设想",
+      "能够提及一些用户问题，但多停留在表层抱怨或零散现象罗列"
+    ],
+    "decision_confidence": 0.9,
+    "decision_note": "conflict resolved via use_resolution_rater_as_authoritative, rater_3 score used"
+  },
+  {
+    "decision_id": "dec-b3fbab151d61",
+    "dimension_id": "a4_3",
+    "final_score": {
+      "canonical_score": 4,
+      "display_annotation": null,
+      "display_score": "4",
+      "scale_ref": "ordinal_5"
+    },
+    "primary_hypothesis_id": "hyp-score-8f0e87db0834",
+    "adjudication_id": "adj-e2b3d3916df6",
+    "evidence_span_ids": [
+      "span-ext-0e0769ad1e37",
+      "span-ext-1513a55c7afa",
+      "span-ext-196e859e1a41",
+      "span-ext-244163d66118",
+      "span-ext-2bc0e210defe",
+      "span-ext-2f7a5b77dbcc",
+      "span-ext-5a5cb48994c1",
+      "span-ext-a3e21dff5e55",
+      "span-ext-e503737d3a03"
+    ],
+    "descriptor_refs": [
+      "会调用 AI 辅助思考，但大多停留在单轮提问或直接采纳结果",
+      "提到隐私、安全等伦理点，但多停留在原则层面，措施不够具体",
+      "能意识到部分 AI 输出可能不准确或不适用于老年群体，并做简单的筛选或修正",
+      "能提到少量伦理风险词汇，但尚未结合具体使用情境形成明确约束或修正办法",
+      "能较好地利用 1-2 种 AI 工具，进行一定深度的需求探索"
+    ],
+    "decision_confidence": 0.9,
+    "decision_note": "conflict resolved via use_resolution_rater_as_authoritative, rater_3 score used"
+  }
+]

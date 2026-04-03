@@ -19,7 +19,6 @@ import hashlib
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Tuple
 
-from src.agents import deterministic_adjudicator, deterministic_consistency_checker
 from src.contracts.artifact_bundle import PolicySnapshot
 from src.contracts.score_representation import (
     ScoreRepresentation,
@@ -106,19 +105,14 @@ class ReconciliationResult:
 def run(
     hypotheses: List[ScoreHypothesis],
     policy: PolicySnapshot,
-    use_deterministic_checker: bool = False,
 ) -> ReconciliationResult:
     """Detect conflicts and compute resolution scoring scope.
 
     Args:
         hypotheses: All current ScoreHypothesis records.
         policy: PolicySnapshot with adjudication triggers/strategy.
-        use_deterministic_checker: Use mock checker in deterministic mode.
     """
-    if use_deterministic_checker:
-        conflicts = deterministic_consistency_checker.run(hypotheses, policy)
-    else:
-        conflicts = evaluate_all_triggers(hypotheses, policy)
+    conflicts = evaluate_all_triggers(hypotheses, policy)
 
     strategy = _resolution_strategy(policy)
     default_strategy = _normalize_strategy_name(
@@ -149,12 +143,8 @@ def resolve(
     conflicts: List[ConflictRecord],
     hypotheses: List[ScoreHypothesis],
     policy: PolicySnapshot,
-    use_deterministic_resolver: bool = False,
 ) -> Tuple[List[AdjudicationRecord], List[FinalDimensionDecision]]:
     """Resolve conflicts and build final per-dimension decisions."""
-    if use_deterministic_resolver:
-        return deterministic_adjudicator.run(conflicts, hypotheses, policy)
-
     resolution_rater = _resolution_rater_label(policy)
     strategy_cfg = _resolution_strategy(policy)
     default_strategy = _normalize_strategy_name(

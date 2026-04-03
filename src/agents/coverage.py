@@ -5,10 +5,9 @@ Coverage Planner.
 
 Produces one CoveragePlan per rubric dimension.
 
-Modes:
-- Deterministic full-scan (mock / no provider): all text units are targeted.
+Execution mode:
 - LLM relevance pre-filter: per-dimension prompt selects top-k chunk IDs.
-  Any per-dimension failure falls back to full-scan for that dimension only.
+  Any per-dimension failure raises an error for explicit handling upstream.
 """
 
 from __future__ import annotations
@@ -81,25 +80,6 @@ def _resolve_top_k(chunking_policy: Optional[dict], dimension_id: str) -> int:
     return default_top_k
 
 
-def _build_full_scan_plan(
-    document: NormalizedDocument,
-    dimension_id: str,
-    required_facets: List[str],
-    minimum_evidence_units: int,
-) -> CoveragePlan:
-    return CoveragePlan(
-        plan_id=f"plan-{_hid(f'{document.document_id}:{dimension_id}')}",
-        document_id=document.document_id,
-        dimension_id=dimension_id,
-        target_unit_ids=_all_unit_ids(document),
-        required_facets=list(required_facets),
-        minimum_evidence_units=minimum_evidence_units,
-        allowed_evidence_scopes=["span", "global"],
-        coverage_strategy="full_scan",
-        relevance_scores={},
-    )
-
-
 def _build_chunk_summaries(document: NormalizedDocument) -> List[Dict[str, str]]:
     summaries: List[Dict[str, str]] = []
     for unit in document.text_units:
@@ -108,6 +88,8 @@ def _build_chunk_summaries(document: NormalizedDocument) -> List[Dict[str, str]]
                 "id": unit.unit_id,
                 "title": unit.chunk_title or f"Chunk {unit.sequence_index + 1}",
                 "first_sentence": _first_sentence(unit.text),
+                "source_type": unit.source_type,
+                "source_label": unit.source_label or "",
             }
         )
     return summaries
@@ -203,8 +185,8 @@ def _llm_plan_for_dimension(
 def run(
     document: NormalizedDocument,
     rubric: RubricSnapshot,
-    provider: Optional[BaseProvider] = None,
-    template: Optional[PromptTemplate] = None,
+    provider: BaseProvider,
+    template: PromptTemplate,
     chunking_policy: Optional[dict] = None,
 ) -> List[CoveragePlan]:
     """Generate one CoveragePlan per dimension in the rubric.
@@ -215,25 +197,14 @@ def run(
     Args:
         document: The segmented NormalizedDocument to plan coverage for.
         rubric: RubricSnapshot supplying dimension definitions and required facets.
-        provider: Optional provider for LLM relevance pre-filtering.
-        template: Optional dimension relevance prompt template.
+        provider: Provider for LLM relevance pre-filtering.
+        template: Dimension relevance prompt template.
         chunking_policy: Optional chunking policy dict containing per-dimension top_k.
 
     Returns:
         List of CoveragePlan objects, one per rubric dimension.
     """
     traversals = build_dimension_traversal(rubric)
-    if provider is None or template is None:
-        return [
-            _build_full_scan_plan(
-                document=document,
-                dimension_id=trav.dimension_id,
-                required_facets=list(trav.required_facets),
-                minimum_evidence_units=trav.evidence_requirements.get("minimum_evidence_units", 1),
-            )
-            for trav in traversals
-        ]
-
     chunk_summaries = _build_chunk_summaries(document)
     plan_by_dim: Dict[str, CoveragePlan] = {}
     max_workers = max(1, min(6, len(traversals)))
@@ -256,13 +227,10 @@ def run(
             trav = futures[fut]
             try:
                 plan = fut.result()
-            except Exception:
-                plan = _build_full_scan_plan(
-                    document=document,
-                    dimension_id=trav.dimension_id,
-                    required_facets=list(trav.required_facets),
-                    minimum_evidence_units=trav.evidence_requirements.get("minimum_evidence_units", 1),
-                )
+            except Exception as exc:
+                raise RuntimeError(
+                    f"Coverage planning failed for dimension '{trav.dimension_id}': {exc}"
+                ) from exc
             plan_by_dim[trav.dimension_id] = plan
 
     # Preserve rubric-defined dimension order.

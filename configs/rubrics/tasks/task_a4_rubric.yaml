@@ -1,0 +1,177 @@
+schema_version: "2.0"
+
+rubric_core:
+  rubric_id: "task_a4_rubric"
+  rubric_version: "v1"
+  rubric_name: "A4 用户需求与痛点分析任务 Rubric"
+  description: "基于 docs/A4.docx 冻结的 A4 任务级 rubric。评分基本单元为 A4 下的 3 个观测点。"
+
+  scales:
+    - scale_id: "ordinal_5"
+      type: "ordinal"
+      min: 1
+      max: 5
+      canonical_score_type: "integer"
+      display_overlays_allowed: true
+
+  dimensions:
+    - dimension_id: "a4_1"
+      code: "A4-1"
+      name: "用户群体识别的全面性"
+      scale_ref: "ordinal_5"
+      description: "识别最终用户与关键利益相关者，区分不同群体在身体状况、数字素养、经济条件、情感需求等方面的情境差异与约束，并识别群体间的需求冲突与权衡点。"
+      observation_schema:
+        required_facets:
+          - "a4_1_evidence"
+        facet_descriptions:
+          a4_1_evidence: "与用户细分、利益相关者识别、情境差异、约束条件及需求冲突相关的任务证据。"
+      evidence_requirements:
+        minimum_evidence_units: 1
+        allowed_evidence_scope:
+          - "span"
+          - "global"
+        require_textual_grounding: true
+      levels:
+        - rank: 1
+          summary: "待改进"
+          descriptors:
+            - "基本只提到“老年人”这一笼统群体，缺乏细分或遗漏关键利益相关方；很少或没有结合 AI 工具，仅停留在经验性、口号式描述。"
+        - rank: 2
+          summary: "接近合格"
+          descriptors:
+            - "开始尝试区分少量用户或相关方，但仍主要停留在表层特征描述；会参考 AI 输出，但对不同群体的差异、约束和潜在冲突分析仍较薄弱。"
+        - rank: 3
+          summary: "合格"
+          descriptors:
+            - "主要识别出 1-2 类典型用户，描述集中在表层特征（年龄、是否会用手机等）；有使用 AI 工具，但更多是被动接受结果，对不同群体的差异和情境缺乏深入分析。"
+        - rank: 4
+          summary: "良好"
+          descriptors:
+            - "能识别 2-3 类主要老年用户或利益相关方，并在 AI 辅助下对其基本特征和使用情境做出区分；能说明部分群体间的差异，但对需求冲突、使用障碍等的分析不够系统。"
+        - rank: 5
+          summary: "优秀"
+          descriptors:
+            - "在 AI（用户画像 AI、同理心地图 AI、市场分析 AI 等）支持下，能识别至少 3 类差异显著的老年用户和关键相关方（如独居、失能、活跃学习、照护者、平台运营方等）；能结合 AI 输出与自己的调研结果，区分不同群体在身体状况、数字素养、经济条件、情感需求等方面的情境差异与约束条件；能指出不同群体之间需求冲突或权衡点，体现对复杂情境的整体把握。"
+      metadata:
+        task_id: "a4"
+        source_dimension_code: "A"
+        source_dimension_name: "问题认知与分析能力"
+        source_indicator_id: "A4"
+        source_indicator_name: "用户需求与痛点分析"
+        source_observation_point_code: "A4-1"
+        source_observation_point_name: "用户群体识别的全面性"
+        source_document: "docs/A4.docx"
+        anchor_ladder:
+          excellent: "在 AI（用户画像 AI、同理心地图 AI、市场分析 AI 等）支持下，能识别至少 3 类差异显著的老年用户和关键相关方（如独居、失能、活跃学习、照护者、平台运营方等）；能结合 AI 输出与自己的调研结果，区分不同群体在身体状况、数字素养、经济条件、情感需求等方面的情境差异与约束条件；能指出不同群体之间需求冲突或权衡点，体现对复杂情境的整体把握。"
+          good: "能识别 2-3 类主要老年用户或利益相关方，并在 AI 辅助下对其基本特征和使用情境做出区分；能说明部分群体间的差异，但对需求冲突、使用障碍等的分析不够系统。"
+          pass: "主要识别出 1-2 类典型用户，描述集中在表层特征（年龄、是否会用手机等）；有使用 AI 工具，但更多是被动接受结果，对不同群体的差异和情境缺乏深入分析。"
+          needs_improvement: "基本只提到“老年人”这一笼统群体，缺乏细分或遗漏关键利益相关方；很少或没有结合 AI 工具，仅停留在经验性、口号式描述。"
+
+    - dimension_id: "a4_2"
+      code: "A4-2"
+      name: "痛点定位与需求精准度"
+      scale_ref: "ordinal_5"
+      description: "将用户痛点与具体行为路径、情绪体验和环境约束建立清晰关联，对痛点进行优先级排序，并将其转化为可操作、可验证的功能假设或设计方向。"
+      observation_schema:
+        required_facets:
+          - "a4_2_evidence"
+        facet_descriptions:
+          a4_2_evidence: "与痛点识别、优先级排序、需求定义、功能假设和系统性问题分析相关的任务证据。"
+      evidence_requirements:
+        minimum_evidence_units: 1
+        allowed_evidence_scope:
+          - "span"
+          - "global"
+        require_textual_grounding: true
+      levels:
+        - rank: 1
+          summary: "待改进"
+          descriptors:
+            - "未能识别出有代表性的痛点，或停留在空泛表述（如“要提高用户体验”）；对 AI 给出的洞察基本照单全收，且缺乏任何进一步分析或功能推演。"
+        - rank: 2
+          summary: "接近合格"
+          descriptors:
+            - "能够提及一些用户问题，但多停留在表层抱怨或零散现象罗列；对 AI 结果有初步参考，但尚未形成明确的核心痛点、排序依据或可验证需求。"
+        - rank: 3
+          summary: "合格"
+          descriptors:
+            - "能根据 AI 或自身经验列出一些问题点，但多为表面抱怨（如“看不懂”“不会用”）；痛点与功能方案的对应关系较弱，缺少数据或案例支撑，也未明确哪些是核心痛点。"
+        - rank: 4
+          summary: "良好"
+          descriptors:
+            - "痛点识别较为清晰，能结合 AI 输出举出多个具体例子；能初步说明痛点与功能的对应关系，有部分可落地的功能设想，但优先级和验证方式不够明确。"
+        - rank: 5
+          summary: "优秀"
+          descriptors:
+            - "能在 AI 辅助下，将老年用户的痛点与具体行为路径、情绪体验和环境约束建立清晰关联；对不同痛点进行优先级排序（如按严重程度、影响范围、可行性），并提出可操作、可验证的功能假设或设计方向；能识别并说明痛点背后潜在的系统性问题（如家庭支持、平台算法、服务流程等）。"
+      metadata:
+        task_id: "a4"
+        source_dimension_code: "A"
+        source_dimension_name: "问题认知与分析能力"
+        source_indicator_id: "A4"
+        source_indicator_name: "用户需求与痛点分析"
+        source_observation_point_code: "A4-2"
+        source_observation_point_name: "痛点定位与需求精准度"
+        source_document: "docs/A4.docx"
+        anchor_ladder:
+          excellent: "能在 AI 辅助下，将老年用户的痛点与具体行为路径、情绪体验和环境约束建立清晰关联；对不同痛点进行优先级排序（如按严重程度、影响范围、可行性），并提出可操作、可验证的功能假设或设计方向；能识别并说明痛点背后潜在的系统性问题（如家庭支持、平台算法、服务流程等）。"
+          good: "痛点识别较为清晰，能结合 AI 输出举出多个具体例子；能初步说明痛点与功能的对应关系，有部分可落地的功能设想，但优先级和验证方式不够明确。"
+          pass: "能根据 AI 或自身经验列出一些问题点，但多为表面抱怨（如“看不懂”“不会用”）；痛点与功能方案的对应关系较弱，缺少数据或案例支撑，也未明确哪些是核心痛点。"
+          needs_improvement: "未能识别出有代表性的痛点，或停留在空泛表述（如“要提高用户体验”）；对 AI 给出的洞察基本照单全收，且缺乏任何进一步分析或功能推演。"
+
+    - dimension_id: "a4_3"
+      code: "A4-3"
+      name: "AI 协同与伦理反思"
+      scale_ref: "ordinal_5"
+      description: "考查是否主动运用不同 AI 工具开展需求探索与交叉验证，并识别偏见、隐私、公平、误导等伦理风险，将反思转化为具体需求或设计约束。"
+      observation_schema:
+        required_facets:
+          - "a4_3_evidence"
+        facet_descriptions:
+          a4_3_evidence: "与 AI 工具使用方式、交叉验证、偏见识别、伦理反思及约束落实相关的任务证据。"
+      evidence_requirements:
+        minimum_evidence_units: 1
+        allowed_evidence_scope:
+          - "span"
+          - "global"
+        require_textual_grounding: true
+      levels:
+        - rank: 1
+          summary: "待改进"
+          descriptors:
+            - "基本不使用 AI 或仅仅作为生成文案工具，没有实质性的协同分析过程；完全忽视隐私、公平、误导等伦理问题，或将风险转嫁给用户而不作承担与改进。"
+        - rank: 2
+          summary: "接近合格"
+          descriptors:
+            - "会调用 AI 辅助思考，但大多停留在单轮提问或直接采纳结果；能提到少量伦理风险词汇，但尚未结合具体使用情境形成明确约束或修正办法。"
+        - rank: 3
+          summary: "合格"
+          descriptors:
+            - "偶尔调用 AI，主要是单轮问答，对结果被动接受，缺少追问和比较；伦理相关内容以口号为主（如“注意隐私”），未结合具体使用情境展开。"
+        - rank: 4
+          summary: "良好"
+          descriptors:
+            - "能较好地利用 1-2 种 AI 工具，进行一定深度的需求探索；能意识到部分 AI 输出可能不准确或不适用于老年群体，并做简单的筛选或修正；提到隐私、安全等伦理点，但多停留在原则层面，措施不够具体。"
+        - rank: 5
+          summary: "优秀"
+          descriptors:
+            - "主动调用至少 2 类不同 AI 工具（如用户画像 AI、同理心地图 AI、市场分析 AI），围绕同一需求问题发起多轮追问和交叉验证；能指出 AI 在数据、刻板印象、语言表述等方面可能产生的偏见或误导，并提出规避或修正的办法；在报告中体现对隐私保护、信息透明、使用门槛等伦理问题的反思，并将其落实为具体需求或设计约束。"
+      metadata:
+        task_id: "a4"
+        source_dimension_code: "A"
+        source_dimension_name: "问题认知与分析能力"
+        source_indicator_id: "A4"
+        source_indicator_name: "用户需求与痛点分析"
+        source_observation_point_code: "A4-3"
+        source_observation_point_name: "AI 协同与伦理反思"
+        source_document: "docs/A4.docx"
+        anchor_ladder:
+          excellent: "主动调用至少 2 类不同 AI 工具（如用户画像 AI、同理心地图 AI、市场分析 AI），围绕同一需求问题发起多轮追问和交叉验证；能指出 AI 在数据、刻板印象、语言表述等方面可能产生的偏见或误导，并提出规避或修正的办法；在报告中体现对隐私保护、信息透明、使用门槛等伦理问题的反思，并将其落实为具体需求或设计约束。"
+          good: "能较好地利用 1-2 种 AI 工具，进行一定深度的需求探索；能意识到部分 AI 输出可能不准确或不适用于老年群体，并做简单的筛选或修正；提到隐私、安全等伦理点，但多停留在原则层面，措施不够具体。"
+          pass: "偶尔调用 AI，主要是单轮问答，对结果被动接受，缺少追问和比较；伦理相关内容以口号为主（如“注意隐私”），未结合具体使用情境展开。"
+          needs_improvement: "基本不使用 AI 或仅仅作为生成文案工具，没有实质性的协同分析过程；完全忽视隐私、公平、误导等伦理问题，或将风险转嫁给用户而不作承担与改进。"
+
+  validation_rules:
+    - rule_id: "task_dimensions_non_empty"
+      type: "task_setup"
+      description: "A4 task rubric must contain the three frozen A4 observation points."

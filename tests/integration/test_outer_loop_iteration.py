@@ -6,12 +6,19 @@ from typing import Any
 
 import yaml
 
-from src.outer_loop.agent import OuterLoopAgent, RuleBasedOuterLoopProvider
+from src.outer_loop.agent import OuterLoopAgent
 from src.outer_loop.experiments.batch_runner import RunResult
 from src.outer_loop.experiments.experiment_log import ExperimentLog
 from src.outer_loop.optimization.config_patcher import ConfigPatcher
 from src.outer_loop.optimization.search_policy import SearchPolicy
 from src.outer_loop.probes import ProbeResult
+from src.providers.base import (
+    BaseProvider,
+    LLMRequest,
+    LLMResponse,
+    ProviderCapability,
+    TokenUsage,
+)
 
 
 def _write_yaml(path: Path, payload: dict[str, Any]) -> None:
@@ -91,7 +98,7 @@ def _run_probes_stub(
                 "qwk_composite": 0.72,
             }
         else:
-            metrics = {"mock_metric": 1.0}
+            metrics = {"stub_metric": 1.0}
         results[probe_name] = ProbeResult(
             probe_name=probe_name,
             sample_count=1,
@@ -99,6 +106,49 @@ def _run_probes_stub(
             per_sample=None,
         )
     return results
+
+
+class _StaticOuterLoopProvider(BaseProvider):
+    @property
+    def name(self) -> str:
+        return "test_outer_loop_provider"
+
+    @property
+    def capabilities(self) -> frozenset[ProviderCapability]:
+        return frozenset({ProviderCapability.TEXT_COMPLETION, ProviderCapability.STRUCTURED_OUTPUT})
+
+    def complete(self, request: LLMRequest) -> LLMResponse:
+        phase = str(request.metadata.get("outer_loop_phase") or "decision").strip().lower()
+        if phase in {"review", "phase4_review"}:
+            content = (
+                "```yaml\n"
+                "verdict: \"no-improvement\"\n"
+                "next_hypothesis: \"继续做小步迭代。\"\n"
+                "```"
+            )
+        else:
+            content = (
+                "```yaml\n"
+                "change_proposal:\n"
+                "  change_unit: \"scoring.calibration_notes.user_needs_analysis\"\n"
+                "  change_type: \"field_patch\"\n"
+                "  target_file: \"configs/prompts/tasks/task_bootstrap_scoring_context.yaml\"\n"
+                "  target_path: \"scoring_context.calibration_notes\"\n"
+                "  new_value: \"校准说明：优先奖励对问题边界、关键约束和证据链的清晰分析，再考虑表达润色。\"\n"
+                "  rationale: \"integration test proposal\"\n"
+                "selected_probes:\n"
+                "  - \"rater_consistency_probe\"\n"
+                "  - \"qwk_probe\"\n"
+                "```"
+            )
+        usage = TokenUsage(prompt_tokens=10, completion_tokens=5, total_tokens=15)
+        return LLMResponse(
+            content=content,
+            structured_data=None,
+            usage=usage,
+            provider_name=self.name,
+            model_id="test-model",
+        )
 
 
 def _build_agent(tmp_path: Path) -> tuple[OuterLoopAgent, Path]:
@@ -109,7 +159,7 @@ def _build_agent(tmp_path: Path) -> tuple[OuterLoopAgent, Path]:
     training_set_path = tmp_path / "data" / "engineering_training_set.tsv"
 
     _write_yaml(
-        configs_root / "prompts" / "scoring_context.yaml",
+        configs_root / "prompts" / "tasks" / "task_bootstrap_scoring_context.yaml",
         {
             "schema_version": "2.0",
             "scoring_context": {
@@ -125,11 +175,13 @@ def _build_agent(tmp_path: Path) -> tuple[OuterLoopAgent, Path]:
                 "provider_config": {
                     "default": {
                         "api_key_env": "LLM_API_KEY",
-                        "model": "mock",
+                        "model": "deepseek-chat",
                         "params": {"temperature": 0.1},
                     }
                 },
                 "operational_params": {"max_retries": 1},
+                "rubric_source_file": "rubrics/tasks/task_bootstrap_rubric.yaml",
+                "scoring_context_source_file": "prompts/tasks/task_bootstrap_scoring_context.yaml",
             }
         },
     )
@@ -147,13 +199,12 @@ def _build_agent(tmp_path: Path) -> tuple[OuterLoopAgent, Path]:
         experiment_log=log,
         config_patcher=patcher,
         search_policy=policy,
-        provider=RuleBasedOuterLoopProvider(),
+        provider=_StaticOuterLoopProvider(),
         bundle_path=bundle_path,
         training_set_path=training_set_path,
         artifacts_output_base=artifacts_base,
         experiments_dir=experiments_dir,
         prompts_dir=Path("src/outer_loop/prompts"),
-        mock_eval_provider=True,
         batch_eval_fn=_batch_eval_stub,
         run_probes_fn=_run_probes_stub,
     )
@@ -177,7 +228,9 @@ def test_outer_loop_one_iteration_appends_log_and_snapshot(tmp_path: Path) -> No
     snapshot_path = tmp_path / "experiments" / "snapshots" / "iter_001" / "configs"
     assert snapshot_path.exists()
 
-    scoring_context_path = tmp_path / "configs" / "prompts" / "scoring_context.yaml"
+    scoring_context_path = (
+        tmp_path / "configs" / "prompts" / "tasks" / "task_bootstrap_scoring_context.yaml"
+    )
     loaded = yaml.safe_load(scoring_context_path.read_text(encoding="utf-8"))
     assert "问题边界" in loaded["scoring_context"]["calibration_notes"]
 

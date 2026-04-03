@@ -1,0 +1,41 @@
+{
+  "call_id": "call-0010",
+  "status": "succeeded",
+  "label": "rater_1",
+  "provider_name": "openai_compatible",
+  "model_id": "deepseek-chat",
+  "started_at": "2026-04-02T09:41:35.657840+00:00",
+  "finished_at": "2026-04-02T09:41:44.673424+00:00",
+  "elapsed_ms": 9014.53,
+  "request": {
+    "system_path": null,
+    "prompt_path": "llm_calls/blobs/call-0010.prompt.txt",
+    "output_schema_path": "llm_calls/blobs/call-0010.schema.json",
+    "params": {},
+    "prompt_chars": 4306,
+    "has_output_schema": true
+  },
+  "response": {
+    "content_path": "llm_calls/blobs/call-0010.response.txt",
+    "structured_path": "llm_calls/blobs/call-0010.structured.json",
+    "usage": {
+      "prompt_tokens": 1907,
+      "completion_tokens": 228,
+      "total_tokens": 2135
+    },
+    "preview": "{     \"proposed_score\": 5,     \"descriptor_refs\": [\"能在 AI 辅助下，将老年用户的痛点与具体行为路径、情绪体验和环境约束建立清晰关联\", \"对不同痛点进行优先级排序（如按严重程度、影响范围、可行性）\", \"能识别并说明痛点背后潜在的系统性问题（如家庭支持、平台算法…"
+  },
+  "debug_context": {
+    "node_id": "node_scorer",
+    "stage_name": "scoring",
+    "dimension_id": "a4_2",
+    "observation_id": "obs-98d3c16e56d3",
+    "rater_id": "rater_1",
+    "template_source": "/Users/ahai/Code/MAS/configs/prompts/scoring.yaml",
+    "template_version": "v1",
+    "used_override_template": false,
+    "evidence_span_count": 21
+  },
+  "call_path": "llm_calls/call-0010.json",
+  "error": null
+}

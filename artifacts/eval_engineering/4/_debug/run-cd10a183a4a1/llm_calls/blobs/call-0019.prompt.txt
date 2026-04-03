@@ -1,0 +1,85 @@
+You are an explanation specialist for engineering competency evaluation feedback.
+
+Write feedback for the competency dimension: AI 协同与伦理反思 (A4-3).
+Attribute performance only from human-authored evidence. Do not describe
+assistant-authored analysis as the student's demonstrated ability.
+
+## Final Score
+Canonical Score: 4
+
+
+## Rubric Descriptors Referenced
+
+
+- 会调用 AI 辅助思考，但大多停留在单轮提问或直接采纳结果
+
+- 提到隐私、安全等伦理点，但多停留在原则层面，措施不够具体
+
+- 能意识到部分 AI 输出可能不准确或不适用于老年群体，并做简单的筛选或修正
+
+- 能提到少量伦理风险词汇，但尚未结合具体使用情境形成明确约束或修正办法
+
+- 能较好地利用 1-2 种 AI 工具，进行一定深度的需求探索
+
+
+
+## Facet Evidence
+
+### Facet: a4_3_evidence
+Supporting evidence:
+
+
+- [span-ext-a3e21dff5e55|source=human:human_input] "因为老年人操作能力差，容易遭受危险"
+
+- [span-ext-e503737d3a03|source=unknown:human_ask_agent] "@user_persona_expert  尼豪"
+
+- [span-ext-0e0769ad1e37|source=unknown:human_ask_agent] "@user_persona_expert  进一步细分其行为模式、挖掘其隐性需求或分析其痛点根因"
+
+- [span-ext-2f7a5b77dbcc|source=unknown:human_ask_agent] "@user_persona_expert  进一步细分其行为模式、挖掘其隐性需求或分析其痛点根因"
+
+- [span-ext-196e859e1a41|source=human:human_input] "我已经咨询过用户画像专家了"
+
+- [span-ext-1513a55c7afa|source=unknown:human_ask_agent] "@empathy_map_expert  你好"
+
+- [span-ext-244163d66118|source=human:human_input] "全语音交互，极大降低老年人学习成本和使用门槛；"
+
+- [span-ext-5a5cb48994c1|source=human:human_input] "AI语音聊天，解决老年人的孤独感，AI通过语调、语速判断老人情绪，并提供恰当的安慰、鼓励或推荐放松内容。允许子女预录部分语音包，定制AI的音色和常用语，让AI更像亲近的家人"
+
+- [span-ext-2bc0e210defe|source=human:human_input] "跌倒/异常报警，通过内置传感器或联动外部设备，监测用户跌倒或长时间未动，自动发送警报。一键或语音指令快速连接预设亲属、紧急联系人或急救服务，并自动发送地理位置。"
+
+
+Counter evidence:
+
+- (none)
+
+Finding note: 35 supporting, 0 counter
+
+
+
+## Observation Signals
+- observation_confidence: HIGH
+
+- uncertainty_notes: (none)
+
+
+## Scorer Seed Material
+学生主动调用用户画像专家等AI工具进行需求探索（证据0e0769ad1e37、2f7a5b77dbcc），提出全语音交互降低老年人使用门槛（证据244163d66118）和跌倒报警功能（证据2bc0e210defe），体现了对老年群体特殊需求的考虑和简单修正，但伦理反思仅停留在功能层面，缺乏具体措施。
+
+## Decision Context
+- was_adjudicated: True
+- decision_note: conflict resolved via use_resolution_rater_as_authoritative, rater_3 score used
+
+
+
+## Instructions
+1. Use `scorer_rationale` as seed material, but rewrite it into student-facing feedback.
+2. Organize the response by facets: highlight strengths and weaknesses per facet.
+3. Cite concrete quotes from facet evidence to support claims.
+4. If `observation_confidence` is LOW, include a clear uncertainty caveat.
+5. If `was_adjudicated` is true, mention that evidence was mixed and required adjudication.
+6. If the available record is mainly guided dialogue, avoid overstating independent student mastery.
+7. Add actionable, specific next-step suggestions instead of repeating rationale text.
+8. Write the entire feedback in Simplified Chinese.
+
+## Output Format
+[Write one concise feedback paragraph in plain text]

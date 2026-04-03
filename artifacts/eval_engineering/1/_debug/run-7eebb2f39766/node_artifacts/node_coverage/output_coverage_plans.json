@@ -1,0 +1,92 @@
+[
+  {
+    "plan_id": "plan-f9f487e00290",
+    "document_id": "doc-2bc7a1fbfa48",
+    "dimension_id": "a4_1",
+    "target_unit_ids": [
+      "unit-2f36f86f780c",
+      "unit-190c54c6e8c7",
+      "unit-16c5f3f035e1",
+      "unit-529cd27d3b7e",
+      "unit-5f5f439e412a",
+      "unit-1efb7671435e"
+    ],
+    "required_facets": [
+      "a4_1_evidence"
+    ],
+    "minimum_evidence_units": 1,
+    "allowed_evidence_scopes": [
+      "span",
+      "global"
+    ],
+    "coverage_strategy": "targeted",
+    "relevance_scores": {
+      "unit-2f36f86f780c": 1.0,
+      "unit-190c54c6e8c7": 0.5,
+      "unit-16c5f3f035e1": 0.3333333333333333,
+      "unit-529cd27d3b7e": 0.25,
+      "unit-5f5f439e412a": 0.2,
+      "unit-1efb7671435e": 0.16666666666666666
+    }
+  },
+  {
+    "plan_id": "plan-6986d6f1d52c",
+    "document_id": "doc-2bc7a1fbfa48",
+    "dimension_id": "a4_2",
+    "target_unit_ids": [
+      "unit-2f36f86f780c",
+      "unit-5f5f439e412a",
+      "unit-16c5f3f035e1",
+      "unit-28c602b712c6",
+      "unit-0ddd05dce7c5",
+      "unit-f8066f7912a3"
+    ],
+    "required_facets": [
+      "a4_2_evidence"
+    ],
+    "minimum_evidence_units": 1,
+    "allowed_evidence_scopes": [
+      "span",
+      "global"
+    ],
+    "coverage_strategy": "targeted",
+    "relevance_scores": {
+      "unit-2f36f86f780c": 1.0,
+      "unit-5f5f439e412a": 0.5,
+      "unit-16c5f3f035e1": 0.3333333333333333,
+      "unit-28c602b712c6": 0.25,
+      "unit-0ddd05dce7c5": 0.2,
+      "unit-f8066f7912a3": 0.16666666666666666
+    }
+  },
+  {
+    "plan_id": "plan-5f9ff2b8fd3b",
+    "document_id": "doc-2bc7a1fbfa48",
+    "dimension_id": "a4_3",
+    "target_unit_ids": [
+      "unit-2f36f86f780c",
+      "unit-5f5f439e412a",
+      "unit-28c602b712c6",
+      "unit-9cebe4a135ee",
+      "unit-16c5f3f035e1",
+      "unit-190c54c6e8c7"
+    ],
+    "required_facets": [
+      "a4_3_evidence"
+    ],
+    "minimum_evidence_units": 1,
+    "allowed_evidence_scopes": [
+      "span",
+      "global"
+    ],
+    "coverage_strategy": "targeted",
+    "relevance_scores": {
+      "unit-2f36f86f780c": 1.0,
+      "unit-5f5f439e412a": 0.5,
+      "unit-28c602b712c6": 0.3333333333333333,
+      "unit-9cebe4a135ee": 0.25,
+      "unit-16c5f3f035e1": 0.2,
+      "unit-190c54c6e8c7": 0.16666666666666666
+    }
+  }
+]

@@ -9,8 +9,74 @@ from src.evaluation.qwk import qwk, qwk_for_dimension, QWKResult
 from src.evaluation.export import export_run, export_snapshot, RunExport
 
 _PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent.parent
-_GOLDEN_DIR = _PROJECT_ROOT / "tests" / "golden"
-_ARTIFACTS = _PROJECT_ROOT / "artifacts" / "baseline"
+
+
+def _write_run_artifacts(run_dir: Path, *, run_id: str = "run-20716") -> None:
+    run_dir.mkdir(parents=True, exist_ok=True)
+    (run_dir / "run_trace.json").write_text(
+        json.dumps(
+            {
+                "run_id": run_id,
+                "bundle_id": "engineering_eval_baseline",
+                "bundle_version": "v1",
+                "status": "completed",
+                "terminal_validation_passed": True,
+                "replay_metadata": {"provider": "openai_compatible"},
+            },
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+    (run_dir / "feedback.json").write_text(
+        json.dumps(
+            {
+                "dimensions": {
+                    "problem_analysis": {
+                        "dimension_name": "Problem Analysis",
+                        "canonical_score": 4,
+                        "display_score": "4",
+                        "confidence": 0.88,
+                        "evidence_count": 2,
+                    }
+                }
+            },
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+
+
+def _write_snapshot(path: Path, *, essay_id: str = "20716") -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(
+            {
+                "essay_id": essay_id,
+                "provider": "openai_compatible",
+                "run_trace": {
+                    "run_id": f"run-{essay_id}",
+                    "bundle_id": "engineering_eval_baseline",
+                    "bundle_version": "v1",
+                    "status": "completed",
+                    "terminal_validation_passed": True,
+                    "replay_metadata": {"provider": "openai_compatible"},
+                },
+                "feedback": {
+                    "dimensions": {
+                        "problem_analysis": {
+                            "dimension_name": "Problem Analysis",
+                            "canonical_score": 4,
+                            "display_score": "4",
+                            "confidence": 0.9,
+                            "evidence_count": 2,
+                        }
+                    }
+                },
+            },
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -92,11 +158,9 @@ class TestQWKForDimension:
 # ---------------------------------------------------------------------------
 
 class TestExportRun:
-    def test_export_run_from_artifact_dir(self):
-        run_dir = _ARTIFACTS / "20716" / "mock"
-        if not run_dir.exists():
-            pytest.skip("Baseline artifact not present — run tests/scripts/run_baseline.py first")
-
+    def test_export_run_from_artifact_dir(self, tmp_path):
+        run_dir = tmp_path / "artifacts" / "eval" / "20716"
+        _write_run_artifacts(run_dir)
         export = export_run(run_dir, essay_id="20716")
         assert isinstance(export, RunExport)
         assert export.essay_id == "20716"
@@ -104,11 +168,9 @@ class TestExportRun:
         assert export.terminal_validation_passed is True
         assert len(export.dimension_scores) > 0
 
-    def test_export_run_scores_by_dimension(self):
-        run_dir = _ARTIFACTS / "20716" / "mock"
-        if not run_dir.exists():
-            pytest.skip("Baseline artifact not present")
-
+    def test_export_run_scores_by_dimension(self, tmp_path):
+        run_dir = tmp_path / "artifacts" / "eval" / "20716"
+        _write_run_artifacts(run_dir)
         export = export_run(run_dir, essay_id="20716")
         scores = export.scores_by_dimension()
         assert isinstance(scores, dict)
@@ -116,11 +178,9 @@ class TestExportRun:
             assert isinstance(dim_id, str)
             assert isinstance(score, int)
 
-    def test_export_run_to_dict(self):
-        run_dir = _ARTIFACTS / "20716" / "mock"
-        if not run_dir.exists():
-            pytest.skip("Baseline artifact not present")
-
+    def test_export_run_to_dict(self, tmp_path):
+        run_dir = tmp_path / "artifacts" / "eval" / "20716"
+        _write_run_artifacts(run_dir)
         export = export_run(run_dir, essay_id="20716")
         d = export.to_dict()
         for key in ("run_id", "essay_id", "bundle_id", "status",
@@ -140,32 +200,26 @@ class TestExportRun:
 
 
 class TestExportSnapshot:
-    def test_export_snapshot_20716(self):
-        snap_path = _GOLDEN_DIR / "sample_20716.mock.json"
-        if not snap_path.exists():
-            pytest.skip("Golden snapshot not present")
-
+    def test_export_snapshot_20716(self, tmp_path):
+        snap_path = tmp_path / "sample_20716.snapshot.json"
+        _write_snapshot(snap_path, essay_id="20716")
         export = export_snapshot(snap_path)
         assert isinstance(export, RunExport)
         assert export.essay_id == "20716"
         assert export.status == "completed"
         assert len(export.dimension_scores) > 0
 
-    def test_export_snapshot_scores_are_integers(self):
-        snap_path = _GOLDEN_DIR / "sample_20716.mock.json"
-        if not snap_path.exists():
-            pytest.skip("Golden snapshot not present")
-
+    def test_export_snapshot_scores_are_integers(self, tmp_path):
+        snap_path = tmp_path / "sample_20716.snapshot.json"
+        _write_snapshot(snap_path, essay_id="20716")
         export = export_snapshot(snap_path)
         for rec in export.dimension_scores:
             assert isinstance(rec.final_score, int)
 
-    def test_export_snapshot_qwk_self_agreement(self):
+    def test_export_snapshot_qwk_self_agreement(self, tmp_path):
         """A snapshot compared against itself should yield QWK = 1.0 per dimension."""
-        snap_path = _GOLDEN_DIR / "sample_20716.mock.json"
-        if not snap_path.exists():
-            pytest.skip("Golden snapshot not present")
-
+        snap_path = tmp_path / "sample_20716.snapshot.json"
+        _write_snapshot(snap_path, essay_id="20716")
         export = export_snapshot(snap_path)
         scores = export.scores_by_dimension()
         dim_ids = list(scores.keys())

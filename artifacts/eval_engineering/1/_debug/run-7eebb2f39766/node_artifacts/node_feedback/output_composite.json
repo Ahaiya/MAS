@@ -1,0 +1,39 @@
+{
+  "composite_id": "composite-f146e4bf4068",
+  "aggregation_policy_ref": "",
+  "contributing_decision_ids": [
+    "dec-ecfcca9a782e",
+    "dec-bea1e33ae017",
+    "dec-b73aa883d8ba"
+  ],
+  "composite_score": {
+    "canonical_score": 5,
+    "display_annotation": null,
+    "display_score": "5",
+    "scale_ref": "composite:engineering_eval_aggregation"
+  },
+  "aggregation_detail": {
+    "variant_id": "without_resolution",
+    "aggregation_method": "average_per_trait_then_weighted_average",
+    "source_raters": [
+      "rater_1",
+      "rater_2"
+    ],
+    "weights": {
+      "a4_1": 1,
+      "a4_2": 1,
+      "a4_3": 1
+    },
+    "weight_total": 3.0,
+    "resolution_used": false
+  },
+  "composite_note": null,
+  "score_kind": "indicator_score",
+  "score_scope": "selected_indicator",
+  "indicator_ids": [
+    "A4"
+  ],
+  "display_label": "A4 聚合分",
+  "indicator_id": "A4",
+  "task_id": "a4"
+}

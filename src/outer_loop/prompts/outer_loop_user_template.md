@@ -6,6 +6,10 @@ Phase: {{ phase }}
 ## Current Config Snapshot
 {{ current_config_snapshot }}
 
+Important:
+- Use the exact active task file paths shown above.
+- Do not propose edits to the bundle or any file under `configs/rubrics/`.
+
 ## Available Probes
 {{ available_probes }}
 

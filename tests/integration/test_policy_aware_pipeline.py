@@ -45,6 +45,14 @@ from src.policies.explanation import (
 )
 from src.pipeline.export import build_pipeline_output
 from src.agents import feedback
+from src.providers.base import (
+    BaseProvider,
+    LLMRequest,
+    LLMResponse,
+    ProviderCapability,
+    TokenUsage,
+)
+from src.providers.prompt_loader import PromptTemplate
 
 
 # ── Synthetic fixtures ─────────────────────────────────────────────────────────
@@ -158,7 +166,7 @@ def _hyp(dim_id: str, rater_id: str, score_val: int) -> ScoreHypothesis:
         score=create_score_representation(score_val, "scale_s"),
         descriptor_refs=[f"desc-{dim_id}-{score_val}"],
         evidence_span_ids=[f"span-{dim_id}"],
-        rationale="mock",
+        rationale="sample_rationale",
         confidence=0.85,
     )
 
@@ -205,6 +213,39 @@ def _observation(dim_id: str) -> DimensionObservation:
         facet_findings=[],
         observation_confidence=ObservationConfidence.HIGH,
         uncertainty_notes=[],
+    )
+
+
+class _FeedbackProvider(BaseProvider):
+    @property
+    def name(self) -> str:
+        return "integration_feedback_provider"
+
+    @property
+    def capabilities(self) -> frozenset[ProviderCapability]:
+        return frozenset({ProviderCapability.TEXT_COMPLETION})
+
+    def complete(self, request: LLMRequest) -> LLMResponse:
+        _ = request
+        return LLMResponse(
+            content="",
+            structured_data=None,
+            usage=TokenUsage(prompt_tokens=1, completion_tokens=1, total_tokens=2),
+            provider_name=self.name,
+            model_id="integration-feedback-v1",
+        )
+
+
+def _feedback_template() -> PromptTemplate:
+    return PromptTemplate(
+        template_text=(
+            "DIM={{ dimension_name }}\n"
+            "CONF={{ observation_confidence }}\n"
+            "RAT={{ scorer_rationale }}\n"
+            "NOTE={{ decision_note }}\n"
+        ),
+        metadata={"template_version": "v1", "compatible_dimensions": ["*"]},
+        source_path="inline-feedback-template",
     )
 
 
@@ -370,20 +411,44 @@ class TestExplanationFeedbackChain:
         decisions = [_decision("dim_m", 3), _decision("dim_n", 4)]
         observations = [_observation("dim_m"), _observation("dim_n")]
         spans = [_span("dim_m"), _span("dim_n")]
-        out = feedback.run(decisions, observations, spans, rubric, policy)
+        out = feedback.run(
+            decisions=decisions,
+            observations=observations,
+            spans=spans,
+            rubric=rubric,
+            policy=policy,
+            provider=_FeedbackProvider(),
+            template=_feedback_template(),
+        )
         assert "dimensions" in out
         assert "violations" in out
         assert "generated_at" in out
 
     def test_feedback_dimension_names_from_rubric(self, rubric, policy):
         decisions = [_decision("dim_m", 3)]
-        out = feedback.run(decisions, [], [_span("dim_m")], rubric, policy)
+        out = feedback.run(
+            decisions=decisions,
+            observations=[],
+            spans=[_span("dim_m")],
+            rubric=rubric,
+            policy=policy,
+            provider=_FeedbackProvider(),
+            template=_feedback_template(),
+        )
         assert out["dimensions"]["dim_m"]["dimension_name"] == "Mu Dimension"
 
     def test_feedback_no_violations_for_valid_decisions(self, rubric, policy):
         decisions = [_decision("dim_m", 3), _decision("dim_n", 4)]
         spans = [_span("dim_m"), _span("dim_n")]
-        out = feedback.run(decisions, [], spans, rubric, policy)
+        out = feedback.run(
+            decisions=decisions,
+            observations=[],
+            spans=spans,
+            rubric=rubric,
+            policy=policy,
+            provider=_FeedbackProvider(),
+            template=_feedback_template(),
+        )
         assert out["violations"] == []
 
     def test_feedback_reports_violation_for_missing_evidence(self, rubric, policy):
@@ -399,7 +464,15 @@ class TestExplanationFeedbackChain:
             decision_confidence=0.9,
             decision_note=None,
         )
-        out = feedback.run([dec], [], [], rubric, policy)
+        out = feedback.run(
+            decisions=[dec],
+            observations=[],
+            spans=[],
+            rubric=rubric,
+            policy=policy,
+            provider=_FeedbackProvider(),
+            template=_feedback_template(),
+        )
         assert len(out["violations"]) > 0
 
     def test_explanation_chain_closed_when_valid(self, rubric, policy):

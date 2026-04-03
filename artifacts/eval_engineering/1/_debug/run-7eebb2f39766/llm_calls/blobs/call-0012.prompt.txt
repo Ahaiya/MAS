@@ -1,0 +1,119 @@
+You are a trained writing scorer evaluating student writing based on a rubric.
+
+Your task is to score the competency dimension: AI 协同与伦理反思 (A4-3).
+You must score only from the structured evidence below. Do not use any outside
+assumptions or content that is not present in this prompt.
+
+## Rubric Levels
+
+**Score 1: 待改进**
+
+- 基本不使用 AI 或仅仅作为生成文案工具，没有实质性的协同分析过程；完全忽视隐私、公平、误导等伦理问题，或将风险转嫁给用户而不作承担与改进。
+
+
+
+**Score 2: 接近合格**
+
+- 会调用 AI 辅助思考，但大多停留在单轮提问或直接采纳结果；能提到少量伦理风险词汇，但尚未结合具体使用情境形成明确约束或修正办法。
+
+
+
+**Score 3: 合格**
+
+- 偶尔调用 AI，主要是单轮问答，对结果被动接受，缺少追问和比较；伦理相关内容以口号为主（如“注意隐私”），未结合具体使用情境展开。
+
+
+
+**Score 4: 良好**
+
+- 能较好地利用 1-2 种 AI 工具，进行一定深度的需求探索；能意识到部分 AI 输出可能不准确或不适用于老年群体，并做简单的筛选或修正；提到隐私、安全等伦理点，但多停留在原则层面，措施不够具体。
+
+
+
+**Score 5: 优秀**
+
+- 主动调用至少 2 类不同 AI 工具（如用户画像 AI、同理心地图 AI、市场分析 AI），围绕同一需求问题发起多轮追问和交叉验证；能指出 AI 在数据、刻板印象、语言表述等方面可能产生的偏见或误导，并提出规避或修正的办法；在报告中体现对隐私保护、信息透明、使用门槛等伦理问题的反思，并将其落实为具体需求或设计约束。
+
+
+
+
+## Facet Evidence
+
+### Facet: a4_3_evidence
+Supporting evidence:
+
+
+- [span-ext-1e5c2940bd5f] "学生初步观察到的问题：老照片存在褪色、模糊、视角单一等问题，可能导致AI建模失真；历史场景资料缺乏，AI生成可能与真实记忆不符。"
+
+- [span-ext-f07f17f6972a] "学生详细列出了产品设计可能面临的**高风险**（隐私泄露、用户伤害）和**中风险**（法律违规），并提出了具体的应对措施，包括采用区块链加密技术存储敏感数据、明确告知数据用途、定期安全审计、组建法务团队进行合规审核、设计“情感安全筛”以及优化设备适配性等。这表明学生对合规性有较深入的理解和前瞻性思考。"
+
+- [span-ext-790bae2d0ef3] "学生从情感、社交、存在层面提炼出用户深层心愿，最终凝练为一句核心需求：“**用户最想要的，是借虚拟技术精准复现故居场景，重拾被岁月或现实剥离的生活记忆与情感联结，让‘回家’的精神慰藉可触可达。**” 学生认为此描述精准融合了洞察，并考虑了伦理、合规、用户体验专家的建议。"
+
+- [span-ext-c5a2d59c7a1d] "学生确认调用了相关专家，但对话中未展示具体专家建议内容。"
+
+- [span-ext-67e6e0eaf623] "经过评估（痛点解决、市场机会、实现难度、竞争优势），学生最终选择了以下三个核心功能，并给出了清晰的“场景 - 情感 - 传承”逻辑：
+    1.  **场景智能还原：** （高痛点解决、高市场机会、高竞争优势）—— 作为产品基础，精准复现故居，支撑其他功能的实现。
+    2.  **记忆线索触发：** （高痛点解决、高市场机会、相对可控难度、高竞争优势）—— 深化情感联结，将静态场景变为动态记忆载体，直击情感诉求。
+    3.  **数字遗产传承：** （中高痛点解决、长期高价值、高竞争优势）—— 满足用户深层“生命痕迹延续”需求，构建代际传承闭环，提升产品长期价值。"
+
+- [span-ext-5dc271bdd992] "学生对可持续设计的理解深入：
+*   **重要性**：让产品具备持续服务用户、适配需求变化、控制维护成本的生命力，以应对用户需求进化、技术迭代加速、维护成本失控等挑战。
+*   **核心原则**：“松耦合、高内聚”，让模块内部功能紧密关联，模块之间依赖弱。
+*   **具体策略**：通过“标准化接口”连接模块、预留“扩展钩子”、抽象“基础服务层”来实现。"
+
+- [span-ext-f75f2f0375b3] "学生最终确定采用**“金字塔分层架构”**，将系统划分为**4大核心模块 + 2大扩展模块**，体现了“松耦合、高内聚”的设计原则：
+
+*   **核心模块**：
+    1.  **记忆素材管理模块**：统一处理用户输入的照片、语音等素材，标准化预处理，抽象输入接口。
+    2.  **3D场景生成引擎**：基于素材生成虚拟故居3D模型，支持真实还原与创意渲染，独立封装AI算法，便于未来升级。
+    3.  **记忆情感关联模块**：构建“空间-记忆”图谱，支持交互触发，用图数据库解耦空间与记忆逻辑。
+    4.  **多端交互引擎**：适配APP、VR等不同终端的操作逻辑与界面渲染，实现跨平台架构。
+
+*   **扩展模块（松耦合设计）**：
+    1.  **硬件接口适配模块**：为VR头显等设备提供标准化协议转换，作为“翻译层”，不侵入核心逻辑，支持硬件热插拔。
+    2.  **微服务编排模块**：未来系统扩展时管理服务拆分、负载均衡，为微服务升级预留空间。"
+
+
+
+Counter evidence:
+
+- (none)
+
+
+Finding note: 7 supporting, 0 counter
+
+
+
+## Observation Confidence
+HIGH
+
+
+
+
+
+
+
+
+
+
+## Instructions
+1. Score only from the provided facet evidence and rubric descriptors.
+2. Do not cite or infer evidence that is not explicitly listed in Facet Evidence.
+3. If any facet has no supporting and no counter evidence, explicitly state:
+   "insufficient evidence for facet <facet_id>" in justification.
+4. If `observation_confidence` is LOW, reduce your own confidence and explain
+   the uncertainty source in justification.
+5. Keep justification concise and tie it directly to descriptor_refs + evidence_ids.
+6. Return exactly one JSON object with no Markdown fences, no preamble, and no trailing notes.
+7. Keep `descriptor_refs` to at most 3 items and `evidence_ids` to at most 4 decisive spans.
+8. Keep `justification` short and concrete, ideally no more than 80 words.
+9. Write `justification` in Simplified Chinese.
+
+## Output Format (JSON)
+{
+  "proposed_score": integer,
+  "descriptor_refs": ["exact text of relevant descriptors"],
+  "evidence_ids": ["span-01", "span-03"],
+  "confidence": float,
+  "justification": "brief explanation linking score to descriptors and evidence"
+}

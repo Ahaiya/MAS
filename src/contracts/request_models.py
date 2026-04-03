@@ -55,6 +55,9 @@ class TextUnit:
         sequence_index: Zero-based position of this unit in document order.
         chunk_title: Optional semantic title when chunk is produced by LLM chunker.
         chunk_method: Chunking method marker ("rule", "llm_semantic", "llm_hierarchical").
+        source_type: Source classification for this unit when the document is a
+                     dialogue log ("human", "ai", "system", "mixed", "unknown").
+        source_label: Optional raw source label (for example "human_input").
     """
 
     unit_id: str
@@ -66,12 +69,18 @@ class TextUnit:
     sequence_index: int
     chunk_title: Optional[str] = None
     chunk_method: str = "rule"
+    source_type: str = "unknown"
+    source_label: Optional[str] = None
 
     def __post_init__(self) -> None:
         if self.end_offset <= self.start_offset:
             raise ValueError(
                 f"TextUnit '{self.unit_id}': end_offset ({self.end_offset}) "
                 f"must be > start_offset ({self.start_offset})"
+            )
+        if self.source_type not in {"human", "ai", "system", "mixed", "unknown"}:
+            raise ValueError(
+                f"TextUnit '{self.unit_id}': invalid source_type '{self.source_type}'."
             )
 
     def span_length(self) -> int:
@@ -89,6 +98,8 @@ class TextUnit:
             "sequence_index": self.sequence_index,
             "chunk_title": self.chunk_title,
             "chunk_method": self.chunk_method,
+            "source_type": self.source_type,
+            "source_label": self.source_label,
         }
 
     @classmethod
@@ -97,7 +108,8 @@ class TextUnit:
             data,
             frozenset({"unit_id", "document_id", "text", "start_offset",
                        "end_offset", "unit_type", "sequence_index",
-                       "chunk_title", "chunk_method"}),
+                       "chunk_title", "chunk_method", "source_type",
+                       "source_label"}),
             "TextUnit",
         )
         return cls(
@@ -110,6 +122,8 @@ class TextUnit:
             sequence_index=data["sequence_index"],
             chunk_title=data.get("chunk_title"),
             chunk_method=data.get("chunk_method", "rule"),
+            source_type=data.get("source_type", "unknown"),
+            source_label=data.get("source_label"),
         )
 
 

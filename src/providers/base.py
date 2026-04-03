@@ -134,7 +134,7 @@ class BaseProvider(abc.ABC):
     @property
     @abc.abstractmethod
     def name(self) -> str:
-        """Unique identifier for this provider (e.g. "openai", "mock")."""
+        """Unique identifier for this provider (e.g. "openai_compatible")."""
 
     @property
     @abc.abstractmethod

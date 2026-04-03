@@ -91,7 +91,7 @@ def run_trace(node_trace_ok, node_trace_failed):
         finished_at=TS2,
         node_traces=[node_trace_ok, node_trace_failed],
         terminal_validation_passed=True,
-        replay_metadata={"provider": "mock", "seed": 42},
+        replay_metadata={"provider": "openai_compatible", "seed": 42},
     )
 
 
@@ -267,5 +267,5 @@ class TestRunTrace:
         assert failed[0].node_id == "node_extractor"
 
     def test_replay_metadata_preserved(self, run_trace):
-        assert run_trace.replay_metadata["provider"] == "mock"
+        assert run_trace.replay_metadata["provider"] == "openai_compatible"
         assert run_trace.replay_metadata["seed"] == 42

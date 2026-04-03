@@ -212,6 +212,7 @@ def test_facet_evidence_in_prompt():
     assert "span-01" in prompt
     assert "I promised myself I would not hide anymore." in prompt
     assert "authenticity" in prompt
+    assert "source=unknown" in prompt
 
 
 def test_score_anchors_from_context():

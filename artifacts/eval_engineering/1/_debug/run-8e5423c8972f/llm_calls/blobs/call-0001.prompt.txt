@@ -1,0 +1,134 @@
+You are a document structure analysis specialist for rubric-based evaluation.
+
+Your task is to segment the input document into coherent semantic chunks for downstream evidence extraction.
+
+## Document Type Hint
+unknown
+
+## Document Length
+Approximate word count: 21324
+
+## Document Text
+- id: c0
+  summary: # 1
+- 存档ID: 68673cb2b13b69327dd8e117
+- 会话ID: ea53b88d-66ff-4c56-bdfe-38af5aec01f4
+- 创建时间: 2025/7/4 10:30:10
+- 更新时间: 2025/7/4 11:49:59
+- 流程名称: bronze_standard_comprehensive
+
+## 记录
+### session_init
+标签: project_start, default_project
+时间: 2025/7/4 10:30:10
+```text
+我们要做一个项目：虚拟故居重建计划，利用老人提供的照片或者记忆来AI建模重构老年人的故居，以满足老年人的恋旧思想，实现跨代记忆传承。 ```
+
+### Entering_New_Phase
+标签: 产品设计, bronze_product_manager
+时间: 2025/7/4 10:30:10
+```json
+{
+  "Context": "## 🚀 欢迎进入 产品设计 阶段\n\n👤 **当前活动角色**: `bronze_product_manager`\n",
+  "Role": "产品设计",
+  "SendFrom": "bronze_product_manager",
+  "SendTo": "Human",
+  "isHuman": "true"
+}
+```
+
+### training_chat_response
+标签: chat
+时间: 2025/7/4 10:30:10
+```text
+你好，我是产品设计导师，关于**产品设计**，我们开始讨论。
+- id: c1
+  summary: ```text
+收到，我思考一下. .
+- id: c2
+  summary: \"数字遗产传承\" : 25\n```\n*（注：饼图的百分比是根据你的综合得分和选择理由，估算的一个相对重要性比例，为了可视化方便。 ）*\n\n**功能选择总结表：**\n| 核心功能 | 解决的痛点 | 目标用户 | 预期价值 | 选择理由 |\n|---------|-----------|---------|---------|---------|\n| 场景智能还原 | 精准复现故居场景，解决AI建模还原度问题 | 老年用户及其家属 | 提供真实感和掌控感的“家” | 基础功能，其他功能依赖其支撑，是“回家”的物理基础 |\n| 记忆线索触发 | 静态场景无法唤起深层记忆和情感 | 老年用户 | 沉浸式交互唤醒潜藏回忆，深化情感联结 | 直接击中“重拾情感联结”的核心诉求，让场景“活”起来 |\n| 数字遗产传承 | 用户生命价值的延续和家族文化传承的需求 | 老年用户及其后代 | 将虚拟故居变为家族文化载体，实现跨代记忆沉淀 | 满足深层精神需求，构建代际传承闭环，提升产品长期价值和合规性 |\n\n这些图表清晰地展示了从用户需求到核心功能的完整逻辑关系。
+- id: c3
+  summary: "history": [
+    {
+      "content": "你好，我是产品设计导师，关于**产品设计**，我们开始讨论。 ",
+      "role": "青铜版产品经理导师"
+    },
+    {
+      "content": "好的",
+      "role": "Human"
+    },
+    {
+      "content": "你好！
+- id: c4
+  summary: graph TD
+    A["我们的产品功能"] --> B["记忆采集与输入模块<br/>(收集素材)"]
+    A --> C["场景构建与处理模块<br/>(加工还原)"]
+    A --> D["记忆交互与输出模块<br/>(情感交互)"]
+```
+
+你的模块划分想法**围绕“精准复现场景 - 唤醒情感记忆 - 延续家族价值”的核心逻辑，从素材收集、场景加工到价值输出，流程清晰，职责明确，且为后续的功能迭代预留了灵活性**，很有道理。 现在我们来聊聊什么是'可持续设计'。
+- id: c5
+  summary: #### 5. **多端交互引擎模块**  
+- **作用**：统一处理APP、网页、VR等不同终端的用户操作（如点击虚拟物品触发记忆弹窗），并渲染交互界面。
+- id: c6
+  summary: 2025/7/4 11:26:38
+```text
+我已经收集到足够的信息，现在将交给青铜版架构设计专家智能体生成正式的架构设计文档。 ```
+
+### training_chat_response
+标签: chat
+时间: 2025/7/4 11:26:38
+```text
+好的，我先思考一下，然后编写文档，文档会出现在右侧文档区，稍等。
+- id: c7
+  summary: → GLTF**：选择GLTF作为通用3D模型传输格式，轻量级、跨平台兼容性强，支持多端复用和未来硬件扩展。 **设计背后的核心考量：**
+*   **安全合规**：从传输层到数据层全链路保护用户隐私。
+- id: c8
+  summary: \n- **设计理由**：  \n  - 遵循“单一职责”，将分散的输入方式抽象为统一接口，未来新增AR扫描（拍摄老宅实景）等输入方式时，只需扩展此模块；  \n  - 输出标准化数据格式（如带时间戳的结构化记忆元数据），为上层模块提供“干净原料”。 \n\n#### 2.
+- id: c9
+  summary: 学生的理解："这个连接设计方案清晰地展示了每个硬件如何互相通信和协作。 摄像头专门负责图像数据，舵机负责执行动作，而Raspberry Pi就像一个中央大脑，处理所有信息并发出指令。
+- id: c10
+  summary: # 🙋‍♂️ 用户提问（03:31:59）
+
+ 
+
+# 🤖 任务排序AI 专家回复（03:31:59）
+
+你好！ 作为任务排序AI大师，我将运用任务排序四维框架，为“虚拟故居重建计划”项目提供专业的首轮任务排序分析。
+- id: c11
+  summary: Pi 4B)\"]\n    B --GPIO/PWM信号--> C[\"水平舵机<br/>(SG90)\"]\n    B --GPIO/PWM信号--> D[\"垂直舵机<br/>(SG90)\"]\n    E[\"电源管理模块<br/>(5V供电)\"] --供电--> B\n    E --供电--> C\n    E --供电--> D\n    B --USB/Wi-Fi--> F[\"用户设备<br/>(手机/电脑)\"]\n    \n    style A fill:#c8e6c9\n    style B fill:#e1f5fe\n    style C fill:#fff3e0\n    style D fill:#fff3e0\n    style E fill:#f0f0f0\n    style F fill:#f3e5f5\n```\n\n**连接方案说明：**\n学生的理解：\"这个连接设计方案清晰地展示了每个硬件如何互相通信和协作。 摄像头专门负责图像数据，舵机负责执行动作，而Raspberry Pi就像一个中央大脑，处理所有信息并发出指令。
+- id: c12
+  summary: -   **memory_manager. py：** 负责记忆素材（如图片、视频、文字描述）的存储、管理和检索，是构建虚拟故居的基础数据层。
+- id: c13
+  summary: --> C[\"困难任务<br/>（新技术+长时间+高风险）\"]\n```\n\n对于你刚才提到的困难任务——**3D场景生成引擎开发**，你觉得主要难在哪里？ 是技术上没接触过，还是工作量很大，还是担心出错的风险比较高？
+- id: c14
+  summary: }\\n\\n        p {\\n            font-size: 1. 1em;\\n            line-height: 1.
+
+## Chunking Requirements
+1. Preserve semantic completeness. Keep tightly related ideas in the same chunk.
+2. Keep boundaries clear. Avoid splitting in the middle of one argument/event/dialogue turn.
+3. Prefer chunk size around 100-500 words when possible.
+4. Keep original wording exactly. Do not rewrite, summarize, or paraphrase chunk text.
+5. Chunks must be ordered exactly as they appear in the document.
+6. Chunks must be non-overlapping and collectively cover the full document text.
+7. Each chunk must have:
+   - id: c0, c1, c2 ... in order
+   - title: short semantic label
+   - text: exact original text content for that chunk
+
+## Output Format (JSON only)
+{
+  "chunks": [
+    {
+      "id": "c0",
+      "title": "short title",
+      "text": "exact original chunk text"
+    }
+  ]
+}
+
+## Output Rules
+- Return valid JSON only (no Markdown, no explanation text).
+- Do not include keys other than "chunks", "id", "title", "text".
+- If the document is very short, you may return a single chunk.
+- Write each chunk `title` in Simplified Chinese. Do not translate the `text` field — it must remain verbatim original text.

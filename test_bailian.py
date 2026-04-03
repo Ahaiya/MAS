@@ -29,7 +29,7 @@ try:
     # 4. 发送测试对话
     print("正在向百炼平台发送请求...")
     response = client.chat.completions.create(
-        model=model_name,
+        model="qwen3.6-plus",
         messages=[
             {"role": "user", "content": "你好，请回复'百炼连接成功'。"}
         ],

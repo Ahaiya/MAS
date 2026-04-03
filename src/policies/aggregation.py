@@ -4,15 +4,19 @@
 Aggregation Policy — config-driven composite score computation.
 
 Evaluates the aggregation formula from PolicySnapshot configuration.
-Supports two aggregation methods:
+Supports aggregation methods:
 
 - average_per_trait_then_weighted_sum: For each dimension, average the scores
   from the configured source_raters, then multiply by the configured weight.
   Used when no third-rater resolution occurred.
+- average_per_trait_then_weighted_average: Same as above, but divide by the
+  total participating weight so the final score stays on the original scale.
 
 - direct_weighted_sum: Use FinalDimensionDecision.final_score directly for
   each dimension, multiplied by the configured weight.
   Used when third-rater resolution was applied.
+- direct_weighted_average: Same as above, but normalized by total
+  participating weight.
 
 Variant selection:
   - If any AdjudicationRecord has is_resolved=True → "resolution_used" variant.
@@ -41,6 +45,10 @@ def _hid(seed: str, length: int = 12) -> str:
     return hashlib.md5(seed.encode()).hexdigest()[:length]
 
 
+def _round_half_up(value: float) -> int:
+    return int(value + 0.5)
+
+
 def _is_resolution_used(adjudications: List[AdjudicationRecord]) -> bool:
     """Return True if any adjudication record was successfully resolved."""
     return any(a.is_resolved for a in adjudications)
@@ -61,10 +69,10 @@ def _compute_average_then_weighted(
     hypotheses: List[ScoreHypothesis],
     source_raters: List[str],
     weights: Dict[str, int],
-) -> tuple[float, List[str]]:
+) -> tuple[float, List[str], float]:
     """Compute weighted sum using per-rater averages per dimension.
 
-    Returns (total_score, contributing_dim_ids).
+    Returns (weighted_total, contributing_dim_ids, contributing_weight_total).
     """
     by_dim: Dict[str, Dict[str, int]] = {}
     for h in hypotheses:
@@ -73,6 +81,7 @@ def _compute_average_then_weighted(
 
     total = 0.0
     contributing: List[str] = []
+    contributing_weight_total = 0.0
 
     for dim_id, rater_scores in sorted(by_dim.items()):
         w = weights.get(dim_id, 0)
@@ -84,20 +93,22 @@ def _compute_average_then_weighted(
         avg = sum(scores) / len(scores)
         total += avg * w
         contributing.append(dim_id)
+        contributing_weight_total += w
 
-    return total, contributing
+    return total, contributing, contributing_weight_total
 
 
 def _compute_direct_weighted(
     decisions: List[FinalDimensionDecision],
     weights: Dict[str, int],
-) -> tuple[float, List[str]]:
+) -> tuple[float, List[str], float]:
     """Compute weighted sum using final_score.canonical_score directly.
 
-    Returns (total_score, contributing_dim_ids).
+    Returns (weighted_total, contributing_dim_ids, contributing_weight_total).
     """
     total = 0.0
     contributing: List[str] = []
+    contributing_weight_total = 0.0
 
     for decision in sorted(decisions, key=lambda d: d.dimension_id):
         w = weights.get(decision.dimension_id, 0)
@@ -105,8 +116,9 @@ def _compute_direct_weighted(
             continue
         total += decision.final_score.canonical_score * w
         contributing.append(decision.dimension_id)
+        contributing_weight_total += w
 
-    return total, contributing
+    return total, contributing, contributing_weight_total
 
 
 def compute_composite(
@@ -151,15 +163,27 @@ def compute_composite(
     source_raters: List[str] = variant.get("source_raters", [])
 
     if method == "average_per_trait_then_weighted_sum":
-        total, contributing_dims = _compute_average_then_weighted(
+        total, contributing_dims, weight_total = _compute_average_then_weighted(
             hypotheses, source_raters, weights
         )
+        composite_score_val = _round_half_up(total)
+    elif method == "average_per_trait_then_weighted_average":
+        total, contributing_dims, weight_total = _compute_average_then_weighted(
+            hypotheses, source_raters, weights
+        )
+        if weight_total <= 0:
+            return None
+        composite_score_val = _round_half_up(total / weight_total)
     elif method == "direct_weighted_sum":
-        total, contributing_dims = _compute_direct_weighted(decisions, weights)
+        total, contributing_dims, weight_total = _compute_direct_weighted(decisions, weights)
+        composite_score_val = _round_half_up(total)
+    elif method == "direct_weighted_average":
+        total, contributing_dims, weight_total = _compute_direct_weighted(decisions, weights)
+        if weight_total <= 0:
+            return None
+        composite_score_val = _round_half_up(total / weight_total)
     else:
         return None
-
-    composite_score_val = round(total)
 
     # Determine contributing decision IDs from contributing dimensions
     decision_by_dim = {d.dimension_id: d for d in decisions}
@@ -189,6 +213,7 @@ def compute_composite(
             "aggregation_method": method,
             "source_raters": source_raters,
             "weights": weights,
+            "weight_total": weight_total,
             "resolution_used": resolution_used,
         },
         composite_note=None,

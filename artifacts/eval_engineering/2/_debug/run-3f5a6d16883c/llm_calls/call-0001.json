@@ -1,0 +1,41 @@
+{
+  "call_id": "call-0001",
+  "status": "succeeded",
+  "label": "chunking",
+  "provider_name": "openai_compatible",
+  "model_id": "deepseek-chat",
+  "started_at": "2026-04-02T11:09:50.082297+00:00",
+  "finished_at": "2026-04-02T11:11:26.176284+00:00",
+  "elapsed_ms": 96091.46,
+  "request": {
+    "system_path": null,
+    "prompt_path": "llm_calls/blobs/call-0001.prompt.txt",
+    "output_schema_path": "llm_calls/blobs/call-0001.schema.json",
+    "params": {},
+    "prompt_chars": 6409,
+    "has_output_schema": true
+  },
+  "response": {
+    "content_path": "llm_calls/blobs/call-0001.response.txt",
+    "structured_path": "llm_calls/blobs/call-0001.structured.json",
+    "usage": {
+      "prompt_tokens": 2793,
+      "completion_tokens": 3054,
+      "total_tokens": 5847
+    },
+    "preview": "{     \"chunks\": [         {             \"id\": \"c0\",             \"title\": \"项目元数据\",             \"text\": \"- id: c0\\n  summary: # 2-银龄经济共生站\\n- 存档ID: 686765e4b13b69…"
+  },
+  "debug_context": {
+    "node_id": "node_preprocess",
+    "stage_name": "chunking",
+    "document_type": "dialogue",
+    "token_estimate": 3094794,
+    "token_threshold": 4000,
+    "chunking_mode": "hierarchical",
+    "hard_chunk_count": 18,
+    "template_source": "/Users/ahai/Code/MAS/configs/prompts/chunking.yaml",
+    "template_version": "v1"
+  },
+  "call_path": "llm_calls/call-0001.json",
+  "error": null
+}

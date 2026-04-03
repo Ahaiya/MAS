@@ -27,8 +27,8 @@ def _build_patcher(tmp_path: Path) -> tuple[ConfigPatcher, Path, Path]:
     snapshots_root = tmp_path / "experiments" / "snapshots"
 
     _write_yaml(
-        configs_root / "prompts" / "scoring_context.yaml",
-        {"calibration_notes": {"problem_analysis": "old note"}},
+        configs_root / "prompts" / "tasks" / "task_bootstrap_scoring_context.yaml",
+        {"scoring_context": {"calibration_notes": "old note"}},
     )
     _write_yaml(
         configs_root / "bundles" / "engineering_eval_baseline.bundle.yaml",
@@ -65,7 +65,9 @@ def _build_patcher(tmp_path: Path) -> tuple[ConfigPatcher, Path, Path]:
 
 def test_rejects_non_whitelisted_file(tmp_path: Path) -> None:
     patcher, configs_root, snapshots_root = _build_patcher(tmp_path)
-    original = (configs_root / "prompts" / "scoring_context.yaml").read_text(encoding="utf-8")
+    original = (
+        configs_root / "prompts" / "tasks" / "task_bootstrap_scoring_context.yaml"
+    ).read_text(encoding="utf-8")
 
     proposal = ChangeProposal(
         change_unit="rubric.illegal",
@@ -78,14 +80,24 @@ def test_rejects_non_whitelisted_file(tmp_path: Path) -> None:
     ok, message = patcher.apply(proposal, iter_id="001")
     assert ok is False
     assert "whitelist" in message
-    assert (configs_root / "prompts" / "scoring_context.yaml").read_text(
+    assert (
+        configs_root / "prompts" / "tasks" / "task_bootstrap_scoring_context.yaml"
+    ).read_text(
         encoding="utf-8"
     ) == original
     assert not snapshots_root.exists()
 
 
 def test_blocks_protected_bundle_field(tmp_path: Path) -> None:
-    patcher, configs_root, _ = _build_patcher(tmp_path)
+    _, configs_root, snapshots_root = _build_patcher(tmp_path)
+    patcher = ConfigPatcher(
+        configs_root=configs_root,
+        snapshots_root=snapshots_root,
+        allowed_file_patterns=(
+            *ConfigPatcher().allowed_file_patterns,
+            "configs/bundles/engineering_eval_baseline.bundle.yaml",
+        ),
+    )
     bundle_path = configs_root / "bundles" / "engineering_eval_baseline.bundle.yaml"
     before = bundle_path.read_text(encoding="utf-8")
 
@@ -105,13 +117,13 @@ def test_blocks_protected_bundle_field(tmp_path: Path) -> None:
 
 def test_applies_valid_patch_and_creates_snapshot(tmp_path: Path) -> None:
     patcher, configs_root, snapshots_root = _build_patcher(tmp_path)
-    target_path = configs_root / "prompts" / "scoring_context.yaml"
+    target_path = configs_root / "prompts" / "tasks" / "task_bootstrap_scoring_context.yaml"
 
     proposal = ChangeProposal(
         change_unit="scoring.calibration_notes.problem_analysis",
         change_type="field_patch",
-        target_file="configs/prompts/scoring_context.yaml",
-        target_path="calibration_notes.problem_analysis",
+        target_file="configs/prompts/tasks/task_bootstrap_scoring_context.yaml",
+        target_path="scoring_context.calibration_notes",
         new_value="new note",
         rationale="improve alignment",
     )
@@ -120,25 +132,32 @@ def test_applies_valid_patch_and_creates_snapshot(tmp_path: Path) -> None:
     assert "snapshot" in message
 
     current = _read_yaml(target_path)
-    assert current["calibration_notes"]["problem_analysis"] == "new note"
+    assert current["scoring_context"]["calibration_notes"] == "new note"
 
-    snapshot_file = snapshots_root / "iter_001" / "configs" / "prompts" / "scoring_context.yaml"
+    snapshot_file = (
+        snapshots_root
+        / "iter_001"
+        / "configs"
+        / "prompts"
+        / "tasks"
+        / "task_bootstrap_scoring_context.yaml"
+    )
     assert snapshot_file.exists()
     snap = _read_yaml(snapshot_file)
-    assert snap["calibration_notes"]["problem_analysis"] == "old note"
+    assert snap["scoring_context"]["calibration_notes"] == "old note"
     assert not (snapshots_root / "iter_001" / "configs" / "archive").exists()
     assert not (snapshots_root / "iter_001" / "configs" / "rubrics" / "source").exists()
 
 
 def test_invalid_yaml_overwrite_triggers_rollback(tmp_path: Path) -> None:
     patcher, configs_root, snapshots_root = _build_patcher(tmp_path)
-    target_path = configs_root / "prompts" / "scoring_context.yaml"
+    target_path = configs_root / "prompts" / "tasks" / "task_bootstrap_scoring_context.yaml"
     before = target_path.read_text(encoding="utf-8")
 
     proposal = ChangeProposal(
         change_unit="scoring.rewrite",
         change_type="file_overwrite",
-        target_file="configs/prompts/scoring_context.yaml",
+        target_file="configs/prompts/tasks/task_bootstrap_scoring_context.yaml",
         target_path="",
         new_value="broken_yaml: [1, 2",
         rationale="force parser failure",
@@ -154,23 +173,23 @@ def test_invalid_yaml_overwrite_triggers_rollback(tmp_path: Path) -> None:
 
 def test_rollback_restores_snapshot_state(tmp_path: Path) -> None:
     patcher, configs_root, _ = _build_patcher(tmp_path)
-    target_path = configs_root / "prompts" / "scoring_context.yaml"
+    target_path = configs_root / "prompts" / "tasks" / "task_bootstrap_scoring_context.yaml"
 
     proposal = ChangeProposal(
         change_unit="scoring.calibration_notes.problem_analysis",
         change_type="field_patch",
-        target_file="configs/prompts/scoring_context.yaml",
-        target_path="calibration_notes.problem_analysis",
+        target_file="configs/prompts/tasks/task_bootstrap_scoring_context.yaml",
+        target_path="scoring_context.calibration_notes",
         new_value="first update",
         rationale="test rollback",
     )
     ok, _ = patcher.apply(proposal, iter_id="001")
     assert ok is True
-    assert _read_yaml(target_path)["calibration_notes"]["problem_analysis"] == "first update"
+    assert _read_yaml(target_path)["scoring_context"]["calibration_notes"] == "first update"
 
-    _write_yaml(target_path, {"calibration_notes": {"problem_analysis": "manual drift"}})
+    _write_yaml(target_path, {"scoring_context": {"calibration_notes": "manual drift"}})
     restored = patcher.rollback("001")
     assert restored is True
-    assert _read_yaml(target_path)["calibration_notes"]["problem_analysis"] == "old note"
+    assert _read_yaml(target_path)["scoring_context"]["calibration_notes"] == "old note"
     assert (configs_root / "archive" / "legacy_eval" / "legacy.yaml").exists()
     assert (configs_root / "rubrics" / "source" / "rubric.md").exists()

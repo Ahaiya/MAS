@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """Validate configuration bundles.
 
+Recommended unified entry:
+  python -m scripts config validate --bundle ...
+
 Compiles a bundle YAML file through the full resolver/compiler pipeline
 and reports version closure, schema validation, and freeze hash.
 """

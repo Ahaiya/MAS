@@ -36,7 +36,7 @@ from src.providers.switch import create_provider_from_env
 
 _PROJECT_ROOT = Path(__file__).parent.parent.parent
 _SAMPLE_PATH = _PROJECT_ROOT / "data" / "samples" / "sample_20716.txt"
-_BUNDLE_PATH = _PROJECT_ROOT / "configs" / "bundles" / "asap_set8_baseline.bundle.yaml"
+_BUNDLE_PATH = _PROJECT_ROOT / "configs" / "bundles" / "engineering_eval_baseline.bundle.yaml"
 
 
 def _skip_if_no_credentials():
@@ -112,12 +112,11 @@ class TestRealProviderSmoke:
         assert len(content) > 0
 
     def test_provider_from_env(self):
-        """create_provider_from_env() returns a provider; unregistered names fall back to mock."""
+        """create_provider_from_env() returns a real provider using env defaults."""
         _skip_if_no_credentials()
         import os
         from src.providers.switch import create_provider_from_env
-        # Temporarily remove LLM_PROVIDER so the function uses the "mock" default.
-        # (.env may set LLM_PROVIDER to a name not in the default registry.)
+        # Temporarily remove LLM_PROVIDER so the function uses its default.
         old = os.environ.pop("LLM_PROVIDER", None)
         try:
             provider = create_provider_from_env()
@@ -137,7 +136,9 @@ class TestRealExtractionSmoke:
         """Build an extraction prompt and call the real provider."""
         _skip_if_no_credentials()
         from src.agents.config_resolver import run as resolve_bundle
+        from src.agents import chunker, coverage
         from src.agents.extractor import run as extract
+        from src.contracts.request_models import EvaluationRequest
         from src.providers.prompt_loader import PromptLoader
 
         if not _BUNDLE_PATH.exists() or not _SAMPLE_PATH.exists():
@@ -147,16 +148,22 @@ class TestRealExtractionSmoke:
         resolved = resolve_bundle(_BUNDLE_PATH)
         rubric = resolved.rubric_snapshot
 
-        from src.agents import coverage, deterministic_chunker
-        from src.contracts.request_models import EvaluationRequest
-
         raw_text = _SAMPLE_PATH.read_text(encoding="utf-8")
         req = EvaluationRequest(raw_text=raw_text, bundle_ref="smoke")
-        _, document = deterministic_chunker.run(req)
-        plans = coverage.run(document, rubric)
 
         loader = PromptLoader()
+        chunking_tpl = loader.load(_PROJECT_ROOT / "configs" / "prompts" / "chunking.yaml")
+        relevance_tpl = loader.load(
+            _PROJECT_ROOT / "configs" / "prompts" / "dimension_relevance.yaml"
+        )
         template = loader.load(_PROJECT_ROOT / "configs" / "prompts" / "evidence_extraction.yaml")
+        _, document = chunker.run(req, provider=provider, template=chunking_tpl)
+        plans = coverage.run(
+            document,
+            rubric,
+            provider=provider,
+            template=relevance_tpl,
+        )
 
         # Run extraction for first dimension only (smoke test, not full pipeline)
         first_plan = plans[0]

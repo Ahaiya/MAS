@@ -198,6 +198,7 @@ class TestTextUnit:
         assert text_unit.start_offset == 0
         assert text_unit.end_offset == 44
         assert text_unit.sequence_index == 0
+        assert text_unit.source_type == "unknown"
 
     def test_offset_consistency(self, text_unit):
         # end_offset must be > start_offset
@@ -231,6 +232,21 @@ class TestTextUnit:
 
     def test_span_length(self, text_unit):
         assert text_unit.span_length() == text_unit.end_offset - text_unit.start_offset
+
+    def test_source_fields_roundtrip(self):
+        unit = TextUnit(
+            unit_id="unit-src",
+            document_id="doc-001",
+            text="hello world",
+            start_offset=0,
+            end_offset=11,
+            unit_type="chunk",
+            sequence_index=0,
+            source_type="human",
+            source_label="human_input",
+        )
+        restored = TextUnit.from_dict(unit.to_dict())
+        assert restored == unit
 
 
 # ── NormalizedDocument ─────────────────────────────────────────────────────────

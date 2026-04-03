@@ -3,16 +3,15 @@
 
 PipelineRunner 是系统唯一的编排入口。职责如下：
 1. 按合法转换矩阵推进 StateGraph 状态。
-2. 按阶段顺序调用各 Worker（真实 LLM 模式或确定性 Mock 模式）。
+2. 按阶段顺序调用各 Worker（仅真实 LLM 模式）。
 3. 通过 TraceStore 记录每个节点的生命周期事件。
 4. 通过 CheckpointManager 管理 RE_EXTRACT / RE_SCORE 回退重试次数。
 5. 使用 router 函数做路由决策，本文件不内联任何路由逻辑。
 6. 流水线到达终止状态后，返回 (RunTrace, feedback) 元组。
 
 运行模式：
-- 真实 LLM 模式：provider 不为 None 时生效。证据抽取、评分、一致性检查、反馈生成
-  在需要 LLM 的阶段调用真实 Agent；feedback 阶段统一走 feedback。
-- Mock 模式：未配置 provider 时使用确定性 Mock Worker，用于回归测试与管道联调。
+- 真实 LLM 模式：证据抽取、评分、一致性检查、反馈生成在需要 LLM 的阶段
+  调用真实 Agent；feedback 阶段统一走 feedback。
 
 设计不变量：
 - 所有阶段间数据流均通过 contracts 层定义的类型传递，不使用临时 dict。
@@ -27,8 +26,9 @@ PipelineRunner 是系统唯一的编排入口。职责如下：
   与 per-dimension top-k 从 chunking_policy 读取，缺失时自动降级。
 - [2026-03-30] Stage L 接入 reconciliation：统一冲突检测与裁决策略，支持
   re_score_scope（all_dimensions/conflicted_only）与策略化 resolution。
-- [2026-03-30] feedback 阶段前执行 compute_composite，composite 总分写入
-  feedback_dict["composite"]，并作为运行输出属性保留。
+- [2026-03-30] feedback 阶段前执行 compute_composite，聚合指标分写入
+  feedback_dict["indicator_score"]，同时保留 feedback_dict["composite"]
+  作为兼容别名，并作为运行输出属性保留。
 """
 
 from __future__ import annotations
@@ -40,9 +40,6 @@ from uuid import uuid4
 from src.agents import (
     chunker,
     coverage,
-    deterministic_chunker,
-    deterministic_extractor,
-    deterministic_scorer,
     extractor,
     feedback as feedback_agent,
     observer,
@@ -80,6 +77,7 @@ from src.pipeline.validators import (
     validate_hypotheses,
     validate_observations,
 )
+from src.pipeline.export import build_indicator_score_payload
 from src.policies.aggregation import compute_composite
 
 DEFAULT_CHECKPOINT_MAX_RETRIES = 2
@@ -100,8 +98,7 @@ class PipelineRunner:
     Args:
         bundle          : A frozen ResolvedArtifactBundle (from ConfigCompiler).
         provider        : Default BaseProvider for real LLM calls (used by stages
-                          and raters that have no specific override).  When None,
-                          the pipeline uses deterministic mock workers.
+                          and raters that have no specific override).
         rater_providers : Optional per-rater provider map {rater_id: BaseProvider}.
                           Takes precedence over `provider` for the scoring stage.
         stage_providers : Optional per-stage provider map {stage_name: BaseProvider}.
@@ -138,6 +135,15 @@ class PipelineRunner:
         self._last_adjudications: List[AdjudicationRecord] = []
         self._last_decisions: List[FinalDimensionDecision] = []
         self._last_composite: Optional[CompositeDecision] = None
+        if (
+            self._provider is None
+            and not self._rater_providers
+            and not self._stage_providers
+        ):
+            raise ValueError(
+                "PipelineRunner requires at least one real provider. "
+                "Provide `provider`, `rater_providers`, or `stage_providers`."
+            )
 
     @property
     def last_request(self) -> Optional[EvaluationRequest]:
@@ -212,9 +218,6 @@ class PipelineRunner:
         """CompositeDecision produced in the most recent run() call."""
         return self._last_composite
 
-    def _is_real(self) -> bool:
-        return self._provider is not None or bool(self._rater_providers)
-
     def _provider_for_rater(self, rater_id: str) -> BaseProvider:
         """Return the provider to use for a specific rater.
 
@@ -244,6 +247,17 @@ class PipelineRunner:
             f"No provider configured for stage '{stage}'. "
             "Pass a default provider or configure stage_providers."
         )
+
+    def _replay_provider_name(self) -> str:
+        if self._provider is not None:
+            return self._provider.name
+        if self._stage_providers:
+            first_stage = sorted(self._stage_providers)[0]
+            return self._stage_providers[first_stage].name
+        if self._rater_providers:
+            first_rater = sorted(self._rater_providers)[0]
+            return self._rater_providers[first_rater].name
+        return "unknown"
 
     def _tpl(self, name: str) -> PromptTemplate:
         """Return a named PromptTemplate; raises KeyError if missing."""
@@ -526,7 +540,7 @@ class PipelineRunner:
                     },
                     bundle_id=bundle_id,
                     bundle_version=bundle_version,
-                    provider_mode="real" if self._is_real() else "mock",
+                    provider_mode="real",
                     provider_bindings=self._provider_bindings(),
                 )
                 self._debug_write_node_artifact(
@@ -551,17 +565,12 @@ class PipelineRunner:
                 request_id,
                 metadata={"request_id": request_id},
             )
-            if self._is_real():
-                chunking_provider = self._stage_providers.get("chunking", self._provider)
-                chunking_tpl = self._prompt_templates.get("chunking")
-                _norm_req, document = chunker.run(
-                    request,
-                    provider=chunking_provider,
-                    template=chunking_tpl,
-                    token_threshold=token_threshold,
-                )
-            else:
-                _norm_req, document = deterministic_chunker.run(request)
+            _norm_req, document = chunker.run(
+                request,
+                provider=self._provider_for_stage("chunking"),
+                template=self._tpl("chunking"),
+                token_threshold=token_threshold,
+            )
             self._last_normalized_request = _norm_req
             ckpt = ckpt_mgr.create_checkpoint(
                 "node_preprocess", "preprocess", document.document_id
@@ -612,20 +621,13 @@ class PipelineRunner:
                 document,
                 summary="Input document for coverage planning",
             )
-            if self._is_real():
-                coverage_provider = self._stage_providers.get(
-                    "coverage_planning", self._provider
-                )
-                coverage_tpl = self._prompt_templates.get("dimension_relevance")
-                plans = coverage.run(
-                    document,
-                    rubric,
-                    provider=coverage_provider,
-                    template=coverage_tpl,
-                    chunking_policy=chunking_policy,
-                )
-            else:
-                plans = coverage.run(document, rubric)
+            plans = coverage.run(
+                document,
+                rubric,
+                provider=self._provider_for_stage("coverage_planning"),
+                template=self._tpl("dimension_relevance"),
+                chunking_policy=chunking_policy,
+            )
             validate_coverage_plans(plans, rubric)
             ckpt = ckpt_mgr.create_checkpoint(
                 "node_coverage", "coverage", document.document_id
@@ -676,27 +678,21 @@ class PipelineRunner:
                         plans,
                         summary=f"{len(plans)} plans entering extraction",
                     )
-                    if self._is_real():
-                        extraction_tpl = self._tpl("evidence_extraction")
-                        extraction_provider = self._provider_for_stage("evidence_extraction")
-                        all_spans_by_dim = {
-                            plan.dimension_id: extractor.run(
-                                plan,
-                                document,
-                                rubric,
-                                extraction_provider,
-                                extraction_tpl,
-                                override_template=self._prompt_templates.get(
-                                    f"evidence_extraction_override_{plan.dimension_id}"
-                                ),
-                            )
-                            for plan in plans
-                        }
-                    else:
-                        all_spans_by_dim = {
-                            plan.dimension_id: deterministic_extractor.run(plan, document)
-                            for plan in plans
-                        }
+                    extraction_tpl = self._tpl("evidence_extraction")
+                    extraction_provider = self._provider_for_stage("evidence_extraction")
+                    all_spans_by_dim = {
+                        plan.dimension_id: extractor.run(
+                            plan,
+                            document,
+                            rubric,
+                            extraction_provider,
+                            extraction_tpl,
+                            override_template=self._prompt_templates.get(
+                                f"evidence_extraction_override_{plan.dimension_id}"
+                            ),
+                        )
+                        for plan in plans
+                    }
                     ckpt = ckpt_mgr.create_checkpoint(
                         "node_extractor", "extract", document.document_id
                     )
@@ -806,35 +802,28 @@ class PipelineRunner:
                         observations,
                         summary=f"{len(observations)} observations entering scorer",
                     )
-                    if self._is_real():
-                        scoring_tpl = self._tpl("scoring")
-                        all_spans_flat = [
-                            s for spans in all_spans_by_dim.values() for s in spans
-                        ]
-                        hypotheses = [
-                            scorer.run(
-                                obs,
-                                all_spans_flat,
-                                rubric,
-                                self._provider_for_rater(rater_id),
-                                scoring_tpl,
-                                rater_id,
-                                scoring_context=scoring_context,
-                                override_template=self._prompt_templates.get(
-                                    f"scoring_override_{obs.dimension_id}"
-                                ),
-                                node_id="node_scorer",
-                                stage_name="scoring",
-                            )
-                            for obs in observations
-                            for rater_id in rater_ids
-                        ]
-                    else:
-                        hypotheses = [
-                            deterministic_scorer.run(obs, rubric, rater_id)
-                            for obs in observations
-                            for rater_id in rater_ids
-                        ]
+                    scoring_tpl = self._tpl("scoring")
+                    all_spans_flat = [
+                        s for spans in all_spans_by_dim.values() for s in spans
+                    ]
+                    hypotheses = [
+                        scorer.run(
+                            obs,
+                            all_spans_flat,
+                            rubric,
+                            self._provider_for_rater(rater_id),
+                            scoring_tpl,
+                            rater_id,
+                            scoring_context=scoring_context,
+                            override_template=self._prompt_templates.get(
+                                f"scoring_override_{obs.dimension_id}"
+                            ),
+                            node_id="node_scorer",
+                            stage_name="scoring",
+                        )
+                        for obs in observations
+                        for rater_id in rater_ids
+                    ]
                     validate_hypotheses(hypotheses, plans, rater_ids)
                     self._last_hypotheses = list(hypotheses)
                     ckpt = ckpt_mgr.create_checkpoint(
@@ -881,7 +870,6 @@ class PipelineRunner:
                     recon_result = reconciliation.run(
                         hypotheses,
                         policy,
-                        use_deterministic_checker=not self._is_real(),
                     )
                     conflicts = recon_result.conflicts
                     self._last_conflicts = list(conflicts)
@@ -931,7 +919,6 @@ class PipelineRunner:
                             conflicts,
                             hypotheses,
                             policy,
-                            use_deterministic_resolver=not self._is_real(),
                         )
                         self._last_adjudications = list(adj_records)
                         self._last_decisions = list(decisions)
@@ -945,8 +932,7 @@ class PipelineRunner:
                         break
 
                     elif next_state == PipelineState.ADJUDICATED:
-                        # Real mode may require an extra resolution-rater scoring pass.
-                        if self._is_real() and recon_result.needs_resolution_scoring:
+                        if recon_result.needs_resolution_scoring:
                             resolution_rater = recon_result.resolution_rater_label
                             target_dimension_ids = set(recon_result.resolution_dimension_ids)
                             target_observations = [
@@ -985,6 +971,10 @@ class PipelineRunner:
                                         override_template=self._prompt_templates.get(
                                             f"scoring_override_{obs.dimension_id}"
                                         ),
+                                        prior_hypotheses=[
+                                            h for h in hypotheses
+                                            if h.dimension_id == obs.dimension_id
+                                        ],
                                         node_id="node_resolution_scorer",
                                         stage_name="score_resolution",
                                     )
@@ -1047,7 +1037,6 @@ class PipelineRunner:
                             conflicts,
                             hypotheses,
                             policy,
-                            use_deterministic_resolver=not self._is_real(),
                         )
                         self._last_adjudications = list(adj_records)
                         self._last_decisions = list(decisions)
@@ -1185,7 +1174,7 @@ class PipelineRunner:
                 summary=f"{len(decisions)} decisions entering feedback",
             )
             all_spans_flat = [s for spans in all_spans_by_dim.values() for s in spans]
-            explanation_tpl = self._tpl("explanation") if self._is_real() else None
+            explanation_tpl = self._tpl("explanation")
             explanation_overrides: Dict[str, PromptTemplate] = {}
             for tpl_name, tpl in self._prompt_templates.items():
                 if not tpl_name.startswith("explanation_override_"):
@@ -1199,16 +1188,20 @@ class PipelineRunner:
                 hypotheses=hypotheses,
                 rubric=rubric,
                 policy=policy,
-                provider=(
-                    self._provider_for_stage("feedback")
-                    if self._is_real() else None
-                ),
+                provider=self._provider_for_stage("feedback"),
                 template=explanation_tpl,
                 override_templates=explanation_overrides,
             )
 
-            # 将 composite 总分写入 feedback，保持输出结构统一
-            feedback["composite"] = composite.to_dict() if composite is not None else None
+            # 将聚合后的指标分写入 feedback。
+            # `indicator_score` 是面向工程评价场景的主命名；
+            # `composite` 继续保留为兼容别名，避免外环 probe / 统计脚本断裂。
+            indicator_score = build_indicator_score_payload(
+                composite,
+                bundle_metadata=bundle.artifact_bundle.metadata,
+            )
+            feedback["indicator_score"] = indicator_score
+            feedback["composite"] = indicator_score
 
             feedback_output_ref = f"dims:{len(feedback.get('dimensions', {}))}"
             store.record_node_success(
@@ -1223,9 +1216,15 @@ class PipelineRunner:
             )
             self._debug_write_node_artifact(
                 "node_feedback",
+                "output_indicator_score",
+                indicator_score,
+                summary="Indicator-level aggregate score written into feedback",
+            )
+            self._debug_write_node_artifact(
+                "node_feedback",
                 "output_composite",
-                composite.to_dict() if composite is not None else None,
-                summary="Composite decision written into feedback",
+                indicator_score,
+                summary="Compatibility alias of indicator-level aggregate score",
             )
             self._debug_node_finish(
                 "node_feedback",
@@ -1241,7 +1240,7 @@ class PipelineRunner:
             run_trace = store.build_run_trace(
                 status=RunStatus.COMPLETED,
                 terminal_validation_passed=terminal_passed,
-                replay_metadata={"provider": self._provider.name if self._is_real() else "mock"},
+                replay_metadata={"provider": self._replay_provider_name()},
             )
             return run_trace, feedback
 

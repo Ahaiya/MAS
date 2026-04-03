@@ -6,7 +6,7 @@ LLM-assisted document chunker.
 Converts EvaluationRequest -> (NormalizedRequest, NormalizedDocument), using:
 - short-document semantic chunking (single LLM call),
 - long-document hierarchical chunking (hard split + summary + LLM call),
-- deterministic fallback when provider/template/parsing fails.
+- strict LLM execution with explicit failure on chunking errors.
 """
 
 from __future__ import annotations
@@ -14,11 +14,10 @@ from __future__ import annotations
 import hashlib
 import math
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional, Tuple
 
-from src.agents import deterministic_chunker
 from src.contracts.request_models import (
     EvaluationRequest,
     NormalizedDocument,
@@ -28,6 +27,7 @@ from src.contracts.request_models import (
 from src.providers.base import BaseProvider, LLMRequest
 from src.providers.prompt_loader import PromptTemplate, render_template
 from src.providers.structured_output import normalize_structured_output
+from src.utils.dialogue_sources import extract_dialogue_source_spans, source_for_range
 
 _CHINESE_CHAR_RE = re.compile(r"[\u4e00-\u9fff]")
 _NON_WS_RE = re.compile(r"\S")
@@ -102,36 +102,6 @@ def _build_normalized_request(request: EvaluationRequest, normalized_text: str) 
         normalization_notes=["strip_whitespace"],
         metadata=dict(request.metadata),
     )
-
-
-def _fallback_document(
-    request: EvaluationRequest,
-    *,
-    token_estimate: int,
-    document_type: str,
-    reason: str,
-) -> Tuple[NormalizedRequest, NormalizedDocument]:
-    norm_req, base_doc = deterministic_chunker.run(request)
-    metadata = dict(base_doc.document_metadata)
-    metadata.update(
-        {
-            "chunking": "rule",
-            "chunking_fallback_reason": reason,
-            "unit_count": len(base_doc.text_units),
-        }
-    )
-    doc = NormalizedDocument(
-        document_id=base_doc.document_id,
-        request_id=base_doc.request_id,
-        normalized_text=base_doc.normalized_text,
-        text_units=list(base_doc.text_units),
-        char_count=base_doc.char_count,
-        word_count=base_doc.word_count,
-        document_metadata=metadata,
-        document_type=document_type,
-        token_estimate=token_estimate,
-    )
-    return norm_req, doc
 
 
 def _parse_chunks(data: Dict[str, Any]) -> List[Dict[str, str]]:
@@ -311,6 +281,7 @@ def _build_document(
     document_type: str,
     token_estimate: int,
     method: str,
+    source_spans: List[Dict[str, Any]],
 ) -> NormalizedDocument:
     document_id = f"doc-{_hid(normalized_text)}"
     return NormalizedDocument(
@@ -320,35 +291,56 @@ def _build_document(
         text_units=text_units,
         char_count=len(normalized_text),
         word_count=len(normalized_text.split()),
-        document_metadata={"segmentation": "llm_chunking", "chunking": method, "unit_count": len(text_units)},
+        document_metadata={
+            "segmentation": "llm_chunking",
+            "chunking": method,
+            "unit_count": len(text_units),
+            "source_spans": list(source_spans),
+        },
         document_type=document_type,
         token_estimate=token_estimate,
     )
 
 
+def _annotate_units_with_sources(
+    text_units: List[TextUnit],
+    source_spans: List[Dict[str, Any]],
+) -> List[TextUnit]:
+    if not source_spans:
+        return text_units
+    annotated: List[TextUnit] = []
+    for unit in text_units:
+        source_type, source_label = source_for_range(
+            unit.start_offset,
+            unit.end_offset,
+            source_spans,
+            allow_mixed=True,
+        )
+        annotated.append(
+            replace(
+                unit,
+                source_type=source_type,
+                source_label=source_label,
+            )
+        )
+    return annotated
+
+
 def run(
     request: EvaluationRequest,
-    provider: Optional[BaseProvider] = None,
-    template: Optional[PromptTemplate] = None,
+    provider: BaseProvider,
+    template: PromptTemplate,
     token_threshold: int = 4000,
 ) -> Tuple[NormalizedRequest, NormalizedDocument]:
     """
     LLM-assisted chunking entrypoint.
-
-    Falls back to deterministic chunking when provider/template is absent or any
-    LLM/parse/alignment error occurs.
     """
     normalized_text = request.raw_text.strip()
+    source_spans = extract_dialogue_source_spans(normalized_text)
     document_type = _resolve_document_type(request)
+    if document_type == "unknown" and source_spans:
+        document_type = "dialogue"
     token_estimate = _estimate_tokens(normalized_text)
-
-    if provider is None or template is None:
-        return _fallback_document(
-            request,
-            token_estimate=token_estimate,
-            document_type=document_type,
-            reason="missing_provider_or_template",
-        )
 
     norm_req = _build_normalized_request(request, normalized_text)
     document_id = f"doc-{_hid(normalized_text)}"
@@ -383,6 +375,7 @@ def run(
             text_units = _create_llm_units_from_text_match(
                 normalized_text, document_id, chunks, method="llm_semantic"
             )
+            text_units = _annotate_units_with_sources(text_units, source_spans)
             doc = _build_document(
                 norm_req=norm_req,
                 normalized_text=normalized_text,
@@ -390,24 +383,15 @@ def run(
                 document_type=document_type,
                 token_estimate=token_estimate,
                 method="llm_semantic",
+                source_spans=source_spans,
             )
             return norm_req, doc
-        except Exception:
-            return _fallback_document(
-                request,
-                token_estimate=token_estimate,
-                document_type=document_type,
-                reason="semantic_chunking_failed",
-            )
+        except Exception as exc:
+            raise RuntimeError(f"Semantic chunking failed: {exc}") from exc
 
     hard_chunks = _hard_split_by_words(normalized_text, max_words_per_chunk=1500)
     if not hard_chunks:
-        return _fallback_document(
-            request,
-            token_estimate=token_estimate,
-            document_type=document_type,
-            reason="empty_hard_chunks",
-        )
+        raise ValueError("Hierarchical chunking failed: hard split produced no chunks")
 
     try:
         prompt = _render_chunking_prompt(
@@ -442,6 +426,7 @@ def run(
             hard_chunks=hard_chunks,
             title_by_idx=title_by_idx,
         )
+        text_units = _annotate_units_with_sources(text_units, source_spans)
         doc = _build_document(
             norm_req=norm_req,
             normalized_text=normalized_text,
@@ -449,12 +434,8 @@ def run(
             document_type=document_type,
             token_estimate=token_estimate,
             method="llm_hierarchical",
+            source_spans=source_spans,
         )
         return norm_req, doc
-    except Exception:
-        return _fallback_document(
-            request,
-            token_estimate=token_estimate,
-            document_type=document_type,
-            reason="hierarchical_chunking_failed",
-        )
+    except Exception as exc:
+        raise RuntimeError(f"Hierarchical chunking failed: {exc}") from exc

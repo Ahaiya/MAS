@@ -86,6 +86,9 @@ class EvidenceSpan:
         extraction_note: Optional extraction-time comment (e.g., uncertainty flag).
         support_type: Support polarity for this evidence span:
                       "supporting" | "counter" | "neutral".
+        source_type: Source classification of the quoted text:
+                     "human" | "ai" | "system" | "unknown".
+        source_label: Optional raw source label (for example "human_input").
     """
 
     span_id: str
@@ -99,6 +102,8 @@ class EvidenceSpan:
     facet_ids: List[str]
     extraction_note: Optional[str]
     support_type: str = "supporting"
+    source_type: str = "unknown"
+    source_label: Optional[str] = None
 
     def __post_init__(self) -> None:
         if self.scope == EvidenceScope.SPAN:
@@ -116,6 +121,11 @@ class EvidenceSpan:
             raise ValueError(
                 f"EvidenceSpan '{self.span_id}': support_type must be one of "
                 "'supporting' | 'counter' | 'neutral'."
+            )
+        if self.source_type not in {"human", "ai", "system", "unknown"}:
+            raise ValueError(
+                f"EvidenceSpan '{self.span_id}': invalid source_type "
+                f"'{self.source_type}'."
             )
 
     def span_length(self) -> Optional[int]:
@@ -137,6 +147,8 @@ class EvidenceSpan:
             "facet_ids": list(self.facet_ids),
             "extraction_note": self.extraction_note,
             "support_type": self.support_type,
+            "source_type": self.source_type,
+            "source_label": self.source_label,
         }
 
     @classmethod
@@ -147,6 +159,7 @@ class EvidenceSpan:
                 "span_id", "document_id", "unit_id", "text_quote",
                 "start_offset", "end_offset", "scope", "dimension_id",
                 "facet_ids", "extraction_note", "support_type",
+                "source_type", "source_label",
             }),
             "EvidenceSpan",
         )
@@ -162,6 +175,8 @@ class EvidenceSpan:
             facet_ids=list(data.get("facet_ids") or []),
             extraction_note=data.get("extraction_note"),
             support_type=str(data.get("support_type") or "supporting"),
+            source_type=str(data.get("source_type") or "unknown"),
+            source_label=data.get("source_label"),
         )
 
 

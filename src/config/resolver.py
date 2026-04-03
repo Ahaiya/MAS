@@ -52,6 +52,7 @@ _SCHEMA_ROUTE: list[tuple[str, type]] = [
     ("policies/aggregation/", AggregationFileSchema),
     ("policies/explanation/", ExplanationFileSchema),
     ("policies/chunking/", ChunkingPolicyFileSchema),
+    ("prompts/tasks/", ScoringContextFileSchema),
     ("prompts/scoring_context.yaml", ScoringContextFileSchema),
     ("prompts/", PromptFileSchema),
 ]

@@ -1,0 +1,212 @@
+You are a rubric evidence planner for engineering competency evaluation.
+
+Your task is to select the most relevant document chunks for one rubric dimension.
+Focus on semantic relevance to the target dimension and its required facets.
+
+## Target Dimension
+Name: 痛点定位与需求精准度
+Description: 将用户痛点与具体行为路径、情绪体验和环境约束建立清晰关联，对痛点进行优先级排序，并将其转化为可操作、可验证的功能假设或设计方向。
+
+## Required Facets
+
+- a4_2_evidence
+
+
+
+
+## Candidate Chunks (id, title, first sentence)
+
+- id: unit-0ac378677179
+  title: 项目元数据
+  first_sentence: # 2-银龄经济共生站
+- 存档ID: 686765e4b13b69327dd8e1c4
+- 会话ID: 92f0d45f-dd10-45d8-8711-121df4c233f1
+- 创建时间: 2025/7/4 13:25:56
+- 更新时间: 2025/7/4 13:38:03
+- 流程名称: bronze_standard_comprehensive
+
+## 记录
+### session_init
+标签: project_start, default_project
+时间: 2025/7/4 09:32:11
+```text
+以 “银发技艺活化 + 代际双向成长” 为核心，搭建 AI 赋能的技能交易与互学平台，打通 “银发经验输出→青年创意反哺→文化价值沉淀” 的闭环
+```
+
+### training_chat_response
+标签: chat
+时间: 2025/7/4 09:32:11
+```text
+你好，我是产品设计导师，关于**产品设计**，我们开始讨论。
+  source_type: mixed
+  source_label: expert_dialog
+
+- id: unit-ffc9fd883bb2
+  title: 会话初始化与项目启动
+  first_sentence: | 建立完善数据治理体系，数据加密，透明化政策 |
+| 法律违规 | 高 | 平台运营中断，巨额罚款 | 定期法律审计，遵守《个保法》、《算法推荐规定》 |
+| 用户伤害 | 高 | 用户流失，社会声誉受损 | 适老化设计，算法透明，防诈骗教育，人文关怀 |
+| AI偏见 | 中/高 | 某些技艺或用户被低估，形成新的歧视 | 算法透明与可解释性，伦理委员会审查 |
+| 文化异化 | 中 | 传统技艺失去本真，被过度商业化 | 注重文化传承深度，避免过度商业化 |
+
+这份专家报告为我们接下来的需求提炼和功能设计提供了非常重要的指导原则和限制条件。
+  source_type: mixed
+  source_label: training_chat_response
+
+- id: unit-ed6bb2b03b2f
+  title: 产品设计导师开场
+  first_sentence: 产品设计, bronze_product_manager
+时间: 2025/7/4 10:04:50
+```text
+1.
+  source_type: mixed
+  source_label: expert_dialog
+
+- id: unit-f17993471e26
+  title: 创意专家调用成功
+  first_sentence: **激励闭环（数字身份系统）**：解决“为何传”的问题，保障长期参与动力。
+  source_type: mixed
+  source_label: training_draft_docs
+
+- id: unit-06fa0f5c6fdb
+  title: 产品设计功能提议
+  first_sentence: 技术实现难度较低（可采用联盟链或积分系统），合规性可控（避免涉及加密货币交易，聚焦身份认证与荣誉体系）。
+  source_type: mixed
+  source_label: training_draft_docs
+
+- id: unit-5e0c892fe718
+  title: 激励闭环与黄金三角
+  first_sentence: : 25\n```\n\n**功能选择总结表：**\n| 核心功能 | 解决的痛点 | 目标用户 | 预期价值 | 选择理由 |\n|---------|-----------|---------|---------|---------|\n| **技艺 DNA 数字提取器** | 传统技艺“口传心授”效率低、非结构化、濒临失传 | 银发匠人、青年学习者 | 降低传承门槛，扩大传播，文化沉淀，形成“活态技艺数据库” | Kano基础需求，解决痛点程度高，是“传什么”的基础。
+  source_type: mixed
+  source_label: training_draft_docs
+
+- id: unit-c62f180ea94f
+  title: 技术实现与合规性
+  first_sentence: 学生反思 |\",\"type\":\"unchanged\"},{\"content\":\"|---|---|---|---|\",\"type\":\"unchanged\"},{\"content\":\"| 创意专家 | 提供了AI赋能的“技艺基因解析”、“智慧伴侣匹配”、“沉浸式“技艺茧房”与“反哺工坊””及“记忆碎片”数字收藏链等创新点。
+  source_type: mixed
+  source_label: training_draft_docs
+
+- id: unit-4459f75240b2
+  title: 功能选择总结表
+  first_sentence: | 5             | 提升了青年创作和学习的深度，有较强吸引力，但技术栈复杂，实现成本高。
+  source_type: mixed
+  source_label: training_draft_docs
+
+- id: unit-d08e741e7c33
+  title: 学生反思与创意专家贡献
+  first_sentence: 。
+  source_type: mixed
+  source_label: training_draft_docs
+
+- id: unit-a2d444e8cdbd
+  title: 功能评分与角色拆解
+  first_sentence: | 用户界面与交互逻辑                           | **中等**     | 涉及前端开发，用户体验设计，依赖数据访问层，可在核心逻辑开发的同时并行。
+  source_type: mixed
+  source_label: training_draft_docs
+
+- id: unit-64bdef3ccf92
+  title: 开发任务与非遗认知
+  first_sentence: **非遗文化认知**  
+   - **技艺解构能力**：能将“景德镇制瓷”拆解为72道工序，并识别其中“揉泥力度（0.
+  source_type: mixed
+  source_label: training_final_docs
+
+- id: unit-5feeb63cea25
+  title: 技术配置与预览设置
+  first_sentence: }\n    }\n});",
+      "type": "javascript"
+    }
+  ],
+  "assets": [],
+  "preview": {
+    "defaultWidth": 800,
+    "defaultHeight": 600,
+    "supportedDevices": ["mobile", "tablet", "desktop"],
+    "preferredColorScheme": "system",
+    "initialState": {},
+    "frameRate": 60,
+    "renderingMode": "dom"
+  },
+  "sandbox": {
+    "permissions": ["clipboard-read", "clipboard-write"],
+    "allowScripts": true,
+    "allowSameOriginIframe": true,
+    "fallbackStrategy": "graceful",
+    "memoryLimit": "moderate",
+    "processingLimit": "moderate"
+  }
+}
+```
+
+### task_process_state
+标签: 92f0d45f-dd10-45d8-8711-121df4c233f1, bronze_standard_comprehensive, 产品设计, bronze_product_manager, 
+时间: 2025/7/4 13:26:06
+```json
+{
+  "FinalResult": "根据思考步骤得出的结论（由于无法调用大模型生成完整答案）",
+  "agentName": "青铜版产品经理",
+  "currentSummary": "# 青铜版产品需求规格书PRD\n\n## 1.
+  source_type: unknown
+  source_label: task_process_state
+
+- id: unit-fee8c1139a7f
+  title: 任务处理状态与PRD基本信息
+  first_sentence: 描绘目标用户的具体形象\n\n# 🤖 kano 专家回复（11:43:20）\n\n你好，我是专业的Kano模型用户需求层次分析大师。
+  source_type: unknown
+  source_label: task_process_state
+
+- id: unit-0dafac3d65f1
+  title: Kano专家回复与项目时间线
+  first_sentence: 45d\n    合规性与隐私策略制定     :active, a3, 2024-01-15, 30d\n\n    section 技术研发与实现\n    智能餐盘AI模型训练       :2024-02-15, 90d\n    大数据分析平台搭建       :2024-03-01, 75d\n    前端可视化界面开发       :2024-03-15, 60d\n    各模块集成与API开发      :2024-04-01, 60d\n    隐私保护功能开发与测试   :2024-03-01, 45d\n\n    section 测试与优化\n    内部功能测试             :2024-06-01, 30d\n    小范围试点与用户反馈     :2024-07-01, 45d\n    系统优化与迭代           :2024-08-15, 30d\n\n    section 部署与推广\n    硬件生产与部署指导       :2024-09-15, 30d\n    市场推广与渠道合作       :2024-10-15, 60d\n    用户培训与售后支持       :2024-11-01, 持续\n```\n\n## 四、创意评估\n\n| 维度 | 评分 | 闪光点 |\n|------|------|--------|\n| **创新性** | 9/10 | 从被动监管转向主动赋能，通过非个人识别实现数据驱动的环保。
+  source_type: unknown
+  source_label: task_process_state
+
+- id: unit-cd89c4bc808c
+  title: 对话角色与功能重申
+  first_sentence: "Human"
+    },
+    {
+      "content": "",
+      "role": "青铜版产品经理导师"
+    },
+    {
+      "content": "1.
+  source_type: unknown
+  source_label: task_process_state
+
+- id: unit-a9db85cbb54c
+  title: 资源分配与多模态原理
+  first_sentence: **资源分配优化：** 这也意味着在后续阶段中，系统不会为硬件相关的任务分配资源或专家。
+  source_type: unknown
+  source_label: task_process_state
+
+- id: unit-9183d884bd6e
+  title: Chunk c16
+  first_sentence: \n   - **多模态融合原理**：理解视频帧特征（如HOG特征）与语音梅尔频谱如何通过跨模态注意力机制建立关联（例如，将“剪纸剪刀咔嚓声”与“剪刀开合角度”特征向量对齐）。
+  source_type: unknown
+  source_label: task_process_state
+
+- id: unit-e4943db353a1
+  title: HTML样式片段
+  first_sentence: content=\\\"width=device-width, initial-scale=1.
+  source_type: mixed
+  source_label: task_process_state
+
+
+## Selection Requirement
+Select up to top_k = 6 chunk IDs that are most relevant to this dimension.
+Rank them from most relevant to less relevant.
+
+## Output Format (JSON only)
+{
+  "relevant_chunk_ids": ["c2", "c5", "c1"]
+}
+
+## Output Rules
+- Return valid JSON only (no Markdown, no explanation text).
+- IDs must come only from the provided candidate chunks.
+- Return no more than top_k IDs.
+- If fewer chunks are truly relevant, return fewer IDs.
+- Keep IDs unique and ordered by relevance.
+- Prefer chunks with `source_type=human` when source tags are present.
+- De-prioritize `source_type=ai` and `source_type=system` chunks unless they are the only way to understand the human input context.

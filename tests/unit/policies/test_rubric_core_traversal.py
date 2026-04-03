@@ -5,8 +5,7 @@ Verifies that:
 1. rubric_core.py provides config-driven dimension traversal utilities.
 2. All dimension iteration, scale range lookup, facet extraction, and
    descriptor lookup flows through the policy layer.
-3. Mock workers (Coverage, Scorer) use rubric_core for traversal.
-4. With different rubric configs (different dimension counts, different
+3. With different rubric configs (different dimension counts, different
    scales), the system adapts without code changes.
 
 Zero-hardcoding: no trait names, dimension codes, score values, or
@@ -37,7 +36,6 @@ from src.policies.rubric_core import (
     list_dimension_ids,
     validate_score_in_range,
 )
-from src.agents import coverage, deterministic_scorer
 
 
 # ── Fixtures: 2-dimension rubric with scale 1-4 ──────────────────────────────
@@ -351,64 +349,3 @@ class TestBuildDimensionTraversal:
         with pytest.raises(AttributeError):
             traversals[0].dimension_id = "modified"  # type: ignore[misc]
 
-
-# ── Integration: coverage uses rubric_core ───────────────────────────────────
-
-
-class TestCoverageUsesRubricCore:
-    def test_coverage_plan_count_matches_dimensions(self, rubric_2dim):
-        doc = _make_document()
-        plans = coverage.run(doc, rubric_2dim)
-        assert len(plans) == len(rubric_2dim.dimensions)
-
-    def test_coverage_plan_dimension_ids_match_rubric(self, rubric_2dim):
-        doc = _make_document()
-        plans = coverage.run(doc, rubric_2dim)
-        plan_ids = {p.dimension_id for p in plans}
-        expected = {d["dimension_id"] for d in rubric_2dim.dimensions}
-        assert plan_ids == expected
-
-    def test_coverage_facets_from_config(self, rubric_2dim):
-        doc = _make_document()
-        plans = coverage.run(doc, rubric_2dim)
-        for plan in plans:
-            expected_facets = get_required_facets(rubric_2dim, plan.dimension_id)
-            assert plan.required_facets == expected_facets
-
-    def test_coverage_adapts_to_different_rubric(self, rubric_3dim):
-        doc = _make_document()
-        plans = coverage.run(doc, rubric_3dim)
-        assert len(plans) == 3
-        for plan in plans:
-            expected_facets = get_required_facets(rubric_3dim, plan.dimension_id)
-            assert plan.required_facets == expected_facets
-
-
-# ── Integration: deterministic_scorer uses rubric_core ────────────────────────────────
-
-
-class TestScorerUsesRubricCore:
-    def test_score_within_scale_range(self, rubric_2dim):
-        obs = _make_observation("dim_alpha")
-        hyp = deterministic_scorer.run(obs, rubric_2dim, "rater_1")
-        scale_min, scale_max = get_scale_range(rubric_2dim, "dim_alpha")
-        assert scale_min <= hyp.score.canonical_score <= scale_max
-
-    def test_score_uses_correct_scale_ref(self, rubric_2dim):
-        obs = _make_observation("dim_alpha")
-        hyp = deterministic_scorer.run(obs, rubric_2dim, "rater_1")
-        assert hyp.score.scale_ref == get_scale_ref(rubric_2dim, "dim_alpha")
-
-    def test_scorer_adapts_to_different_scale(self, rubric_3dim):
-        obs = _make_observation("dim_x")
-        hyp = deterministic_scorer.run(obs, rubric_3dim, "rater_1")
-        scale_min, scale_max = get_scale_range(rubric_3dim, "dim_x")
-        assert scale_min <= hyp.score.canonical_score <= scale_max
-
-    def test_scorer_all_dimensions(self, rubric_3dim):
-        for dim_id in list_dimension_ids(rubric_3dim):
-            obs = _make_observation(dim_id)
-            hyp = deterministic_scorer.run(obs, rubric_3dim, "rater_1")
-            assert validate_score_in_range(
-                rubric_3dim, dim_id, hyp.score.canonical_score
-            )

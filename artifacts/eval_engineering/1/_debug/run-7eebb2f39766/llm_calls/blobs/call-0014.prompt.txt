@@ -1,0 +1,106 @@
+You are an explanation specialist for engineering competency evaluation feedback.
+
+Write feedback for the competency dimension: 用户群体识别的全面性 (A4-1).
+
+## Final Score
+Canonical Score: 4
+
+
+## Rubric Descriptors Referenced
+
+
+- 能识别 2-3 类主要老年用户或利益相关方，并在 AI 辅助下对其基本特征和使用情境做出区分
+
+- 能识别2-3类主要老年用户或利益相关方，并在AI辅助下对其基本特征和使用情境做出区分；能说明部分群体间的差异，但对需求冲突、使用障碍等的分析不够系统。
+
+- 能说明部分群体间的差异，但对需求冲突、使用障碍等的分析不够系统
+
+
+
+## Facet Evidence
+
+### Facet: a4_1_evidence
+Supporting evidence:
+
+
+- [span-ext-a199bad985f1] "| 群体名称 | 群体规模 | 简要特征 |
+| :------- | :------- | :------- |
+| 老年用户 | 庞大且持续增长 | 对故居有强烈恋旧情感，渴望重温记忆、获得精神慰藉，并实现跨代记忆传承。 |
+| 家庭成员/晚辈 | 规模可观 | 关心老年长辈精神健康，愿意协助长辈使用产品，并希望通过此项目促进代际交流和家族记忆传承。 |"
+
+- [span-ext-d208be1fc5a2] "**用户群体1：老年用户**
+
+#### 1. 目标用户群体特征
+
+-   **群体标识**：对曾经居住的故居（或具有重要意义的生活场所）有强烈情感联结，希望通过虚拟技术重现该场景，以满足恋旧情感、获得精神慰藉，并能与家人共同分享与传承记忆的老年人。
+-   **群体规模**：中国老龄化趋势显著，60岁以上人口数量庞大，且持续增长，其中对故居有深厚情感的群体规模可观。
+-   **市场占比**：该项目的核心和主要目标市场。
+-   **关键特征**：
+    1.  **情感需求强烈**：深植的恋旧情结，对安全感、归属感有较高需求。
+    2.  **记忆传承意愿**：渴望将个人及家族记忆传承给下一代。
+    3.  **对真实性敏感**：希望虚拟重建的故居能尽可能真实还原，与自身记忆相符。
+    4.  **技术接受度差异大**：部分可能不熟悉或抗拒数字产品，对操作简易性要求高。
+    5.  **关注隐私安全**：对个人历史照片、住址等敏感信息的数据安全和隐私泄露风险敏感。"
+
+- [span-ext-dd272b83a73d] "**用户群体2：家庭成员/晚辈**
+
+#### 1. 目标用户群体特征
+
+-   **群体标识**：关心家中老年长辈精神健康和生活质量，愿意为长辈提供情感支持，并希望通过创新方式与长辈互动、共同传承家族历史和记忆的子女、孙辈或其他亲属。
+-   **群体规模**：伴随老年用户群体而生，规模可观，且多为社会中坚力量，具备一定的消费能力和技术接受度。
+-   **市场占比**：该项目的辅助目标市场，同时是重要的信息提供者、产品协助者和潜在付费决策者。
+-   **关键特征**：
+    1.  **孝心与责任感**：有孝敬长辈的强烈意愿，乐于为长辈付出时间和金钱。
+    2.  **技术接受度高**：熟悉智能设备和互联网应用，能够协助长辈使用。
+    3.  **家族传承意识**：重视家族历史、文化和记忆的延续与传承。
+    4.  **社交分享需求**：希望能够将家族记忆和虚拟故居分享给其他亲友。
+    5.  **数据安全关注**：同样关注长辈个人数据的隐私与安全。"
+
+- [span-ext-dd23bac1c417] "| 🧠 想（Thinks） | ❤️ 感（Feels） |
+| :--------------------------------- | :--------------------------------- |
+| • 我的故居是我的身份和生命价值的体现。 | • 怀旧与眷恋，渴望“回家”的精神慰藉。 |
+| • AI必须精准还原，否则会扭曲我的记忆。 | • 担忧AI失真和隐私泄露，感到不安。 |
+| • 渴望通过故居与家人建立更深的情感连接。 | • 对技术带来的沉浸式体验充满期待。 |
+| • 我的故事和回忆不应被遗忘。 | • 重温美好记忆时感到欣慰和满足。 |"
+
+- [span-ext-2ad02b224449] "| 序号 | 洞察内容 | 行动建议 |
+| :--- | :--------------------------------- | :--------------------------------- |
+| 1 | 老年用户追求故居的“情感真实”甚于“物理精准”，即需要符合其内心记忆。 | 引入记忆校准功能，允许用户微调AI模型，确保情感一致性。 |
+| 2 | 对AI生成内容与隐私安全存疑，且技术操作门槛高是核心顾虑。 | 强调数据加密与知情同意，提供极简操作模式及家庭协助功能。 |
+| 3 | 产品核心价值在于提供精神慰藉和激活代际对话，对抗遗忘。 | 融入口述历史、家族相册功能，鼓励多代人共同参与和分享。 |"
+
+
+Counter evidence:
+
+- (none)
+
+Finding note: 6 supporting, 0 counter
+
+
+
+## Observation Signals
+- observation_confidence: HIGH
+
+- uncertainty_notes: (none)
+
+
+## Scorer Seed Material
+证据识别了老年用户和家庭成员/晚辈两类主要群体，并借助AI工具（同理心地图、洞察分析）区分了他们的基本特征、情感需求和技术接受度差异。但对不同群体间潜在的需求冲突或权衡点分析不够系统，符合“良好”级别描述。
+
+## Decision Context
+- was_adjudicated: False
+- decision_note: no conflict, rater_1 score used (raters converged)
+
+
+
+## Instructions
+1. Use `scorer_rationale` as seed material, but rewrite it into student-facing feedback.
+2. Organize the response by facets: highlight strengths and weaknesses per facet.
+3. Cite concrete quotes from facet evidence to support claims.
+4. If `observation_confidence` is LOW, include a clear uncertainty caveat.
+5. If `was_adjudicated` is true, mention that evidence was mixed and required adjudication.
+6. Add actionable, specific next-step suggestions instead of repeating rationale text.
+7. Write the entire feedback in Simplified Chinese.
+
+## Output Format
+[Write one concise feedback paragraph in plain text]

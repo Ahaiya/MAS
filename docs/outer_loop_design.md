@@ -8,7 +8,7 @@
 
 本系统分为内环和外环两层：
 
-**内环**是单次评分流水线，负责对一篇文本执行完整的评估并产出结构化结果。内环已基本实现，入口为 `scripts/eval.py`，核心编排器为 `src/pipeline/runner.py`。
+**内环**是单次评分流水线，负责对一篇文本执行完整的评估并产出结构化结果。内环已基本实现，核心编排器为 `src/pipeline/runner.py`。
 
 **外环**是优化控制循环，负责在一批有人类标注的样本上，通过迭代修改内环配置，使系统评分与人类专家的一致性（QWK）向目标值收敛。
 
@@ -58,17 +58,39 @@
 
 ### Step 2｜带脚手架的对话确认
 
-AI 呈现草案，教师通过对话方式迭代修改，直到显式确认。支持：
+AI 呈现草案，教师通过 **CLI 脚手架式对话流程** 迭代修改，直到显式确认。支持：
 
 - 修改某个观测点的名称或锚点描述
 - 删除或新增观测点
 - **直接覆写某个观测点的全部内容（人工设定优先**）
 
+推荐 CLI 形态：
+
+```bash
+python -m scripts task draft --task-id xxx --task-brief-file ...
+python -m scripts task show --task-id xxx
+python -m scripts task revise --task-id xxx --instruction "..."
+python -m scripts task confirm --task-id xxx
+```
+
 **确认后立即冻结**，编译为 `configs/rubrics/tasks/{task_id}_rubric.yaml`。随后进行格式校验，直到通过。此后本次任务内不再接受对该文件的任何修改。
+
+同时，`task confirm` 负责把当前活动任务绑定到 `configs/bundles/engineering_eval_baseline.bundle.yaml`，即：
+
+- 更新 bundle 中的 `rubric_*` 引用到当前任务的 frozen rubric
+- 更新 bundle 中的 `scoring_context_*` 引用到当前任务的 scoring context
+- 同步初始化与当前任务维度相关的可变配置（例如 aggregation policy 中的维度权重键）
 
 ### Step 3｜冷启动准备
 
-`{task_id}_scoring_context.yaml` 初始化为空文件，等待外环第一个 artifacts 产出后由 Agent 填入。
+`{task_id}_scoring_context.yaml` 初始化为**最小合法 YAML 壳子**，等待外环第一个 artifacts 产出后由 Agent 填入。
+
+说明：
+
+- 不是字面意义上的空文件
+- 必须保留 `schema_version` 和 `scoring_context` 结构
+- 文本字段初始化为空字符串
+- `score_anchors` 初始化为空数组
 
 ### 产出文件示例
 
@@ -124,7 +146,7 @@ Phase 5｜归档
 - 可调用的评估探针列表（见第 3 节）
 - 搜索空间约束规则（见第 4 节）
 
-Agent 完全自主决定：本轮改哪个变更单元、改什么内容、用哪个探针验证。不需要人工介入。
+Agent 完全自主决定：本轮改哪个变更单元、改什么内容、用哪个探针验证。不需要人工介入。**【最重要的观察内容是 所给的分数 和 给出的 评分理由是否符合量规 逻辑是否通畅， 对量规的理解是否准确合理； 探针只是数学上的依据和参考】**
 
 ---
 
@@ -168,7 +190,7 @@ Agent 完全自主决定：本轮改哪个变更单元、改什么内容、用�
 | `conflict_pattern_probe` | Reconciliation | 批次级 | `conflicts.json` 中的 `conflict_type` 分布、触发率 |
 | `resolution_cost_probe` | Adjudication | 批次级 | `adjudication_records.json` 中的三评触发率、fallback 率 |
 | `feedback_grounding_probe` | Feedback | 篇级 | `feedback.json` 中的 descriptor-evidence 链闭合率、violations |
-| `qwk_probe` | Composite output | 批次级 | `scripts/compute_qwk.py` 产出的 per-dimension + composite QWK |
+| `qwk_probe` | Composite output | 批次级 | `python -m scripts metrics qwk` 产出的 per-dimension + composite QWK |
 | `cost_probe` | RunTrace（全链路） | 调用级 | `run_trace.json` 中的 per-stage token、latency、retry 率 |
 
 **Agent 使用规则**：Agent 自主决定本轮使用哪些探针。原则是：变更作用在哪一层，就用那一层及其下游的探针验证，不必每次都跑到 QWK。例如，只改了 `evidence_extraction` prompt，使用 `evidence_quality_probe` 即可，无需等 QWK。
@@ -223,21 +245,31 @@ rationale: "xxx"
 ### 5.3 可修改文件白名单
 
 ```
-configs/prompts/*.yaml
 configs/prompts/tasks/*_scoring_context.yaml
+configs/prompts/scoring.yaml
+configs/prompts/evidence_extraction.yaml
+configs/prompts/explanation.yaml
+configs/prompts/chunking.yaml
+configs/prompts/dimension_relevance.yaml
+configs/prompts/scoring_overrides/*.yaml
 configs/prompts/explanation_overrides/*.yaml
 configs/prompts/evidence_extraction_overrides/*.yaml
 configs/policies/adjudication/*.yaml
 configs/policies/chunking/*.yaml
 configs/policies/aggregation/*.yaml
 configs/policies/explanation/*.yaml
-configs/bundles/engineering_eval_baseline.bundle.yaml  （仅推理参数字段）
-  允许字段：temperature / max_tokens / thinking_budget
-  禁止字段：model / model_id（模型选择须由人工决定）
 ```
+
+`engineering_eval_baseline.bundle.yaml` 的角色调整为：
+
+- 仅保存**本次任务内冻结**的入口配置
+- 包括：模型接入配置、当前活动任务的 rubric/scoring_context 引用、任务元数据
+- 外环迭代过程中**不得修改**
+- 只有 Task Setup 的 `confirm` 动作可以更新它，用于切换当前活动任务
 
 **明确不可修改**：
 
 - `configs/rubrics/` 下所有文件（量规原文和观测点定义冻结，变更破坏 QWK 口径）
-- 所有 bundle 文件中的模型选择字段（`model`、`model_id`）——模型选择涉及系统级成本决策，超出外环 Agent 的权限范围
+- 所有 bundle 文件——bundle 在任务期内是冻结入口配置，只能由 Task Setup 在确认任务时更新
+
 

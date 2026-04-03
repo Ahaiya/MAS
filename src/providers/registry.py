@@ -4,7 +4,7 @@ Provider 注册表，负责维护 provider 名称到实现类的映射关系。
 Provider adapter registry.
 
 Provides a simple name → class mapping so the pipeline can select a provider
-by name (e.g. "--provider mock", "--provider openai") without hard-coding any
+by name (e.g. "--provider openai_compatible") without hard-coding any
 specific provider in orchestrator or agent code.
 
 BOUNDARY RULE (enforced by test_provider_interface.py):
@@ -26,8 +26,8 @@ class ProviderRegistry:
     Usage::
 
         registry = ProviderRegistry()
-        registry.register("mock", MockProvider)
-        provider = registry.get("mock")
+        registry.register("openai_compatible", OpenAICompatibleProvider)
+        provider = registry.get("openai_compatible")
         response = provider.complete(request)
     """
 
@@ -39,7 +39,7 @@ class ProviderRegistry:
         Register a provider class under the given name.
 
         Args:
-            name           : Lookup key (e.g. "mock", "openai").
+            name           : Lookup key (e.g. "openai_compatible").
             provider_class : A class that is a subclass of BaseProvider.
 
         Raises:

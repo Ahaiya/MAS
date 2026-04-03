@@ -4,50 +4,50 @@ aggregation_policy:
   policy_id: "engineering_eval_aggregation"
   policy_version: "v2"
   policy_name: "Engineering Evaluation Aggregation Policy"
-  description: "三子指标等权重合并为综合能力评分，满分 18 分（3 子指标 × 最高 6 分）。"
+  description: "A4 二级指标由 3 个观测点等权重加权平均得到最终指标分，量表保持 1-5。"
 
   outputs:
     - output_id: "trait_scores"
       type: "dimension_scores"
-      description: "三个子指标（A4/B3/F2）的独立得分"
+      description: "A4 下 3 个观测点的独立得分"
       always_produce: true
 
     - output_id: "composite_score"
-      type: "weighted_sum"
-      description: "三子指标等权重综合能力总分（满分 18）"
+      type: "weighted_average"
+      description: "A4 二级指标的聚合得分（由 3 个观测点等权重加权平均，满分 5）"
       always_produce: true
 
   composite_formula:
     - variant_id: "without_resolution"
       applies_when: "resolution_not_used"
-      description: "无裁决时使用 Rater 1 和 Rater 2 各子指标均值"
+      description: "无裁决时，先取双评审在各观测点上的均值，再对 3 个观测点做等权加权平均"
       source_raters:
         - "rater_1"
         - "rater_2"
-      aggregation_method: "average_per_trait_then_weighted_sum"
+      aggregation_method: "average_per_trait_then_weighted_average"
       weights:
-        user_needs_analysis: 1
-        solution_generation: 1
-        engineering_ethics: 1
-      formula_representation: "(A4_R1+A4_R2)/2 + (B3_R1+B3_R2)/2 + (F2_R1+F2_R2)/2"
+        a4_1: 1
+        a4_2: 1
+        a4_3: 1
+      formula_representation: "(((A4-1_R1+A4-1_R2)/2)*1 + ((A4-2_R1+A4-2_R2)/2)*1 + ((A4-3_R1+A4-3_R2)/2)*1) / (1+1+1)"
 
     - variant_id: "with_resolution"
       applies_when: "resolution_used"
-      description: "有裁决时使用 Rater 3 分数"
+      description: "有裁决时，使用 Rater 3 在各观测点上的分数，再对 3 个观测点做等权加权平均"
       source_raters:
         - "rater_3"
-      aggregation_method: "average_per_trait_then_weighted_sum"
+      aggregation_method: "direct_weighted_average"
       weights:
-        user_needs_analysis: 1
-        solution_generation: 1
-        engineering_ethics: 1
-      formula_representation: "A4_R3 + B3_R3 + F2_R3"
+        a4_1: 1
+        a4_2: 1
+        a4_3: 1
+      formula_representation: "(A4-1_R3*1 + A4-2_R3*1 + A4-3_R3*1) / (1+1+1)"
 
   notes:
-    - "三子指标等权重，满分 18 分"
-    - "user_needs_analysis = A4（用户需求与痛点分析）"
-    - "solution_generation = B3（解决方案生成与择优）"
-    - "engineering_ethics = F2（工程伦理与社会责任）"
+    - "A4 下 3 个观测点等权重，最终得到 1-5 的 A4 指标分"
+    - "a4_1 = A4-1（用户群体识别的全面性）"
+    - "a4_2 = A4-2（痛点定位与需求精准度）"
+    - "a4_3 = A4-3（AI 协同与伦理反思）"
 
   metadata:
     source_document: "configs/rubrics/source/rubric.md"

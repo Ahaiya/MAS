@@ -73,7 +73,7 @@ class _StructuredProvider(BaseProvider):
     def complete(self, request: LLMRequest) -> LLMResponse:
         data: Optional[Dict[str, Any]] = None
         if request.output_schema is not None:
-            data = {"result": "mock_structured"}
+            data = {"result": "sample_structured"}
         return LLMResponse(
             content="structured response",
             structured_data=data,

@@ -23,6 +23,7 @@ from src.providers.base import BaseProvider, LLMRequest
 from src.providers.prompt_loader import PromptTemplate
 from src.providers.structured_output import normalize_structured_output
 from src.utils.quote_matcher import QuoteMatchResult, match_quote
+from src.utils.dialogue_sources import source_for_range
 
 _OUTPUT_SCHEMA = {
     "type": "object",
@@ -141,6 +142,7 @@ def run(
         data = {}
 
     spans: List[EvidenceSpan] = []
+    source_spans = list((document.document_metadata or {}).get("source_spans") or [])
     for span_data in data.get("evidence_spans", []):
         quote = span_data.get("quote") or ""
         chunk_id = span_data.get("chunk_id")
@@ -155,11 +157,32 @@ def run(
         start = match.start_offset
         end = match.end_offset
         unit_id = match.unit_id
+        hinted_unit = document.get_unit(chunk_id) if isinstance(chunk_id, str) else None
         scope = (
             EvidenceScope.SPAN
             if match.match_method in {"exact", "normalized", "fuzzy"}
             else EvidenceScope.GLOBAL
         )
+        if scope == EvidenceScope.SPAN:
+            source_type, source_label = source_for_range(
+                start,
+                end,
+                source_spans,
+                allow_mixed=False,
+            )
+        elif hinted_unit is not None:
+            source_type = (
+                hinted_unit.source_type
+                if hinted_unit.source_type in {"human", "ai", "system"}
+                else "unknown"
+            )
+            source_label = hinted_unit.source_label
+        else:
+            source_type, source_label = "unknown", None
+
+        if source_type in {"ai", "system"}:
+            continue
+
         span_id = f"span-ext-{uuid.uuid4().hex[:12]}"
         extraction_note = f"provider:{match.match_method}:{support_type}"
         spans.append(
@@ -175,6 +198,8 @@ def run(
                 facet_ids=facets,
                 extraction_note=extraction_note,
                 support_type=support_type,
+                source_type=source_type,
+                source_label=source_label,
             )
         )
 
@@ -195,6 +220,8 @@ def run(
                     facet_ids=[facet_id],
                     extraction_note="provider_fallback:no_evidence",
                     support_type="supporting",
+                    source_type="unknown",
+                    source_label=None,
                 )
             )
     return spans

@@ -54,6 +54,7 @@ class ObservationConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     required_facets: list[str]
+    facet_descriptions: dict[str, str] = Field(default_factory=dict)
 
 
 class EvidenceRequirementsConfig(BaseModel):
@@ -79,6 +80,7 @@ class DimensionSchema(BaseModel):
     observation_schema: ObservationConfig
     evidence_requirements: EvidenceRequirementsConfig
     levels: list[LevelSchema]
+    metadata: dict[str, Any] = Field(default_factory=dict)
 
 
 class RubricValidationRuleSchema(BaseModel):

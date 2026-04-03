@@ -1,0 +1,40 @@
+{
+  "call_id": "call-0005",
+  "status": "succeeded",
+  "label": "evidence_extraction",
+  "provider_name": "openai_compatible",
+  "model_id": "deepseek-chat",
+  "started_at": "2026-04-02T11:11:30.766344+00:00",
+  "finished_at": "2026-04-02T11:12:41.561425+00:00",
+  "elapsed_ms": 70791.08,
+  "request": {
+    "system_path": null,
+    "prompt_path": "llm_calls/blobs/call-0005.prompt.txt",
+    "output_schema_path": "llm_calls/blobs/call-0005.schema.json",
+    "params": {},
+    "prompt_chars": 172270,
+    "has_output_schema": true
+  },
+  "response": {
+    "content_path": "llm_calls/blobs/call-0005.response.txt",
+    "structured_path": "llm_calls/blobs/call-0005.structured.json",
+    "usage": {
+      "prompt_tokens": 90055,
+      "completion_tokens": 1873,
+      "total_tokens": 91928
+    },
+    "preview": "{     \"evidence_spans\": [         {             \"quote\": \"以 “银发技艺活化 + 代际双向成长” 为核心，搭建 AI 赋能的技能交易与互学平台，打通 “银发经验输出→青年创意反哺→文化价值沉淀” 的闭环\",             \"chunk_id\": \"u…"
+  },
+  "debug_context": {
+    "node_id": "node_extractor",
+    "stage_name": "evidence_extraction",
+    "dimension_id": "a4_1",
+    "plan_id": "plan-3fbf7af9c165",
+    "document_id": "doc-4265b4ba4ebc",
+    "template_source": "/Users/ahai/Code/MAS/configs/prompts/evidence_extraction.yaml",
+    "template_version": "v1",
+    "used_override_template": false
+  },
+  "call_path": "llm_calls/call-0005.json",
+  "error": null
+}

@@ -5,10 +5,11 @@ Verifies that:
 1. aggregation.py computes composite scores from config-driven formulas.
 2. Two variants are supported: average_per_trait_then_weighted_sum (no resolution)
    and direct_weighted_sum (with resolution).
-3. Dimensions with weight=0 are excluded from the composite.
-4. CompositeDecision is produced with correct fields; all formula values come
+3. Weighted-average variants are also supported for indicator-level aggregation.
+4. Dimensions with weight=0 are excluded from the composite.
+5. CompositeDecision is produced with correct fields; all formula values come
    from config — no hardcoded trait names, weights, or rater IDs.
-5. export.py distinguishes trait-level output from composite output.
+6. export.py distinguishes trait-level output from composite output.
 
 Zero-hardcoding: all dimension IDs, rater IDs, weights, and scores use
 synthetic identifiers to ensure tests are config-agnostic.
@@ -64,6 +65,35 @@ _AGG_POLICY = {
     ],
 }
 
+_AGG_POLICY_AVERAGE = {
+    "policy_id": "test_agg_avg",
+    "policy_version": "v1",
+    "composite_formula": [
+        {
+            "variant_id": "no_res_avg",
+            "applies_when": "resolution_not_used",
+            "source_raters": ["rater_x", "rater_y"],
+            "aggregation_method": "average_per_trait_then_weighted_average",
+            "weights": {
+                "dim_a": 2,
+                "dim_b": 1,
+                "dim_c": 0,
+            },
+        },
+        {
+            "variant_id": "with_res_avg",
+            "applies_when": "resolution_used",
+            "source_raters": ["rater_z"],
+            "aggregation_method": "direct_weighted_average",
+            "weights": {
+                "dim_a": 2,
+                "dim_b": 1,
+                "dim_c": 0,
+            },
+        },
+    ],
+}
+
 
 @pytest.fixture
 def policy():
@@ -86,6 +116,16 @@ def policy_no_formula():
     )
 
 
+@pytest.fixture
+def policy_average():
+    return PolicySnapshot(
+        adjudication_policy={"triggers": []},
+        aggregation_policy=_AGG_POLICY_AVERAGE,
+        explanation_policy={},
+        policy_version="test-v1",
+    )
+
+
 # ── Score / hypothesis / decision helpers ─────────────────────────────────────
 
 
@@ -103,7 +143,7 @@ def _hyp(dim_id: str, rater_id: str, score_val: int, hid: str = None) -> ScoreHy
         score=_score(score_val),
         descriptor_refs=[],
         evidence_span_ids=[],
-        rationale="mock",
+        rationale="sample_rationale",
         confidence=0.9,
     )
 
@@ -278,6 +318,37 @@ class TestCompositeWithResolution:
         assert result.composite_score.canonical_score == 8
 
 
+class TestCompositeWeightedAverage:
+    """Variant: indicator-level weighted average keeps the original score scale."""
+
+    def test_no_resolution_weighted_average(self, policy_average):
+        hyps = [
+            _hyp("dim_a", "rater_x", 4),
+            _hyp("dim_a", "rater_y", 2),
+            _hyp("dim_b", "rater_x", 2),
+            _hyp("dim_b", "rater_y", 4),
+            _hyp("dim_c", "rater_x", 5),
+            _hyp("dim_c", "rater_y", 5),
+        ]
+        decisions = [_decision("dim_a", 3), _decision("dim_b", 3), _decision("dim_c", 5)]
+        result = compute_composite(decisions, hyps, [], policy_average)
+        assert result is not None
+        assert result.composite_score.canonical_score == 3
+        assert result.aggregation_detail["aggregation_method"] == (
+            "average_per_trait_then_weighted_average"
+        )
+        assert result.aggregation_detail["weight_total"] == 3
+
+    def test_resolution_weighted_average(self, policy_average):
+        decisions = [_decision("dim_a", 4), _decision("dim_b", 2), _decision("dim_c", 5)]
+        adjudications = [_adjudication("dim_a", is_resolved=True)]
+        result = compute_composite(decisions, [], adjudications, policy_average)
+        assert result is not None
+        assert result.composite_score.canonical_score == 3
+        assert result.aggregation_detail["aggregation_method"] == "direct_weighted_average"
+        assert result.aggregation_detail["weight_total"] == 3
+
+
 # ── Tests: edge cases ─────────────────────────────────────────────────────────
 
 
@@ -347,6 +418,10 @@ class TestBuildPipelineOutput:
         out = build_pipeline_output(self._make_decisions(), None)
         assert "composite" in out
 
+    def test_output_has_indicator_score_key(self):
+        out = build_pipeline_output(self._make_decisions(), None)
+        assert "indicator_score" in out
+
     def test_trait_scores_count_matches_decisions(self):
         out = build_pipeline_output(self._make_decisions(), None)
         assert len(out["trait_scores"]) == 2
@@ -354,11 +429,13 @@ class TestBuildPipelineOutput:
     def test_composite_none_when_not_provided(self):
         out = build_pipeline_output(self._make_decisions(), None)
         assert out["composite"] is None
+        assert out["indicator_score"] is None
 
     def test_composite_populated_when_provided(self):
         composite = self._make_composite()
         out = build_pipeline_output(self._make_decisions(), composite)
         assert out["composite"] is not None
+        assert out["indicator_score"] is not None
 
     def test_trait_scores_contain_dimension_id(self):
         out = build_pipeline_output(self._make_decisions(), None)
@@ -376,6 +453,12 @@ class TestBuildPipelineOutput:
         composite = self._make_composite()
         out = build_pipeline_output(self._make_decisions(), composite)
         assert out["composite"]["composite_score"]["canonical_score"] == 8
+        assert out["indicator_score"]["composite_score"]["canonical_score"] == 8
+
+    def test_indicator_score_and_composite_share_payload(self):
+        composite = self._make_composite()
+        out = build_pipeline_output(self._make_decisions(), composite)
+        assert out["indicator_score"] == out["composite"]
 
     def test_empty_decisions_produces_empty_trait_scores(self):
         out = build_pipeline_output([], None)

@@ -212,7 +212,7 @@ class TestRoundtripTrace:
         )
         obj = RunTrace(
             "run-1", "bundle@v1", "bundle", "req-1",
-            RunStatus.COMPLETED, TS, TS2, [nt], True, {"provider": "mock"},
+            RunStatus.COMPLETED, TS, TS2, [nt], True, {"provider": "openai_compatible"},
         )
         assert RunTrace.from_dict(obj.to_dict()) == obj
 

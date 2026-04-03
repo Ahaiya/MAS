@@ -6,11 +6,11 @@ artifact_bundle:
   bundle_id: "engineering_eval_baseline"
   bundle_version: "v1"
   bundle_name: "Engineering Evaluation Baseline Bundle"
-  description: "解决复杂工程问题能力评价 bundle（六维度 A-F，1-6 分制）"
+  description: "工程能力评价基线 bundle（冻结 active task + 可变 prompts/policies）"
 
   # Artifact References
-  rubric_core_ref: "rubric://engineering_eval_task_rubric/v1"
-  rubric_source_file: "rubrics/tasks/engineering_eval_task_rubric.yaml"
+  rubric_core_ref: "rubric://task_a4_rubric/v1"
+  rubric_source_file: "rubrics/tasks/task_a4_rubric.yaml"
 
   adjudication_policy_ref: "policy://engineering_eval_adjudication/v1"
   adjudication_source_file: "policies/adjudication/engineering_eval_adjudication.yaml"
@@ -29,8 +29,8 @@ artifact_bundle:
     - "prompts/chunking.yaml"
     - "prompts/dimension_relevance.yaml"
 
-  scoring_context_ref: "context://engineering_eval_task_scoring/v1"
-  scoring_context_source_file: "prompts/scoring_context.yaml"
+  scoring_context_ref: "context://task_a4_scoring_context/v1"
+  scoring_context_source_file: "prompts/tasks/task_a4_scoring_context.yaml"
 
   chunking_policy_ref: "policy://engineering_eval_chunking/v1"
   chunking_source_file: "policies/chunking/engineering_eval_chunking.yaml"
@@ -42,6 +42,7 @@ artifact_bundle:
   # Source Documentation
   source_documents:
     - "configs/rubrics/source/rubric.md"
+    - "docs/A4.docx"
 
   # Bundle Validation
   validation_rules:
@@ -75,7 +76,7 @@ artifact_bundle:
           temperature: 0.0
           max_tokens: 1536
       rater_2:
-        model: "qwen3.5-plus"
+        model: "qwen3.6-plus"
         api_base: "https://dashscope.aliyuncs.com/compatible-mode/v1"
         api_key_env: "RATER_2_API_KEY"
         params:
@@ -85,7 +86,7 @@ artifact_bundle:
             enable_thinking: true
             thinking_budget: 768
       rater_3:
-        model: "deepseek-chat"
+        model: "deepseek-reasoner"
         api_base: "https://api.deepseek.com/v1"
         api_key_env: "RATER_3_API_KEY"
         params:
@@ -130,5 +131,13 @@ artifact_bundle:
     target_evaluation: "complex_engineering_problem_solving"
     target_dataset: "engineering_project_dialogue_records"
     baseline_compatible: true
-    task_scoring_context_dir: "configs/prompts"
+    active_task_id: "a4"
+    selected_indicator_ids:
+      - "A4"
+    observation_point_ids:
+      - "a4_1"
+      - "a4_2"
+      - "a4_3"
+    task_rubric_dir: "configs/rubrics/tasks"
+    task_scoring_context_dir: "configs/prompts/tasks"
     rubric_source_dir: "configs/rubrics/source"

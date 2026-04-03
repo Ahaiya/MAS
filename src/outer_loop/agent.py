@@ -22,16 +22,7 @@ from src.outer_loop.probes import ProbeResult, run_probes
 from src.providers.base import (
     BaseProvider,
     LLMRequest,
-    LLMResponse,
-    ProviderCapability,
-    TokenUsage,
 )
-
-_DIM_ORDER = [
-    "user_needs_analysis",
-    "solution_generation",
-    "engineering_ethics",
-]
 
 _DEFAULT_PROBE_DESCRIPTIONS: dict[str, str] = {
     "coverage_probe": "Chunking/Coverage quality: recall, precision, boundary quality.",
@@ -56,64 +47,6 @@ class ReviewResult:
     next_hypothesis: str
 
 
-class RuleBasedOuterLoopProvider(BaseProvider):
-    """Deterministic provider used by outer-loop smoke tests and local demos."""
-
-    @property
-    def name(self) -> str:
-        return "outer_loop_rule_based"
-
-    @property
-    def capabilities(self) -> frozenset[ProviderCapability]:
-        return frozenset(
-            {
-                ProviderCapability.TEXT_COMPLETION,
-                ProviderCapability.STRUCTURED_OUTPUT,
-            }
-        )
-
-    def complete(self, request: LLMRequest) -> LLMResponse:
-        phase = str(request.metadata.get("outer_loop_phase") or "decision").strip().lower()
-        if phase in {"review", "phase4_review"}:
-            content = (
-                "```yaml\n"
-                "verdict: \"no-improvement\"\n"
-                "next_hypothesis: "
-                "\"转向相邻的评分或证据链路配置单元，继续寻找更清晰的探针信号。\"\n"
-                "```"
-            )
-        else:
-            content = (
-                "```yaml\n"
-                "change_proposal:\n"
-                "  change_unit: \"scoring.calibration_notes.user_needs_analysis\"\n"
-                "  change_type: \"field_patch\"\n"
-                "  target_file: \"configs/prompts/scoring_context.yaml\"\n"
-                "  target_path: \"scoring_context.calibration_notes\"\n"
-                "  new_value: "
-                "\"校准说明：优先奖励对问题边界、关键约束和证据链的清晰分析，再考虑表达润色。\"\n"
-                "  rationale: \"用于 smoke run 的工程评价基线提案。\"\n"
-                "selected_probes:\n"
-                "  - \"rater_consistency_probe\"\n"
-                "  - \"qwk_probe\"\n"
-                "```"
-            )
-
-        prompt_tokens = max(1, len(request.prompt.split()))
-        usage = TokenUsage(
-            prompt_tokens=prompt_tokens,
-            completion_tokens=max(1, prompt_tokens // 3),
-            total_tokens=prompt_tokens + max(1, prompt_tokens // 3),
-        )
-        return LLMResponse(
-            content=content,
-            structured_data=None,
-            usage=usage,
-            provider_name=self.name,
-            model_id=request.model_id or "outer-loop-rule-based-v1",
-        )
-
-
 class OuterLoopAgent:
     """Main outer-loop optimization agent with 5-phase iteration flow."""
 
@@ -134,7 +67,6 @@ class OuterLoopAgent:
         training_sample_ids: list[str] | None = None,
         target_qwk: float = 0.8,
         max_log_records: int = 8,
-        mock_eval_provider: bool = False,
         batch_eval_fn: BatchEvalFn = batch_eval,
         run_probes_fn: RunProbesFn = run_probes,
         probe_descriptions: dict[str, str] | None = None,
@@ -178,7 +110,6 @@ class OuterLoopAgent:
         )
         self.target_qwk = float(target_qwk)
         self.max_log_records = max(1, int(max_log_records))
-        self.mock_eval_provider = bool(mock_eval_provider)
         self.batch_eval_fn = batch_eval_fn
         self.run_probes_fn = run_probes_fn
         self.probe_descriptions = dict(probe_descriptions or _DEFAULT_PROBE_DESCRIPTIONS)
@@ -235,7 +166,6 @@ class OuterLoopAgent:
                     tsv_path=self.training_set_path,
                     output_base=self.artifacts_output_base,
                     iter_id=normalized_iter,
-                    mock_provider=self.mock_eval_provider,
                 )
                 probe_results_payload["_batch_eval"] = {
                     "sample_count": len(run_results),
@@ -371,7 +301,6 @@ class OuterLoopAgent:
             tsv_path=self.training_set_path,
             output_base=self.artifacts_output_base,
             iter_id="cold_start",
-            mock_provider=self.mock_eval_provider,
         )
 
         cold_artifacts = self._iter_artifacts_dir("cold_start")
@@ -477,11 +406,24 @@ class OuterLoopAgent:
 
     def _summarize_current_config(self) -> str:
         configs_root = self.config_patcher.configs_root
+        bundle_cfg = self._load_bundle_doc()
+        scoring_context_rel = self._bundle_source_file(
+            bundle_cfg,
+            "scoring_context_source_file",
+            default="prompts/tasks/task_bootstrap_scoring_context.yaml",
+        )
+        rubric_rel = self._bundle_source_file(
+            bundle_cfg,
+            "rubric_source_file",
+            default="rubrics/tasks/task_bootstrap_rubric.yaml",
+        )
         focus_files = [
-            ("prompts/scoring_context.yaml", "scoring_context"),
+            (scoring_context_rel, "scoring_context"),
+            (rubric_rel, "task_rubric"),
             ("prompts/scoring.yaml", "scoring"),
             ("prompts/evidence_extraction.yaml", "evidence_extraction"),
             ("policies/adjudication/engineering_eval_adjudication.yaml", "adjudication_policy"),
+            ("policies/aggregation/engineering_eval_aggregation.yaml", "aggregation_policy"),
             ("bundles/engineering_eval_baseline.bundle.yaml", "bundle"),
         ]
 
@@ -495,17 +437,15 @@ class OuterLoopAgent:
                 lines.append(f"- {label}: present but not a YAML mapping")
                 continue
             if label == "bundle":
-                provider_cfg = (
-                    loaded.get("artifact_bundle", {}).get("provider_config", {}).get("default", {})
-                )
-                op = loaded.get("artifact_bundle", {}).get("operational_params", {})
+                artifact_bundle = loaded.get("artifact_bundle", {})
+                provider_cfg = artifact_bundle.get("provider_config", {}).get("default", {})
                 lines.append(
-                    "- bundle: temperature={temp}, max_tokens={max_tokens}, "
-                    "thinking_budget={thinking_budget}, max_retries={max_retries}".format(
-                        temp=provider_cfg.get("params", {}).get("temperature"),
-                        max_tokens=provider_cfg.get("params", {}).get("max_tokens"),
-                        thinking_budget=provider_cfg.get("params", {}).get("thinking_budget"),
-                        max_retries=op.get("max_retries"),
+                    "- bundle: rubric={rubric}, scoring_context={scoring_context}, "
+                    "default_model={model}, default_api_key_env={api_key_env}".format(
+                        rubric=artifact_bundle.get("rubric_source_file"),
+                        scoring_context=artifact_bundle.get("scoring_context_source_file"),
+                        model=provider_cfg.get("model"),
+                        api_key_env=provider_cfg.get("api_key_env"),
                     )
                 )
                 continue
@@ -522,7 +462,22 @@ class OuterLoopAgent:
                     else None
                 )
                 cal_len = len(calibration) if isinstance(calibration, str) else 0
-                lines.append(f"- scoring_context: calibration_notes chars={cal_len}")
+                lines.append(
+                    f"- scoring_context: path={rel_path}, calibration_notes chars={cal_len}"
+                )
+                continue
+
+            if label == "task_rubric":
+                rubric_core = loaded.get("rubric_core", {})
+                dimensions = rubric_core.get("dimensions") or []
+                dim_ids = [
+                    str(item.get("dimension_id"))
+                    for item in dimensions
+                    if isinstance(item, dict) and item.get("dimension_id")
+                ]
+                lines.append(
+                    f"- task_rubric: path={rel_path}, dimensions={', '.join(dim_ids) or 'none'}"
+                )
                 continue
 
             lines.append(f"- {label}: keys={', '.join(sorted(loaded.keys())[:6])}")
@@ -538,10 +493,7 @@ class OuterLoopAgent:
         return "\n".join(lines)
 
     def _parse_decision_response(self, response_text: str) -> tuple[ChangeProposal, list[str]]:
-        try:
-            payload = self._parse_yaml_payload(response_text)
-        except ValueError as exc:
-            return self._fallback_decision(f"decision parse failed: {exc}")
+        payload = self._parse_yaml_payload(response_text)
 
         raw_proposal = payload.get("change_proposal")
         if isinstance(raw_proposal, dict):
@@ -551,7 +503,7 @@ class OuterLoopAgent:
 
         proposal = self._proposal_from_payload(proposal_payload)
         if proposal is None:
-            return self._fallback_decision("missing required change_proposal fields")
+            raise ValueError("missing required change_proposal fields")
 
         selected_probes_raw = payload.get("selected_probes")
         selected_probes = (
@@ -592,36 +544,33 @@ class OuterLoopAgent:
     ) -> ReviewResult:
         if not policy_ok:
             return ReviewResult(
-                verdict=f"failed: {policy_message}",
-                next_hypothesis="Switch to another allowed unit that satisfies policy constraints.",
+                verdict="failed",
+                next_hypothesis="切换到满足当前策略约束的其他可修改单元。",
             )
         if not apply_ok:
             return ReviewResult(
-                verdict=f"failed: {apply_message}",
-                next_hypothesis="Use a simpler field_patch on a nearby path and rerun probes.",
+                verdict="failed",
+                next_hypothesis="改用更小的 field_patch，并优先修改邻近字段后重新验证。",
             )
         if rollback_triggered:
             return ReviewResult(
-                verdict="regression (rollback triggered)",
-                next_hypothesis=(
-                    f"Do not revisit {proposal.change_unit}; "
-                    "transfer to an adjacent non-forbidden unit."
-                ),
+                verdict="regression",
+                next_hypothesis="当前方向已触发回退，转移到相邻且未被禁用的单元。",
             )
         if prev_qwk is not None and new_qwk is not None:
             if new_qwk > prev_qwk:
                 return ReviewResult(
                     verdict="effective",
-                    next_hypothesis="Continue with a small adjacent change in the same layer.",
+                    next_hypothesis="继续在同一层做一个更小的相邻改动。",
                 )
             if new_qwk < prev_qwk:
                 return ReviewResult(
                     verdict="regression",
-                    next_hypothesis="Revert hypothesis and try a different unit in the same layer.",
+                    next_hypothesis="放弃当前假设，改试同层其他单元。",
                 )
         return ReviewResult(
             verdict="no-improvement",
-            next_hypothesis="Transfer to another unit with higher expected probe sensitivity.",
+            next_hypothesis="转向探针更敏感、预期收益更高的其他单元。",
         )
 
     def _validate_search_policy(self, proposal: ChangeProposal) -> tuple[bool, str]:
@@ -643,20 +592,6 @@ class OuterLoopAgent:
                 )
 
         return True, "ok"
-
-    def _fallback_decision(self, reason: str) -> tuple[ChangeProposal, list[str]]:
-        proposal = ChangeProposal(
-            change_unit="scoring.calibration_notes.user_needs_analysis",
-            change_type="field_patch",
-            target_file="configs/prompts/scoring_context.yaml",
-            target_path="scoring_context.calibration_notes",
-            new_value=(
-                "回退校准说明：优先关注问题界定、关键约束识别和证据链完整性，"
-                "仅在证据反复显示不足时再放大扣分。"
-            ),
-            rationale=f"Fallback proposal generated because {reason}.",
-        )
-        return proposal, ["rater_consistency_probe", "qwk_probe"]
 
     def _proposal_from_payload(self, payload: dict[str, Any]) -> ChangeProposal | None:
         if not isinstance(payload, dict):
@@ -811,6 +746,26 @@ class OuterLoopAgent:
         except Exception:
             return None
 
+    def _load_bundle_doc(self) -> dict[str, Any]:
+        loaded = self._safe_load_yaml(self.bundle_path)
+        if isinstance(loaded, dict):
+            return loaded
+        return {}
+
+    def _bundle_source_file(
+        self,
+        bundle_doc: dict[str, Any],
+        field_name: str,
+        *,
+        default: str,
+    ) -> str:
+        artifact_bundle = bundle_doc.get("artifact_bundle")
+        if isinstance(artifact_bundle, dict):
+            raw_value = artifact_bundle.get(field_name)
+            if isinstance(raw_value, str) and raw_value.strip():
+                return raw_value.strip()
+        return default
+
     def _normalize_iter_id(self, iter_id: str) -> str:
         text = str(iter_id).strip()
         if not text:
@@ -848,5 +803,4 @@ class OuterLoopAgent:
 __all__ = [
     "OuterLoopAgent",
     "ReviewResult",
-    "RuleBasedOuterLoopProvider",
 ]

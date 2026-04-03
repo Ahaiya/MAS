@@ -107,6 +107,7 @@ def run(
     rater_id: str,
     scoring_context: Optional[dict] = None,
     override_template: Optional[PromptTemplate] = None,
+    prior_hypotheses: Optional[List[ScoreHypothesis]] = None,
     node_id: str = "node_scorer",
     stage_name: str = "scoring",
 ) -> ScoreHypothesis:
@@ -133,6 +134,7 @@ def run(
         template,
         scoring_context=scoring_context,
         override_template=override_template,
+        prior_hypotheses=prior_hypotheses,
     )
     template_used = override_template or template
     request = _make_request(

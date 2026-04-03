@@ -1,0 +1,7 @@
+{
+    "proposed_score": 2,
+    "descriptor_refs": ["会调用 AI 辅助思考，但大多停留在单轮提问或直接采纳结果", "能提到少量伦理风险词汇，但尚未结合具体使用情境形成明确约束或修正办法"],
+    "evidence_ids": ["span-ext-e503737d3a03", "span-ext-0e0769ad1e37", "span-ext-1513a55c7afa", "span-ext-a3e21dff5e55"],
+    "confidence": 0.8,
+    "justification": "学生调用了多种AI工具（用户画像、同理心地图等），但多为单轮提问。提到了老年人操作能力差的风险，但未形成具体伦理约束或修正办法。"
+}

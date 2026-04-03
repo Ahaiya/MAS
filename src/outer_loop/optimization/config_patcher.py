@@ -12,7 +12,6 @@ from typing import Any, Literal
 import yaml
 
 DEFAULT_ALLOWED_FILE_PATTERNS: tuple[str, ...] = (
-    "configs/prompts/scoring_context.yaml",
     "configs/prompts/tasks/*_scoring_context.yaml",
     "configs/prompts/scoring.yaml",
     "configs/prompts/scoring_overrides/*.yaml",
@@ -24,7 +23,6 @@ DEFAULT_ALLOWED_FILE_PATTERNS: tuple[str, ...] = (
     "configs/policies/chunking/engineering_eval_chunking.yaml",
     "configs/policies/aggregation/engineering_eval_aggregation.yaml",
     "configs/policies/explanation/engineering_eval_explanation.yaml",
-    "configs/bundles/engineering_eval_baseline.bundle.yaml",
 )
 
 

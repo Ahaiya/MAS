@@ -29,7 +29,6 @@ from src.policies.adjudication import evaluate_all_triggers
 from src.policies.aggregation import compute_composite
 from src.policies.explanation import render_dimension_explanation
 from src.pipeline.export import build_pipeline_output
-from src.agents import coverage, deterministic_scorer
 
 
 # ── Rubric builder helper ──────────────────────────────────────────────────────
@@ -91,7 +90,7 @@ def _hyp(dim_id: str, rater_id: str, score_val: int, scale: str = "s1") -> Score
         score=create_score_representation(score_val, scale),
         descriptor_refs=[f"desc-{score_val}"],
         evidence_span_ids=[f"span-{dim_id}"],
-        rationale="mock",
+        rationale="sample_rationale",
         confidence=0.9,
     )
 
@@ -206,31 +205,6 @@ class TestRubricVariants:
     def test_score_5_valid_for_scale_10(self):
         rubric = self._rubric_3dim_scale10()
         assert validate_score_in_range(rubric, "dim_t1", 5)
-
-    def test_coverage_adapts_to_rubric(self):
-        doc = _make_doc()
-        rubric2 = self._rubric_2dim_scale4()
-        rubric3 = self._rubric_3dim_scale10()
-        plans2 = coverage.run(doc, rubric2)
-        plans3 = coverage.run(doc, rubric3)
-        assert len(plans2) == 2
-        assert len(plans3) == 3
-
-    def test_deterministic_scorer_respects_scale_range(self):
-        from src.contracts.evidence import DimensionObservation, ObservationConfidence
-        rubric4 = self._rubric_2dim_scale4()
-        obs = DimensionObservation(
-            observation_id="obs-dim_r1",
-            document_id="doc-var",
-            dimension_id="dim_r1",
-            supporting_span_ids=["s1"],
-            counter_span_ids=[],
-            facet_findings=[],
-            observation_confidence=ObservationConfidence.HIGH,
-            uncertainty_notes=[],
-        )
-        hyp = deterministic_scorer.run(obs, rubric4, "rater_x")
-        assert 1 <= hyp.score.canonical_score <= 4
 
     def test_dimension_ids_from_config_not_hardcoded(self):
         rubric = self._rubric_2dim_scale4()

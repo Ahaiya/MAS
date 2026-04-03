@@ -253,7 +253,8 @@ def test_scorer_rationale_in_prompt() -> None:
     assert rationale in provider.last_request.prompt
 
 
-def test_deterministic_commentary_uses_facets() -> None:
+def test_policy_commentary_uses_facets_when_provider_returns_empty() -> None:
+    provider = _CaptureProvider(response_text="")
     out = feedback.run(
         decisions=[_decision()],
         observations=[_observation()],
@@ -261,15 +262,18 @@ def test_deterministic_commentary_uses_facets() -> None:
         hypotheses=[],
         rubric=_rubric(),
         policy=_policy(),
+        provider=provider,
+        template=_template(),
     )
     text = out["dimensions"]["voice"]["feedback_text"]
     assert "[tone]: supporting evidence:" in text
     assert "counter evidence suggests" in text
 
 
-def test_deterministic_commentary_uses_rationale() -> None:
+def test_policy_commentary_uses_rationale_when_provider_returns_empty() -> None:
     rationale = "This is the scorer's rationale seed that should dominate deterministic commentary."
     policy = _policy(max_length=40)
+    provider = _CaptureProvider(response_text="")
     out = feedback.run(
         decisions=[_decision()],
         observations=[_observation()],
@@ -277,11 +281,14 @@ def test_deterministic_commentary_uses_rationale() -> None:
         hypotheses=[_hypothesis(rationale=rationale)],
         rubric=_rubric(),
         policy=policy,
+        provider=provider,
+        template=_template(),
     )
     assert out["dimensions"]["voice"]["feedback_text"] == rationale[:40]
 
 
 def test_low_confidence_threshold_from_config() -> None:
+    provider = _CaptureProvider(response_text="")
     out = feedback.run(
         decisions=[_decision(confidence=0.7)],
         observations=[_observation()],
@@ -289,6 +296,8 @@ def test_low_confidence_threshold_from_config() -> None:
         hypotheses=[_hypothesis()],
         rubric=_rubric(),
         policy=_policy(low_confidence_threshold=0.8),
+        provider=provider,
+        template=_template(),
     )
     note = out["dimensions"]["voice"]["uncertainty_note"]
     assert note is not None
@@ -296,6 +305,7 @@ def test_low_confidence_threshold_from_config() -> None:
 
 
 def test_adjudication_uncertainty_note() -> None:
+    provider = _CaptureProvider(response_text="")
     out = feedback.run(
         decisions=[_decision(confidence=0.95, adjudication_id="adj-voice-1")],
         observations=[_observation()],
@@ -303,6 +313,8 @@ def test_adjudication_uncertainty_note() -> None:
         hypotheses=[_hypothesis()],
         rubric=_rubric(),
         policy=_policy(),
+        provider=provider,
+        template=_template(),
     )
     note = out["dimensions"]["voice"]["uncertainty_note"]
     assert note is not None
@@ -334,6 +346,7 @@ def test_override_template_for_dimension() -> None:
 
 def test_scorer_rationale_in_output() -> None:
     rationale = "Explicit scorer rationale passthrough."
+    provider = _CaptureProvider(response_text="")
     out = feedback.run(
         decisions=[_decision()],
         observations=[_observation()],
@@ -341,6 +354,8 @@ def test_scorer_rationale_in_output() -> None:
         hypotheses=[_hypothesis(rationale=rationale)],
         rubric=_rubric(),
         policy=_policy(),
+        provider=provider,
+        template=_template(),
     )
     entry = out["dimensions"]["voice"]
     assert entry["scorer_rationale"] == rationale
@@ -348,12 +363,15 @@ def test_scorer_rationale_in_output() -> None:
 
 
 def test_backward_compat_no_hypotheses() -> None:
+    provider = _CaptureProvider(response_text="")
     out = feedback.run(
         [_decision()],
         [_observation()],
         _spans(),
         _rubric(),
         _policy(),
+        provider=provider,
+        template=_template(),
     )
     entry = out["dimensions"]["voice"]
     assert "scorer_rationale" in entry

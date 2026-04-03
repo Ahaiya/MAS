@@ -13,12 +13,6 @@ from scripts.compute_coverage_metrics import compute_metrics_for_essay
 from src.outer_loop.metrics.consistency import compute_consistency
 from src.outer_loop.metrics.qwk import qwk_for_dimension
 
-_DIM_ORDER = [
-    "user_needs_analysis",
-    "solution_generation",
-    "engineering_ethics",
-]
-
 _PROBE_ARTIFACT_HINTS = {
     "run_trace.json",
     "feedback.json",
@@ -575,65 +569,120 @@ def _score_range(scores: list[int]) -> tuple[int, int] | None:
     return min_score, max_score
 
 
+def _explicit_dimension_ids_from_row(row: dict[str, Any]) -> list[str]:
+    reserved = {
+        "essay",
+        "essay_id",
+        "sample_id",
+        "domain1_score",
+        "composite_score",
+        "total_score",
+        "human_total_score",
+    }
+    discovered: list[str] = []
+
+    for raw_key in row.keys():
+        if not isinstance(raw_key, str):
+            continue
+        key = raw_key.strip()
+        if not key or key in reserved:
+            continue
+
+        candidate: str | None = None
+        for prefix in ("rater1_", "rater2_", "human_rater1_", "human_rater2_", "gold_", "label_", "human_"):
+            if key.startswith(prefix):
+                candidate = key[len(prefix):]
+                break
+        if candidate is None and key.endswith("_rater1"):
+            candidate = key[: -len("_rater1")]
+        if candidate is None and key.endswith("_rater2"):
+            candidate = key[: -len("_rater2")]
+        if candidate is None and key not in reserved:
+            candidate = key
+
+        cleaned = str(candidate or "").strip()
+        if (
+            cleaned
+            and cleaned not in reserved
+            and cleaned not in discovered
+            and cleaned not in {"rater1", "rater2"}
+        ):
+            discovered.append(cleaned)
+
+    return discovered
+
+
 def _load_reference_scores(
     tsv_path: Path,
-) -> dict[str, dict[str, tuple[int | None, int | None]]]:
+) -> tuple[dict[str, dict[str, tuple[int | None, int | None]]], list[str]]:
     result: dict[str, dict[str, tuple[int | None, int | None]]] = {}
     if not tsv_path.exists():
-        return result
+        return result, []
+
+    rows: list[dict[str, Any]] = []
+    dimension_ids: list[str] = []
+    seen_dim_ids: set[str] = set()
 
     with tsv_path.open(encoding="utf-8") as fh:
         reader = csv.DictReader(fh, delimiter="\t")
         for row in reader:
-            sample_id = _sample_id_from_row(row)
-            if not sample_id:
-                continue
+            rows.append(row)
+            for dim_id in _explicit_dimension_ids_from_row(row):
+                if dim_id not in seen_dim_ids:
+                    seen_dim_ids.add(dim_id)
+                    dimension_ids.append(dim_id)
 
-            scores: dict[str, tuple[int | None, int | None]] = {}
-            for dim_id in _DIM_ORDER:
-                r1 = _first_present_int(
-                    row,
-                    [
-                        f"rater1_{dim_id}",
-                        f"human_rater1_{dim_id}",
-                        f"{dim_id}_rater1",
-                    ],
-                )
-                r2 = _first_present_int(
-                    row,
-                    [
-                        f"rater2_{dim_id}",
-                        f"human_rater2_{dim_id}",
-                        f"{dim_id}_rater2",
-                    ],
-                )
-                if r1 is None and r2 is None:
-                    single_score = _first_present_int(
-                        row,
-                        [
-                            dim_id,
-                            f"human_{dim_id}",
-                            f"gold_{dim_id}",
-                            f"label_{dim_id}",
-                        ],
-                    )
-                    r1 = single_score
-                    r2 = single_score
-                scores[dim_id] = (r1, r2)
+    for row in rows:
+        sample_id = _sample_id_from_row(row)
+        if not sample_id:
+            continue
 
-            scores["_total"] = (
-                _first_present_int(
-                    row,
-                    [
-                        "composite_score",
-                        "total_score",
-                        "human_total_score",
-                    ],
-                ),
-                None,
+        scores: dict[str, tuple[int | None, int | None]] = {}
+        for dim_id in dimension_ids:
+            r1 = _first_present_int(
+                row,
+                [
+                    f"rater1_{dim_id}",
+                    f"human_rater1_{dim_id}",
+                    f"{dim_id}_rater1",
+                ],
             )
-            result[sample_id] = scores
-    return result
+            r2 = _first_present_int(
+                row,
+                [
+                    f"rater2_{dim_id}",
+                    f"human_rater2_{dim_id}",
+                    f"{dim_id}_rater2",
+                ],
+            )
+            if r1 is None and r2 is None:
+                single_score = _first_present_int(
+                    row,
+                    [
+                        dim_id,
+                        f"human_{dim_id}",
+                        f"gold_{dim_id}",
+                        f"label_{dim_id}",
+                    ],
+                )
+                r1 = single_score
+                r2 = single_score
+            scores[dim_id] = (r1, r2)
+
+        scores["_total"] = (
+            _first_present_int(
+                row,
+                [
+                    "composite_score",
+                    "total_score",
+                    "human_total_score",
+                    "domain1_score",
+                ],
+            ),
+            None,
+        )
+        result[sample_id] = scores
+    return result, dimension_ids
 
 
 def _pick_human_score(
@@ -666,15 +715,18 @@ def _load_mas_scores_for_qwk(
         return None
 
     dim_scores: dict[str, int] = {}
-    for dim_id in _DIM_ORDER:
-        dim_data = dimensions.get(dim_id) or {}
+    for raw_dim_id, raw_dim_data in dimensions.items():
+        dim_id = _as_non_empty_str(raw_dim_id)
+        dim_data = raw_dim_data if isinstance(raw_dim_data, dict) else {}
+        if dim_id is None:
+            continue
         score = _as_int(dim_data.get("canonical_score"))
         if score is None:
             score = _as_int(dim_data.get("final_score"))
         if score is not None:
             dim_scores[dim_id] = score
 
-    composite = feedback.get("composite") or {}
+    composite = feedback.get("indicator_score") or feedback.get("composite") or {}
     composite_score = _as_int(((composite.get("composite_score") or {}).get("canonical_score")))
     return dim_scores, composite_score
 
@@ -691,13 +743,15 @@ def qwk_probe(
     if rater not in {"rater1", "rater2", "average"}:
         raise ValueError("rater must be one of: rater1, rater2, average")
 
-    reference_scores = _load_reference_scores(Path(tsv_path))
+    reference_scores, reference_dimension_ids = _load_reference_scores(Path(tsv_path))
     if not reference_scores:
         return _empty_probe("qwk_probe")
 
     per_sample: dict[str, dict[str, Any]] = {}
-    y_true_by_dim: dict[str, list[int]] = {dim_id: [] for dim_id in _DIM_ORDER}
-    y_pred_by_dim: dict[str, list[int]] = {dim_id: [] for dim_id in _DIM_ORDER}
+    dimension_ids = list(reference_dimension_ids)
+    seen_dimension_ids = set(dimension_ids)
+    y_true_by_dim: dict[str, list[int]] = {dim_id: [] for dim_id in dimension_ids}
+    y_pred_by_dim: dict[str, list[int]] = {dim_id: [] for dim_id in dimension_ids}
     composite_true: list[int] = []
     composite_pred: list[int] = []
 
@@ -709,9 +763,22 @@ def qwk_probe(
             continue
         mas_scores, mas_composite = loaded
         reference = reference_scores[sample_id]
+        for dim_id in mas_scores:
+            if dim_id not in seen_dimension_ids:
+                seen_dimension_ids.add(dim_id)
+                dimension_ids.append(dim_id)
+                y_true_by_dim[dim_id] = []
+                y_pred_by_dim[dim_id] = []
+        for dim_id in reference:
+            if dim_id == "_total" or dim_id in seen_dimension_ids:
+                continue
+            seen_dimension_ids.add(dim_id)
+            dimension_ids.append(dim_id)
+            y_true_by_dim[dim_id] = []
+            y_pred_by_dim[dim_id] = []
 
         dim_pairs: dict[str, dict[str, int | None]] = {}
-        for dim_id in _DIM_ORDER:
+        for dim_id in dimension_ids:
             reference_pair = reference.get(dim_id, (None, None))
             y_true = _pick_human_score(reference_pair[0], reference_pair[1], rater)
             y_pred = mas_scores.get(dim_id)
@@ -735,7 +802,7 @@ def qwk_probe(
         return _empty_probe("qwk_probe")
 
     metrics: dict[str, float | int | None] = {}
-    for dim_id in _DIM_ORDER:
+    for dim_id in dimension_ids:
         y_true = y_true_by_dim[dim_id]
         y_pred = y_pred_by_dim[dim_id]
         metrics[f"n_{dim_id}"] = len(y_true)

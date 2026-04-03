@@ -5,6 +5,13 @@ prompt_template: |
   You must score only from the structured evidence below. Do not use any outside
   assumptions or content that is not present in this prompt.
 
+  This may be an assisted dialogue dataset. Score the student only on
+  human-origin evidence. Do not award points for assistant-provided analysis,
+  AI-generated tables/frameworks, or polished reformulations written by the
+  assistant. If source_type tags are present, only `human` evidence should be
+  treated as direct competency evidence. `unknown` evidence remains admissible
+  for plain essays or documents without dialogue-source tagging.
+
   ## Rubric Levels
   {% for level in levels %}
   **Score {{ level.rank }}: {{ level.summary }}**
@@ -20,7 +27,7 @@ prompt_template: |
   Supporting evidence:
   {% if facet.supporting %}
   {% for item in facet.supporting %}
-  - [{{ item.span_id }}] "{{ item.quote }}"
+  - [{{ item.span_id }}|source={{ item.source_type }}{% if item.source_label %}:{{ item.source_label }}{% endif %}] "{{ item.quote }}"
   {% endfor %}
   {% else %}
   - (none)
@@ -29,7 +36,7 @@ prompt_template: |
   Counter evidence:
   {% if facet.counter %}
   {% for item in facet.counter %}
-  - [{{ item.span_id }}] "{{ item.quote }}"
+  - [{{ item.span_id }}|source={{ item.source_type }}{% if item.source_label %}:{{ item.source_label }}{% endif %}] "{{ item.quote }}"
   {% endfor %}
   {% else %}
   - (none)
@@ -68,6 +75,18 @@ prompt_template: |
   {{ dimension_override_notes }}
   {% endif %}
 
+  {% if prior_rater_context %}
+  ## Adjudication Context
+  A scoring conflict was detected on this dimension. Two raters disagree. You are the authoritative adjudicator.
+
+  Prior assessments:
+  {% for prior in prior_rater_context %}
+  - **{{ prior.rater_id }}** scored {{ prior.score }}: "{{ prior.justification }}"
+  {% endfor %}
+
+  In your justification, briefly state which prior assessment you find more convincing and why, or explain a different view if the evidence warrants it.
+  {% endif %}
+
   ## Instructions
   1. Score only from the provided facet evidence and rubric descriptors.
   2. Do not cite or infer evidence that is not explicitly listed in Facet Evidence.
@@ -75,11 +94,15 @@ prompt_template: |
      "insufficient evidence for facet <facet_id>" in justification.
   4. If `observation_confidence` is LOW, reduce your own confidence and explain
      the uncertainty source in justification.
-  5. Keep justification concise and tie it directly to descriptor_refs + evidence_ids.
-  6. Return exactly one JSON object with no Markdown fences, no preamble, and no trailing notes.
-  7. Keep `descriptor_refs` to at most 3 items and `evidence_ids` to at most 4 decisive spans.
-  8. Keep `justification` short and concrete, ideally no more than 80 words.
-  9. Write `justification` in Simplified Chinese.
+  5. If the strongest evidence is assistant-authored or source provenance is too weak,
+     lower confidence and explicitly mention "insufficient human-origin evidence".
+  6. A student gets credit only for what they themselves wrote, revised, selected,
+     justified, criticized, or synthesized in their own turn.
+  7. Keep justification concise and tie it directly to descriptor_refs + evidence_ids.
+  8. Return exactly one JSON object with no Markdown fences, no preamble, and no trailing notes.
+  9. Keep `descriptor_refs` to at most 3 items and `evidence_ids` to at most 4 decisive spans.
+  10. Keep `justification` short and concrete, ideally no more than 80 words.
+  11. Write `justification` in Simplified Chinese.
 
   ## Output Format (JSON)
   {

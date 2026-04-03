@@ -1,0 +1,598 @@
+{
+  "run_id": "run-7eebb2f39766",
+  "bundle_id": "engineering_eval_baseline",
+  "bundle_version": "v1",
+  "provider_mode": "real",
+  "session_metadata": {
+    "essay_id": "1",
+    "output_dir": "artifacts/eval_engineering/1"
+  },
+  "event_counts": {
+    "run_started": 1,
+    "artifact_emitted": 27,
+    "node_started": 7,
+    "llm_call_started": 16,
+    "llm_call_finished": 16,
+    "node_finished": 7,
+    "route_decision": 1,
+    "run_finished": 1
+  },
+  "node_count": 7,
+  "llm_call_count": 16,
+  "llm_total_tokens": 262044,
+  "llm_total_elapsed_ms": 361817.99,
+  "nodes": [
+    {
+      "node_id": "node_preprocess",
+      "node_type": "preprocess",
+      "status": "success",
+      "input_ref": "req-2fd59b54f5c9",
+      "output_ref": "doc-2bc7a1fbfa48|chunks:15|method:llm_hierarchical",
+      "error_message": null,
+      "started_at": "2026-04-02T09:36:18.959256+00:00",
+      "finished_at": "2026-04-02T09:37:32.002626+00:00",
+      "artifacts": [
+        {
+          "artifact_name": "input_request",
+          "path": "node_artifacts/node_preprocess/input_request.json",
+          "format": "json",
+          "summary": "Original evaluation request"
+        },
+        {
+          "artifact_name": "output_normalized_request",
+          "path": "node_artifacts/node_preprocess/output_normalized_request.json",
+          "format": "json",
+          "summary": "NormalizedRequest produced by preprocess"
+        },
+        {
+          "artifact_name": "output_document",
+          "path": "node_artifacts/node_preprocess/output_document.json",
+          "format": "json",
+          "summary": "NormalizedDocument with 15 text units"
+        }
+      ],
+      "routes": [],
+      "fallbacks": [],
+      "llm_call_ids": [
+        "call-0001"
+      ],
+      "llm_call_count": 1,
+      "llm_total_tokens": 4234,
+      "llm_total_elapsed_ms": 72987.74
+    },
+    {
+      "node_id": "node_coverage",
+      "node_type": "coverage",
+      "status": "success",
+      "input_ref": "doc-2bc7a1fbfa48",
+      "output_ref": "plans:3 coverage:45->18",
+      "error_message": null,
+      "started_at": "2026-04-02T09:37:32.002824+00:00",
+      "finished_at": "2026-04-02T09:37:37.308266+00:00",
+      "artifacts": [
+        {
+          "artifact_name": "input_document",
+          "path": "node_artifacts/node_coverage/input_document.json",
+          "format": "json",
+          "summary": "Input document for coverage planning"
+        },
+        {
+          "artifact_name": "output_coverage_plans",
+          "path": "node_artifacts/node_coverage/output_coverage_plans.json",
+          "format": "json",
+          "summary": "3 coverage plans"
+        }
+      ],
+      "routes": [],
+      "fallbacks": [],
+      "llm_call_ids": [
+        "call-0002",
+        "call-0003",
+        "call-0004"
+      ],
+      "llm_call_count": 3,
+      "llm_total_tokens": 4829,
+      "llm_total_elapsed_ms": 14612.12
+    },
+    {
+      "node_id": "node_extractor",
+      "node_type": "extract",
+      "status": "success",
+      "input_ref": "plans:3",
+      "output_ref": "spans:21 (exact:10, fuzzy:10, unmatched:1)",
+      "error_message": null,
+      "started_at": "2026-04-02T09:37:37.308355+00:00",
+      "finished_at": "2026-04-02T09:41:12.988711+00:00",
+      "artifacts": [
+        {
+          "artifact_name": "input_coverage_plans",
+          "path": "node_artifacts/node_extractor/input_coverage_plans.json",
+          "format": "json",
+          "summary": "3 plans entering extraction"
+        },
+        {
+          "artifact_name": "output_spans_by_dimension",
+          "path": "node_artifacts/node_extractor/output_spans_by_dimension.json",
+          "format": "json",
+          "summary": "3 dimension buckets"
+        },
+        {
+          "artifact_name": "output_spans_flat",
+          "path": "node_artifacts/node_extractor/output_spans_flat.json",
+          "format": "json",
+          "summary": "21 evidence spans"
+        }
+      ],
+      "routes": [],
+      "fallbacks": [],
+      "llm_call_ids": [
+        "call-0005",
+        "call-0006",
+        "call-0007"
+      ],
+      "llm_call_count": 3,
+      "llm_total_tokens": 234599,
+      "llm_total_elapsed_ms": 180828.64
+    },
+    {
+      "node_id": "node_observer",
+      "node_type": "observe",
+      "status": "success",
+      "input_ref": "spans:21",
+      "output_ref": "obs:3",
+      "error_message": null,
+      "started_at": "2026-04-02T09:41:12.988771+00:00",
+      "finished_at": "2026-04-02T09:41:12.989727+00:00",
+      "artifacts": [
+        {
+          "artifact_name": "input_spans_by_dimension",
+          "path": "node_artifacts/node_observer/input_spans_by_dimension.json",
+          "format": "json",
+          "summary": "3 dimension buckets"
+        },
+        {
+          "artifact_name": "output_observations",
+          "path": "node_artifacts/node_observer/output_observations.json",
+          "format": "json",
+          "summary": "3 dimension observations"
+        }
+      ],
+      "routes": [],
+      "fallbacks": [],
+      "llm_call_ids": [],
+      "llm_call_count": 0,
+      "llm_total_tokens": 0,
+      "llm_total_elapsed_ms": 0
+    },
+    {
+      "node_id": "node_scorer",
+      "node_type": "score",
+      "status": "success",
+      "input_ref": "obs:3",
+      "output_ref": "hyps:6",
+      "error_message": null,
+      "started_at": "2026-04-02T09:41:12.989771+00:00",
+      "finished_at": "2026-04-02T09:42:22.306852+00:00",
+      "artifacts": [
+        {
+          "artifact_name": "input_observations",
+          "path": "node_artifacts/node_scorer/input_observations.json",
+          "format": "json",
+          "summary": "3 observations entering scorer"
+        },
+        {
+          "artifact_name": "output_hypotheses",
+          "path": "node_artifacts/node_scorer/output_hypotheses.json",
+          "format": "json",
+          "summary": "6 score hypotheses"
+        }
+      ],
+      "routes": [],
+      "fallbacks": [],
+      "llm_call_ids": [
+        "call-0008",
+        "call-0009",
+        "call-0010",
+        "call-0011",
+        "call-0012",
+        "call-0013"
+      ],
+      "llm_call_count": 6,
+      "llm_total_tokens": 14158,
+      "llm_total_elapsed_ms": 69257.54
+    },
+    {
+      "node_id": "node_consistency_checker",
+      "node_type": "check_consistency",
+      "status": "success",
+      "input_ref": "hyps:6",
+      "output_ref": "conflicts:0",
+      "error_message": null,
+      "started_at": "2026-04-02T09:42:22.306955+00:00",
+      "finished_at": "2026-04-02T09:42:22.307920+00:00",
+      "artifacts": [
+        {
+          "artifact_name": "input_hypotheses",
+          "path": "node_artifacts/node_consistency_checker/input_hypotheses.json",
+          "format": "json",
+          "summary": "6 hypotheses entering consistency checker"
+        },
+        {
+          "artifact_name": "output_conflicts",
+          "path": "node_artifacts/node_consistency_checker/output_conflicts.json",
+          "format": "json",
+          "summary": "0 conflicts detected"
+        },
+        {
+          "artifact_name": "output_reconciliation_result",
+          "path": "node_artifacts/node_consistency_checker/output_reconciliation_result.json",
+          "format": "json",
+          "summary": "Reconciliation planning result"
+        },
+        {
+          "artifact_name": "output_decisions_no_conflict",
+          "path": "node_artifacts/node_consistency_checker/output_decisions_no_conflict.json",
+          "format": "json",
+          "summary": "Final decisions derived directly from scorer hypotheses"
+        }
+      ],
+      "routes": [
+        {
+          "router_name": "route_after_consistency_check",
+          "from_state": "consistency_checked",
+          "to_state": "feedback_rendered",
+          "rationale": "Route selected from consistency checker output",
+          "metadata": {
+            "conflict_count": 0
+          }
+        }
+      ],
+      "fallbacks": [],
+      "llm_call_ids": [],
+      "llm_call_count": 0,
+      "llm_total_tokens": 0,
+      "llm_total_elapsed_ms": 0
+    },
+    {
+      "node_id": "node_feedback",
+      "node_type": "feedback",
+      "status": "success",
+      "input_ref": "decisions:3",
+      "output_ref": "dims:3",
+      "error_message": null,
+      "started_at": "2026-04-02T09:42:22.308452+00:00",
+      "finished_at": "2026-04-02T09:42:46.463608+00:00",
+      "artifacts": [
+        {
+          "artifact_name": "input_decisions",
+          "path": "node_artifacts/node_feedback/input_decisions.json",
+          "format": "json",
+          "summary": "3 decisions entering feedback"
+        },
+        {
+          "artifact_name": "output_feedback",
+          "path": "node_artifacts/node_feedback/output_feedback.json",
+          "format": "json",
+          "summary": "3 dimension feedback blocks"
+        },
+        {
+          "artifact_name": "output_indicator_score",
+          "path": "node_artifacts/node_feedback/output_indicator_score.json",
+          "format": "json",
+          "summary": "Indicator-level aggregate score written into feedback"
+        },
+        {
+          "artifact_name": "output_composite",
+          "path": "node_artifacts/node_feedback/output_composite.json",
+          "format": "json",
+          "summary": "Compatibility alias of indicator-level aggregate score"
+        }
+      ],
+      "routes": [],
+      "fallbacks": [],
+      "llm_call_ids": [
+        "call-0014",
+        "call-0015",
+        "call-0016"
+      ],
+      "llm_call_count": 3,
+      "llm_total_tokens": 4224,
+      "llm_total_elapsed_ms": 24131.95
+    }
+  ],
+  "llm_calls": [
+    {
+      "call_id": "call-0001",
+      "status": "succeeded",
+      "label": "chunking",
+      "provider_name": "openai_compatible",
+      "model_id": "deepseek-chat",
+      "node_id": "node_preprocess",
+      "stage_name": "chunking",
+      "dimension_id": null,
+      "rater_id": null,
+      "template_source": "/Users/ahai/Code/MAS/configs/prompts/chunking.yaml",
+      "elapsed_ms": 72987.74,
+      "total_tokens": 4234,
+      "call_path": "llm_calls/call-0001.json",
+      "preview": "{     \"chunks\": [         {             \"id\": \"c0\",             \"title\": \"项目启动与元数据\",             \"text\": \"- id: c0\\n  summary: # 1\\n- 存档ID: 68673cb2b13b69327dd…"
+    },
+    {
+      "call_id": "call-0002",
+      "status": "succeeded",
+      "label": "coverage_planning",
+      "provider_name": "openai_compatible",
+      "model_id": "deepseek-chat",
+      "node_id": "node_coverage",
+      "stage_name": "coverage_planning",
+      "dimension_id": "a4_1",
+      "rater_id": null,
+      "template_source": "/Users/ahai/Code/MAS/configs/prompts/dimension_relevance.yaml",
+      "elapsed_ms": 4712.45,
+      "total_tokens": 1613,
+      "call_path": "llm_calls/call-0002.json",
+      "preview": "{     \"relevant_chunk_ids\": [\"unit-2f36f86f780c\", \"unit-190c54c6e8c7\", \"unit-16c5f3f035e1\", \"unit-529cd27d3b7e\", \"unit-5f5f439e412a\", \"unit-1efb7671435e\"] }"
+    },
+    {
+      "call_id": "call-0003",
+      "status": "succeeded",
+      "label": "coverage_planning",
+      "provider_name": "openai_compatible",
+      "model_id": "deepseek-chat",
+      "node_id": "node_coverage",
+      "stage_name": "coverage_planning",
+      "dimension_id": "a4_2",
+      "rater_id": null,
+      "template_source": "/Users/ahai/Code/MAS/configs/prompts/dimension_relevance.yaml",
+      "elapsed_ms": 4613.86,
+      "total_tokens": 1607,
+      "call_path": "llm_calls/call-0003.json",
+      "preview": "{     \"relevant_chunk_ids\": [\"unit-2f36f86f780c\", \"unit-5f5f439e412a\", \"unit-16c5f3f035e1\", \"unit-28c602b712c6\", \"unit-0ddd05dce7c5\", \"unit-f8066f7912a3\"] }"
+    },
+    {
+      "call_id": "call-0004",
+      "status": "succeeded",
+      "label": "coverage_planning",
+      "provider_name": "openai_compatible",
+      "model_id": "deepseek-chat",
+      "node_id": "node_coverage",
+      "stage_name": "coverage_planning",
+      "dimension_id": "a4_3",
+      "rater_id": null,
+      "template_source": "/Users/ahai/Code/MAS/configs/prompts/dimension_relevance.yaml",
+      "elapsed_ms": 5285.81,
+      "total_tokens": 1609,
+      "call_path": "llm_calls/call-0004.json",
+      "preview": "{     \"relevant_chunk_ids\": [\"unit-2f36f86f780c\", \"unit-5f5f439e412a\", \"unit-28c602b712c6\", \"unit-9cebe4a135ee\", \"unit-16c5f3f035e1\", \"unit-190c54c6e8c7\"] }"
+    },
+    {
+      "call_id": "call-0005",
+      "status": "succeeded",
+      "label": "evidence_extraction",
+      "provider_name": "openai_compatible",
+      "model_id": "deepseek-chat",
+      "node_id": "node_extractor",
+      "stage_name": "evidence_extraction",
+      "dimension_id": "a4_1",
+      "rater_id": null,
+      "template_source": "/Users/ahai/Code/MAS/configs/prompts/evidence_extraction.yaml",
+      "elapsed_ms": 60683.32,
+      "total_tokens": 76512,
+      "call_path": "llm_calls/call-0005.json",
+      "preview": "{     \"evidence_spans\": [         {             \"quote\": \"| 群体名称 | 群体规模 | 简要特征 |\\n| :------- | :------- | :------- |\\n| 老年用户 | 庞大且持续增长 | 对故居有强烈恋旧情感，渴望重温记忆、获得精神…"
+    },
+    {
+      "call_id": "call-0006",
+      "status": "succeeded",
+      "label": "evidence_extraction",
+      "provider_name": "openai_compatible",
+      "model_id": "deepseek-chat",
+      "node_id": "node_extractor",
+      "stage_name": "evidence_extraction",
+      "dimension_id": "a4_2",
+      "rater_id": null,
+      "template_source": "/Users/ahai/Code/MAS/configs/prompts/evidence_extraction.yaml",
+      "elapsed_ms": 65616.49,
+      "total_tokens": 75203,
+      "call_path": "llm_calls/call-0006.json",
+      "preview": "{     \"evidence_spans\": [         {             \"quote\": \"可能的问题：老照片可能存在褪色、模糊、视角单一等问题（如仅提供 1-2 张侧面角度的房屋照片），导致 AI 建模时结构失真（如屋顶坡度错误、门窗位置偏差）。部分历史场景可能缺乏影像资料（如拆迁前的胡同细…"
+    },
+    {
+      "call_id": "call-0007",
+      "status": "succeeded",
+      "label": "evidence_extraction",
+      "provider_name": "openai_compatible",
+      "model_id": "deepseek-chat",
+      "node_id": "node_extractor",
+      "stage_name": "evidence_extraction",
+      "dimension_id": "a4_3",
+      "rater_id": null,
+      "template_source": "/Users/ahai/Code/MAS/configs/prompts/evidence_extraction.yaml",
+      "elapsed_ms": 54528.83,
+      "total_tokens": 82884,
+      "call_path": "llm_calls/call-0007.json",
+      "preview": "{     \"evidence_spans\": [         {             \"quote\": \"学生初步观察到的问题：老照片存在褪色、模糊、视角单一等问题，可能导致AI建模失真；历史场景资料缺乏，AI生成可能与真实记忆不符。\",             \"chunk_id\": \"unit-2f36…"
+    },
+    {
+      "call_id": "call-0008",
+      "status": "succeeded",
+      "label": "rater_1",
+      "provider_name": "openai_compatible",
+      "model_id": "deepseek-chat",
+      "node_id": "node_scorer",
+      "stage_name": "scoring",
+      "dimension_id": "a4_1",
+      "rater_id": "rater_1",
+      "template_source": "/Users/ahai/Code/MAS/configs/prompts/scoring.yaml",
+      "elapsed_ms": 7606.58,
+      "total_tokens": 1904,
+      "call_path": "llm_calls/call-0008.json",
+      "preview": "{     \"proposed_score\": 4,     \"descriptor_refs\": [\"能识别2-3类主要老年用户或利益相关方，并在AI辅助下对其基本特征和使用情境做出区分；能说明部分群体间的差异，但对需求冲突、使用障碍等的分析不够系统。\"],     \"evidence_ids\": [\"span-e…"
+    },
+    {
+      "call_id": "call-0009",
+      "status": "succeeded",
+      "label": "rater_2",
+      "provider_name": "openai_compatible",
+      "model_id": "qwen3.5-plus",
+      "node_id": "node_scorer",
+      "stage_name": "scoring",
+      "dimension_id": "a4_1",
+      "rater_id": "rater_2",
+      "template_source": "/Users/ahai/Code/MAS/configs/prompts/scoring.yaml",
+      "elapsed_ms": 15036.73,
+      "total_tokens": 2773,
+      "call_path": "llm_calls/call-0009.json",
+      "preview": "{   \"proposed_score\": 4,   \"descriptor_refs\": [     \"能识别 2-3 类主要老年用户或利益相关方，并在 AI 辅助下对其基本特征和使用情境做出区分\",     \"能说明部分群体间的差异，但对需求冲突、使用障碍等的分析不够系统\"   ],   \"evidence_id…"
+    },
+    {
+      "call_id": "call-0010",
+      "status": "succeeded",
+      "label": "rater_1",
+      "provider_name": "openai_compatible",
+      "model_id": "deepseek-chat",
+      "node_id": "node_scorer",
+      "stage_name": "scoring",
+      "dimension_id": "a4_2",
+      "rater_id": "rater_1",
+      "template_source": "/Users/ahai/Code/MAS/configs/prompts/scoring.yaml",
+      "elapsed_ms": 9014.53,
+      "total_tokens": 2135,
+      "call_path": "llm_calls/call-0010.json",
+      "preview": "{     \"proposed_score\": 5,     \"descriptor_refs\": [\"能在 AI 辅助下，将老年用户的痛点与具体行为路径、情绪体验和环境约束建立清晰关联\", \"对不同痛点进行优先级排序（如按严重程度、影响范围、可行性）\", \"能识别并说明痛点背后潜在的系统性问题（如家庭支持、平台算法…"
+    },
+    {
+      "call_id": "call-0011",
+      "status": "succeeded",
+      "label": "rater_2",
+      "provider_name": "openai_compatible",
+      "model_id": "qwen3.5-plus",
+      "node_id": "node_scorer",
+      "stage_name": "scoring",
+      "dimension_id": "a4_2",
+      "rater_id": "rater_2",
+      "template_source": "/Users/ahai/Code/MAS/configs/prompts/scoring.yaml",
+      "elapsed_ms": 14558.75,
+      "total_tokens": 2992,
+      "call_path": "llm_calls/call-0011.json",
+      "preview": "{   \"proposed_score\": 5,   \"descriptor_refs\": [     \"对不同痛点进行优先级排序（如按严重程度、影响范围、可行性）\",     \"提出可操作、可验证的功能假设或设计方向\",     \"能识别并说明痛点背后潜在的系统性问题\"   ],   \"evidence_ids\":…"
+    },
+    {
+      "call_id": "call-0012",
+      "status": "succeeded",
+      "label": "rater_1",
+      "provider_name": "openai_compatible",
+      "model_id": "deepseek-chat",
+      "node_id": "node_scorer",
+      "stage_name": "scoring",
+      "dimension_id": "a4_3",
+      "rater_id": "rater_1",
+      "template_source": "/Users/ahai/Code/MAS/configs/prompts/scoring.yaml",
+      "elapsed_ms": 8789.81,
+      "total_tokens": 1792,
+      "call_path": "llm_calls/call-0012.json",
+      "preview": "{     \"proposed_score\": 5,     \"descriptor_refs\": [\"主动调用至少 2 类不同 AI 工具（如用户画像 AI、同理心地图 AI、市场分析 AI），围绕同一需求问题发起多轮追问和交叉验证\", \"能指出 AI 在数据、刻板印象、语言表述等方面可能产生的偏见或误导，并提出规…"
+    },
+    {
+      "call_id": "call-0013",
+      "status": "succeeded",
+      "label": "rater_2",
+      "provider_name": "openai_compatible",
+      "model_id": "qwen3.5-plus",
+      "node_id": "node_scorer",
+      "stage_name": "scoring",
+      "dimension_id": "a4_3",
+      "rater_id": "rater_2",
+      "template_source": "/Users/ahai/Code/MAS/configs/prompts/scoring.yaml",
+      "elapsed_ms": 14251.14,
+      "total_tokens": 2562,
+      "call_path": "llm_calls/call-0013.json",
+      "preview": "{   \"proposed_score\": 4,   \"descriptor_refs\": [     \"能意识到部分 AI 输出可能不准确或不适用于老年群体，并做简单的筛选或修正\",     \"提到隐私、安全等伦理点，但多停留在原则层面，措施不够具体\"   ],   \"evidence_ids\": [     \"s…"
+    },
+    {
+      "call_id": "call-0014",
+      "status": "succeeded",
+      "label": "feedback",
+      "provider_name": "openai_compatible",
+      "model_id": "deepseek-chat",
+      "node_id": "node_feedback",
+      "stage_name": "feedback",
+      "dimension_id": "a4_1",
+      "rater_id": null,
+      "template_source": "/Users/ahai/Code/MAS/configs/prompts/explanation.yaml",
+      "elapsed_ms": 8323.6,
+      "total_tokens": 1569,
+      "call_path": "llm_calls/call-0014.json",
+      "preview": "你在“用户群体识别的全面性”方面表现良好。你清晰地识别了“老年用户”与“家庭成员/晚辈”这两类核心群体，并借助AI工具（如同理心地图）有效区分了他们的基本特征：例如，你指出老年用户对“情感真实”敏感且技术接受度差异大，而家庭成员则技术接受度高并关注代际传承。这表明你具备了识别和区分主要用户群体的能力。不过，你的分析更…"
+    },
+    {
+      "call_id": "call-0015",
+      "status": "succeeded",
+      "label": "feedback",
+      "provider_name": "openai_compatible",
+      "model_id": "deepseek-chat",
+      "node_id": "node_feedback",
+      "stage_name": "feedback",
+      "dimension_id": "a4_2",
+      "rater_id": null,
+      "template_source": "/Users/ahai/Code/MAS/configs/prompts/explanation.yaml",
+      "elapsed_ms": 9199.48,
+      "total_tokens": 1609,
+      "call_path": "llm_calls/call-0015.json",
+      "preview": "你在“痛点定位与需求精准度”方面表现优秀。你不仅准确识别了AI建模失真、操作复杂性等核心痛点，并依据严重程度和影响范围进行了清晰的优先级排序（如将“AI建模失真”与“操作复杂性”列为🔥🔥🔥🔥🔥的主要痛点）。更重要的是，你能深入地将这些痛点与老年用户的具体行为路径（如使用VR设备可能眩晕）、情绪体验（如情感伤害风险）和…"
+    },
+    {
+      "call_id": "call-0016",
+      "status": "succeeded",
+      "label": "feedback",
+      "provider_name": "openai_compatible",
+      "model_id": "deepseek-chat",
+      "node_id": "node_feedback",
+      "stage_name": "feedback",
+      "dimension_id": "a4_3",
+      "rater_id": null,
+      "template_source": "/Users/ahai/Code/MAS/configs/prompts/explanation.yaml",
+      "elapsed_ms": 6608.87,
+      "total_tokens": 1046,
+      "call_path": "llm_calls/call-0016.json",
+      "preview": "你在“AI协同与伦理反思”维度表现优异（5分）。**优势突出**：你不仅主动识别了AI建模可能因老照片质量导致的“失真”风险，更在伦理层面进行了深入且具体的反思。例如，你详细列出了隐私泄露等高风险，并提出了“采用区块链加密技术存储敏感数据”、“定期安全审计”等**具体措施**，而非仅停留在原则声明。同时，你将伦理与合…"
+    }
+  ],
+  "primary_artifacts": [
+    {
+      "artifact_name": "run_trace",
+      "path": "run_trace.json",
+      "summary": "Canonical run trace for this evaluation"
+    },
+    {
+      "artifact_name": "feedback",
+      "path": "feedback.json",
+      "summary": "Final feedback payload"
+    },
+    {
+      "artifact_name": "hypotheses",
+      "path": "hypotheses.json",
+      "summary": "6 score hypotheses"
+    },
+    {
+      "artifact_name": "evidence_spans",
+      "path": "evidence_spans.json",
+      "summary": "21 evidence spans"
+    },
+    {
+      "artifact_name": "observations",
+      "path": "observations.json",
+      "summary": "3 observations"
+    },
+    {
+      "artifact_name": "conflicts",
+      "path": "conflicts.json",
+      "summary": "0 conflicts"
+    },
+    {
+      "artifact_name": "adjudication_records",
+      "path": "adjudication_records.json",
+      "summary": "0 adjudication records"
+    }
+  ]
+}

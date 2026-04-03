@@ -1,0 +1,1413 @@
+[
+  {
+    "span_id": "span-ext-fd3b7eed7548",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-7f644e8b02c6",
+    "text_quote": "请你分析一下70+老年人的特征和需求",
+    "start_offset": 268,
+    "end_offset": 286,
+    "scope": "span",
+    "dimension_id": "a4_1",
+    "facet_ids": [
+      "a4_1_evidence"
+    ],
+    "extraction_note": "provider:exact:neutral",
+    "support_type": "neutral",
+    "source_type": "human",
+    "source_label": "session_init"
+  },
+  {
+    "span_id": "span-ext-167a476ef287",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-7f644e8b02c6",
+    "text_quote": "可能的问题是记性差，以及缺少朋友，学习新事物困难",
+    "start_offset": 1656,
+    "end_offset": 1680,
+    "scope": "span",
+    "dimension_id": "a4_1",
+    "facet_ids": [
+      "a4_1_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-90ad67de8ebc",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-7f644e8b02c6",
+    "text_quote": "可能核心痛点是需要一个AI助手？",
+    "start_offset": 2511,
+    "end_offset": 2527,
+    "scope": "span",
+    "dimension_id": "a4_1",
+    "facet_ids": [
+      "a4_1_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-464d5d234238",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-7f644e8b02c6",
+    "text_quote": "核心痛点是缺少一个能提供多种帮助的朋友或者助手？",
+    "start_offset": 3580,
+    "end_offset": 3604,
+    "scope": "span",
+    "dimension_id": "a4_1",
+    "facet_ids": [
+      "a4_1_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-a15657037ed8",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-7f644e8b02c6",
+    "text_quote": "生活中的方方面面",
+    "start_offset": 4598,
+    "end_offset": 4606,
+    "scope": "span",
+    "dimension_id": "a4_1",
+    "facet_ids": [
+      "a4_1_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-97be4393b452",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-7f644e8b02c6",
+    "text_quote": "因为老年人操作能力差，容易遭受危险",
+    "start_offset": 7232,
+    "end_offset": 7249,
+    "scope": "span",
+    "dimension_id": "a4_1",
+    "facet_ids": [
+      "a4_1_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-1d29fa7ffcf2",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-7f644e8b02c6",
+    "text_quote": "最终要帮助老年人实现解决生活中的常见问题，提供陪伴",
+    "start_offset": 8112,
+    "end_offset": 8137,
+    "scope": "span",
+    "dimension_id": "a4_1",
+    "facet_ids": [
+      "a4_1_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-480f863c29e8",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-7f644e8b02c6",
+    "text_quote": "豪德",
+    "start_offset": 8826,
+    "end_offset": 8828,
+    "scope": "span",
+    "dimension_id": "a4_1",
+    "facet_ids": [
+      "a4_1_evidence"
+    ],
+    "extraction_note": "provider:exact:neutral",
+    "support_type": "neutral",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-e34082ae701e",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-7f644e8b02c6",
+    "text_quote": "@user_persona_expert  尼豪",
+    "start_offset": 9189,
+    "end_offset": 9213,
+    "scope": "span",
+    "dimension_id": "a4_1",
+    "facet_ids": [
+      "a4_1_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "unknown",
+    "source_label": "human_ask_agent"
+  },
+  {
+    "span_id": "span-ext-1c9b1093689a",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-7f644e8b02c6",
+    "text_quote": "@user_persona_expert  进一步细分其行为模式、挖掘其隐性需求或分析其痛点根因",
+    "start_offset": 13517,
+    "end_offset": 13565,
+    "scope": "span",
+    "dimension_id": "a4_1",
+    "facet_ids": [
+      "a4_1_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "unknown",
+    "source_label": "human_ask_agent"
+  },
+  {
+    "span_id": "span-ext-4f7b1640a329",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-7f644e8b02c6",
+    "text_quote": "我已经咨询过用户画像专家了",
+    "start_offset": 21013,
+    "end_offset": 21026,
+    "scope": "span",
+    "dimension_id": "a4_1",
+    "facet_ids": [
+      "a4_1_evidence"
+    ],
+    "extraction_note": "provider:exact:neutral",
+    "support_type": "neutral",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-16967e47c893",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-7f644e8b02c6",
+    "text_quote": "@empathy_map_expert  你好",
+    "start_offset": 21348,
+    "end_offset": 21371,
+    "scope": "span",
+    "dimension_id": "a4_1",
+    "facet_ids": [
+      "a4_1_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "unknown",
+    "source_label": "human_ask_agent"
+  },
+  {
+    "span_id": "span-ext-425ce98a6744",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-2eb1f4efef8e",
+    "text_quote": "@kano  你好",
+    "start_offset": 23048,
+    "end_offset": 23057,
+    "scope": "span",
+    "dimension_id": "a4_1",
+    "facet_ids": [
+      "a4_1_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "unknown",
+    "source_label": "human_ask_agent"
+  },
+  {
+    "span_id": "span-ext-1e7a13bbfe73",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-2eb1f4efef8e",
+    "text_quote": "通过极致的适老化设计（语音为主、极简操作）、建立产品与用户间的情感连接（有温度的AI、主动关怀），以及提供稳定可靠的服务，持续提升老年用户的“被关心”感和生活质量。",
+    "start_offset": 24626,
+    "end_offset": 24708,
+    "scope": "span",
+    "dimension_id": "a4_1",
+    "facet_ids": [
+      "a4_1_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "unknown",
+    "source_label": "expert_dialog"
+  },
+  {
+    "span_id": "span-ext-fef782711a6d",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-2eb1f4efef8e",
+    "text_quote": "是，因为解决了核心痛点",
+    "start_offset": 26337,
+    "end_offset": 26348,
+    "scope": "span",
+    "dimension_id": "a4_1",
+    "facet_ids": [
+      "a4_1_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-41876663af96",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-2eb1f4efef8e",
+    "text_quote": "请你概括一下用户画像# 💬 与用户画像专家专家的对话",
+    "start_offset": 26842,
+    "end_offset": 26868,
+    "scope": "span",
+    "dimension_id": "a4_1",
+    "facet_ids": [
+      "a4_1_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "unknown",
+    "source_label": null
+  },
+  {
+    "span_id": "span-ext-c017ad8d8d5c",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-7f644e8b02c6",
+    "text_quote": "好的",
+    "start_offset": 745,
+    "end_offset": 747,
+    "scope": "span",
+    "dimension_id": "a4_1",
+    "facet_ids": [
+      "a4_1_evidence"
+    ],
+    "extraction_note": "provider:exact:neutral",
+    "support_type": "neutral",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-77931de4168e",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-2eb1f4efef8e",
+    "text_quote": "@function_brainstorm_ai  你好",
+    "start_offset": 39493,
+    "end_offset": 39520,
+    "scope": "span",
+    "dimension_id": "a4_1",
+    "facet_ids": [
+      "a4_1_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "unknown",
+    "source_label": "human_ask_agent"
+  },
+  {
+    "span_id": "span-ext-7382f06373e6",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-2eb1f4efef8e",
+    "text_quote": "# 💬 与功能脑暴AI专家的对话",
+    "start_offset": 42009,
+    "end_offset": 42025,
+    "scope": "span",
+    "dimension_id": "a4_1",
+    "facet_ids": [
+      "a4_1_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-fc51abc34629",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-2eb1f4efef8e",
+    "text_quote": "全语音交互，极大降低老年人学习成本和使用门槛；",
+    "start_offset": 44665,
+    "end_offset": 44688,
+    "scope": "span",
+    "dimension_id": "a4_1",
+    "facet_ids": [
+      "a4_1_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-acc9d1d95c88",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-2eb1f4efef8e",
+    "text_quote": "生活提醒；帮助老年人管理日常事务，解决老年人记性差的问题；",
+    "start_offset": 45692,
+    "end_offset": 45721,
+    "scope": "span",
+    "dimension_id": "a4_1",
+    "facet_ids": [
+      "a4_1_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-f140fcc4376d",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-a80312599d12",
+    "text_quote": "AI语音聊天，解决老年人的孤独感，AI通过语调、语速判断老人情绪，并提供恰当的安慰、鼓励或推荐放松内容。允许子女预录部分语音包，定制AI的音色和常用语，让AI更像亲近的家人",
+    "start_offset": 46826,
+    "end_offset": 46912,
+    "scope": "span",
+    "dimension_id": "a4_1",
+    "facet_ids": [
+      "a4_1_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-5edf37f7cbff",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-a80312599d12",
+    "text_quote": "跌倒/异常报警，通过内置传感器或联动外部设备，监测用户跌倒或长时间未动，自动发送警报。一键或语音指令快速连接预设亲属、紧急联系人或急救服务，并自动发送地理位置。",
+    "start_offset": 48104,
+    "end_offset": 48184,
+    "scope": "span",
+    "dimension_id": "a4_1",
+    "facet_ids": [
+      "a4_1_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-e7eae09ffa1b",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-a80312599d12",
+    "text_quote": "好的！",
+    "start_offset": 49478,
+    "end_offset": 49481,
+    "scope": "span",
+    "dimension_id": "a4_1",
+    "facet_ids": [
+      "a4_1_evidence"
+    ],
+    "extraction_note": "provider:exact:neutral",
+    "support_type": "neutral",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-ec8584f97b30",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-a80312599d12",
+    "text_quote": "然后呢？",
+    "start_offset": 70503,
+    "end_offset": 70507,
+    "scope": "span",
+    "dimension_id": "a4_1",
+    "facet_ids": [
+      "a4_1_evidence"
+    ],
+    "extraction_note": "provider:exact:neutral",
+    "support_type": "neutral",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-c2c2378da444",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-5be50cb9ecd9",
+    "text_quote": "@xiaohuthu  你好？",
+    "start_offset": 74769,
+    "end_offset": 74784,
+    "scope": "span",
+    "dimension_id": "a4_1",
+    "facet_ids": [
+      "a4_1_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "unknown",
+    "source_label": "human_ask_agent"
+  },
+  {
+    "span_id": "span-ext-8c19b56732ab",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-5be50cb9ecd9",
+    "text_quote": "@mozi  你好",
+    "start_offset": 76040,
+    "end_offset": 76049,
+    "scope": "span",
+    "dimension_id": "a4_1",
+    "facet_ids": [
+      "a4_1_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "unknown",
+    "source_label": "human_ask_agent"
+  },
+  {
+    "span_id": "span-ext-dd6ee728b332",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-5be50cb9ecd9",
+    "text_quote": "@y_model_analyst  你好",
+    "start_offset": 81477,
+    "end_offset": 81497,
+    "scope": "span",
+    "dimension_id": "a4_1",
+    "facet_ids": [
+      "a4_1_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "unknown",
+    "source_label": "human_ask_agent"
+  },
+  {
+    "span_id": "span-ext-01361fe67cb1",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-5be50cb9ecd9",
+    "text_quote": "@y_model_analyst  oi？",
+    "start_offset": 81974,
+    "end_offset": 81995,
+    "scope": "span",
+    "dimension_id": "a4_1",
+    "facet_ids": [
+      "a4_1_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "unknown",
+    "source_label": "human_ask_agent"
+  },
+  {
+    "span_id": "span-ext-f5730c2198af",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-5be50cb9ecd9",
+    "text_quote": "文档怎么下载?",
+    "start_offset": 82674,
+    "end_offset": 82681,
+    "scope": "span",
+    "dimension_id": "a4_1",
+    "facet_ids": [
+      "a4_1_evidence"
+    ],
+    "extraction_note": "provider:exact:neutral",
+    "support_type": "neutral",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-4d00c5e2a588",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-5be50cb9ecd9",
+    "text_quote": "好的！！！！！！！",
+    "start_offset": 84960,
+    "end_offset": 84969,
+    "scope": "span",
+    "dimension_id": "a4_1",
+    "facet_ids": [
+      "a4_1_evidence"
+    ],
+    "extraction_note": "provider:exact:neutral",
+    "support_type": "neutral",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-1efa6c224841",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-5be50cb9ecd9",
+    "text_quote": "回应简要介绍自己的功能？",
+    "start_offset": 86343,
+    "end_offset": 86355,
+    "scope": "span",
+    "dimension_id": "a4_1",
+    "facet_ids": [
+      "a4_1_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-a6c4e8d40dd9",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-5be50cb9ecd9",
+    "text_quote": "向老人询问是否喜欢乐器？",
+    "start_offset": 87186,
+    "end_offset": 87198,
+    "scope": "span",
+    "dimension_id": "a4_1",
+    "facet_ids": [
+      "a4_1_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-da02fdd43b2f",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-5be50cb9ecd9",
+    "text_quote": "如果说喜欢，就进一步询问老人喜欢的音乐或者乐器，",
+    "start_offset": 88153,
+    "end_offset": 88177,
+    "scope": "span",
+    "dimension_id": "a4_1",
+    "facet_ids": [
+      "a4_1_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-52a46c99329a",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-5be50cb9ecd9",
+    "text_quote": "给出具体的音乐偏好就播放相关音乐；不喜欢音乐或乐器就询问老人的爱好",
+    "start_offset": 89063,
+    "end_offset": 89096,
+    "scope": "span",
+    "dimension_id": "a4_1",
+    "facet_ids": [
+      "a4_1_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-87f98948e682",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-5be50cb9ecd9",
+    "text_quote": "可以定时提醒老年人节目开始或者散步",
+    "start_offset": 90473,
+    "end_offset": 90490,
+    "scope": "span",
+    "dimension_id": "a4_1",
+    "facet_ids": [
+      "a4_1_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-c79824797044",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-a80312599d12",
+    "text_quote": "没有",
+    "start_offset": 56055,
+    "end_offset": 56057,
+    "scope": "span",
+    "dimension_id": "a4_1",
+    "facet_ids": [
+      "a4_1_evidence"
+    ],
+    "extraction_note": "provider:exact:neutral",
+    "support_type": "neutral",
+    "source_type": "unknown",
+    "source_label": "training_draft_docs"
+  },
+  {
+    "span_id": "span-ext-1141b324d080",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-7f644e8b02c6",
+    "text_quote": "可能的问题是记性差，以及缺少朋友，学习新事物困难",
+    "start_offset": 1656,
+    "end_offset": 1680,
+    "scope": "span",
+    "dimension_id": "a4_2",
+    "facet_ids": [
+      "a4_2_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-0df686d28fe8",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-7f644e8b02c6",
+    "text_quote": "可能核心痛点是需要一个AI助手？",
+    "start_offset": 2511,
+    "end_offset": 2527,
+    "scope": "span",
+    "dimension_id": "a4_2",
+    "facet_ids": [
+      "a4_2_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-ac9b8c6fc798",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-7f644e8b02c6",
+    "text_quote": "核心痛点是缺少一个能提供多种帮助的朋友或者助手？",
+    "start_offset": 3580,
+    "end_offset": 3604,
+    "scope": "span",
+    "dimension_id": "a4_2",
+    "facet_ids": [
+      "a4_2_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-3f6bdb7bd584",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-7f644e8b02c6",
+    "text_quote": "生活中的方方面面",
+    "start_offset": 4598,
+    "end_offset": 4606,
+    "scope": "span",
+    "dimension_id": "a4_2",
+    "facet_ids": [
+      "a4_2_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-43c259b8b1a8",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-7f644e8b02c6",
+    "text_quote": "因为老年人操作能力差，容易遭受危险",
+    "start_offset": 7232,
+    "end_offset": 7249,
+    "scope": "span",
+    "dimension_id": "a4_2",
+    "facet_ids": [
+      "a4_2_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-ca0a06f5f91b",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-7f644e8b02c6",
+    "text_quote": "最终要帮助老年人实现解决生活中的常见问题，提供陪伴",
+    "start_offset": 8112,
+    "end_offset": 8137,
+    "scope": "span",
+    "dimension_id": "a4_2",
+    "facet_ids": [
+      "a4_2_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-e290adb284ef",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-2eb1f4efef8e",
+    "text_quote": "通过极致的适老化设计（语音为主、极简操作）、建立产品与用户间的情感连接（有温度的AI、主动关怀），以及提供稳定可靠的服务，持续提升老年用户的“被关心”感和生活质量。",
+    "start_offset": 24626,
+    "end_offset": 24708,
+    "scope": "span",
+    "dimension_id": "a4_2",
+    "facet_ids": [
+      "a4_2_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "unknown",
+    "source_label": "expert_dialog"
+  },
+  {
+    "span_id": "span-ext-128ab76b0189",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-2eb1f4efef8e",
+    "text_quote": "是，因为解决了核心痛点",
+    "start_offset": 26337,
+    "end_offset": 26348,
+    "scope": "span",
+    "dimension_id": "a4_2",
+    "facet_ids": [
+      "a4_2_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-cb2411161824",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-2eb1f4efef8e",
+    "text_quote": "全语音交互，极大降低老年人学习成本和使用门槛；",
+    "start_offset": 44665,
+    "end_offset": 44688,
+    "scope": "span",
+    "dimension_id": "a4_2",
+    "facet_ids": [
+      "a4_2_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-8bf81eb09a36",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-2eb1f4efef8e",
+    "text_quote": "生活提醒；帮助老年人管理日常事务，解决老年人记性差的问题；",
+    "start_offset": 45692,
+    "end_offset": 45721,
+    "scope": "span",
+    "dimension_id": "a4_2",
+    "facet_ids": [
+      "a4_2_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-c7497f816cfe",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-a80312599d12",
+    "text_quote": "AI语音聊天，解决老年人的孤独感，AI通过语调、语速判断老人情绪，并提供恰当的安慰、鼓励或推荐放松内容。允许子女预录部分语音包，定制AI的音色和常用语，让AI更像亲近的家人",
+    "start_offset": 46826,
+    "end_offset": 46912,
+    "scope": "span",
+    "dimension_id": "a4_2",
+    "facet_ids": [
+      "a4_2_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-a3be2165ffa6",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-a80312599d12",
+    "text_quote": "跌倒/异常报警，通过内置传感器或联动外部设备，监测用户跌倒或长时间未动，自动发送警报。一键或语音指令快速连接预设亲属、紧急联系人或急救服务，并自动发送地理位置。",
+    "start_offset": 48104,
+    "end_offset": 48184,
+    "scope": "span",
+    "dimension_id": "a4_2",
+    "facet_ids": [
+      "a4_2_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-3794f5e41e4e",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-5be50cb9ecd9",
+    "text_quote": "回应简要介绍自己的功能？",
+    "start_offset": 86343,
+    "end_offset": 86355,
+    "scope": "span",
+    "dimension_id": "a4_2",
+    "facet_ids": [
+      "a4_2_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-b863b48c4003",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-5be50cb9ecd9",
+    "text_quote": "向老人询问是否喜欢乐器？",
+    "start_offset": 87186,
+    "end_offset": 87198,
+    "scope": "span",
+    "dimension_id": "a4_2",
+    "facet_ids": [
+      "a4_2_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-46ce4afdae7d",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-5be50cb9ecd9",
+    "text_quote": "如果说喜欢，就进一步询问老人喜欢的音乐或者乐器，",
+    "start_offset": 88153,
+    "end_offset": 88177,
+    "scope": "span",
+    "dimension_id": "a4_2",
+    "facet_ids": [
+      "a4_2_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-d168d0da7c9f",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-5be50cb9ecd9",
+    "text_quote": "给出具体的音乐偏好就播放相关音乐；不喜欢音乐或乐器就询问老人的爱好",
+    "start_offset": 89063,
+    "end_offset": 89096,
+    "scope": "span",
+    "dimension_id": "a4_2",
+    "facet_ids": [
+      "a4_2_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-a39c55c87a1e",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-5be50cb9ecd9",
+    "text_quote": "可以定时提醒老年人节目开始或者散步",
+    "start_offset": 90473,
+    "end_offset": 90490,
+    "scope": "span",
+    "dimension_id": "a4_2",
+    "facet_ids": [
+      "a4_2_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-c54622b789e3",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-7f644e8b02c6",
+    "text_quote": "请你分析一下70+老年人的特征和需求",
+    "start_offset": 268,
+    "end_offset": 286,
+    "scope": "span",
+    "dimension_id": "a4_3",
+    "facet_ids": [
+      "a4_3_evidence"
+    ],
+    "extraction_note": "provider:exact:neutral",
+    "support_type": "neutral",
+    "source_type": "human",
+    "source_label": "session_init"
+  },
+  {
+    "span_id": "span-ext-cebbfb4cbd71",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-7f644e8b02c6",
+    "text_quote": "可能的问题是记性差，以及缺少朋友，学习新事物困难",
+    "start_offset": 1656,
+    "end_offset": 1680,
+    "scope": "span",
+    "dimension_id": "a4_3",
+    "facet_ids": [
+      "a4_3_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-025834192f9a",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-7f644e8b02c6",
+    "text_quote": "可能核心痛点是需要一个AI助手？",
+    "start_offset": 2511,
+    "end_offset": 2527,
+    "scope": "span",
+    "dimension_id": "a4_3",
+    "facet_ids": [
+      "a4_3_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-e4610cba15b4",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-7f644e8b02c6",
+    "text_quote": "核心痛点是缺少一个能提供多种帮助的朋友或者助手？",
+    "start_offset": 3580,
+    "end_offset": 3604,
+    "scope": "span",
+    "dimension_id": "a4_3",
+    "facet_ids": [
+      "a4_3_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-22b5a130d6ea",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-7f644e8b02c6",
+    "text_quote": "生活中的方方面面",
+    "start_offset": 4598,
+    "end_offset": 4606,
+    "scope": "span",
+    "dimension_id": "a4_3",
+    "facet_ids": [
+      "a4_3_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-1498648e03cc",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-7f644e8b02c6",
+    "text_quote": "因为老年人操作能力差，容易遭受危险",
+    "start_offset": 7232,
+    "end_offset": 7249,
+    "scope": "span",
+    "dimension_id": "a4_3",
+    "facet_ids": [
+      "a4_3_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-66ae45f46037",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-7f644e8b02c6",
+    "text_quote": "最终要帮助老年人实现解决生活中的常见问题，提供陪伴",
+    "start_offset": 8112,
+    "end_offset": 8137,
+    "scope": "span",
+    "dimension_id": "a4_3",
+    "facet_ids": [
+      "a4_3_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-8d22d07f3953",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-7f644e8b02c6",
+    "text_quote": "@user_persona_expert  尼豪",
+    "start_offset": 9189,
+    "end_offset": 9213,
+    "scope": "span",
+    "dimension_id": "a4_3",
+    "facet_ids": [
+      "a4_3_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "unknown",
+    "source_label": "human_ask_agent"
+  },
+  {
+    "span_id": "span-ext-088a117c279c",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-7f644e8b02c6",
+    "text_quote": "@user_persona_expert  进一步细分其行为模式、挖掘其隐性需求或分析其痛点根因",
+    "start_offset": 13517,
+    "end_offset": 13565,
+    "scope": "span",
+    "dimension_id": "a4_3",
+    "facet_ids": [
+      "a4_3_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "unknown",
+    "source_label": "human_ask_agent"
+  },
+  {
+    "span_id": "span-ext-a2c7e257f95e",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-7f644e8b02c6",
+    "text_quote": "@user_persona_expert  进一步细分其行为模式、挖掘其隐性需求或分析其痛点根因",
+    "start_offset": 13517,
+    "end_offset": 13565,
+    "scope": "span",
+    "dimension_id": "a4_3",
+    "facet_ids": [
+      "a4_3_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "unknown",
+    "source_label": "human_ask_agent"
+  },
+  {
+    "span_id": "span-ext-917c4cb52a07",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-7f644e8b02c6",
+    "text_quote": "我已经咨询过用户画像专家了",
+    "start_offset": 21013,
+    "end_offset": 21026,
+    "scope": "span",
+    "dimension_id": "a4_3",
+    "facet_ids": [
+      "a4_3_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-929d5c4b137e",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-7f644e8b02c6",
+    "text_quote": "@empathy_map_expert  你好",
+    "start_offset": 21348,
+    "end_offset": 21371,
+    "scope": "span",
+    "dimension_id": "a4_3",
+    "facet_ids": [
+      "a4_3_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "unknown",
+    "source_label": "human_ask_agent"
+  },
+  {
+    "span_id": "span-ext-2b6100b838af",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-2eb1f4efef8e",
+    "text_quote": "@kano  你好",
+    "start_offset": 23048,
+    "end_offset": 23057,
+    "scope": "span",
+    "dimension_id": "a4_3",
+    "facet_ids": [
+      "a4_3_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "unknown",
+    "source_label": "human_ask_agent"
+  },
+  {
+    "span_id": "span-ext-ac3999a6f5d1",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-2eb1f4efef8e",
+    "text_quote": "通过极致的适老化设计（语音为主、极简操作）、建立产品与用户间的情感连接（有温度的AI、主动关怀），以及提供稳定可靠的服务，持续提升老年用户的“被关心”感和生活质量。",
+    "start_offset": 24626,
+    "end_offset": 24708,
+    "scope": "span",
+    "dimension_id": "a4_3",
+    "facet_ids": [
+      "a4_3_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "unknown",
+    "source_label": "expert_dialog"
+  },
+  {
+    "span_id": "span-ext-a7a26e6d6810",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-2eb1f4efef8e",
+    "text_quote": "是，因为解决了核心痛点",
+    "start_offset": 26337,
+    "end_offset": 26348,
+    "scope": "span",
+    "dimension_id": "a4_3",
+    "facet_ids": [
+      "a4_3_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-277f73f35d0d",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-2eb1f4efef8e",
+    "text_quote": "@function_brainstorm_ai  你好",
+    "start_offset": 39493,
+    "end_offset": 39520,
+    "scope": "span",
+    "dimension_id": "a4_3",
+    "facet_ids": [
+      "a4_3_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "unknown",
+    "source_label": "human_ask_agent"
+  },
+  {
+    "span_id": "span-ext-0f33c52409f8",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-2eb1f4efef8e",
+    "text_quote": "全语音交互，极大降低老年人学习成本和使用门槛；",
+    "start_offset": 44665,
+    "end_offset": 44688,
+    "scope": "span",
+    "dimension_id": "a4_3",
+    "facet_ids": [
+      "a4_3_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-cf3324a6498b",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-2eb1f4efef8e",
+    "text_quote": "生活提醒；帮助老年人管理日常事务，解决老年人记性差的问题；",
+    "start_offset": 45692,
+    "end_offset": 45721,
+    "scope": "span",
+    "dimension_id": "a4_3",
+    "facet_ids": [
+      "a4_3_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-e4ed9beb0643",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-a80312599d12",
+    "text_quote": "AI语音聊天，解决老年人的孤独感，AI通过语调、语速判断老人情绪，并提供恰当的安慰、鼓励或推荐放松内容。允许子女预录部分语音包，定制AI的音色和常用语，让AI更像亲近的家人",
+    "start_offset": 46826,
+    "end_offset": 46912,
+    "scope": "span",
+    "dimension_id": "a4_3",
+    "facet_ids": [
+      "a4_3_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-3331352a917b",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-a80312599d12",
+    "text_quote": "跌倒/异常报警，通过内置传感器或联动外部设备，监测用户跌倒或长时间未动，自动发送警报。一键或语音指令快速连接预设亲属、紧急联系人或急救服务，并自动发送地理位置。",
+    "start_offset": 48104,
+    "end_offset": 48184,
+    "scope": "span",
+    "dimension_id": "a4_3",
+    "facet_ids": [
+      "a4_3_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-911a491bfac0",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-5be50cb9ecd9",
+    "text_quote": "@xiaohuthu  你好？",
+    "start_offset": 74769,
+    "end_offset": 74784,
+    "scope": "span",
+    "dimension_id": "a4_3",
+    "facet_ids": [
+      "a4_3_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "unknown",
+    "source_label": "human_ask_agent"
+  },
+  {
+    "span_id": "span-ext-27c694639b6e",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-5be50cb9ecd9",
+    "text_quote": "@mozi  你好",
+    "start_offset": 76040,
+    "end_offset": 76049,
+    "scope": "span",
+    "dimension_id": "a4_3",
+    "facet_ids": [
+      "a4_3_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "unknown",
+    "source_label": "human_ask_agent"
+  },
+  {
+    "span_id": "span-ext-ed3578c0b988",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-5be50cb9ecd9",
+    "text_quote": "@y_model_analyst  你好",
+    "start_offset": 81477,
+    "end_offset": 81497,
+    "scope": "span",
+    "dimension_id": "a4_3",
+    "facet_ids": [
+      "a4_3_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "unknown",
+    "source_label": "human_ask_agent"
+  },
+  {
+    "span_id": "span-ext-8cb30fa2c1b8",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-5be50cb9ecd9",
+    "text_quote": "@y_model_analyst  oi？",
+    "start_offset": 81974,
+    "end_offset": 81995,
+    "scope": "span",
+    "dimension_id": "a4_3",
+    "facet_ids": [
+      "a4_3_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "unknown",
+    "source_label": "human_ask_agent"
+  },
+  {
+    "span_id": "span-ext-7126161c2c24",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-5be50cb9ecd9",
+    "text_quote": "回应简要介绍自己的功能？",
+    "start_offset": 86343,
+    "end_offset": 86355,
+    "scope": "span",
+    "dimension_id": "a4_3",
+    "facet_ids": [
+      "a4_3_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-5b96f4b11c95",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-5be50cb9ecd9",
+    "text_quote": "向老人询问是否喜欢乐器？",
+    "start_offset": 87186,
+    "end_offset": 87198,
+    "scope": "span",
+    "dimension_id": "a4_3",
+    "facet_ids": [
+      "a4_3_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-4c141c3e5d06",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-5be50cb9ecd9",
+    "text_quote": "如果说喜欢，就进一步询问老人喜欢的音乐或者乐器，",
+    "start_offset": 88153,
+    "end_offset": 88177,
+    "scope": "span",
+    "dimension_id": "a4_3",
+    "facet_ids": [
+      "a4_3_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-1cf3a07c7a3d",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-5be50cb9ecd9",
+    "text_quote": "给出具体的音乐偏好就播放相关音乐；不喜欢音乐或乐器就询问老人的爱好",
+    "start_offset": 89063,
+    "end_offset": 89096,
+    "scope": "span",
+    "dimension_id": "a4_3",
+    "facet_ids": [
+      "a4_3_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  },
+  {
+    "span_id": "span-ext-436c1ec111cb",
+    "document_id": "doc-917f9fcd6d2a",
+    "unit_id": "unit-5be50cb9ecd9",
+    "text_quote": "可以定时提醒老年人节目开始或者散步",
+    "start_offset": 90473,
+    "end_offset": 90490,
+    "scope": "span",
+    "dimension_id": "a4_3",
+    "facet_ids": [
+      "a4_3_evidence"
+    ],
+    "extraction_note": "provider:exact:supporting",
+    "support_type": "supporting",
+    "source_type": "human",
+    "source_label": "human_input"
+  }
+]

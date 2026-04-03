@@ -26,7 +26,7 @@ try:
     # 4. 发送测试对话
     print("⏳ 正在向 DeepSeek 发送请求...")
     response = client.chat.completions.create(
-        model=model_name,
+        model="model_name",
         messages=[
             {"role": "user", "content": "你好，请回复'DeepSeek 连接成功'。"}
         ],

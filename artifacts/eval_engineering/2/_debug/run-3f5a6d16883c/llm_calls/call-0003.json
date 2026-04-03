@@ -1,0 +1,40 @@
+{
+  "call_id": "call-0003",
+  "status": "succeeded",
+  "label": "coverage_planning",
+  "provider_name": "openai_compatible",
+  "model_id": "deepseek-chat",
+  "started_at": "2026-04-02T11:11:26.269570+00:00",
+  "finished_at": "2026-04-02T11:11:30.588605+00:00",
+  "elapsed_ms": 4317.58,
+  "request": {
+    "system_path": null,
+    "prompt_path": "llm_calls/blobs/call-0003.prompt.txt",
+    "output_schema_path": "llm_calls/blobs/call-0003.schema.json",
+    "params": {},
+    "prompt_chars": 6616,
+    "has_output_schema": true
+  },
+  "response": {
+    "content_path": "llm_calls/blobs/call-0003.response.txt",
+    "structured_path": "llm_calls/blobs/call-0003.structured.json",
+    "usage": {
+      "prompt_tokens": 2641,
+      "completion_tokens": 77,
+      "total_tokens": 2718
+    },
+    "preview": "{     \"relevant_chunk_ids\": [\"unit-5e0c892fe718\", \"unit-0ac378677179\", \"unit-ffc9fd883bb2\", \"unit-06fa0f5c6fdb\", \"unit-f17993471e26\", \"unit-64bdef3ccf92\"] }"
+  },
+  "debug_context": {
+    "node_id": "node_coverage",
+    "stage_name": "coverage_planning",
+    "dimension_id": "a4_2",
+    "document_id": "doc-4265b4ba4ebc",
+    "template_source": "/Users/ahai/Code/MAS/configs/prompts/dimension_relevance.yaml",
+    "template_version": "v1",
+    "top_k": 6,
+    "chunk_candidate_count": 18
+  },
+  "call_path": "llm_calls/call-0003.json",
+  "error": null
+}

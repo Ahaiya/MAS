@@ -1,29 +1,22 @@
 #!/usr/bin/env python3
 """Compute QWK and inter-agent consistency for batch MAS evaluation results.
 
-Reads MAS scores from artifacts/eval/*/feedback.json, pairs them with human
+Reads MAS scores from `artifacts/eval/*/feedback.json`, pairs them with human
 scores from the TSV, then computes three sets of metrics:
 
-  0. Composite QWK      — MAS ASAP加权总分 vs TSV domain1_score（量程 10–60）
-  1. MAS vs human QWK  — how well MAS agrees with a human rater (per dimension)
-  2. Agent vs agent QWK — how well rater_1 and rater_2 agree with each other
-                          (requires hypotheses.json produced by run_batch_eval.py
-                          or evaluate_essay.py)
-
-人工总分来源（TSV）：
-  domain1_score — ASAP 官方裁决后总分
-    无裁决时 = rater1_domain1 + rater2_domain1
-    有裁决时 = rater3_domain1（= 2*I3 + 2*O3 + 2*S3 + 4*C3）
+  0. Composite QWK      — MAS composite vs TSV composite/total score
+  1. MAS vs human QWK   — MAS and human agreement for each dimension
+  2. Agent vs agent QWK — rater_1 and rater_2 agreement from hypotheses.json
 
 Usage:
-  # Default: compare MAS against rater1
-  python scripts/compute_qwk.py
+  推荐统一入口：
+    python -m scripts metrics qwk
 
-  # Use average of rater1+rater2 as ground truth; write JSON report
-  python scripts/compute_qwk.py --rater average --output results/qwk_report.json
+  兼容旧入口：
+    python scripts/compute_qwk.py
+    python scripts/compute_qwk.py --rater average --output results/qwk_report.json
 
-  # Only look at a subdirectory
-  python scripts/compute_qwk.py --eval-dir artifacts/eval
+    python scripts/compute_qwk.py --eval-dir artifacts/eval
 """
 
 import csv
@@ -49,72 +42,112 @@ app = typer.Typer(
 _DEFAULT_EVAL_DIR = _PROJECT_ROOT / "artifacts" / "eval"
 _DEFAULT_SOURCE = _PROJECT_ROOT / "data" / "training_set_8.tsv"
 
-# Fixed dimension order (matches rubric definition order)
-_DIM_ORDER = [
-    "ideas_content",
-    "organization",
-    "voice",
-    "word_choice",
-    "sentence_fluency",
-    "conventions",
-]
-_DIM_LABELS = {
-    "ideas_content":    "Ideas & Content",
-    "organization":     "Organization",
-    "voice":            "Voice",
-    "word_choice":      "Word Choice",
-    "sentence_fluency": "Sentence Fluency",
-    "conventions":      "Conventions",
-}
-
 
 # ── Data loaders ──────────────────────────────────────────────────────────────
 
 def _load_human_scores(
     tsv_path: Path,
-) -> dict[str, dict[str, tuple[int | None, int | None]]]:
-    """Return {essay_id: {dimension_id: (rater1_score, rater2_score), "_total": (domain1_score, None)}}.
-
-    Trait column mapping (ASAP Set 8):
-      rater{1,2}_trait1 → ideas_content
-      rater{1,2}_trait2 → organization
-      rater{1,2}_trait3 → voice
-      rater{1,2}_trait4 → word_choice
-      rater{1,2}_trait5 → sentence_fluency
-      rater{1,2}_trait6 → conventions
-
-    "_total" key stores the official adjudicated domain1_score (量程 10–60):
-      无裁决时 = rater1_domain1 + rater2_domain1
-      有裁决时 = rater3_domain1
-    """
+) -> tuple[dict[str, dict[str, tuple[int | None, int | None]]], list[str]]:
+    """Return {essay_id: {dimension_id: (rater1_score, rater2_score), "_total": (...)}}."""
     result: dict[str, dict[str, tuple[int | None, int | None]]] = {}
-    with open(tsv_path, encoding="latin-1") as f:
+    rows: list[dict[str, str]] = []
+    dimension_ids: list[str] = []
+    seen_dimension_ids: set[str] = set()
+
+    with open(tsv_path, encoding="utf-8") as f:
         reader = csv.DictReader(f, delimiter="\t")
         for row in reader:
-            eid = row.get("essay_id", "").strip()
-            if not eid:
-                continue
-            scores: dict[str, tuple[int | None, int | None]] = {}
-            for idx, dim_id in enumerate(_DIM_ORDER, 1):
-                v1 = row.get(f"rater1_trait{idx}", "").strip()
-                v2 = row.get(f"rater2_trait{idx}", "").strip()
-                r1: int | None = int(v1) if v1.isdigit() else None
-                r2: int | None = int(v2) if v2.isdigit() else None
-                scores[dim_id] = (r1, r2)
-            # 官方裁决后总分（domain1_score）作为 composite QWK 的 y_true
-            d1 = row.get("domain1_score", "").strip()
-            scores["_total"] = (int(d1) if d1.isdigit() else None, None)
-            result[eid] = scores
-    return result
+            rows.append(row)
+            for dim_id in _explicit_dimension_ids_from_row(row):
+                if dim_id not in seen_dimension_ids:
+                    seen_dimension_ids.add(dim_id)
+                    dimension_ids.append(dim_id)
+
+    for row in rows:
+        eid = (row.get("essay_id") or row.get("sample_id") or "").strip()
+        if not eid:
+            continue
+        scores: dict[str, tuple[int | None, int | None]] = {}
+        for dim_id in dimension_ids:
+            r1 = _first_present_int(
+                row,
+                [f"rater1_{dim_id}", f"human_rater1_{dim_id}", f"{dim_id}_rater1"],
+            )
+            r2 = _first_present_int(
+                row,
+                [f"rater2_{dim_id}", f"human_rater2_{dim_id}", f"{dim_id}_rater2"],
+            )
+            if r1 is None and r2 is None:
+                single_score = _first_present_int(
+                    row,
+                    [dim_id, f"human_{dim_id}", f"gold_{dim_id}", f"label_{dim_id}"],
+                )
+                r1 = single_score
+                r2 = single_score
+            scores[dim_id] = (r1, r2)
+        scores["_total"] = (
+            _first_present_int(
+                row,
+                ["composite_score", "total_score", "human_total_score", "domain1_score"],
+            ),
+            None,
+        )
+        result[eid] = scores
+    return result, dimension_ids
+
+
+def _explicit_dimension_ids_from_row(row: dict[str, str]) -> list[str]:
+    reserved = {
+        "essay",
+        "essay_id",
+        "sample_id",
+        "domain1_score",
+        "composite_score",
+        "total_score",
+        "human_total_score",
+    }
+    discovered: list[str] = []
+    for raw_key in row.keys():
+        key = str(raw_key or "").strip()
+        if not key or key in reserved:
+            continue
+        candidate: str | None = None
+        for prefix in ("rater1_", "rater2_", "human_rater1_", "human_rater2_", "gold_", "label_", "human_"):
+            if key.startswith(prefix):
+                candidate = key[len(prefix):]
+                break
+        if candidate is None and key.endswith("_rater1"):
+            candidate = key[: -len("_rater1")]
+        if candidate is None and key.endswith("_rater2"):
+            candidate = key[: -len("_rater2")]
+        if candidate is None and key not in reserved:
+            candidate = key
+        cleaned = str(candidate or "").strip()
+        if cleaned and cleaned not in reserved and cleaned not in discovered:
+            discovered.append(cleaned)
+    return discovered
+
+
+def _first_present_int(row: dict[str, str], keys: list[str]) -> int | None:
+    for key in keys:
+        raw = (row.get(key) or "").strip()
+        if raw.isdigit():
+            return int(raw)
+    return None
+
+
+def _score_range(scores: list[int]) -> tuple[int, int] | None:
+    if not scores:
+        return None
+    min_score = min(scores)
+    max_score = max(scores)
+    if min_score >= max_score:
+        return None
+    return min_score, max_score
 
 
 def _load_mas_composites(eval_dir: Path) -> dict[str, int]:
-    """Return {essay_id: composite_score} from feedback.json files.
-
-    读取 feedback["composite"]["composite_score"]["canonical_score"]，
-    即 compute_composite() 产出的 ASAP 加权总分（量程 10–60）。
-    未产出 composite 的 essay 不会出现在返回值中。
-    """
+    """Return {essay_id: composite_score} from feedback.json files."""
     result: dict[str, int] = {}
     for essay_dir in sorted(eval_dir.iterdir()):
         if not essay_dir.is_dir():
@@ -128,7 +161,7 @@ def _load_mas_composites(eval_dir: Path) -> dict[str, int]:
             if trace.get("status") != "completed":
                 continue
             fb = json.loads(fb_path.read_text(encoding="utf-8"))
-            composite = fb.get("composite") or {}
+            composite = fb.get("indicator_score") or fb.get("composite") or {}
             score = composite.get("composite_score", {}).get("canonical_score")
             if score is not None:
                 result[essay_dir.name] = int(score)
@@ -140,11 +173,7 @@ def _load_mas_composites(eval_dir: Path) -> dict[str, int]:
 def _load_mas_scores(
     eval_dir: Path,
 ) -> dict[str, dict[str, int]]:
-    """Return {essay_id: {dimension_id: mas_score}} from feedback.json files.
-
-    Uses src/outer_loop/metrics/export.py (export_run) which handles both the real
-    provider format (canonical_score) and mock format (final_score).
-    """
+    """Return {essay_id: {dimension_id: mas_score}} from feedback.json files."""
     result: dict[str, dict[str, int]] = {}
     for essay_dir in sorted(eval_dir.iterdir()):
         if not essay_dir.is_dir():
@@ -230,6 +259,28 @@ def _fmt(val: float | None, decimals: int = 4) -> str:
     return f"{val:.{decimals}f}"
 
 
+def _dimension_ids(
+    human_scores: dict[str, dict[str, tuple[int | None, int | None]]],
+    mas_scores: dict[str, dict[str, int]],
+    preferred_order: list[str],
+) -> list[str]:
+    ordered = list(preferred_order)
+    seen = set(ordered)
+    for score_map in human_scores.values():
+        for dim_id in score_map:
+            if dim_id == "_total" or dim_id in seen:
+                continue
+            ordered.append(dim_id)
+            seen.add(dim_id)
+    for score_map in mas_scores.values():
+        for dim_id in score_map:
+            if dim_id in seen:
+                continue
+            ordered.append(dim_id)
+            seen.add(dim_id)
+    return ordered
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 @app.command()
@@ -269,7 +320,7 @@ def main(
     typer.echo(f"      其中含 composite 总分: {len(mas_composites)} 篇")
 
     typer.echo(f"[2/4] 加载人工评分: {source}")
-    human_scores = _load_human_scores(source)
+    human_scores, preferred_dimension_order = _load_human_scores(source)
     typer.echo(f"      TSV 共 {len(human_scores)} 条记录")
 
     typer.echo(f"[3/4] 加载评审员假设分数: {eval_dir}/*/hypotheses.json")
@@ -283,7 +334,9 @@ def main(
         typer.echo("错误：没有可对比的样本，请先运行 run_batch_eval.py", err=True)
         raise typer.Exit(code=1)
 
-    # ── Section 0: Composite QWK (ASAP加权总分 vs domain1_score) ─────────────
+    dimension_ids = _dimension_ids(human_scores, mas_scores, preferred_dimension_order)
+
+    # ── Section 0: Composite QWK (MAS composite vs TSV total score) ───────────
     typer.echo(f"[4/4] 计算 QWK ...")
     composite_qwk_result: dict | None = None
     composite_ids = sorted(set(mas_composites) & set(human_scores))
@@ -297,11 +350,18 @@ def main(
             cy_pred.append(m_total)
 
     if len(cy_true) >= 1:
-        # ASAP Set 8 composite 量程：min=10（全1分）, max=60（全6分）
         qwk_val = None
         if len(cy_true) >= 2:
-            res_c = qwk_for_dimension("composite", cy_true, cy_pred, min_score=10, max_score=60)
-            qwk_val = round(res_c.qwk, 4)
+            composite_range = _score_range(cy_true + cy_pred)
+            if composite_range is not None:
+                res_c = qwk_for_dimension(
+                    "composite",
+                    cy_true,
+                    cy_pred,
+                    min_score=composite_range[0],
+                    max_score=composite_range[1],
+                )
+                qwk_val = round(res_c.qwk, 4)
         composite_qwk_result = {
             "n": len(cy_true),
             "qwk": qwk_val,
@@ -313,7 +373,7 @@ def main(
     # ── Section 1: MAS vs human QWK ──────────────────────────────────────────
     qwk_rows: list[dict] = []
 
-    for dim_id in _DIM_ORDER:
+    for dim_id in dimension_ids:
         y_true: list[int] = []
         y_pred: list[int] = []
 
@@ -331,7 +391,7 @@ def main(
         if len(y_true) < 2:
             qwk_rows.append({
                 "dimension_id": dim_id,
-                "label": _DIM_LABELS[dim_id],
+                "label": dim_id,
                 "n": len(y_true),
                 "qwk": None,
                 "human_mean": None,
@@ -340,12 +400,30 @@ def main(
             })
             continue
 
-        res = qwk_for_dimension(dim_id, y_true, y_pred, min_score=1, max_score=6)
+        score_range = _score_range(y_true + y_pred)
+        if score_range is None:
+            qwk_rows.append({
+                "dimension_id": dim_id,
+                "label": dim_id,
+                "n": len(y_true),
+                "qwk": None,
+                "human_mean": round(sum(y_true) / len(y_true), 2),
+                "mas_mean": round(sum(y_pred) / len(y_pred), 2),
+                "mean_diff": round(sum(y_pred) / len(y_pred) - sum(y_true) / len(y_true), 2),
+            })
+            continue
+        res = qwk_for_dimension(
+            dim_id,
+            y_true,
+            y_pred,
+            min_score=score_range[0],
+            max_score=score_range[1],
+        )
         human_mean = sum(y_true) / len(y_true)
         mas_mean = sum(y_pred) / len(y_pred)
         qwk_rows.append({
             "dimension_id": dim_id,
-            "label": _DIM_LABELS[dim_id],
+            "label": dim_id,
             "n": len(y_true),
             "qwk": round(res.qwk, 4),
             "human_mean": round(human_mean, 2),
@@ -360,7 +438,7 @@ def main(
     agent_qwk_rows: list[dict] = []
     agent_ids_with_hyps = sorted(agent_hyps)
 
-    for dim_id in _DIM_ORDER:
+    for dim_id in dimension_ids:
         r1_list: list[int] = []
         r2_list: list[int] = []
         for eid in agent_ids_with_hyps:
@@ -372,7 +450,7 @@ def main(
         if len(r1_list) < 2:
             agent_qwk_rows.append({
                 "dimension_id": dim_id,
-                "label": _DIM_LABELS[dim_id],
+                "label": dim_id,
                 "n_pairs": len(r1_list),
                 "agent_qwk": None,
                 "spread_mean": None,
@@ -380,15 +458,30 @@ def main(
             })
             continue
 
+        score_range = _score_range(r1_list + r2_list)
+        if score_range is None:
+            agent_qwk_rows.append({
+                "dimension_id": dim_id,
+                "label": dim_id,
+                "n_pairs": len(r1_list),
+                "agent_qwk": None,
+                "spread_mean": None,
+                "agreement_ratio": None,
+            })
+            continue
         res = qwk_for_dimension(
-            f"{dim_id}_a2a", r1_list, r2_list, min_score=1, max_score=6
+            f"{dim_id}_a2a",
+            r1_list,
+            r2_list,
+            min_score=score_range[0],
+            max_score=score_range[1],
         )
         # Per-essay spread (|rater1 - rater2|) average
         spreads = [abs(a - b) for a, b in zip(r1_list, r2_list)]
         agreement_ratio = sum(1 for s in spreads if s <= 1) / len(spreads)
         agent_qwk_rows.append({
             "dimension_id": dim_id,
-            "label": _DIM_LABELS[dim_id],
+            "label": dim_id,
             "n_pairs": len(r1_list),
             "agent_qwk": round(res.qwk, 4),
             "spread_mean": round(sum(spreads) / len(spreads), 2),
@@ -415,7 +508,7 @@ def main(
     # ── Print Section 0: Composite QWK ───────────────────────────────────────
     typer.echo("")
     typer.echo("=" * 72)
-    typer.echo(f"  ASAP 加权总分 QWK  (y_true=domain1_score, 量程 10–60)")
+    typer.echo("  综合总分 QWK")
     typer.echo("=" * 72)
     if composite_qwk_result:
         c = composite_qwk_result
@@ -424,7 +517,7 @@ def main(
         )
         typer.echo("  " + "-" * 60)
         typer.echo(
-            f"  {'总分（10–60）':<20}  {c['n']:>4}  "
+            f"  {'总分':<20}  {c['n']:>4}  "
             f"{_fmt(c['qwk']):>7}  "
             f"{_fmt(c['human_mean'], 2):>6}  "
             f"{_fmt(c['mas_mean'], 2):>6}  "
@@ -499,7 +592,7 @@ def main(
         "n_essays_compared": len(common_ids),
         "rater_baseline": rater,
         "composite_qwk": {
-            "description": "ASAP加权总分 QWK：MAS composite vs TSV domain1_score（量程 10–60）",
+            "description": "MAS composite vs TSV total/composite score",
             "n": composite_qwk_result["n"] if composite_qwk_result else 0,
             "qwk": composite_qwk_result["qwk"] if composite_qwk_result else None,
             "human_mean": composite_qwk_result["human_mean"] if composite_qwk_result else None,

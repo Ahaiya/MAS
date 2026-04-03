@@ -70,6 +70,8 @@ def build_extraction_prompt(
             "id": unit.unit_id,
             "title": unit.chunk_title or "",
             "text": unit.text,
+            "source_type": unit.source_type,
+            "source_label": unit.source_label or "",
         }
         for unit in selected_units
     ]
@@ -127,6 +129,7 @@ def build_scoring_prompt(
     template: PromptTemplate,
     scoring_context: Optional[dict] = None,
     override_template: Optional[PromptTemplate] = None,
+    prior_hypotheses: Optional[List] = None,
 ) -> str:
     """
     Build the scoring prompt for a single dimension.
@@ -173,24 +176,28 @@ def build_scoring_prompt(
         supporting = []
         for span_id in finding.supporting_span_ids:
             span = span_by_id.get(span_id)
-            if span is None:
+            if span is None or not (span.text_quote or "").strip():
                 continue
             supporting.append(
                 {
                     "span_id": span_id,
                     "quote": span.text_quote or "",
+                    "source_type": span.source_type,
+                    "source_label": span.source_label or "",
                 }
             )
 
         counter = []
         for span_id in finding.counter_span_ids:
             span = span_by_id.get(span_id)
-            if span is None:
+            if span is None or not (span.text_quote or "").strip():
                 continue
             counter.append(
                 {
                     "span_id": span_id,
                     "quote": span.text_quote or "",
+                    "source_type": span.source_type,
+                    "source_label": span.source_label or "",
                 }
             )
 
@@ -231,6 +238,15 @@ def build_scoring_prompt(
             }
         )
 
+    prior_rater_context = [
+        {
+            "rater_id": hyp.rater_id,
+            "score": hyp.score.canonical_score,
+            "justification": hyp.rationale or "",
+        }
+        for hyp in (prior_hypotheses or [])
+    ]
+
     context = {
         "role_description": role_description,
         "dimension_name": dim.get("name", observation.dimension_id),
@@ -243,6 +259,7 @@ def build_scoring_prompt(
         "dataset_notes": dataset_notes,
         "calibration_notes": calibration_notes,
         "dimension_override_notes": "",
+        "prior_rater_context": prior_rater_context,
     }
 
     if override_template is not None:
@@ -305,24 +322,28 @@ def build_explanation_prompt(
         supporting = []
         for span_id in finding.supporting_span_ids:
             span = span_by_id.get(span_id)
-            if span is None:
+            if span is None or not (span.text_quote or "").strip():
                 continue
             supporting.append(
                 {
                     "span_id": span_id,
                     "quote": span.text_quote or "",
+                    "source_type": span.source_type,
+                    "source_label": span.source_label or "",
                 }
             )
 
         counter = []
         for span_id in finding.counter_span_ids:
             span = span_by_id.get(span_id)
-            if span is None:
+            if span is None or not (span.text_quote or "").strip():
                 continue
             counter.append(
                 {
                     "span_id": span_id,
                     "quote": span.text_quote or "",
+                    "source_type": span.source_type,
+                    "source_label": span.source_label or "",
                 }
             )
 
@@ -339,9 +360,11 @@ def build_explanation_prompt(
         {
             "span_id": span_id,
             "quote": span_by_id[span_id].text_quote or "",
+            "source_type": span_by_id[span_id].source_type,
+            "source_label": span_by_id[span_id].source_label or "",
         }
         for span_id in decision.evidence_span_ids
-        if span_id in span_by_id
+        if span_id in span_by_id and (span_by_id[span_id].text_quote or "").strip()
     ]
 
     context = {

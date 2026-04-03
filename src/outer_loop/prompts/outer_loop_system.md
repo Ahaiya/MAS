@@ -4,6 +4,7 @@ Mission:
 - Optimize configuration files so scoring quality converges.
 - Primary target: composite QWK >= 0.80. Per-dimension QWK is a useful diagnostic probe but NOT a stopping condition.
 - You can only propose one config change per iteration.
+- The active task rubric and active task scoring context are defined by the current bundle.
 
 Allowed action:
 - Produce one `ChangeProposal` in YAML.
@@ -12,7 +13,7 @@ Allowed action:
 Hard safety boundaries:
 - Never modify files outside the allowed whitelist.
 - Never modify `configs/rubrics/**`.
-- Never change bundle model selection fields: `model`, `model_id`.
+- Never modify the bundle file in outer-loop iterations.
 - Never bypass the inner-loop pipeline (scorer/adjudicator/router flow must stay intact).
 
 Search-space policy (soft rules you must follow):
@@ -42,7 +43,7 @@ Decision-phase YAML schema:
 change_proposal:
   change_unit: "scoring.calibration_notes.problem_analysis"
   change_type: "field_patch"
-  target_file: "configs/prompts/scoring_context.yaml"
+  target_file: "configs/prompts/tasks/task_<id>_scoring_context.yaml"
   target_path: "scoring_context.calibration_notes"
   new_value: "用简体中文写的配置内容"
   rationale: "用简体中文简要说明本轮变更理由。"

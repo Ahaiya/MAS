@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 # ruff: noqa: E402
-"""CLI entrypoint for the MAS outer-loop optimizer."""
+"""CLI entrypoint for the MAS outer-loop optimizer.
+
+Recommended unified entry:
+  python -m scripts outer-loop ...
+  python -m scripts task ...
+"""
 
 from __future__ import annotations
 
@@ -20,14 +25,17 @@ if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
 from src.contracts.artifact_bundle import ProviderEntryConfig
-from src.outer_loop.agent import OuterLoopAgent, RuleBasedOuterLoopProvider
+from src.outer_loop.agent import OuterLoopAgent
 from src.outer_loop.experiments.experiment_log import ExperimentLog
 from src.outer_loop.optimization.config_patcher import ConfigPatcher
 from src.outer_loop.optimization.search_policy import SearchPolicy
 from src.outer_loop.probes import run_probe
+from src.outer_loop.task_setup import TaskSetupManager
 from src.providers.factory import build_provider
 
 app = typer.Typer(name="outer-loop", help="Outer-loop optimization controls.")
+task_app = typer.Typer(name="task", help="Task setup workflow.")
+app.add_typer(task_app, name="task")
 
 _DEFAULT_BUNDLE = _PROJECT_ROOT / "configs" / "bundles" / "engineering_eval_baseline.bundle.yaml"
 # Default: single .md file or a directory of .md files; TSV also accepted for legacy ASAP use.
@@ -96,7 +104,6 @@ def _build_agent(
     *,
     bundle: Path,
     training_set: Path,
-    mock_agent: bool,
 ) -> OuterLoopAgent:
     experiment_log = ExperimentLog.load(_DEFAULT_EXPERIMENT_LOG)
     patcher = ConfigPatcher(
@@ -105,10 +112,7 @@ def _build_agent(
     )
     policy = SearchPolicy()
 
-    if mock_agent:
-        provider = RuleBasedOuterLoopProvider()
-    else:
-        provider = _build_outer_loop_provider()
+    provider = _build_outer_loop_provider()
 
     return OuterLoopAgent(
         experiment_log=experiment_log,
@@ -120,8 +124,41 @@ def _build_agent(
         artifacts_output_base=_DEFAULT_ARTIFACTS_BASE,
         experiments_dir=_DEFAULT_EXPERIMENTS_DIR,
         prompts_dir=_DEFAULT_PROMPTS_DIR,
-        mock_eval_provider=mock_agent,
     )
+
+
+def _build_task_setup_manager(
+    *,
+    bundle: Path = _DEFAULT_BUNDLE,
+    require_provider: bool = False,
+) -> TaskSetupManager:
+    return TaskSetupManager(
+        provider=_build_outer_loop_provider() if require_provider else None,
+        configs_root=_PROJECT_ROOT / "configs",
+        experiments_root=_PROJECT_ROOT / "experiments",
+        bundle_path=bundle,
+        aggregation_policy_path=(
+            _PROJECT_ROOT
+            / "configs"
+            / "policies"
+            / "aggregation"
+            / "engineering_eval_aggregation.yaml"
+        ),
+    )
+
+
+def _read_task_brief(
+    *,
+    task_brief: str,
+    task_brief_file: Path | None,
+) -> str:
+    if task_brief_file is not None:
+        if not task_brief_file.exists():
+            raise FileNotFoundError(f"task brief file not found: {task_brief_file}")
+        return task_brief_file.read_text(encoding="utf-8")
+    if task_brief.strip():
+        return task_brief.strip()
+    raise ValueError("task brief is required: pass --task-brief or --task-brief-file")
 
 
 @app.command()
@@ -129,14 +166,12 @@ def run(
     max_iterations: Annotated[int, typer.Option("--max-iterations", min=1)] = 5,
     bundle: Annotated[Path, typer.Option("--bundle")] = _DEFAULT_BUNDLE,
     training_set: Annotated[Path, typer.Option("--training-set")] = _DEFAULT_TRAINING_SET,
-    mock_agent: Annotated[bool, typer.Option("--mock-agent")] = False,
 ) -> None:
     """Run the outer-loop optimization loop."""
     try:
         agent = _build_agent(
             bundle=bundle,
             training_set=training_set,
-            mock_agent=mock_agent,
         )
         records = agent.run_loop(max_iterations=max_iterations, stop_on_target=True)
     except Exception as exc:
@@ -216,6 +251,79 @@ def probe(
         "per_sample": result.per_sample,
     }
     typer.echo(json.dumps(payload, indent=2, ensure_ascii=False))
+
+
+@task_app.command("draft")
+def task_draft(
+    task_id: Annotated[str, typer.Option("--task-id")] ,
+    task_brief: Annotated[str, typer.Option("--task-brief")] = "",
+    task_brief_file: Annotated[Path | None, typer.Option("--task-brief-file")] = None,
+    bundle: Annotated[Path, typer.Option("--bundle")] = _DEFAULT_BUNDLE,
+) -> None:
+    """Generate the first task-setup draft from rubric source + task brief."""
+    try:
+        manager = _build_task_setup_manager(bundle=bundle, require_provider=True)
+        brief = _read_task_brief(task_brief=task_brief, task_brief_file=task_brief_file)
+        draft = manager.start(task_id=task_id, task_brief=brief)
+    except Exception as exc:
+        typer.secho(f"task draft failed: {exc}", fg=typer.colors.RED)
+        raise typer.Exit(code=1) from exc
+
+    typer.echo(manager.format_draft(draft))
+
+
+@task_app.command("show")
+def task_show(
+    task_id: Annotated[str, typer.Option("--task-id")],
+    bundle: Annotated[Path, typer.Option("--bundle")] = _DEFAULT_BUNDLE,
+) -> None:
+    """Show the current task-setup draft."""
+    try:
+        manager = _build_task_setup_manager(bundle=bundle)
+        draft = manager.show(task_id=task_id)
+    except Exception as exc:
+        typer.secho(f"task show failed: {exc}", fg=typer.colors.RED)
+        raise typer.Exit(code=1) from exc
+
+    typer.echo(manager.format_draft(draft))
+
+
+@task_app.command("revise")
+def task_revise(
+    task_id: Annotated[str, typer.Option("--task-id")],
+    instruction: Annotated[str, typer.Option("--instruction")],
+    bundle: Annotated[Path, typer.Option("--bundle")] = _DEFAULT_BUNDLE,
+) -> None:
+    """Revise the current task-setup draft with one teacher instruction."""
+    try:
+        manager = _build_task_setup_manager(bundle=bundle, require_provider=True)
+        draft = manager.revise(task_id=task_id, instruction=instruction)
+    except Exception as exc:
+        typer.secho(f"task revise failed: {exc}", fg=typer.colors.RED)
+        raise typer.Exit(code=1) from exc
+
+    typer.echo(manager.format_draft(draft))
+
+
+@task_app.command("confirm")
+def task_confirm(
+    task_id: Annotated[str, typer.Option("--task-id")],
+    bundle: Annotated[Path, typer.Option("--bundle")] = _DEFAULT_BUNDLE,
+) -> None:
+    """Freeze the draft into task files and rebind the active bundle."""
+    try:
+        manager = _build_task_setup_manager(bundle=bundle)
+        result = manager.confirm(task_id=task_id)
+    except Exception as exc:
+        typer.secho(f"task confirm failed: {exc}", fg=typer.colors.RED)
+        raise typer.Exit(code=1) from exc
+
+    typer.echo(f"task_id={result.task_id}")
+    typer.echo(f"draft={result.draft_path}")
+    typer.echo(f"rubric={result.rubric_path}")
+    typer.echo(f"scoring_context={result.scoring_context_path}")
+    typer.echo(f"bundle={result.bundle_path}")
+    typer.echo(f"aggregation_policy={result.aggregation_policy_path}")
 
 
 if __name__ == "__main__":

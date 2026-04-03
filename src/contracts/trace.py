@@ -245,7 +245,7 @@ class RunTrace:
         terminal_validation_passed: True if the final output passed schema/policy
                                     validation. None if validation was not yet run.
         replay_metadata: Arbitrary key-value pairs enabling exact replay
-                         (e.g., provider, seed, mock fixture paths).
+                         (e.g., provider, seed, artifact manifest paths).
     """
 
     run_id: str
