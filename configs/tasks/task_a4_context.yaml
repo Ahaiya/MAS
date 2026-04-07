@@ -1,24 +1,23 @@
 schema_version: "2.0"
 
+task_id: "a4"
+
+material_context:
+  type: "conversation"
+  description: "学生与AI的对话记录，每份材料包含完整对话轮次，反映学生在A4用户需求与痛点分析任务中与AI协同工作的过程。"
+  evidence_focus: "评价对象是学生本人的输入和分析，不包括AI的回答。若对话中AI复述了学生观点，以学生原始表达为准。"
+
+score_anchors:
+  - code: ""
+    file: ""
+
+
+human_instructions: ""
+
 scoring_context:
-  context_id: "task_a4_scoring_context"
-  role_description: ""
-  dataset_notes: ""
-  score_anchors: []
-  calibration_notes: ""
-  metadata:
-    task_id: "a4"
-    status: "cold_start"
-    source_dimension_code: "A"
-    source_dimension_name: "问题认知与分析能力"
-    source_indicator_id: "A4"
-    source_indicator_name: "用户需求与痛点分析"
-    source_document: "docs/A4.docx"
-    observation_point_ids:
-      - "a4_1"
-      - "a4_2"
-      - "a4_3"
-    observation_point_codes:
-      - "A4-1"
-      - "A4-2"
-      - "A4-3"
+  - code: "A4-1"
+    calibration_notes: ""
+  - code: "A4-2"
+    calibration_notes: ""
+  - code: "A4-3"
+    calibration_notes: ""

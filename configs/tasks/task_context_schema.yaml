@@ -1,0 +1,18 @@
+schema_version: ""
+
+task_id: ""
+
+material_context:
+  type: ""
+  description: ""
+  evidence_focus: ""
+
+score_anchors:
+  - code: ""
+    file: ""
+
+human_instructions: ""
+
+scoring_context:
+  - code: ""
+    calibration_notes: ""

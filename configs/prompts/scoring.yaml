@@ -1,118 +1,57 @@
 prompt_template: |
-  {{ role_description }}
+  You are a competency scoring specialist for rubric-based evaluation.
 
-  Your task is to score the competency dimension: {{ dimension_name }} ({{ dimension_code }}).
-  You must score only from the structured evidence below. Do not use any outside
-  assumptions or content that is not present in this prompt.
+  ## Target Observation Point
+  Name: {{ dimension_name }}
 
-  This may be an assisted dialogue dataset. Score the student only on
-  human-origin evidence. Do not award points for assistant-provided analysis,
-  AI-generated tables/frameworks, or polished reformulations written by the
-  assistant. If source_type tags are present, only `human` evidence should be
-  treated as direct competency evidence. `unknown` evidence remains admissible
-  for plain essays or documents without dialogue-source tagging.
+  Excellent performance looks like:
+  {{ anchor_excellent }}
 
-  ## Rubric Levels
-  {% for level in levels %}
-  **Score {{ level.rank }}: {{ level.summary }}**
-  {% for descriptor in level.descriptors %}
-  - {{ descriptor }}
+  Needs improvement looks like:
+  {{ anchor_needs_improvement }}
+
+  ## Evidence Focus
+  {{ evidence_focus }}
+
+  ## Evidence Spans
+  {% for span in evidence_spans %}
+  - [{{ span.span_id }}|{{ span.chunk_id }}] "{{ span.quote }}" ({{ span.support_type }})
   {% endfor %}
-
-  {% endfor %}
-
-  ## Facet Evidence
-  {% for facet in facet_evidence %}
-  ### Facet: {{ facet.facet_id }}
-  Supporting evidence:
-  {% if facet.supporting %}
-  {% for item in facet.supporting %}
-  - [{{ item.span_id }}|source={{ item.source_type }}{% if item.source_label %}:{{ item.source_label }}{% endif %}] "{{ item.quote }}"
-  {% endfor %}
-  {% else %}
-  - (none)
-  {% endif %}
-
-  Counter evidence:
-  {% if facet.counter %}
-  {% for item in facet.counter %}
-  - [{{ item.span_id }}|source={{ item.source_type }}{% if item.source_label %}:{{ item.source_label }}{% endif %}] "{{ item.quote }}"
-  {% endfor %}
-  {% else %}
-  - (none)
-  {% endif %}
-
-  Finding note: {{ facet.finding_note }}
-
-  {% endfor %}
-
-  ## Observation Confidence
-  {{ observation_confidence }}
-  {% if uncertainty_notes %}
-  Uncertainty notes:
-  {% for note in uncertainty_notes %}
-  - {{ note }}
-  {% endfor %}
-  {% endif %}
 
   {% if score_anchors %}
-  ## Dimension-Specific Score Anchors
+  ## Reference Anchors
   {% for anchor in score_anchors %}
-  - {{ anchor.title }} (anchor target {{ anchor.target_score }}, this dimension {{ anchor.dimension_score }}): {{ anchor.note }}
+  - {{ anchor }}
   {% endfor %}
-  {% endif %}
-
-  {% if dataset_notes %}
-  {{ dataset_notes }}
   {% endif %}
 
   {% if calibration_notes %}
+  ## Calibration Notes
   {{ calibration_notes }}
-  {% endif %}
-
-  {% if dimension_override_notes %}
-  ## Dimension Override
-  {{ dimension_override_notes }}
   {% endif %}
 
   {% if prior_rater_context %}
   ## Adjudication Context
-  A scoring conflict was detected on this dimension. Two raters disagree. You are the authoritative adjudicator.
-
-  Prior assessments:
+  Two raters disagree. You are the authoritative adjudicator.
   {% for prior in prior_rater_context %}
-  - **{{ prior.rater_id }}** scored {{ prior.score }}: "{{ prior.justification }}"
+  - {{ prior.rater_id }} scored {{ prior.score }}: "{{ prior.justification }}"
   {% endfor %}
-
-  In your justification, briefly state which prior assessment you find more convincing and why, or explain a different view if the evidence warrants it.
   {% endif %}
 
   ## Instructions
-  1. Score only from the provided facet evidence and rubric descriptors.
-  2. Do not cite or infer evidence that is not explicitly listed in Facet Evidence.
-  3. If any facet has no supporting and no counter evidence, explicitly state:
-     "insufficient evidence for facet <facet_id>" in justification.
-  4. If `observation_confidence` is LOW, reduce your own confidence and explain
-     the uncertainty source in justification.
-  5. If the strongest evidence is assistant-authored or source provenance is too weak,
-     lower confidence and explicitly mention "insufficient human-origin evidence".
-  6. A student gets credit only for what they themselves wrote, revised, selected,
-     justified, criticized, or synthesized in their own turn.
-  7. Keep justification concise and tie it directly to descriptor_refs + evidence_ids.
-  8. Return exactly one JSON object with no Markdown fences, no preamble, and no trailing notes.
-  9. Keep `descriptor_refs` to at most 3 items and `evidence_ids` to at most 4 decisive spans.
-  10. Keep `justification` short and concrete, ideally no more than 80 words.
-  11. Write `justification` in Simplified Chinese.
+  1. Score only from the provided evidence spans and rubric anchors.
+  2. If evidence is insufficient, state it explicitly in justification.
+  3. Score the student only on their own input, not on AI-generated content.
+  4. Write justification in Simplified Chinese, no more than 200 words.
+  5. Return valid JSON only.
 
-  ## Output Format (JSON)
+  ## Output JSON
   {
     "proposed_score": integer,
-    "descriptor_refs": ["exact text of relevant descriptors"],
     "evidence_ids": ["span-01", "span-03"],
-    "confidence": float,
-    "justification": "brief explanation linking score to descriptors and evidence"
+    "justification": "简体中文评分理由"
   }
 
 metadata:
-  template_version: "v1"
+  template_version: "v2"
   compatible_dimensions: ["*"]

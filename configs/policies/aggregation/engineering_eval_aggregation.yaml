@@ -2,25 +2,22 @@ schema_version: "2.0"
 
 aggregation_policy:
   policy_id: "engineering_eval_aggregation"
-  policy_version: "v2"
-  policy_name: "Engineering Evaluation Aggregation Policy"
-  description: "A4 二级指标由 3 个观测点等权重加权平均得到最终指标分，量表保持 1-5。"
+
+  output_format:
+    decimal_places: 2
 
   outputs:
     - output_id: "trait_scores"
       type: "dimension_scores"
-      description: "A4 下 3 个观测点的独立得分"
       always_produce: true
 
     - output_id: "composite_score"
       type: "weighted_average"
-      description: "A4 二级指标的聚合得分（由 3 个观测点等权重加权平均，满分 5）"
       always_produce: true
 
   composite_formula:
     - variant_id: "without_resolution"
       applies_when: "resolution_not_used"
-      description: "无裁决时，先取双评审在各观测点上的均值，再对 3 个观测点做等权加权平均"
       source_raters:
         - "rater_1"
         - "rater_2"
@@ -29,11 +26,9 @@ aggregation_policy:
         a4_1: 1
         a4_2: 1
         a4_3: 1
-      formula_representation: "(((A4-1_R1+A4-1_R2)/2)*1 + ((A4-2_R1+A4-2_R2)/2)*1 + ((A4-3_R1+A4-3_R2)/2)*1) / (1+1+1)"
 
     - variant_id: "with_resolution"
       applies_when: "resolution_used"
-      description: "有裁决时，使用 Rater 3 在各观测点上的分数，再对 3 个观测点做等权加权平均"
       source_raters:
         - "rater_3"
       aggregation_method: "direct_weighted_average"
@@ -41,14 +36,3 @@ aggregation_policy:
         a4_1: 1
         a4_2: 1
         a4_3: 1
-      formula_representation: "(A4-1_R3*1 + A4-2_R3*1 + A4-3_R3*1) / (1+1+1)"
-
-  notes:
-    - "A4 下 3 个观测点等权重，最终得到 1-5 的 A4 指标分"
-    - "a4_1 = A4-1（用户群体识别的全面性）"
-    - "a4_2 = A4-2（痛点定位与需求精准度）"
-    - "a4_3 = A4-3（AI 协同与伦理反思）"
-
-  metadata:
-    source_document: "configs/rubrics/source/rubric.md"
-    version_timestamp: "2026-04-02"

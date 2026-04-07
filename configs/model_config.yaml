@@ -1,0 +1,65 @@
+schema_version: "2.0"
+
+default:
+  model: "deepseek-chat"
+  api_base: "https://api.deepseek.com/v1"
+  api_key_env: "LLM_API_KEY"
+  params:
+    temperature: 0.0
+    max_tokens: 1536
+
+raters:
+  rater_1:
+    model: "deepseek-chat"
+    api_base: "https://api.deepseek.com/v1"
+    api_key_env: "RATER_1_API_KEY"
+    params:
+      temperature: 0.0
+      max_tokens: 1536
+  rater_2:
+    model: "qwen3.6-plus"
+    api_base: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+    api_key_env: "RATER_2_API_KEY"
+    params:
+      temperature: 0.0
+      max_tokens: 2048
+      extra_body:
+        enable_thinking: true
+        thinking_budget: 768
+  rater_3:
+    model: "deepseek-reasoner"
+    api_base: "https://api.deepseek.com/v1"
+    api_key_env: "RATER_3_API_KEY"
+    params:
+      temperature: 0.0
+      max_tokens: 1536
+
+stages:
+  chunking:
+    model: "deepseek-chat"
+    api_base: "https://api.deepseek.com/v1"
+    api_key_env: "CHUNKING_API_KEY"
+    params:
+      temperature: 0.0
+      max_tokens: 3072
+  evidence_extraction:
+    model: "deepseek-chat"
+    api_base: "https://api.deepseek.com/v1"
+    api_key_env: "EXTRACTOR_API_KEY"
+    params:
+      temperature: 0.0
+      max_tokens: 3072
+  scoring:
+    model: "deepseek-chat"
+    api_base: "https://api.deepseek.com/v1"
+    api_key_env: "SCORING_API_KEY"
+    params:
+      temperature: 0.0
+      max_tokens: 1536
+  explanation:
+    model: "deepseek-chat"
+    api_base: "https://api.deepseek.com/v1"
+    api_key_env: "FEEDBACK_API_KEY"
+    params:
+      temperature: 0.1
+      max_tokens: 1536

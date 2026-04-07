@@ -1,5 +1,4 @@
-# Dimension Relevance Prompt Template
-# template_id: dimension_relevance_v1
+# 暂时先跳过这个步骤
 
 prompt_template: |
   You are a rubric evidence planner for engineering competency evaluation.

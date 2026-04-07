@@ -1,143 +1,22 @@
-# Engineering Evaluation Baseline Artifact Bundle
-
 schema_version: "2.0"
 
-artifact_bundle:
-  bundle_id: "engineering_eval_baseline"
-  bundle_version: "v1"
-  bundle_name: "Engineering Evaluation Baseline Bundle"
-  description: "工程能力评价基线 bundle（冻结 active task + 可变 prompts/policies）"
+bundle_id: "engineering_eval_baseline"
+active_task_id: "a4"
 
-  # Artifact References
-  rubric_core_ref: "rubric://task_a4_rubric/v1"
-  rubric_source_file: "rubrics/tasks/task_a4_rubric.yaml"
+rubric:
+  source: "configs/rubrics/source/rubric.md"
+  task: "configs/rubrics/tasks/{active_task_id}_rubric.yaml"
 
-  adjudication_policy_ref: "policy://engineering_eval_adjudication/v1"
-  adjudication_source_file: "policies/adjudication/engineering_eval_adjudication.yaml"
+context:
+  task: "configs/tasks/{active_task_id}_context.yaml"
 
-  aggregation_policy_ref: "policy://engineering_eval_aggregation/v1"
-  aggregation_source_file: "policies/aggregation/engineering_eval_aggregation.yaml"
+prompts:
+  chunking: "configs/prompts/chunking.yaml"
+  evidence_extraction: "configs/prompts/evidence_extraction.yaml"
+  scoring: "configs/prompts/scoring.yaml"
+  explanation: "configs/prompts/explanation.yaml"
 
-  explanation_policy_ref: "explain://engineering_eval_explanation/v1"
-  explanation_source_file: "policies/explanation/engineering_eval_explanation.yaml"
-
-  operational_prompt_recipe_ref: "ops://prompts/engineering_eval_baseline/v1"
-  prompt_templates:
-    - "prompts/evidence_extraction.yaml"
-    - "prompts/scoring.yaml"
-    - "prompts/explanation.yaml"
-    - "prompts/chunking.yaml"
-    - "prompts/dimension_relevance.yaml"
-
-  scoring_context_ref: "context://task_a4_scoring_context/v1"
-  scoring_context_source_file: "prompts/tasks/task_a4_scoring_context.yaml"
-
-  chunking_policy_ref: "policy://engineering_eval_chunking/v1"
-  chunking_source_file: "policies/chunking/engineering_eval_chunking.yaml"
-
-  # Version Closure
-  freeze_hash: "TBD"
-  freeze_timestamp: "2026-04-01"
-
-  # Source Documentation
-  source_documents:
-    - "configs/rubrics/source/rubric.md"
-    - "docs/A4.docx"
-
-  # Bundle Validation
-  validation_rules:
-    - rule_id: "all_refs_resolvable"
-      type: "reference_resolution"
-      description: "All artifact references must resolve to existing files"
-    - rule_id: "schema_version_consistent"
-      type: "version_check"
-      description: "All artifacts must use consistent schema version"
-    - rule_id: "scale_consistent"
-      type: "cross_artifact_check"
-      description: "Rubric scale must match adjudication and aggregation expectations"
-
-  # Provider Configuration — the bundle owns model routing; .env holds secrets
-  # plus global defaults for outer-loop and fallback scenarios.
-  provider_config:
-    default:
-      model: "deepseek-chat"
-      api_base: "https://api.deepseek.com/v1"
-      api_key_env: "LLM_API_KEY"
-      params:
-        temperature: 0.0
-        max_tokens: 1536
-
-    rater_providers:
-      rater_1:
-        model: "deepseek-chat"
-        api_base: "https://api.deepseek.com/v1"
-        api_key_env: "RATER_1_API_KEY"
-        params:
-          temperature: 0.0
-          max_tokens: 1536
-      rater_2:
-        model: "qwen3.6-plus"
-        api_base: "https://dashscope.aliyuncs.com/compatible-mode/v1"
-        api_key_env: "RATER_2_API_KEY"
-        params:
-          temperature: 0.0
-          max_tokens: 2048
-          extra_body:
-            enable_thinking: true
-            thinking_budget: 768
-      rater_3:
-        model: "deepseek-reasoner"
-        api_base: "https://api.deepseek.com/v1"
-        api_key_env: "RATER_3_API_KEY"
-        params:
-          temperature: 0.0
-          max_tokens: 1536
-
-    stage_providers:
-      chunking:
-        model: "deepseek-chat"
-        api_base: "https://api.deepseek.com/v1"
-        api_key_env: "CHUNKING_API_KEY"
-        params:
-          temperature: 0.0
-          max_tokens: 3072
-      coverage_planning:
-        model: "deepseek-chat"
-        api_base: "https://api.deepseek.com/v1"
-        api_key_env: "COVERAGE_API_KEY"
-        params:
-          temperature: 0.0
-          max_tokens: 768
-      evidence_extraction:
-        model: "deepseek-chat"
-        api_base: "https://api.deepseek.com/v1"
-        api_key_env: "EXTRACTOR_API_KEY"
-        params:
-          temperature: 0.0
-          max_tokens: 3072
-      feedback:
-        model: "deepseek-chat"
-        api_base: "https://api.deepseek.com/v1"
-        api_key_env: "FEEDBACK_API_KEY"
-        params:
-          temperature: 0.1
-          max_tokens: 1536
-
-  operational_params:
-    max_retries: 2
-
-  metadata:
-    created_by: "engineering_eval_setup"
-    target_evaluation: "complex_engineering_problem_solving"
-    target_dataset: "engineering_project_dialogue_records"
-    baseline_compatible: true
-    active_task_id: "a4"
-    selected_indicator_ids:
-      - "A4"
-    observation_point_ids:
-      - "a4_1"
-      - "a4_2"
-      - "a4_3"
-    task_rubric_dir: "configs/rubrics/tasks"
-    task_scoring_context_dir: "configs/prompts/tasks"
-    rubric_source_dir: "configs/rubrics/source"
+policies:
+  chunking: "configs/policies/chunking/engineering_eval_chunking.yaml"
+  adjudication: "configs/policies/adjudication/engineering_eval_adjudication.yaml"
+  aggregation: "configs/policies/aggregation/engineering_eval_aggregation.yaml"

@@ -2,54 +2,41 @@ schema_version: "2.0"
 
 adjudication_policy:
   policy_id: "engineering_eval_adjudication"
-  policy_version: "v1"
-  policy_name: "Engineering Evaluation Adjudication Policy"
-  description: "工程能力评价双评审裁决策略：非相邻分歧与系统性偏移触发第三方评审。"
 
   raters:
     required_independent_scores: 2
     rater_labels:
       - "rater_1"
       - "rater_2"
-    optional_resolution_rater: 1
     resolution_rater_label: "rater_3"
 
+  scoring:
+    allow_decimal_scores: true
+    average_method: "arithmetic"
+
   triggers:
-    # 触发规则 1：任意维度分差 > 1 时触发裁决
     - trigger_id: "non_adjacent_dimension_scores"
       type: "score_distance"
       applies_to_dimensions: ["*"]
-      description: "任意维度评审员1与评审员2分差大于1时触发裁决"
+      description: "任意维度分差大于1时触发裁决"
       threshold:
         operator: ">"
         value: 1
       action: "invoke_resolution"
       priority: 1
 
-    # 触发规则 2：三个或以上维度在同一方向存在相邻分歧时触发裁决
     - trigger_id: "systematic_adjacent_drift"
       type: "adjacent_drift"
       applies_to_dimensions: ["*"]
-      description: "三个或以上维度在同一方向存在相邻分歧（差1分）时触发裁决"
+      description: "两个或以上维度在同一方向存在相邻分歧时触发裁决"
       pattern:
         score_gap: 1
-        min_matching_dimensions: 3
+        min_matching_dimensions: 2
         require_same_direction: true
-      exclusions: []
       action: "invoke_resolution"
       priority: 2
-
-  output_policy:
-    preserve_all_candidates: true
-    preserve_trigger_reason: true
-    preserve_resolution_path: true
-    preserve_conflict_metadata: true
 
   resolution_strategy:
     default: "use_resolution_rater_as_authoritative"
     fallback_if_no_resolution: "average_of_raters"
     re_score_scope: "all_dimensions"
-
-  metadata:
-    source_document: "configs/rubrics/source/rubric.md"
-    version_timestamp: "2026-04-01"

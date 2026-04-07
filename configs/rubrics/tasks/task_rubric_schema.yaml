@@ -1,0 +1,26 @@
+schema_version: ""
+
+task_id: ""
+task_name: ""
+indicator_description: ""
+
+scale:
+  type: ""
+  min:
+  max:
+  levels:
+    5: ""
+    4: ""
+    3: ""
+    2: ""
+    1: ""
+
+dimensions:
+  - code: ""
+    name: ""
+    anchors:
+      5: ""
+      4: ""
+      3: ""
+      2: ""
+      1: ""

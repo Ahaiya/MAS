@@ -1,71 +1,44 @@
 prompt_template: |
-  You are an evidence extraction specialist for engineering competency evaluation.
+  You are an evidence extraction specialist for competency evaluation.
 
-  Your task is to extract evidence for: {{ dimension_name }} ({{ dimension_code }}).
-  Work only from the provided chunk list.
+  ## Target Observation Point
+  Name: {{ dimension_name }}
 
-  This document may be a human-AI dialogue log. You are evaluating the student's
-  demonstrated competency, not the assistant's output quality.
+  Excellent performance looks like:
+  {{ anchor_excellent }}
 
-  Eligible positive evidence:
-  - text written by the human student
-  - the initial human-authored requirement in `session_init`
+  Needs improvement looks like:
+  {{ anchor_needs_improvement }}
 
-  Not eligible as positive evidence:
-  - assistant or mentor responses
-  - system scaffolding, workflow metadata, or JSON envelopes
-  - AI-authored summaries that paraphrase the student, such as
-    "学生指出了..." or "学生最终选择了..."
-
-  If a chunk has `source_type=ai` or `source_type=system`, do not quote it as
-  evidence of student competency. If a chunk is `source_type=unknown`, it
-  remains eligible.
-  If an assistant response restates a student's idea, trace back to the original
-  human wording and quote that instead. If the original human wording is not
-  present in the provided chunks, leave it unquoted.
-
-  ## Rubric Levels (full descriptors)
-  {% for level in levels %}
-  - Rank {{ level.rank }}: {{ level.summary }}
-    {% for desc in level.descriptors %}
-    - {{ desc }}
-    {% endfor %}
-  {% endfor %}
-
-  ## Required Facets
-  {% for facet in facet_descriptions %}
-  - {{ facet.facet_id }}{% if facet.description %}: {{ facet.description }}{% endif %}
-  {% endfor %}
+  ## Evidence Focus
+  {{ evidence_focus }}
 
   ## Candidate Chunks
   {% for chunk in chunks %}
-  [{{ chunk.id }}]{% if chunk.title %} {{ chunk.title }}{% endif %} (source_type={{ chunk.source_type }}{% if chunk.source_label %}, source_label={{ chunk.source_label }}{% endif %})
+  [{{ chunk.id }}]{% if chunk.title %} {{ chunk.title }}{% endif %}
   {{ chunk.text }}
 
   {% endfor %}
 
   ## Instructions
-  1. Extract evidence directly relevant to the listed facets.
-  2. Each facet should have at least {{ minimum_evidence_units }} evidence span(s) when possible.
-  3. `quote` must be a verbatim quote from chunk text. Do not paraphrase or summarize.
-  4. Set `chunk_id` to the chunk where the quote comes from.
-  5. Set `support_type` as one of: supporting, counter, neutral.
-  6. Do not treat assistant-authored text as evidence of student competency.
-  7. Simple human acknowledgements such as "好的", "是的", "满意" do not count as competency evidence.
-  8. Return valid JSON only (no markdown, no extra commentary).
+  1. Extract evidence directly relevant to the target observation point.
+  2. Each evidence span must be a verbatim quote from the chunk text.
+  3. Set support_type as: supporting, counter, or neutral.
+  4. Set chunk_id to the chunk the quote comes from.
+  5. Simple acknowledgements do not count as competency evidence.
+  6. Return valid JSON only.
 
   ## Output JSON
   {
     "evidence_spans": [
       {
-        "quote": "exact text from the document",
+        "quote": "exact verbatim text",
         "chunk_id": "c2",
-        "facets": ["clarity_focus", "main_idea_salience"],
         "support_type": "supporting|counter|neutral"
       }
     ]
   }
 
 metadata:
-  template_version: "v1"
+  template_version: "v2"
   compatible_dimensions: ["*"]

@@ -4,14 +4,12 @@ chunking_policy:
   policy_id: "engineering_eval_chunking"
   document_processing:
     token_threshold: 4000
-    target_chunk_size_hint: "200-600 words per chunk; preserve dialogue turn boundaries and topic transitions"
-  coverage:
-    default_top_k: 5
-    fallback_to_full_scan_on_error: true
-    per_dimension_top_k:
-      a4_1: 6
-      a4_2: 6
-      a4_3: 6
-  metadata:
-    owner: "engineering_eval"
-    note: "A4 任务的工程项目对话记录分块策略，按对话轮次和主题边界分割，并服务于 A4-1/A4-2/A4-3 三个观测点的覆盖规划"
+    chunk_size_hint: "每个chunk 200-600词，保持对话轮次和主题边界完整"
+    pre_split:
+      enabled: true
+      max_chars_per_segment: 3000
+      # strategy 由代码根据 material_context.type 自动推导
+    material_strategies:
+      conversation: "按对话轮次和主题边界切分，保持完整的问答对，不在单轮对话中间断开"
+      code: "按函数、类或模块边界切分，保持逻辑单元完整"
+      document: "按段落和章节边界切分，保持论述单元完整"
