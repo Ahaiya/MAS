@@ -136,9 +136,10 @@ class TestRealExtractionSmoke:
         """Build an extraction prompt and call the real provider."""
         _skip_if_no_credentials()
         from src.agents.config_resolver import run as resolve_bundle
-        from src.agents import chunker, coverage
+        from src.agents import chunker
         from src.agents.extractor import run as extract
-        from src.contracts.request_models import EvaluationRequest
+        from src.contracts.request_models import CoveragePlan, EvaluationRequest
+        from src.policies.rubric_core import build_dimension_traversal
         from src.providers.prompt_loader import PromptLoader
 
         if not _BUNDLE_PATH.exists() or not _SAMPLE_PATH.exists():
@@ -153,20 +154,24 @@ class TestRealExtractionSmoke:
 
         loader = PromptLoader()
         chunking_tpl = loader.load(_PROJECT_ROOT / "configs" / "prompts" / "chunking.yaml")
-        relevance_tpl = loader.load(
-            _PROJECT_ROOT / "configs" / "prompts" / "dimension_relevance.yaml"
-        )
         template = loader.load(_PROJECT_ROOT / "configs" / "prompts" / "evidence_extraction.yaml")
         _, document = chunker.run(req, provider=provider, template=chunking_tpl)
-        plans = coverage.run(
-            document,
-            rubric,
-            provider=provider,
-            template=relevance_tpl,
+
+        # Build full-scan plan for first dimension
+        traversals = build_dimension_traversal(rubric)
+        trav = traversals[0]
+        first_plan = CoveragePlan(
+            plan_id=f"plan-fullscan-{trav.dimension_id}",
+            document_id=document.document_id,
+            dimension_id=trav.dimension_id,
+            target_unit_ids=[u.unit_id for u in document.text_units],
+            required_facets=list(trav.required_facets),
+            minimum_evidence_units=trav.evidence_requirements.get("minimum_evidence_units", 1),
+            allowed_evidence_scopes=["span", "global"],
+            coverage_strategy="full_scan",
         )
 
         # Run extraction for first dimension only (smoke test, not full pipeline)
-        first_plan = plans[0]
         spans = extract(first_plan, document, rubric, provider, template)
 
         assert isinstance(spans, list)

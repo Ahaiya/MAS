@@ -110,6 +110,7 @@ def run(
     prior_hypotheses: Optional[List[ScoreHypothesis]] = None,
     node_id: str = "node_scorer",
     stage_name: str = "scoring",
+    evidence_focus: str = "",
 ) -> ScoreHypothesis:
     """
     Score one dimension using a configured provider.
@@ -121,8 +122,9 @@ def run(
         provider     : Configured BaseProvider to call.
         template     : Loaded scoring prompt template.
         rater_id     : Rater identifier (e.g. "rater_1").
-        scoring_context: Optional dataset-level scoring context.
+        scoring_context: Optional task-level scoring context (full file dict).
         override_template: Optional per-dimension scoring override template.
+        evidence_focus   : Optional task-level evidence focus string.
 
     Returns:
         ScoreHypothesis with score clamped to the valid rubric scale range.
@@ -135,6 +137,7 @@ def run(
         scoring_context=scoring_context,
         override_template=override_template,
         prior_hypotheses=prior_hypotheses,
+        evidence_focus=evidence_focus,
     )
     template_used = override_template or template
     request = _make_request(

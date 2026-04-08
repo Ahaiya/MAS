@@ -32,6 +32,12 @@ from src.config.schema import (
     PromptFileSchema,
     RubricFileSchema,
     ScoringContextFileSchema,
+    SimplifiedBundleFileSchema,
+    SimplifiedAdjudicationFileSchema,
+    SimplifiedAggregationFileSchema,
+    SimplifiedChunkingPolicyFileSchema,
+    TaskRubricFileSchema,
+    TaskContextFileSchema,
 )
 from src.contracts.artifact_bundle import (
     ArtifactBundle,
@@ -47,11 +53,13 @@ class ResolverError(Exception):
 # Maps source file path prefix patterns to their Pydantic schema classes.
 # Order matters: more specific patterns first.
 _SCHEMA_ROUTE: list[tuple[str, type]] = [
+    ("rubrics/tasks/", TaskRubricFileSchema),
     ("rubrics/", RubricFileSchema),
-    ("policies/adjudication/", AdjudicationFileSchema),
-    ("policies/aggregation/", AggregationFileSchema),
+    ("policies/adjudication/", SimplifiedAdjudicationFileSchema),
+    ("policies/aggregation/", SimplifiedAggregationFileSchema),
     ("policies/explanation/", ExplanationFileSchema),
-    ("policies/chunking/", ChunkingPolicyFileSchema),
+    ("policies/chunking/", SimplifiedChunkingPolicyFileSchema),
+    ("tasks/", TaskContextFileSchema),
     ("prompts/tasks/", ScoringContextFileSchema),
     ("prompts/scoring_context.yaml", ScoringContextFileSchema),
     ("prompts/", PromptFileSchema),
@@ -99,6 +107,10 @@ class ConfigResolver:
             raw = yaml.safe_load(bundle_path.read_text())
         except yaml.YAMLError as exc:
             raise ResolverError(f"Failed to parse bundle YAML {bundle_path}: {exc}") from exc
+
+        # Detect simplified bundle format (no 'artifact_bundle' wrapper key)
+        if "artifact_bundle" not in raw:
+            return self._load_simplified_bundle(raw, bundle_path)
 
         try:
             bundle_doc = BundleFileSchema(**raw)
@@ -175,6 +187,100 @@ class ConfigResolver:
             )
         except (ValidationError, KeyError, ValueError) as exc:
             raise ResolverError(f"Malformed bundle file {bundle_path}: {exc}") from exc
+
+    def _load_simplified_bundle(
+        self, raw: dict[str, Any], bundle_path: Path
+    ) -> ArtifactBundle:
+        """Parse a simplified bundle YAML (no 'artifact_bundle' wrapper) into ArtifactBundle.
+
+        Path templates like ``{active_task_id}`` are substituted with
+        ``task_{active_task_id}`` to match the ``task_<id>_*.yaml`` file
+        naming convention used by engineering evaluation tasks.
+
+        Args:
+            raw: Parsed YAML content.
+            bundle_path: Original file path (for error messages).
+
+        Returns:
+            ArtifactBundle with all refs parsed but not yet loaded.
+
+        Raises:
+            ResolverError: If YAML is malformed or required keys are missing.
+        """
+        try:
+            bundle_doc = SimplifiedBundleFileSchema(**raw)
+        except ValidationError as exc:
+            raise ResolverError(
+                f"Malformed simplified bundle file {bundle_path}: {exc}"
+            ) from exc
+
+        task_id = bundle_doc.active_task_id
+        # Files are named task_{id}_*.yaml; substitute accordingly.
+        task_file_prefix = f"task_{task_id}"
+
+        def _sub(path: str) -> str:
+            return path.replace("{active_task_id}", task_file_prefix)
+
+        def _strip_configs(path: str) -> str:
+            """Strip leading 'configs/' to produce a path relative to configs_root."""
+            if path.startswith("configs/"):
+                return path[len("configs/"):]
+            return path
+
+        def _make_ref(template: str, ref_uri: str) -> ArtifactRef:
+            source_file = _strip_configs(_sub(template))
+            return ArtifactRef(ref_uri=ref_uri, source_file=source_file)
+
+        try:
+            rubric_ref = _make_ref(
+                bundle_doc.rubric["task"],
+                f"rubric://task_{task_id}/v1",
+            )
+            adj_ref = _make_ref(
+                bundle_doc.policies["adjudication"],
+                f"policy://adjudication_{task_id}/v1",
+            )
+            agg_ref = _make_ref(
+                bundle_doc.policies["aggregation"],
+                f"policy://aggregation_{task_id}/v1",
+            )
+            chunking_ref = _make_ref(
+                bundle_doc.policies["chunking"],
+                f"policy://chunking_{task_id}/v1",
+            )
+            scoring_context_ref = _make_ref(
+                bundle_doc.context["task"],
+                f"context://task_{task_id}/v1",
+            )
+            prompt_refs = [
+                _make_ref(path, f"ops://prompts/{Path(_strip_configs(_sub(path))).stem}/v1")
+                for path in [
+                    bundle_doc.prompts["chunking"],
+                    bundle_doc.prompts["evidence_extraction"],
+                    bundle_doc.prompts["scoring"],
+                    bundle_doc.prompts["explanation"],
+                ]
+            ]
+        except KeyError as exc:
+            raise ResolverError(
+                f"Missing required key in simplified bundle {bundle_path}: {exc}"
+            ) from exc
+
+        return ArtifactBundle(
+            bundle_id=bundle_doc.bundle_id,
+            bundle_version="1.0",
+            bundle_name=bundle_doc.bundle_id,
+            description="",
+            schema_version=SchemaVersion(str(bundle_doc.schema_version)),
+            rubric_ref=rubric_ref,
+            adjudication_policy_ref=adj_ref,
+            aggregation_policy_ref=agg_ref,
+            explanation_policy_ref=None,
+            prompt_refs=prompt_refs,
+            source_documents=[],
+            chunking_policy_ref=chunking_ref,
+            scoring_context_ref=scoring_context_ref,
+        )
 
     def load_artifact(self, ref: ArtifactRef) -> ArtifactRef:
         """Load an artifact file, validate its schema, and return a populated ref.

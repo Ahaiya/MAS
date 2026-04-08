@@ -17,3 +17,6 @@ experiments/snapshots/**
 !experiments/snapshots/.gitkeep
 experiments/probes/**
 !experiments/probes/.gitkeep
+
+# Evaluation artifacts
+artifacts/**

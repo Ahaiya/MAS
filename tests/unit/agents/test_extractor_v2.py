@@ -189,10 +189,9 @@ def _plan(*, strategy: str, target_ids: list[str]) -> CoveragePlan:
 
 def _extraction_template() -> PromptTemplate:
     return _template(
-        "Dim {{ dimension_name }} ({{ dimension_code }})\n"
-        "Min {{ minimum_evidence_units }}\n"
-        "Facets:{% for f in facet_descriptions %}[{{ f.facet_id }}]{% endfor %}\n"
-        "Levels:{% for l in levels %}[{{ l.rank }} {{ l.summary }}]{% endfor %}\n"
+        "Dim {{ dimension_name }}\n"
+        "Anchors:{% for anchor in dimension_anchors %}[{{ anchor.rank }}]{{ anchor.text }}{% endfor %}\n"
+        "Focus: {{ evidence_focus }}\n"
         "Chunks:{% for c in chunks %}[{{ c.id }}]{{ c.title }}|{{ c.source_type }}|{{ c.source_label }}::{{ c.text }}{% endfor %}\n"
     )
 

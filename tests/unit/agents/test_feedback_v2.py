@@ -200,16 +200,15 @@ def _template() -> PromptTemplate:
     return PromptTemplate(
         template_text=(
             "DIM={{ dimension_name }}\n"
-            "{% for facet in facet_evidence %}"
-            "FACET={{ facet.facet_id }} "
-            "S:{% for item in facet.supporting %}[{{ item.span_id }}]{{ item.quote }};{% endfor %} "
-            "C:{% for item in facet.counter %}[{{ item.span_id }}]{{ item.quote }};{% endfor %}\n"
-            "{% endfor %}"
-            "CONF={{ observation_confidence }}\n"
-            "RAT={{ scorer_rationale }}\n"
-            "NOTE={{ decision_note }}\n"
+            "SCORE={{ final_score }}\n"
             "ADJ={{ was_adjudicated }}\n"
-            "OVR={{ dimension_override_notes }}"
+            "J1={{ justification_1 }}\n"
+            "J2={{ justification_2 }}\n"
+            "{% for span in evidence_spans %}"
+            "[{{ span.span_id }}]{{ span.quote }};\n"
+            "{% endfor %}"
+            "FOCUS={{ evidence_focus }}\n"
+            "AUD={{ audience }}"
         ),
         metadata={"template_version": "v2", "compatible_dimensions": ["*"]},
         source_path="inline-explanation",
@@ -217,6 +216,7 @@ def _template() -> PromptTemplate:
 
 
 def test_facet_evidence_in_prompt() -> None:
+    # decision.evidence_span_ids = ["span-01", "span-03"]，span-02 不在其中
     provider = _CaptureProvider()
     feedback.run(
         decisions=[_decision()],
@@ -230,13 +230,13 @@ def test_facet_evidence_in_prompt() -> None:
     )
     assert provider.last_request is not None
     prompt = provider.last_request.prompt
-    assert "FACET=tone" in prompt
     assert "[span-01]The opening sounds confident and clear." in prompt
     assert "[span-03]Tone becomes generic in later paragraphs." in prompt
     assert "span-02" not in prompt
 
 
 def test_scorer_rationale_in_prompt() -> None:
+    # rater_1 rationale → justification_1（非仲裁路径）
     provider = _CaptureProvider()
     rationale = "RATER_JUSTIFICATION: tone is clear but inconsistent."
     feedback.run(
@@ -250,6 +250,7 @@ def test_scorer_rationale_in_prompt() -> None:
         template=_template(),
     )
     assert provider.last_request is not None
+    # rationale 出现在 J1= 之后
     assert rationale in provider.last_request.prompt
 
 
@@ -324,7 +325,7 @@ def test_adjudication_uncertainty_note() -> None:
 def test_override_template_for_dimension() -> None:
     provider = _CaptureProvider()
     override = PromptTemplate(
-        template_text="OVERRIDE {{ dimension_name }} :: {{ scorer_rationale }}",
+        template_text="OVERRIDE {{ dimension_name }} :: {{ justification_1 }}",
         metadata={"template_version": "v1", "compatible_dimensions": ["voice"]},
         source_path="inline-override",
     )
@@ -376,3 +377,60 @@ def test_backward_compat_no_hypotheses() -> None:
     entry = out["dimensions"]["voice"]
     assert "scorer_rationale" in entry
     assert entry["scorer_rationale"] == ""
+
+
+def test_feedback_text_strips_markdown_json_block() -> None:
+    """LLM 返回 ```json\n{"feedback": "..."}\n``` 时，feedback_text 应为纯文本。"""
+    raw = '```json\n{"feedback": "你表现优秀，得分4/5。"}\n```'
+    provider = _CaptureProvider(response_text=raw)
+    out = feedback.run(
+        decisions=[_decision()],
+        observations=[_observation()],
+        spans=_spans(),
+        hypotheses=[_hypothesis()],
+        rubric=_rubric(),
+        policy=_policy(),
+        provider=provider,
+        template=_template(),
+    )
+    text = out["dimensions"]["voice"]["feedback_text"]
+    assert text == "你表现优秀，得分4/5。"
+    assert "```" not in text
+    assert text == out["dimensions"]["voice"]["commentary"]
+
+
+def test_feedback_text_strips_bare_code_block() -> None:
+    """LLM 返回不带 json 标记的 ``` 代码块时也能正确解析。"""
+    raw = '```\n{"feedback": "Plain block feedback."}\n```'
+    provider = _CaptureProvider(response_text=raw)
+    out = feedback.run(
+        decisions=[_decision()],
+        observations=[_observation()],
+        spans=_spans(),
+        hypotheses=[_hypothesis()],
+        rubric=_rubric(),
+        policy=_policy(),
+        provider=provider,
+        template=_template(),
+    )
+    text = out["dimensions"]["voice"]["feedback_text"]
+    assert text == "Plain block feedback."
+    assert "```" not in text
+
+
+def test_feedback_text_plain_json_still_works() -> None:
+    """LLM 直接返回裸 JSON（无 markdown 包裹）时，原有解析路径不受影响。"""
+    raw = '{"feedback": "Direct JSON feedback."}'
+    provider = _CaptureProvider(response_text=raw)
+    out = feedback.run(
+        decisions=[_decision()],
+        observations=[_observation()],
+        spans=_spans(),
+        hypotheses=[_hypothesis()],
+        rubric=_rubric(),
+        policy=_policy(),
+        provider=provider,
+        template=_template(),
+    )
+    text = out["dimensions"]["voice"]["feedback_text"]
+    assert text == "Direct JSON feedback."

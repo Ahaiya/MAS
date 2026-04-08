@@ -128,7 +128,7 @@ def _parse_chunks(data: Dict[str, Any]) -> List[Dict[str, str]]:
 
 
 def _response_to_data(response_content: str, response_data: Optional[Dict[str, Any]]) -> Dict[str, Any]:
-    if response_data is not None:
+    if isinstance(response_data, dict):
         return response_data
     return normalize_structured_output(response_content, schema=_OUTPUT_SCHEMA)
 
@@ -207,17 +207,56 @@ def _hard_split_by_words(normalized_text: str, max_words_per_chunk: int = 1500) 
     return chunks
 
 
+def _resolve_material_strategy(
+    document_type: str,
+    chunking_policy: Optional[Dict[str, Any]],
+    material_type: Optional[str],
+) -> str:
+    """Look up material strategy text from chunking policy.
+
+    Uses ``material_type`` as primary key (from material_context.type),
+    falls back to ``document_type`` (auto-detected), then falls back to
+    the raw ``material_type or document_type`` string if no policy entry.
+    """
+    if not isinstance(chunking_policy, dict):
+        return material_type or document_type
+    doc_proc = chunking_policy.get("document_processing", {})
+    if not isinstance(doc_proc, dict):
+        return material_type or document_type
+    strategies = doc_proc.get("material_strategies", {})
+    if not isinstance(strategies, dict):
+        return material_type or document_type
+    # Try material_type first, then document_type
+    for key in (material_type, document_type):
+        if key and key in strategies:
+            return str(strategies[key])
+    return material_type or document_type
+
+
+def _resolve_chunk_size_hint(chunking_policy: Optional[Dict[str, Any]]) -> str:
+    """Read chunk_size_hint from chunking policy; returns empty string if absent."""
+    if not isinstance(chunking_policy, dict):
+        return ""
+    doc_proc = chunking_policy.get("document_processing", {})
+    if not isinstance(doc_proc, dict):
+        return ""
+    hint = doc_proc.get("chunk_size_hint", "")
+    return str(hint) if hint else ""
+
+
 def _render_chunking_prompt(
     template: PromptTemplate,
     *,
-    document_type: str,
+    material_strategy: str,
+    chunk_size_hint: str,
     word_count: int,
     normalized_text: str,
 ) -> str:
     return render_template(
         template,
         {
-            "document_type": document_type,
+            "material_strategy": material_strategy,
+            "chunk_size_hint": chunk_size_hint,
             "word_count": word_count,
             "normalized_text": normalized_text,
         },
@@ -331,9 +370,22 @@ def run(
     provider: BaseProvider,
     template: PromptTemplate,
     token_threshold: int = 4000,
+    chunking_policy: Optional[Dict[str, Any]] = None,
+    material_type: Optional[str] = None,
 ) -> Tuple[NormalizedRequest, NormalizedDocument]:
     """
     LLM-assisted chunking entrypoint.
+
+    Args:
+        request: The evaluation request with raw text.
+        provider: LLM provider for completion calls.
+        template: Chunking prompt template.
+        token_threshold: Token count above which hierarchical chunking is used.
+        chunking_policy: Optional policy dict (inner ``chunking_policy`` section)
+            providing ``material_strategies`` and ``chunk_size_hint``.
+        material_type: Override for material type lookup (e.g. ``"conversation"``
+            from ``material_context.type``).  Takes precedence over auto-detected
+            ``document_type`` when looking up ``material_strategies``.
     """
     normalized_text = request.raw_text.strip()
     source_spans = extract_dialogue_source_spans(normalized_text)
@@ -341,6 +393,9 @@ def run(
     if document_type == "unknown" and source_spans:
         document_type = "dialogue"
     token_estimate = _estimate_tokens(normalized_text)
+
+    material_strategy = _resolve_material_strategy(document_type, chunking_policy, material_type)
+    chunk_size_hint = _resolve_chunk_size_hint(chunking_policy)
 
     norm_req = _build_normalized_request(request, normalized_text)
     document_id = f"doc-{_hid(normalized_text)}"
@@ -350,7 +405,8 @@ def run(
         try:
             prompt = _render_chunking_prompt(
                 template,
-                document_type=document_type,
+                material_strategy=material_strategy,
+                chunk_size_hint=chunk_size_hint,
                 word_count=word_count,
                 normalized_text=normalized_text,
             )
@@ -396,14 +452,18 @@ def run(
     try:
         prompt = _render_chunking_prompt(
             template,
-            document_type=document_type,
+            material_strategy=material_strategy,
+            chunk_size_hint=chunk_size_hint,
             word_count=word_count,
             normalized_text=_summaries_text(hard_chunks),
         )
+        # 每个 chunk JSON 对象约 250 tokens，预留 512 token 余量，上限 8192
+        output_max_tokens = min(8192, max(2048, len(hard_chunks) * 250 + 512))
         response = provider.complete(
             LLMRequest(
                 prompt=prompt,
                 output_schema=_OUTPUT_SCHEMA,
+                params={"max_tokens": output_max_tokens},
                 metadata={
                     "node_id": "node_preprocess",
                     "stage_name": "chunking",
@@ -412,6 +472,7 @@ def run(
                     "token_threshold": token_threshold,
                     "chunking_mode": "hierarchical",
                     "hard_chunk_count": len(hard_chunks),
+                    "output_max_tokens": output_max_tokens,
                     "template_source": template.source_path,
                     "template_version": template.metadata.get("template_version"),
                 },

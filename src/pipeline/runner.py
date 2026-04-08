@@ -39,7 +39,6 @@ from uuid import uuid4
 
 from src.agents import (
     chunker,
-    coverage,
     extractor,
     feedback as feedback_agent,
     observer,
@@ -72,11 +71,11 @@ from src.orchestrator.states import PipelineState
 from src.orchestrator.trace_store import TraceStore
 from src.pipeline.validators import (
     terminal_validation,
-    validate_coverage_plans,
     validate_final_decisions,
     validate_hypotheses,
     validate_observations,
 )
+from src.policies.rubric_core import build_dimension_traversal
 from src.pipeline.export import build_indicator_score_payload
 from src.policies.aggregation import compute_composite
 
@@ -310,6 +309,46 @@ class PipelineRunner:
         return default_threshold
 
     @staticmethod
+    def _extraction_char_budget(chunking_policy: Optional[dict]) -> Optional[int]:
+        """Read max_chars_per_dimension from extraction_budget section."""
+        if not isinstance(chunking_policy, dict):
+            return None
+        policy = chunking_policy
+        nested = policy.get("chunking_policy")
+        if isinstance(nested, dict):
+            policy = nested
+        budget = policy.get("extraction_budget", {})
+        if not isinstance(budget, dict):
+            return None
+        val = budget.get("max_chars_per_dimension")
+        return int(val) if isinstance(val, (int, float)) and val > 0 else None
+
+    @staticmethod
+    def _sample_units_by_budget(
+        units: List, max_chars: int
+    ) -> List:
+        """均匀采样 text_units，使总字符数不超过 max_chars。
+
+        从全量 units 中按等间距选取，保证覆盖文档首、中、尾。
+        若全量不超过预算则原样返回。
+        """
+        total_chars = sum(len(u.text) for u in units)
+        if total_chars <= max_chars:
+            return list(units)
+
+        # 估算能放几个 unit
+        avg_chars = total_chars // max(len(units), 1)
+        n = max(1, max_chars // avg_chars)
+
+        if n >= len(units):
+            return list(units)
+
+        # 均匀采样：从 [0, len-1] 中选 n 个等间距索引
+        step = len(units) / n
+        indices = sorted({min(int(i * step), len(units) - 1) for i in range(n)})
+        return [units[i] for i in indices]
+
+    @staticmethod
     def _chunk_method_label(document: NormalizedDocument) -> str:
         """Get chunking method label for node trace output_ref."""
         method = document.document_metadata.get("chunking")
@@ -320,13 +359,6 @@ class PipelineRunner:
             if isinstance(first, str) and first.strip():
                 return first.strip()
         return "unknown"
-
-    @staticmethod
-    def _coverage_ref(document: NormalizedDocument, plans: List[CoveragePlan]) -> str:
-        """Build coverage narrowing summary in N->K form."""
-        before = len(document.text_units) * len(plans)
-        after = sum(len(plan.target_unit_ids) for plan in plans)
-        return f"plans:{len(plans)} coverage:{before}->{after}"
 
     @staticmethod
     def _extraction_ref(spans: List[EvidenceSpan]) -> str:
@@ -496,6 +528,9 @@ class PipelineRunner:
         policy = bundle.policy_snapshot
         chunking_policy = self._chunking_policy()
         scoring_context = self._scoring_context()
+        task_ctx = scoring_context or {}
+        material_ctx = task_ctx.get("material_context", {})
+        evidence_focus = str(material_ctx.get("evidence_focus", ""))
         token_threshold = self._token_threshold_from_policy(chunking_policy)
         rater_ids = _get_rater_ids(bundle)
 
@@ -570,6 +605,12 @@ class PipelineRunner:
                 provider=self._provider_for_stage("chunking"),
                 template=self._tpl("chunking"),
                 token_threshold=token_threshold,
+                chunking_policy=chunking_policy,
+                material_type=str(
+                    (scoring_context or {})
+                    .get("material_context", {})
+                    .get("type", "")
+                ) or None,
             )
             self._last_normalized_request = _norm_req
             ckpt = ckpt_mgr.create_checkpoint(
@@ -606,50 +647,31 @@ class PipelineRunner:
             graph.advance(PipelineState.PREPROCESSED)
             self._last_document = document
 
-            # ── Stage 2: Coverage planning ───────────────────────────────────
-            store.record_node_start("node_coverage", "coverage",
-                                    input_ref=document.document_id)
-            self._debug_node_start(
-                "node_coverage",
-                "coverage",
-                document.document_id,
-                metadata={"document_id": document.document_id},
+            # ── Stage 2: Build plans (均匀采样 or 全量 → every dimension) ──────
+            char_budget = self._extraction_char_budget(chunking_policy)
+            sampled_units = self._sample_units_by_budget(
+                document.text_units, char_budget
+            ) if char_budget else list(document.text_units)
+            sampled_unit_ids = [u.unit_id for u in sampled_units]
+            coverage_strategy = (
+                "sampled" if len(sampled_units) < len(document.text_units)
+                else "full_scan"
             )
-            self._debug_write_node_artifact(
-                "node_coverage",
-                "input_document",
-                document,
-                summary="Input document for coverage planning",
-            )
-            plans = coverage.run(
-                document,
-                rubric,
-                provider=self._provider_for_stage("coverage_planning"),
-                template=self._tpl("dimension_relevance"),
-                chunking_policy=chunking_policy,
-            )
-            validate_coverage_plans(plans, rubric)
-            ckpt = ckpt_mgr.create_checkpoint(
-                "node_coverage", "coverage", document.document_id
-            )
-            coverage_output_ref = self._coverage_ref(document, plans)
-            store.record_node_success(
-                "node_coverage",
-                output_ref=coverage_output_ref,
-                checkpoint=ckpt,
-            )
-            self._debug_write_node_artifact(
-                "node_coverage",
-                "output_coverage_plans",
-                plans,
-                summary=f"{len(plans)} coverage plans",
-            )
-            self._debug_node_finish(
-                "node_coverage",
-                "success",
-                coverage_output_ref,
-                metadata={"checkpoint_id": ckpt.checkpoint_id},
-            )
+            traversals = build_dimension_traversal(rubric)
+            plans: List[CoveragePlan] = []
+            for trav in traversals:
+                plans.append(CoveragePlan(
+                    plan_id=f"plan-fullscan-{trav.dimension_id}",
+                    document_id=document.document_id,
+                    dimension_id=trav.dimension_id,
+                    target_unit_ids=list(sampled_unit_ids),
+                    required_facets=list(trav.required_facets),
+                    minimum_evidence_units=trav.evidence_requirements.get(
+                        "minimum_evidence_units", 1
+                    ),
+                    allowed_evidence_scopes=["span", "global"],
+                    coverage_strategy=coverage_strategy,
+                ))
             graph.advance(PipelineState.COVERAGE_PLANNED)
             self._last_plans = list(plans)
 
@@ -690,6 +712,7 @@ class PipelineRunner:
                             override_template=self._prompt_templates.get(
                                 f"evidence_extraction_override_{plan.dimension_id}"
                             ),
+                            evidence_focus=evidence_focus,
                         )
                         for plan in plans
                     }
@@ -820,6 +843,7 @@ class PipelineRunner:
                             ),
                             node_id="node_scorer",
                             stage_name="scoring",
+                            evidence_focus=evidence_focus,
                         )
                         for obs in observations
                         for rater_id in rater_ids
@@ -977,6 +1001,7 @@ class PipelineRunner:
                                         ],
                                         node_id="node_resolution_scorer",
                                         stage_name="score_resolution",
+                                        evidence_focus=evidence_focus,
                                     )
                                     for obs in target_observations
                                 ]
@@ -1191,6 +1216,8 @@ class PipelineRunner:
                 provider=self._provider_for_stage("feedback"),
                 template=explanation_tpl,
                 override_templates=explanation_overrides,
+                evidence_focus=evidence_focus,
+                audience="evaluator",
             )
 
             # 将聚合后的指标分写入 feedback。

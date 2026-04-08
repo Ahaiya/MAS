@@ -16,7 +16,9 @@ import sys
 import textwrap
 from datetime import datetime
 from pathlib import Path
+from typing import Any
 
+import yaml
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -37,6 +39,7 @@ from src.providers.prompt_loader import PromptLoader
 app = typer.Typer(name="eval", help="工程能力评估入口（读取工程项目记录）。")
 
 _DEFAULT_BUNDLE = _PROJECT_ROOT / "configs" / "bundles" / "engineering_eval_baseline.bundle.yaml"
+_DEFAULT_MODEL_CONFIG = _PROJECT_ROOT / "configs" / "model_config.yaml"
 _DEFAULT_OUTPUT_BASE = _PROJECT_ROOT / "artifacts" / "eval_engineering"
 
 
@@ -176,12 +179,58 @@ def _load_prompt_templates() -> dict:
         ("scoring", "scoring.yaml"),
         ("explanation", "explanation.yaml"),
         ("chunking", "chunking.yaml"),
-        ("dimension_relevance", "dimension_relevance.yaml"),
     ]:
         tpl_path = configs_prompts / filename
         if tpl_path.exists():
             templates[name] = loader.load(tpl_path)
+
+    override_dir = configs_prompts / "evidence_extraction_overrides"
+    if override_dir.exists():
+        for p in sorted(override_dir.glob("*.yaml")):
+            templates[f"evidence_extraction_override_{p.stem}"] = loader.load(p)
+
+    for override_stage in ("scoring", "explanation"):
+        od = configs_prompts / f"{override_stage}_overrides"
+        if od.exists():
+            for p in sorted(od.glob("*.yaml")):
+                templates[f"{override_stage}_override_{p.stem}"] = loader.load_with_override(
+                    override_stage, p.stem, prompts_root=configs_prompts
+                )
+
     return templates
+
+
+# ── Provider 构建 ─────────────────────────────────────────────────────────────
+
+def _entry_from_dict(d: dict[str, Any]) -> ProviderEntryConfig:
+    return ProviderEntryConfig(
+        api_key_env=d.get("api_key_env", "LLM_API_KEY"),
+        model=d.get("model", ""),
+        api_base=d.get("api_base", ""),
+        params=dict(d.get("params") or {}),
+    )
+
+
+def _build_providers_from_model_config(
+    path: Path,
+) -> tuple[Any, dict[str, Any], dict[str, Any]]:
+    """从 configs/model_config.yaml 构建 default / rater / stage providers。
+
+    返回 (default_provider, rater_providers, stage_providers)。
+    """
+    data: dict[str, Any] = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+
+    default_provider = build_provider(_entry_from_dict(data.get("default") or {}))
+
+    rater_providers = {
+        rater_id: build_provider(_entry_from_dict(cfg))
+        for rater_id, cfg in (data.get("raters") or {}).items()
+    }
+    stage_providers = {
+        stage: build_provider(_entry_from_dict(cfg))
+        for stage, cfg in (data.get("stages") or {}).items()
+    }
+    return default_provider, rater_providers, stage_providers
 
 
 # ── 展示函数 ───────────────────────────────────────────────────────────────────
@@ -374,6 +423,10 @@ def main(
         _DEFAULT_BUNDLE, "--bundle", "-b",
         help="配置 bundle 文件路径。",
     ),
+    model_config: Path = typer.Option(
+        _DEFAULT_MODEL_CONFIG, "--model-config", "-m",
+        help="LLM 分配配置文件（default/raters/stages）。",
+    ),
     output_dir: Path = typer.Option(
         None, "--output-dir", "-o",
         help="产出目录（默认自动联动为 artifacts/eval_engineering/{id}）。",
@@ -405,8 +458,17 @@ def main(
     typer.echo(f"[init] {resolved.get_version_info()}")
     typer.echo(f"[init] 量规维度: {[d['dimension_id'] for d in resolved.rubric_snapshot.dimensions]}")
 
-    # 初始化 providers
-    if resolved.provider_config is not None:
+    # 初始化 providers：优先读 model_config，其次 bundle.provider_config，最后降级单 default
+    if model_config.exists():
+        typer.echo(f"[init] 加载 model_config: {model_config}")
+        try:
+            default_provider, rater_providers, stage_providers = _build_providers_from_model_config(
+                model_config
+            )
+        except (ValueError, KeyError) as exc:
+            typer.echo(f"错误：model_config 读取失败 — {exc}", err=True)
+            raise typer.Exit(code=1)
+    elif resolved.provider_config is not None:
         try:
             default_provider, rater_providers, stage_providers = build_provider_map(
                 resolved.provider_config
@@ -414,18 +476,17 @@ def main(
         except ValueError as exc:
             typer.echo(f"错误：Provider 配置失败 — {exc}", err=True)
             raise typer.Exit(code=1)
-        default_provider, rater_providers, stage_providers, log_providers = _wrap_providers(
-            default_provider, rater_providers, stage_providers
-        )
     else:
         try:
             default_provider = build_provider(ProviderEntryConfig(api_key_env="LLM_API_KEY"))
         except ValueError as exc:
             typer.echo(f"错误：{exc}", err=True)
             raise typer.Exit(code=1)
-        default_provider, rater_providers, stage_providers, log_providers = _wrap_providers(
-            default_provider, {}, {}
-        )
+        rater_providers, stage_providers = {}, {}
+
+    default_provider, rater_providers, stage_providers, log_providers = _wrap_providers(
+        default_provider, rater_providers, stage_providers
+    )
 
     if log_providers:
         typer.echo("[init] LLM 分配：")

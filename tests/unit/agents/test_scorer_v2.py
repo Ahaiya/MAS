@@ -204,15 +204,13 @@ def _override() -> PromptTemplate:
 def test_no_essay_text_in_prompt():
     prompt = build_scoring_prompt(_observation(), _spans(), _rubric(), _template())
     assert "## Essay Text" not in prompt
-    assert "Facet Evidence" in prompt
+    assert "Evidence Spans" in prompt
 
 
 def test_facet_evidence_in_prompt():
     prompt = build_scoring_prompt(_observation(), _spans(), _rubric(), _template())
     assert "span-01" in prompt
     assert "I promised myself I would not hide anymore." in prompt
-    assert "authenticity" in prompt
-    assert "source=unknown" in prompt
 
 
 def test_score_anchors_from_context():
@@ -229,7 +227,6 @@ def test_score_anchors_from_context():
 
 def test_no_context_still_works():
     prompt = build_scoring_prompt(_observation(), _spans(), _rubric(), _template())
-    assert "trained writing scorer" in prompt
     assert "Voice" in prompt
 
 
@@ -299,8 +296,10 @@ def test_low_confidence_observation():
         _template(),
         scoring_context=_context(),
     )
-    assert "LOW" in prompt
-    assert "facet 'audience_awareness' has no evidence" in prompt
+    # observation_confidence and uncertainty_notes are no longer injected;
+    # verify the prompt still renders correctly with evidence spans
+    assert "span-01" in prompt
+    assert "Voice" in prompt
 
 
 def test_score_is_clamped_to_scale_range():

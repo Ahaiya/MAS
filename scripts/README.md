@@ -19,7 +19,7 @@ python -m scripts config ...
 评估脚本已收束为一个正式入口：
 
 - `python scripts/eval.py ...`
-- 最短可用写法：`python -m scripts eval engineering "data/training/4组—AI助手.md"`
+- 最短可用写法：`python -m scripts eval engineering "data/training/7组—专属社区娱乐学习软件.md"`
 
 默认联动规则：
 

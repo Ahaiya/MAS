@@ -27,7 +27,7 @@ raters:
         enable_thinking: true
         thinking_budget: 768
   rater_3:
-    model: "deepseek-reasoner"
+    model: "deepseek-chat"
     api_base: "https://api.deepseek.com/v1"
     api_key_env: "RATER_3_API_KEY"
     params:

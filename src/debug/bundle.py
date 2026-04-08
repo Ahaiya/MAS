@@ -549,8 +549,13 @@ class DebugBundleWriter:
             llm_call_ids = list(node_entry.get("llm_call_ids") or [])
             llm_calls = [self._llm_calls[cid] for cid in llm_call_ids if cid in self._llm_calls]
             total_tokens = sum(
-                (call.get("response") or {}).get("usage", {}).get("total_tokens", 0)
-                or 0
+                (
+                    (
+                        (call.get("response") or {}).get("usage")
+                        or {}
+                    ).get("total_tokens", 0)
+                    or 0
+                )
                 for call in llm_calls
             )
             total_elapsed_ms = sum(

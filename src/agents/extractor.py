@@ -93,6 +93,7 @@ def run(
     provider: BaseProvider,
     template: PromptTemplate,
     override_template: Optional[PromptTemplate] = None,
+    evidence_focus: str = "",
 ) -> List[EvidenceSpan]:
     """
     Extract evidence spans for one dimension using a configured provider.
@@ -104,6 +105,7 @@ def run(
         provider : Configured BaseProvider to call.
         template         : Loaded extraction prompt template.
         override_template: Optional per-dimension override template.
+        evidence_focus   : Optional task-level evidence focus string.
 
     Returns:
         List of EvidenceSpan objects parsed from the LLM response.
@@ -115,6 +117,7 @@ def run(
         rubric,
         template,
         override_template=override_template,
+        evidence_focus=evidence_focus,
     )
     template_used = override_template or template
     request = LLMRequest(

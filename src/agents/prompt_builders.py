@@ -20,8 +20,41 @@ from typing import Any, Dict, List, Optional
 from src.contracts.artifact_bundle import RubricSnapshot
 from src.contracts.evidence import DimensionObservation, EvidenceSpan
 from src.contracts.request_models import CoveragePlan, NormalizedDocument
-from src.contracts.scoring import FinalDimensionDecision
+from src.contracts.scoring import FinalDimensionDecision, ScoreHypothesis
 from src.providers.prompt_loader import PromptTemplate, render_template
+
+
+def _level_anchor_text(level: Dict[str, Any]) -> str:
+    """Prefer full descriptor text over coarse scale labels."""
+    descriptors = [
+        str(item).strip()
+        for item in (level.get("descriptors") or [])
+        if str(item).strip()
+    ]
+    if descriptors:
+        return "\n".join(descriptors)
+    return str(level.get("summary", "")).strip()
+
+
+def _dimension_anchor_entries(dim: Dict[str, Any]) -> List[Dict[str, Any]]:
+    """Return only the current dimension's anchors, ordered high-to-low."""
+    levels = sorted(
+        dim.get("levels", []) or [],
+        key=lambda item: int(item.get("rank", 0)),
+        reverse=True,
+    )
+    anchors: List[Dict[str, Any]] = []
+    for level in levels:
+        anchor_text = _level_anchor_text(level)
+        if not anchor_text:
+            continue
+        anchors.append(
+            {
+                "rank": int(level.get("rank", 0)),
+                "text": anchor_text,
+            }
+        )
+    return anchors
 
 
 def build_extraction_prompt(
@@ -30,17 +63,16 @@ def build_extraction_prompt(
     rubric: RubricSnapshot,
     template: PromptTemplate,
     override_template: Optional[PromptTemplate] = None,
+    evidence_focus: str = "",
 ) -> str:
     """
     Build the evidence-extraction prompt for a single dimension.
 
     Context variables injected (matching evidence_extraction.yaml v2):
-        dimension_name         : Human-readable dimension name from rubric.
-        dimension_code         : Short code from rubric (e.g. "I").
-        chunks                 : Candidate chunks [{id, title, text}].
-        levels                 : Full level descriptors [{rank, summary, descriptors}].
-        facet_descriptions     : Required facets [{facet_id, description}].
-        minimum_evidence_units : Minimum evidence requirement from the plan.
+        dimension_name    : Human-readable dimension name from rubric.
+        dimension_anchors : Current-dimension anchors only [{rank, text}].
+        evidence_focus    : Task-level guidance on what to look for.
+        chunks            : Candidate chunks [{id, title, text}].
 
     Args:
         plan    : CoveragePlan defining which dimension and facets to cover.
@@ -48,6 +80,7 @@ def build_extraction_prompt(
         rubric  : RubricSnapshot providing dimension metadata.
         template         : Loaded default PromptTemplate.
         override_template: Optional per-dimension override PromptTemplate.
+        evidence_focus   : Optional task-level evidence focus string.
 
     Returns:
         Rendered prompt string ready to send to a provider.
@@ -76,47 +109,11 @@ def build_extraction_prompt(
         for unit in selected_units
     ]
 
-    levels = []
-    for level in dim.get("levels", []) or []:
-        levels.append(
-            {
-                "rank": level.get("rank"),
-                "summary": level.get("summary", ""),
-                "descriptors": list(level.get("descriptors") or []),
-            }
-        )
-
-    # Current rubric usually has facet IDs only. This keeps compatibility with
-    # future richer facet description structures without hardcoding facet names.
-    facet_desc_map: Dict[str, str] = {}
-    observation_schema = dim.get("observation_schema", {}) or {}
-    raw_facet_desc = observation_schema.get("facet_descriptions")
-    if isinstance(raw_facet_desc, dict):
-        facet_desc_map = {str(k): str(v) for k, v in raw_facet_desc.items()}
-    elif isinstance(raw_facet_desc, list):
-        for item in raw_facet_desc:
-            if not isinstance(item, dict):
-                continue
-            facet_id = item.get("facet_id")
-            if facet_id is None:
-                continue
-            facet_desc_map[str(facet_id)] = str(item.get("description", ""))
-
-    facet_descriptions = [
-        {
-            "facet_id": facet_id,
-            "description": facet_desc_map.get(facet_id, ""),
-        }
-        for facet_id in plan.required_facets
-    ]
-
     context = {
         "dimension_name": dim.get("name", plan.dimension_id),
-        "dimension_code": dim.get("code", ""),
+        "dimension_anchors": _dimension_anchor_entries(dim),
+        "evidence_focus": evidence_focus,
         "chunks": chunks,
-        "levels": levels,
-        "facet_descriptions": facet_descriptions,
-        "minimum_evidence_units": plan.minimum_evidence_units,
     }
     chosen_template = override_template or template
     return render_template(chosen_template, context)
@@ -130,113 +127,67 @@ def build_scoring_prompt(
     scoring_context: Optional[dict] = None,
     override_template: Optional[PromptTemplate] = None,
     prior_hypotheses: Optional[List] = None,
+    evidence_focus: str = "",
 ) -> str:
     """
     Build the scoring prompt for a single dimension.
 
-    Context variables injected (matching scoring.yaml v3):
-        role_description       : Dataset/global scorer role description.
-        dimension_name         : Human-readable dimension name from rubric.
-        dimension_code         : Short code from rubric.
-        levels                 : List of level dicts [{rank, summary, descriptors}].
-        facet_evidence         : Per-facet evidence buckets with supporting/counter quotes.
-        observation_confidence : HIGH/MEDIUM/LOW.
-        uncertainty_notes      : Observation uncertainty notes.
-        score_anchors          : Dimension-filtered anchor examples from scoring_context.
-        dataset_notes          : Dataset-level scoring notes.
-        calibration_notes      : Calibration reminders.
-        dimension_override_notes: Rendered per-dimension override text.
+    Context variables injected (matching scoring.yaml v2):
+        dimension_name      : Human-readable dimension name from rubric.
+        dimension_anchors   : Current-dimension anchors only [{rank, text}].
+        evidence_focus      : Task-level guidance on what to look for.
+        evidence_spans      : Flat list [{span_id, chunk_id, quote, support_type}].
+        score_anchors       : Anchor examples from scoring_context.
+        calibration_notes   : Per-dimension or global calibration reminders.
+        prior_rater_context : Prior rater scores for adjudication path.
 
     Args:
         observation   : DimensionObservation summarising extracted evidence.
         evidence_spans: Relevant EvidenceSpan objects supporting the observation.
         rubric        : RubricSnapshot for dimension/scale/level lookup.
         template      : Loaded PromptTemplate (should be scoring.yaml).
-        scoring_context: Optional dataset-level scoring context configuration.
+        scoring_context: Optional task-level scoring context (full file dict).
         override_template: Optional per-dimension override PromptTemplate.
+        evidence_focus   : Optional task-level evidence focus string.
 
     Returns:
         Rendered prompt string ready to send to a provider.
     """
     dim = rubric.dimension_by_id.get(observation.dimension_id, {})
+    dim_code = str(dim.get("code", ""))
 
-    levels = []
-    for level in dim.get("levels", []) or []:
-        levels.append(
-            {
-                "rank": level.get("rank"),
-                "summary": level.get("summary", ""),
-                "descriptors": list(level.get("descriptors") or []),
-            }
-        )
-
+    # Build flat evidence_spans list from all facet findings
     span_by_id = {span.span_id: span for span in evidence_spans}
-    facet_evidence = []
+    seen_ids: set = set()
+    flat_spans = []
     for finding in observation.facet_findings:
-        supporting = []
-        for span_id in finding.supporting_span_ids:
-            span = span_by_id.get(span_id)
-            if span is None or not (span.text_quote or "").strip():
+        for span_id in list(finding.supporting_span_ids) + list(finding.counter_span_ids):
+            if span_id in seen_ids:
                 continue
-            supporting.append(
-                {
-                    "span_id": span_id,
-                    "quote": span.text_quote or "",
-                    "source_type": span.source_type,
-                    "source_label": span.source_label or "",
-                }
-            )
-
-        counter = []
-        for span_id in finding.counter_span_ids:
+            seen_ids.add(span_id)
             span = span_by_id.get(span_id)
-            if span is None or not (span.text_quote or "").strip():
+            if span is None:
                 continue
-            counter.append(
-                {
-                    "span_id": span_id,
-                    "quote": span.text_quote or "",
-                    "source_type": span.source_type,
-                    "source_label": span.source_label or "",
-                }
-            )
+            flat_spans.append({
+                "span_id": span_id,
+                "chunk_id": span.unit_id or "",
+                "quote": span.text_quote or "",
+                "support_type": span.support_type or "supporting",
+            })
 
-        facet_evidence.append(
-            {
-                "facet_id": finding.facet_id,
-                "supporting": supporting,
-                "counter": counter,
-                "finding_note": finding.finding_note or "",
-            }
-        )
-
+    # calibration_notes: per-dimension lookup (from task context list), then global fallback
     raw_ctx = scoring_context if isinstance(scoring_context, dict) else {}
-    role_description = str(
-        raw_ctx.get("role_description")
-        or "You are a trained writing scorer evaluating student writing based on a rubric."
-    )
-    dataset_notes = str(raw_ctx.get("dataset_notes") or "")
-    calibration_notes = str(raw_ctx.get("calibration_notes") or "")
+    calibration_notes = ""
+    per_dim_list = raw_ctx.get("scoring_context") or []
+    if isinstance(per_dim_list, list):
+        for entry in per_dim_list:
+            if isinstance(entry, dict) and str(entry.get("code", "")) == dim_code:
+                calibration_notes = str(entry.get("calibration_notes", ""))
+                break
+    if not calibration_notes:
+        calibration_notes = str(raw_ctx.get("calibration_notes") or "")
 
-    score_anchors = []
-    for raw_anchor in raw_ctx.get("score_anchors") or []:
-        if not isinstance(raw_anchor, dict):
-            continue
-        per_dimension = raw_anchor.get("per_dimension")
-        if not isinstance(per_dimension, dict):
-            continue
-        dim_anchor = per_dimension.get(observation.dimension_id)
-        if not isinstance(dim_anchor, dict):
-            continue
-        score_anchors.append(
-            {
-                "anchor_id": str(raw_anchor.get("anchor_id") or ""),
-                "title": str(raw_anchor.get("title") or "Untitled anchor"),
-                "target_score": int(raw_anchor.get("target_score") or 0),
-                "dimension_score": int(dim_anchor.get("score") or 0),
-                "note": str(dim_anchor.get("note") or ""),
-            }
-        )
+    score_anchors = list(raw_ctx.get("score_anchors") or [])
 
     prior_rater_context = [
         {
@@ -248,143 +199,95 @@ def build_scoring_prompt(
     ]
 
     context = {
-        "role_description": role_description,
         "dimension_name": dim.get("name", observation.dimension_id),
-        "dimension_code": dim.get("code", ""),
-        "levels": levels,
-        "facet_evidence": facet_evidence,
-        "observation_confidence": observation.observation_confidence.value.upper(),
-        "uncertainty_notes": list(observation.uncertainty_notes),
+        "dimension_anchors": _dimension_anchor_entries(dim),
+        "evidence_focus": evidence_focus,
+        "evidence_spans": flat_spans,
         "score_anchors": score_anchors,
-        "dataset_notes": dataset_notes,
         "calibration_notes": calibration_notes,
-        "dimension_override_notes": "",
         "prior_rater_context": prior_rater_context,
     }
 
-    if override_template is not None:
-        context["dimension_override_notes"] = render_template(override_template, context)
-
-    return render_template(template, context)
+    chosen_template = override_template or template
+    return render_template(chosen_template, context)
 
 
 def build_explanation_prompt(
     decision: FinalDimensionDecision,
-    observation: DimensionObservation,
     evidence_spans: List[EvidenceSpan],
     rubric: RubricSnapshot,
     template: PromptTemplate,
-    scorer_rationale: Optional[str] = None,
     override_template: Optional[PromptTemplate] = None,
+    hypotheses: Optional[List[ScoreHypothesis]] = None,
+    evidence_focus: str = "",
+    audience: str = "evaluator",
 ) -> str:
     """
     Build the explanation/feedback prompt for a finalised dimension decision.
 
     Context variables injected (matching explanation.yaml v2):
-        dimension_name          : Human-readable dimension name from rubric.
-        dimension_code          : Short code from rubric.
-        canonical_score         : Integer canonical score from the final decision.
-        display_annotation      : Optional display annotation string.
-        descriptor_refs         : List[str] of descriptor strings cited in the decision.
-        facet_evidence          : Per-facet evidence buckets (supporting/counter).
-        observation_confidence  : HIGH/MEDIUM/LOW.
-        uncertainty_notes       : List[str] from observation.
-        scorer_rationale        : Scorer justification text (seed material).
-        decision_note           : Reconciliation/adjudication context note.
-        was_adjudicated         : Whether decision was adjudicated.
-        dimension_override_notes: Rendered override guidance text.
-
-    For backward compatibility, `evidence_spans` remains in context as a flat
-    list of quoted spans.
+        dimension_name   : Human-readable dimension name from rubric.
+        final_score      : Integer canonical score from the final decision.
+        was_adjudicated  : Whether decision was adjudicated.
+        justification_1  : Adjudicator rationale (adjudicated) or rater_1 rationale.
+        justification_2  : Rater_2 rationale (non-adjudicated path only).
+        evidence_spans   : Flat list [{span_id, quote, support_type}].
+        evidence_focus   : Task-level guidance on what to look for.
+        audience         : "student" for learner-facing, "evaluator" for professional.
 
     Args:
-        decision        : FinalDimensionDecision containing score and descriptor refs.
-        observation     : DimensionObservation for structured facet evidence.
+        decision        : FinalDimensionDecision containing score and evidence refs.
         evidence_spans  : EvidenceSpan objects available to this decision.
         rubric          : RubricSnapshot for dimension metadata.
         template        : Loaded global explanation PromptTemplate.
-        scorer_rationale: Optional scorer justification text.
         override_template: Optional per-dimension override PromptTemplate.
+        hypotheses      : ScoreHypothesis list for extracting rater justifications.
+        evidence_focus  : Optional task-level evidence focus string.
+        audience        : Feedback audience ("student" or "evaluator").
 
     Returns:
         Rendered prompt string ready to send to a provider.
     """
     dim = rubric.dimension_by_id.get(decision.dimension_id, {})
-    referenced_ids = set(decision.evidence_span_ids)
-    span_by_id: Dict[str, EvidenceSpan] = {
-        span.span_id: span
-        for span in evidence_spans
-        if span.span_id in referenced_ids
-    }
+    was_adjudicated = decision.adjudication_id is not None
 
-    facet_evidence = []
-    for finding in observation.facet_findings:
-        supporting = []
-        for span_id in finding.supporting_span_ids:
-            span = span_by_id.get(span_id)
-            if span is None or not (span.text_quote or "").strip():
-                continue
-            supporting.append(
-                {
-                    "span_id": span_id,
-                    "quote": span.text_quote or "",
-                    "source_type": span.source_type,
-                    "source_label": span.source_label or "",
-                }
-            )
+    # Extract rater justifications from hypotheses
+    dim_hyps = [h for h in (hypotheses or []) if h.dimension_id == decision.dimension_id]
+    hyps_by_rater = {h.rater_id: h for h in dim_hyps}
 
-        counter = []
-        for span_id in finding.counter_span_ids:
-            span = span_by_id.get(span_id)
-            if span is None or not (span.text_quote or "").strip():
-                continue
-            counter.append(
-                {
-                    "span_id": span_id,
-                    "quote": span.text_quote or "",
-                    "source_type": span.source_type,
-                    "source_label": span.source_label or "",
-                }
-            )
+    if was_adjudicated:
+        adj_hyp = hyps_by_rater.get("rater_3")
+        justification_1 = (adj_hyp.rationale or "") if adj_hyp else ""
+        justification_2 = ""
+    else:
+        r1_hyp = hyps_by_rater.get("rater_1")
+        r2_hyp = hyps_by_rater.get("rater_2")
+        justification_1 = (r1_hyp.rationale or "") if r1_hyp else ""
+        justification_2 = (r2_hyp.rationale or "") if r2_hyp else ""
 
-        facet_evidence.append(
-            {
-                "facet_id": finding.facet_id,
-                "supporting": supporting,
-                "counter": counter,
-                "finding_note": finding.finding_note or "",
-            }
-        )
-
-    span_contexts = [
-        {
+    # Build flat evidence_spans from decision.evidence_span_ids
+    span_by_id = {span.span_id: span for span in evidence_spans}
+    flat_spans = []
+    for span_id in decision.evidence_span_ids:
+        span = span_by_id.get(span_id)
+        if span is None or not (span.text_quote or "").strip():
+            continue
+        flat_spans.append({
             "span_id": span_id,
-            "quote": span_by_id[span_id].text_quote or "",
-            "source_type": span_by_id[span_id].source_type,
-            "source_label": span_by_id[span_id].source_label or "",
-        }
-        for span_id in decision.evidence_span_ids
-        if span_id in span_by_id and (span_by_id[span_id].text_quote or "").strip()
-    ]
+            "quote": span.text_quote or "",
+            "support_type": span.support_type or "supporting",
+        })
 
     context = {
         "dimension_name": dim.get("name", decision.dimension_id),
-        "dimension_code": dim.get("code", ""),
-        "canonical_score": decision.final_score.canonical_score,
-        "display_annotation": decision.final_score.display_annotation or "",
-        "descriptor_refs": list(decision.descriptor_refs),
-        "facet_evidence": facet_evidence,
-        "observation_confidence": observation.observation_confidence.value.upper(),
-        "uncertainty_notes": list(observation.uncertainty_notes),
-        "scorer_rationale": scorer_rationale or "",
-        "decision_note": decision.decision_note or "",
-        "was_adjudicated": decision.adjudication_id is not None,
-        "dimension_override_notes": "",
-        # Backward compatibility for existing templates.
-        "evidence_spans": span_contexts,
+        "final_score": decision.final_score.canonical_score,
+        "was_adjudicated": was_adjudicated,
+        "justification_1": justification_1,
+        "justification_2": justification_2,
+        "evidence_spans": flat_spans,
+        "evidence_focus": evidence_focus,
+        "audience": audience,
     }
-    if override_template is not None:
-        context["dimension_override_notes"] = render_template(override_template, context)
 
     chosen_template = override_template or template
     return render_template(chosen_template, context)

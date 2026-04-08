@@ -122,7 +122,6 @@ class ArtifactBundle:
     rubric_ref: ArtifactRef
     adjudication_policy_ref: ArtifactRef
     aggregation_policy_ref: ArtifactRef
-    explanation_policy_ref: ArtifactRef
     prompt_refs: List[ArtifactRef]
 
     # Source documentation
@@ -131,6 +130,9 @@ class ArtifactBundle:
     # Freeze metadata (set during resolution)
     freeze_hash: Optional[str] = None
     freeze_timestamp: Optional[datetime] = None
+
+    # Explanation policy reference (optional: simplified bundles may omit it)
+    explanation_policy_ref: Optional[ArtifactRef] = None
 
     # Validation
     validation_rules: List[Dict[str, Any]] = field(default_factory=list)
@@ -155,9 +157,10 @@ class ArtifactBundle:
             self.rubric_ref,
             self.adjudication_policy_ref,
             self.aggregation_policy_ref,
-            self.explanation_policy_ref,
             *self.prompt_refs,
         ]
+        if self.explanation_policy_ref is not None:
+            refs.append(self.explanation_policy_ref)
         if self.chunking_policy_ref is not None:
             refs.append(self.chunking_policy_ref)
         if self.scoring_context_ref is not None:
@@ -187,6 +190,8 @@ class RubricSnapshot:
     rubric_name: str
     dimensions: List[Dict[str, Any]]
     scales: List[Dict[str, Any]]
+    indicator_description: str = ""
+    raw_task_rubric: Dict[str, Any] = field(default_factory=dict)
 
     # Computed lookup maps for fast access
     dimension_by_id: Dict[str, Dict[str, Any]] = field(default_factory=dict)

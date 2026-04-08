@@ -87,7 +87,11 @@ class ConfigCompiler:
             loaded_rubric = self._resolver.load_artifact(bundle.rubric_ref)
             loaded_adj = self._resolver.load_artifact(bundle.adjudication_policy_ref)
             loaded_agg = self._resolver.load_artifact(bundle.aggregation_policy_ref)
-            loaded_exp = self._resolver.load_artifact(bundle.explanation_policy_ref)
+            loaded_exp = (
+                self._resolver.load_artifact(bundle.explanation_policy_ref)
+                if bundle.explanation_policy_ref is not None
+                else None
+            )
             loaded_prompts = [
                 self._resolver.load_artifact(ref) for ref in bundle.prompt_refs
             ]
@@ -108,10 +112,11 @@ class ConfigCompiler:
         rubric_snapshot = _build_rubric_snapshot(loaded_rubric.loaded_data)
 
         # Step 3b: Build PolicySnapshot from policy data
+        exp_file_data = loaded_exp.loaded_data if loaded_exp is not None else {"explanation_policy": {}}
         policy_snapshot = _build_policy_snapshot(
             loaded_adj.loaded_data,
             loaded_agg.loaded_data,
-            loaded_exp.loaded_data,
+            exp_file_data,
             loaded_chunking.loaded_data if loaded_chunking is not None else None,
             loaded_scoring_context.loaded_data if loaded_scoring_context is not None else None,
         )
@@ -127,9 +132,10 @@ class ConfigCompiler:
             loaded_rubric.content_hash,
             loaded_adj.content_hash,
             loaded_agg.content_hash,
-            loaded_exp.content_hash,
             *[p.content_hash for p in loaded_prompts],
         ]
+        if loaded_exp is not None:
+            all_content_hashes.append(loaded_exp.content_hash)
         if loaded_chunking is not None:
             all_content_hashes.append(loaded_chunking.content_hash)
         if loaded_scoring_context is not None:
@@ -163,6 +169,7 @@ class ConfigCompiler:
             chunking_policy_ref=loaded_chunking,
             scoring_context_ref=loaded_scoring_context,
         )
+
 
         return ResolvedArtifactBundle(
             artifact_bundle=frozen_bundle,
@@ -230,7 +237,20 @@ def _build_operational_params(raw: dict[str, Any] | None) -> OperationalParams |
 
 
 def _build_rubric_snapshot(rubric_file_data: dict[str, Any]) -> RubricSnapshot:
-    """Build a RubricSnapshot with lookup maps from rubric file data."""
+    """Build a RubricSnapshot with lookup maps from rubric file data.
+
+    Supports two formats:
+    - Full rubric format: contains ``rubric_core`` key (legacy ASAP format).
+    - Task rubric format: contains ``dimensions`` and ``scale`` at top level
+      (engineering evaluation format).
+    """
+    if "rubric_core" in rubric_file_data:
+        return _build_rubric_snapshot_legacy(rubric_file_data)
+    return _build_rubric_snapshot_task(rubric_file_data)
+
+
+def _build_rubric_snapshot_legacy(rubric_file_data: dict[str, Any]) -> RubricSnapshot:
+    """Build RubricSnapshot from the full rubric_core format."""
     core = rubric_file_data["rubric_core"]
     dimensions: list[dict[str, Any]] = core["dimensions"]
     scales: list[dict[str, Any]] = core["scales"]
@@ -246,6 +266,89 @@ def _build_rubric_snapshot(rubric_file_data: dict[str, Any]) -> RubricSnapshot:
     )
 
 
+def _build_rubric_snapshot_task(rubric_file_data: dict[str, Any]) -> RubricSnapshot:
+    """Build RubricSnapshot from the simplified task rubric format.
+
+    Converts:
+    - ``dimensions[].code`` (e.g. ``"A4-1"``) → ``dimension_id = "a4_1"``
+    - ``dimensions[].anchors`` → ``levels`` list with rank/summary/descriptors
+    - ``scale`` → synthetic ScaleEntry with ``scale_id = "ordinal_{min}_{max}"``
+    """
+    task_id = rubric_file_data.get("task_id", "unknown")
+    task_name = rubric_file_data.get("task_name", "")
+    indicator_description = str(rubric_file_data.get("indicator_description", "") or "")
+    scale_data: dict[str, Any] = rubric_file_data.get("scale", {})
+
+    scale_min: int = int(scale_data.get("min", 1))
+    scale_max: int = int(scale_data.get("max", 5))
+    scale_type: str = str(scale_data.get("type", "ordinal"))
+    # YAML may parse integer keys as int; normalise to int
+    scale_level_labels: dict[int, str] = {
+        int(k): str(v) for k, v in (scale_data.get("levels") or {}).items()
+    }
+
+    scale_id = f"ordinal_{scale_min}_{scale_max}"
+    scale_entry: dict[str, Any] = {
+        "scale_id": scale_id,
+        "type": scale_type,
+        "min": scale_min,
+        "max": scale_max,
+    }
+
+    dimensions: list[dict[str, Any]] = []
+    for dim_raw in rubric_file_data.get("dimensions", []):
+        code: str = dim_raw["code"]                          # e.g. "A4-1"
+        dimension_id: str = code.lower().replace("-", "_")   # e.g. "a4_1"
+        name: str = dim_raw.get("name", "")
+        # YAML may parse integer keys as int
+        anchors: dict[int, str] = {
+            int(k): str(v) for k, v in (dim_raw.get("anchors") or {}).items()
+        }
+
+        levels: list[dict[str, Any]] = []
+        for rank in range(scale_min, scale_max + 1):
+            summary = scale_level_labels.get(rank, str(rank))
+            anchor_text = anchors.get(rank, "")
+            levels.append({
+                "rank": rank,
+                "summary": summary,
+                "descriptors": [anchor_text] if anchor_text else [],
+            })
+
+        dimensions.append({
+            "dimension_id": dimension_id,
+            "code": code,
+            "name": name,
+            "scale_ref": scale_id,
+            "description": name,
+            "observation_schema": {
+                "required_facets": [dimension_id],
+                "facet_descriptions": {dimension_id: name},
+            },
+            "evidence_requirements": {
+                "minimum_evidence_units": 1,
+                "allowed_evidence_scope": ["full_document"],
+                "require_textual_grounding": True,
+            },
+            "levels": levels,
+            "metadata": {},
+        })
+
+    scales = [scale_entry]
+    return RubricSnapshot(
+        rubric_id=f"task_{task_id}",
+        rubric_version="1.0",
+        rubric_name=task_name,
+        dimensions=dimensions,
+        scales=scales,
+        indicator_description=indicator_description,
+        raw_task_rubric=dict(rubric_file_data),
+        dimension_by_id={d["dimension_id"]: d for d in dimensions},
+        dimension_by_code={d["code"]: d for d in dimensions},
+        scale_by_id={s["scale_id"]: s for s in scales},
+    )
+
+
 def _build_policy_snapshot(
     adj_file_data: dict[str, Any],
     agg_file_data: dict[str, Any],
@@ -253,23 +356,38 @@ def _build_policy_snapshot(
     chunking_file_data: dict[str, Any] | None = None,
     scoring_context_file_data: dict[str, Any] | None = None,
 ) -> PolicySnapshot:
-    """Build a PolicySnapshot from the inner policy content of each file."""
+    """Build a PolicySnapshot from the inner policy content of each file.
+
+    ``scoring_context_file_data`` may be in two formats:
+    - Legacy ScoringContextSchema: ``scoring_context`` key maps to a dict
+      (contains context_id, role_description, etc.).  The inner dict is
+      stored for backward compatibility.
+    - Task context format: ``scoring_context`` key maps to a list of
+      ``{code, calibration_notes}`` entries.  The entire file data dict is
+      stored so the runner can access ``material_context`` and other fields.
+    """
     adj_policy = adj_file_data["adjudication_policy"]
     agg_policy = agg_file_data["aggregation_policy"]
-    exp_policy = exp_file_data["explanation_policy"]
-    chunking_policy = {}
+    exp_policy = exp_file_data.get("explanation_policy", {})
+
+    chunking_policy: dict[str, Any] = {}
     if isinstance(chunking_file_data, dict):
         chunking_policy = dict(chunking_file_data.get("chunking_policy") or {})
 
-    scoring_context = {}
+    scoring_context: dict[str, Any] = {}
     if isinstance(scoring_context_file_data, dict):
-        scoring_context = dict(scoring_context_file_data.get("scoring_context") or {})
+        sc = scoring_context_file_data.get("scoring_context")
+        if isinstance(sc, list):
+            # Task context format — store full file data for downstream access
+            scoring_context = dict(scoring_context_file_data)
+        elif isinstance(sc, dict):
+            # Legacy ScoringContextSchema format — extract inner dict
+            scoring_context = dict(sc)
 
-    policy_version = (
-        f"adj:{adj_policy.get('policy_version', 'unknown')}"
-        f"|agg:{agg_policy.get('policy_version', 'unknown')}"
-        f"|exp:{exp_policy.get('policy_version', 'unknown')}"
-    )
+    adj_version = adj_policy.get("policy_version") or adj_policy.get("policy_id", "unknown")
+    agg_version = agg_policy.get("policy_version") or agg_policy.get("policy_id", "unknown")
+    exp_version = exp_policy.get("policy_version", "unknown")
+    policy_version = f"adj:{adj_version}|agg:{agg_version}|exp:{exp_version}"
 
     return PolicySnapshot(
         adjudication_policy=adj_policy,

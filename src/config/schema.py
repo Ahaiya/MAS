@@ -569,3 +569,65 @@ class BundleFileSchema(BaseModel):
 
     schema_version: str
     artifact_bundle: ArtifactBundleSchema
+
+
+# ── Simplified Task-Specific Schemas (engineering eval format) ────────────────
+
+
+class SimplifiedBundleFileSchema(BaseModel):
+    """Simplified bundle format used by engineering evaluation tasks.
+
+    Replaces the full ArtifactBundleSchema for tasks that use a flat layout
+    with active_task_id templating.
+    """
+
+    schema_version: str
+    bundle_id: str
+    active_task_id: str
+    rubric: dict     # {source, task}
+    context: dict    # {task}
+    prompts: dict    # {chunking, evidence_extraction, scoring, explanation}
+    policies: dict   # {chunking, adjudication, aggregation}
+
+
+class TaskRubricFileSchema(BaseModel):
+    """Schema for per-task rubric YAML files (configs/rubrics/tasks/)."""
+
+    schema_version: str
+    task_id: str
+    task_name: str
+    indicator_description: str
+    scale: dict       # {type, min, max, levels}
+    dimensions: list  # [{code, name, anchors}]
+
+
+class TaskContextFileSchema(BaseModel):
+    """Schema for per-task scoring context YAML files (configs/tasks/)."""
+
+    schema_version: str
+    task_id: str = ""
+    material_context: dict   # {type, description, evidence_focus}
+    score_anchors: list = []
+    human_instructions: str = ""
+    scoring_context: list = []  # [{code, calibration_notes}]
+
+
+class SimplifiedAdjudicationFileSchema(BaseModel):
+    """Simplified schema for adjudication policy YAML files."""
+
+    schema_version: str
+    adjudication_policy: dict
+
+
+class SimplifiedAggregationFileSchema(BaseModel):
+    """Simplified schema for aggregation policy YAML files."""
+
+    schema_version: str
+    aggregation_policy: dict
+
+
+class SimplifiedChunkingPolicyFileSchema(BaseModel):
+    """Simplified schema for chunking policy YAML files."""
+
+    schema_version: str
+    chunking_policy: dict

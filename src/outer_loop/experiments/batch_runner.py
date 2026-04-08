@@ -132,7 +132,6 @@ def _load_prompt_templates() -> dict[str, PromptTemplate]:
         ("scoring", "scoring.yaml"),
         ("explanation", "explanation.yaml"),
         ("chunking", "chunking.yaml"),
-        ("dimension_relevance", "dimension_relevance.yaml"),
     ]:
         path = prompts_root / filename
         if path.exists():

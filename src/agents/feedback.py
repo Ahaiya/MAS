@@ -38,6 +38,7 @@ Canonical output schema (Dict[str, Any]):
 
 from __future__ import annotations
 
+import json
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
@@ -71,20 +72,23 @@ def _render_commentary(
     template: PromptTemplate,
     fallback_text: str,
     max_length: int,
-    scorer_rationale: Optional[str] = None,
+    hypotheses: Optional[List[ScoreHypothesis]] = None,
     override_template: Optional[PromptTemplate] = None,
+    evidence_focus: str = "",
+    audience: str = "evaluator",
 ) -> str:
     """Render commentary through a configured real provider."""
 
     template_used = override_template or template
     prompt_text = build_explanation_prompt(
         decision=decision,
-        observation=observation,
         evidence_spans=decision_spans,
         rubric=rubric,
         template=template,
-        scorer_rationale=scorer_rationale,
         override_template=override_template,
+        hypotheses=hypotheses,
+        evidence_focus=evidence_focus,
+        audience=audience,
     )
     response = provider.complete(
         LLMRequest(
@@ -101,10 +105,26 @@ def _render_commentary(
             },
         )
     )
-    text = response.content.strip()
-    if not text:
+    raw = response.content.strip()
+    if not raw:
         return fallback_text
-    return text[:max_length]
+    # 剥掉 Markdown 代码块（```json ... ``` 或 ``` ... ```）
+    if raw.startswith("```"):
+        lines = raw.split("\n")
+        inner = lines[1:]
+        if inner and inner[-1].strip() == "```":
+            inner = inner[:-1]
+        raw = "\n".join(inner).strip()
+    # 尝试解析 JSON {"feedback": "..."} 格式
+    try:
+        parsed = json.loads(raw)
+        if isinstance(parsed, dict):
+            fb = str(parsed.get("feedback", "")).strip()
+            if fb:
+                return fb[:max_length]
+    except (json.JSONDecodeError, ValueError):
+        pass
+    return raw[:max_length]
 
 
 def _fallback_observation(decision: FinalDimensionDecision) -> DimensionObservation:
@@ -146,6 +166,8 @@ def run(
     provider: BaseProvider | None = None,
     template: PromptTemplate | None = None,
     override_templates: Optional[Dict[str, PromptTemplate]] = None,
+    evidence_focus: str = "",
+    audience: str = "evaluator",
 ) -> Dict[str, Any]:
     """Assemble a unified feedback dict from final scoring decisions.
 
@@ -159,6 +181,8 @@ def run(
         provider: Real provider used to generate commentary text.
         template: Explanation prompt template paired with provider.
         override_templates: Optional per-dimension explanation override templates.
+        evidence_focus: Optional task-level evidence focus string.
+        audience: Feedback audience ("student" or "evaluator").
 
     Returns:
         Unified feedback dict with stable keys across deterministic and real runs.
@@ -232,8 +256,10 @@ def run(
             template=template,
             fallback_text=explanation.commentary,
             max_length=max_length,
-            scorer_rationale=scorer_rationale or None,
+            hypotheses=resolved_hypotheses,
             override_template=override_template,
+            evidence_focus=evidence_focus,
+            audience=audience,
         )
 
         explanations.append(explanation)

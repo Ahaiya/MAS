@@ -1,9 +1,0 @@
-{
-  "needs_resolution_scoring": true,
-  "resolution_dimension_ids": [
-    "a4_1",
-    "a4_2",
-    "a4_3"
-  ],
-  "resolution_rater_label": "rater_3"
-}

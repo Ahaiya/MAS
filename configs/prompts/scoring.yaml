@@ -4,11 +4,10 @@ prompt_template: |
   ## Target Observation Point
   Name: {{ dimension_name }}
 
-  Excellent performance looks like:
-  {{ anchor_excellent }}
-
-  Needs improvement looks like:
-  {{ anchor_needs_improvement }}
+  ## Rubric Anchors For This Observation Point
+  {% for anchor in dimension_anchors %}
+  {{ anchor.rank }}: {{ anchor.text }}
+  {% endfor %}
 
   ## Evidence Focus
   {{ evidence_focus }}
