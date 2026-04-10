@@ -1,7 +1,7 @@
 schema_version: "2.0"
 
-task_id: "a4"
-task_name: "A4 用户需求与痛点分析"
+dim_id: "a4"
+dim_name: "A4 用户需求与痛点分析"
 indicator_description: >
   能够深入分析工程问题所涉及的最终用户、利益相关者及其使用情境，识别显性与隐性需求，
   精准定位其面临的核心痛点与关键挑战。关注AI辅助编制的解决方案如何与人的工作流程、

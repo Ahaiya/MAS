@@ -130,14 +130,14 @@ def validate_feedback(feedback: dict) -> None:
     if not isinstance(dimensions, dict) or len(dimensions) == 0:
         _fail("feedback.json 'dimensions' is empty or not an object")
 
-    # Each dimension should have final_score
+    # Each dimension should have score
     for dim_id, dim_data in dimensions.items():
         if not isinstance(dim_data, dict):
             _fail(f"dimensions['{dim_id}'] is not an object")
-        if "final_score" not in dim_data:
-            _fail(f"dimensions['{dim_id}'] missing 'final_score'")
+        if "score" not in dim_data:
+            _fail(f"dimensions['{dim_id}'] missing 'score'")
 
-    _ok(f"feedback.json dimensions: {len(dimensions)} dimension(s) with final_score")
+    _ok(f"feedback.json dimensions: {len(dimensions)} dimension(s) with score")
 
 
 @app.command()

@@ -584,7 +584,8 @@ class SimplifiedBundleFileSchema(BaseModel):
     schema_version: str
     bundle_id: str
     active_task_id: str
-    rubric: dict     # {source, task}
+    active_dim_id: str | None = None
+    rubric: dict     # {source, dimension|task}
     context: dict    # {task}
     prompts: dict    # {chunking, evidence_extraction, scoring, explanation}
     policies: dict   # {chunking, adjudication, aggregation}
@@ -596,6 +597,17 @@ class TaskRubricFileSchema(BaseModel):
     schema_version: str
     task_id: str
     task_name: str
+    indicator_description: str
+    scale: dict       # {type, min, max, levels}
+    dimensions: list  # [{code, name, anchors}]
+
+
+class DimensionRubricFileSchema(BaseModel):
+    """Schema for per-dimension rubric YAML files (configs/rubrics/dimension/)."""
+
+    schema_version: str
+    dim_id: str
+    dim_name: str
     indicator_description: str
     scale: dict       # {type, min, max, levels}
     dimensions: list  # [{code, name, anchors}]

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Compute coverage diagnostics from evaluation artifacts.
 
-Recommended unified entry:
+Recommended entry:
   python -m scripts metrics coverage --eval-dir ...
 
 Outputs three metrics per essay:
@@ -25,7 +25,7 @@ from typing import Any, Dict, List
 
 import typer
 
-_PROJECT_ROOT = Path(__file__).resolve().parent.parent
+_PROJECT_ROOT = Path(__file__).resolve().parents[2]
 if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 

@@ -9,14 +9,8 @@ scores from the TSV, then computes three sets of metrics:
   2. Agent vs agent QWK — rater_1 and rater_2 agreement from hypotheses.json
 
 Usage:
-  推荐统一入口：
+  推荐入口：
     python -m scripts metrics qwk
-
-  兼容旧入口：
-    python scripts/compute_qwk.py
-    python scripts/compute_qwk.py --rater average --output results/qwk_report.json
-
-    python scripts/compute_qwk.py --eval-dir artifacts/eval
 """
 
 import csv
@@ -24,7 +18,7 @@ import json
 import sys
 from pathlib import Path
 
-_PROJECT_ROOT = Path(__file__).resolve().parent.parent
+_PROJECT_ROOT = Path(__file__).resolve().parents[2]
 if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
@@ -162,7 +156,9 @@ def _load_mas_composites(eval_dir: Path) -> dict[str, int]:
                 continue
             fb = json.loads(fb_path.read_text(encoding="utf-8"))
             composite = fb.get("indicator_score") or fb.get("composite") or {}
-            score = composite.get("composite_score", {}).get("canonical_score")
+            score = composite.get("score")
+            if score is None:
+                score = composite.get("composite_score", {}).get("canonical_score")
             if score is not None:
                 result[essay_dir.name] = int(score)
         except Exception as exc:

@@ -1,18 +1,17 @@
 #!/usr/bin/env python3
-"""工程能力评估入口：直接评估 .md / .txt 格式的工程项目记录。
+"""工程能力评估入口：直接评估 .md / .txt 格式的工程材料。
 
 用法：
   推荐统一入口：
-    python -m scripts eval engineering "data/1组—虚拟故居重建计划.md"
+    python -m scripts eval "data/1组—虚拟故居重建计划.md"
   正式脚本入口：
     python scripts/eval.py "data/1组—虚拟故居重建计划.md"
-  兼容别名：
-    python scripts/eval_engineering.py "data/1组—虚拟故居重建计划.md"
 """
 
 import json
 import re
 import sys
+import tempfile
 import textwrap
 from datetime import datetime
 from pathlib import Path
@@ -36,11 +35,11 @@ from src.providers.factory import build_provider, build_provider_map
 from src.providers.logging_provider import LoggingProvider
 from src.providers.prompt_loader import PromptLoader
 
-app = typer.Typer(name="eval", help="工程能力评估入口（读取工程项目记录）。")
+app = typer.Typer(name="eval", help="工程能力评估入口（读取工程材料）。")
 
 _DEFAULT_BUNDLE = _PROJECT_ROOT / "configs" / "bundles" / "engineering_eval_baseline.bundle.yaml"
 _DEFAULT_MODEL_CONFIG = _PROJECT_ROOT / "configs" / "model_config.yaml"
-_DEFAULT_OUTPUT_BASE = _PROJECT_ROOT / "artifacts" / "eval_engineering"
+_DEFAULT_OUTPUT_BASE = _PROJECT_ROOT / "artifacts"
 
 
 # ── 工具函数 ───────────────────────────────────────────────────────────────────
@@ -83,7 +82,7 @@ def _grade(score: int, max_score: int = 6) -> str:
 
 
 def _score(dim: dict) -> int:
-    return dim.get("canonical_score") or dim.get("final_score") or 0
+    return dim.get("score") or dim.get("canonical_score") or dim.get("final_score") or 0
 
 
 def _dimension_rows(rubric_snapshot, feedback: dict) -> list[dict]:
@@ -150,6 +149,51 @@ def _derive_sample_id(input_file: Path) -> str:
     if match:
         return match.group(1)
     return stem or "sample"
+
+
+def _sanitize_path_component(value: str, fallback: str) -> str:
+    text = str(value or "").strip()
+    if not text:
+        return fallback
+    sanitized = re.sub(r'[\\/:*?"<>|]+', "_", text)
+    sanitized = sanitized.strip().strip(".")
+    return sanitized or fallback
+
+
+def _normalize_dim_id(dim: str) -> str:
+    normalized = dim.strip().lower()
+    if not normalized:
+        raise typer.BadParameter("`--dim` 不能为空。")
+    return normalized
+
+
+def _materialize_bundle_with_dim_override(bundle: Path, dim: str | None) -> tuple[Path, Path | None]:
+    if not dim:
+        return bundle, None
+
+    raw = yaml.safe_load(bundle.read_text(encoding="utf-8")) or {}
+    raw["active_dim_id"] = _normalize_dim_id(dim)
+
+    with tempfile.NamedTemporaryFile(
+        mode="w",
+        suffix=".bundle.yaml",
+        prefix="mas_eval_",
+        delete=False,
+        encoding="utf-8",
+    ) as fh:
+        yaml.safe_dump(raw, fh, allow_unicode=True, sort_keys=False)
+        temp_path = Path(fh.name)
+    return temp_path, temp_path
+
+
+def _default_output_dir(resolved, dim: str) -> Path:
+    raw_ctx = resolved.policy_snapshot.scoring_context or {}
+    task_name = _sanitize_path_component(
+        str(raw_ctx.get("task_name") or resolved.artifact_bundle.metadata.get("active_task_id") or ""),
+        fallback="task",
+    )
+    dim_name = _sanitize_path_component(_normalize_dim_id(dim).upper(), fallback="DIM")
+    return _DEFAULT_OUTPUT_BASE / task_name / dim_name
 
 
 def _wrap_providers(default_provider, rater_providers, stage_providers):
@@ -337,12 +381,15 @@ def _print_score_table(feedback: dict, dimension_rows: list[dict]) -> None:
     typer.echo(f"  {'合计':<24} {total_mas:>4}  满分 {total_max} 分（{total_ratio:.0f}%）")
     if cinfo:
         c_score, c_max, _, label = cinfo
-        c_max_text = str(int(c_max)) if float(c_max).is_integer() else f"{c_max:.2f}"
-        typer.echo(f"  {label}: {c_score}/{c_max_text} ({c_score / c_max * 100:.0f}%)")
+        if c_max is None:
+            typer.echo(f"  {label}: {c_score}")
+        else:
+            c_max_text = str(int(c_max)) if float(c_max).is_integer() else f"{c_max:.2f}"
+            typer.echo(f"  {label}: {c_score}/{c_max_text} ({c_score / c_max * 100:.0f}%)")
 
 
 def _get_indicator_score_payload(feedback: dict) -> dict | None:
-    payload = feedback.get("indicator_score") or feedback.get("composite")
+    payload = feedback.get("indicator_score")
     return payload if isinstance(payload, dict) and payload else None
 
 
@@ -350,32 +397,11 @@ def _get_indicator_score_info(feedback: dict, dimension_rows: list[dict]):
     payload = _get_indicator_score_payload(feedback)
     if not payload:
         return None
-    score = payload.get("composite_score", {}).get("canonical_score")
-    aggregation_detail = payload.get("aggregation_detail", {})
-    weights = aggregation_detail.get("weights", {})
-    method = str(aggregation_detail.get("aggregation_method", "") or "")
-    label = str(payload.get("display_label") or "聚合指标得分")
-    if score is None or not weights:
+    score = payload.get("score")
+    if score is None:
         return None
-    scale_max_by_id = {row["dimension_id"]: row["scale_max"] for row in dimension_rows}
-    if method in {"average_per_trait_then_weighted_average", "direct_weighted_average"}:
-        weight_total = float(aggregation_detail.get("weight_total") or 0.0)
-        if weight_total <= 0:
-            weight_total = sum(float(weight) for weight in weights.values() if float(weight) > 0)
-        max_score = (
-            sum(
-                float(scale_max_by_id.get(dim_id, 0)) * float(weight)
-                for dim_id, weight in weights.items()
-                if float(weight) > 0
-            ) / weight_total
-        )
-    else:
-        max_score = sum(
-            float(scale_max_by_id.get(dim_id, 0)) * float(weight)
-            for dim_id, weight in weights.items()
-            if float(weight) > 0
-        )
-    return score, max_score, weights, label
+    label = str(payload.get("label") or "聚合指标得分")
+    return int(score), None, None, label
 
 
 def _print_dimension_feedback(feedback: dict, dimension_rows: list[dict]) -> None:
@@ -396,7 +422,7 @@ def _print_dimension_feedback(feedback: dict, dimension_rows: list[dict]) -> Non
         )
         for desc in (dim.get("descriptor_refs") or [])[:3]:
             typer.echo(f"     • {desc}")
-        text = dim.get("feedback_text", "")
+        text = dim.get("feedback", "") or dim.get("feedback_text", "")
         if text:
             for line in textwrap.wrap(text, width=70):
                 typer.echo(f"    {line}")
@@ -409,19 +435,19 @@ def main(
     input_path: Path | None = typer.Argument(
         None,
         metavar="INPUT_FILE",
-        help="待评估的工程项目对话记录文件（.md 或 .txt）。可直接作为位置参数传入。",
+        help="待评估的工程材料文件（.md 或 .txt）。可直接作为位置参数传入。",
     ),
     input_file: Path | None = typer.Option(
         None, "--input", "-i",
-        help="兼容写法：待评估的工程项目对话记录文件（.md 或 .txt）。",
-    ),
-    sample_id: str = typer.Option(
-        "", "--id",
-        help="样本 ID（默认自动推导；如 `4组—AI助手.md` 会推导为 `4`）。",
+        help="兼容写法：待评估的工程材料文件（.md 或 .txt）。",
     ),
     bundle: Path = typer.Option(
         _DEFAULT_BUNDLE, "--bundle", "-b",
         help="配置 bundle 文件路径。",
+    ),
+    dim: str = typer.Option(
+        "", "--dim",
+        help="选择本次评价使用的二级指标维度配置，如 `A4`、`B1`、`C2`。",
     ),
     model_config: Path = typer.Option(
         _DEFAULT_MODEL_CONFIG, "--model-config", "-m",
@@ -429,7 +455,7 @@ def main(
     ),
     output_dir: Path = typer.Option(
         None, "--output-dir", "-o",
-        help="产出目录（默认自动联动为 artifacts/eval_engineering/{id}）。",
+        help="产出目录（默认自动联动为 artifacts/{task_name}/{dim}）。",
     ),
     verbose: bool = typer.Option(
         True, "--verbose/--no-verbose", "-v",
@@ -440,21 +466,28 @@ def main(
         help="输出调试 bundle（事件流、LLM 请求响应）。默认开启。",
     ),
 ) -> None:
-    """工程能力评估入口：读取项目记录文件，输出当前任务观测点评分与反馈。"""
+    """工程能力评估入口：读取工程材料，按所选维度输出评分与反馈。"""
 
     input_file = _resolve_input_file(input_path, input_file)
     if not input_file.exists():
         typer.echo(f"错误：文件不存在: {input_file}", err=True)
         raise typer.Exit(code=1)
 
-    essay_id = sample_id.strip() if sample_id.strip() else _derive_sample_id(input_file)
+    essay_id = _derive_sample_id(input_file)
     essay_text = input_file.read_text(encoding="utf-8")
     typer.echo(f"[init] 读取文件: {input_file}  ({len(essay_text):,} 字符)")
     typer.echo(f"[init] 样本 ID: {essay_id}")
 
     # 加载 bundle
+    resolved_bundle_path, temp_bundle_path = _materialize_bundle_with_dim_override(bundle, dim.strip())
     typer.echo(f"[init] 加载 bundle: {bundle}")
-    resolved = resolve_bundle(bundle)
+    if dim.strip():
+        typer.echo(f"[init] 维度配置: { _normalize_dim_id(dim).upper() }")
+    try:
+        resolved = resolve_bundle(resolved_bundle_path)
+    finally:
+        if temp_bundle_path is not None:
+            temp_bundle_path.unlink(missing_ok=True)
     typer.echo(f"[init] {resolved.get_version_info()}")
     typer.echo(f"[init] 量规维度: {[d['dimension_id'] for d in resolved.rubric_snapshot.dimensions]}")
 
@@ -498,7 +531,8 @@ def main(
     typer.echo(f"[init] 加载 {len(prompt_templates)} 个 prompt 模板")
 
     # 确定输出目录
-    out_dir = output_dir if output_dir else (_DEFAULT_OUTPUT_BASE / essay_id)
+    effective_dim = dim.strip() or str(resolved.artifact_bundle.metadata.get("active_dim_id") or "")
+    out_dir = output_dir if output_dir else _default_output_dir(resolved, effective_dim)
     typer.echo(f"[init] 输出目录: {out_dir}")
 
     typer.echo("=" * 68)

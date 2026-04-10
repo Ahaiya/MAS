@@ -12,7 +12,10 @@ from src.contracts.evidence import (
     ObservationConfidence,
 )
 from src.contracts.score_representation import create_score_representation
-from src.contracts.scoring import FinalDimensionDecision, ScoreHypothesis
+from src.contracts.scoring import (
+    FinalDimensionDecision,
+    ScoreHypothesis,
+)
 from src.providers.base import (
     BaseProvider,
     LLMRequest,
@@ -196,6 +199,26 @@ def _hypothesis(rationale: str = "Scorer seed rationale for this dimension.") ->
     )
 
 
+def _secondary_hypothesis(
+    *,
+    hypothesis_id: str = "hyp-secondary",
+    rater_id: str = "rater_2",
+    score: int = 2,
+    rationale: str = "Secondary scorer rationale.",
+) -> ScoreHypothesis:
+    return ScoreHypothesis(
+        hypothesis_id=hypothesis_id,
+        observation_id="obs-voice-1",
+        dimension_id="voice",
+        rater_id=rater_id,
+        score=create_score_representation(score, "s6"),
+        descriptor_refs=["Limited control." if score <= 2 else "Generally clear voice."],
+        evidence_span_ids=["span-01"],
+        rationale=rationale,
+        confidence=0.62,
+    )
+
+
 def _template() -> PromptTemplate:
     return PromptTemplate(
         template_text=(
@@ -266,7 +289,7 @@ def test_policy_commentary_uses_facets_when_provider_returns_empty() -> None:
         provider=provider,
         template=_template(),
     )
-    text = out["dimensions"]["voice"]["feedback_text"]
+    text = out["dimensions"]["voice"]["feedback"]
     assert "[tone]: supporting evidence:" in text
     assert "counter evidence suggests" in text
 
@@ -285,7 +308,7 @@ def test_policy_commentary_uses_rationale_when_provider_returns_empty() -> None:
         provider=provider,
         template=_template(),
     )
-    assert out["dimensions"]["voice"]["feedback_text"] == rationale[:40]
+    assert out["dimensions"]["voice"]["feedback"] == rationale[:40]
 
 
 def test_low_confidence_threshold_from_config() -> None:
@@ -300,7 +323,7 @@ def test_low_confidence_threshold_from_config() -> None:
         provider=provider,
         template=_template(),
     )
-    note = out["dimensions"]["voice"]["uncertainty_note"]
+    note = out["dimensions"]["voice"]["audit"]["uncertainty_note"]
     assert note is not None
     assert "below threshold" in note
 
@@ -317,7 +340,7 @@ def test_adjudication_uncertainty_note() -> None:
         provider=provider,
         template=_template(),
     )
-    note = out["dimensions"]["voice"]["uncertainty_note"]
+    note = out["dimensions"]["voice"]["audit"]["uncertainty_note"]
     assert note is not None
     assert "adjudication was required" in note
 
@@ -359,8 +382,8 @@ def test_scorer_rationale_in_output() -> None:
         template=_template(),
     )
     entry = out["dimensions"]["voice"]
-    assert entry["scorer_rationale"] == rationale
-    assert entry["was_adjudicated"] is False
+    assert entry["audit"]["was_adjudicated"] is False
+    assert entry["audit"]["scoring_records"][0]["rationale"] == rationale
 
 
 def test_backward_compat_no_hypotheses() -> None:
@@ -375,8 +398,8 @@ def test_backward_compat_no_hypotheses() -> None:
         template=_template(),
     )
     entry = out["dimensions"]["voice"]
-    assert "scorer_rationale" in entry
-    assert entry["scorer_rationale"] == ""
+    assert "audit" in entry
+    assert entry["audit"]["scoring_records"] == []
 
 
 def test_feedback_text_strips_markdown_json_block() -> None:
@@ -393,10 +416,9 @@ def test_feedback_text_strips_markdown_json_block() -> None:
         provider=provider,
         template=_template(),
     )
-    text = out["dimensions"]["voice"]["feedback_text"]
+    text = out["dimensions"]["voice"]["feedback"]
     assert text == "你表现优秀，得分4/5。"
     assert "```" not in text
-    assert text == out["dimensions"]["voice"]["commentary"]
 
 
 def test_feedback_text_strips_bare_code_block() -> None:
@@ -413,7 +435,7 @@ def test_feedback_text_strips_bare_code_block() -> None:
         provider=provider,
         template=_template(),
     )
-    text = out["dimensions"]["voice"]["feedback_text"]
+    text = out["dimensions"]["voice"]["feedback"]
     assert text == "Plain block feedback."
     assert "```" not in text
 
@@ -432,5 +454,53 @@ def test_feedback_text_plain_json_still_works() -> None:
         provider=provider,
         template=_template(),
     )
-    text = out["dimensions"]["voice"]["feedback_text"]
+    text = out["dimensions"]["voice"]["feedback"]
     assert text == "Direct JSON feedback."
+
+
+def test_output_exposes_evidence_quotes() -> None:
+    provider = _CaptureProvider(response_text="")
+    out = feedback.run(
+        decisions=[_decision()],
+        observations=[_observation()],
+        spans=_spans(),
+        hypotheses=[_hypothesis()],
+        rubric=_rubric(),
+        policy=_policy(),
+        provider=provider,
+        template=_template(),
+    )
+    evidence = out["dimensions"]["voice"]["evidence"]
+    assert evidence == [
+        {"span_id": "span-01", "quote": "The opening sounds confident and clear."},
+        {"span_id": "span-03", "quote": "Tone becomes generic in later paragraphs."},
+    ]
+
+
+def test_audit_exposes_scoring_records() -> None:
+    provider = _CaptureProvider(response_text="")
+    out = feedback.run(
+        decisions=[_decision(adjudication_id="adj-voice-1", primary_hypothesis_id="hyp-r3")],
+        observations=[_observation()],
+        spans=_spans(),
+        hypotheses=[
+            _hypothesis(rationale="R1 rationale."),
+            _secondary_hypothesis(hypothesis_id="hyp-secondary", rater_id="rater_2", score=2, rationale="R2 rationale."),
+            _secondary_hypothesis(hypothesis_id="hyp-r3", rater_id="rater_3", score=4, rationale="R3 rationale."),
+        ],
+        rubric=_rubric(),
+        policy=_policy(),
+        provider=provider,
+        template=_template(),
+    )
+    audit = out["dimensions"]["voice"]["audit"]
+    assert [item["rater_id"] for item in audit["scoring_records"]] == ["rater_1", "rater_2", "rater_3"]
+    assert audit["scoring_records"][0]["score"] == 4
+    assert audit["scoring_records"][1]["score"] == 2
+    assert audit["scoring_records"][2]["score"] == 4
+    assert audit["scoring_records"][2]["descriptor_refs"] == ["Generally clear voice."]
+    assert audit["scoring_records"][0]["evidence"] == [
+        {"span_id": "span-01", "quote": "The opening sounds confident and clear."},
+        {"span_id": "span-03", "quote": "Tone becomes generic in later paragraphs."},
+    ]
+    assert "decision_route" not in audit

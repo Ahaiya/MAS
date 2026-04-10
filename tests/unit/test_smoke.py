@@ -132,25 +132,26 @@ class TestProjectMetadata:
 
 
 class TestScriptEntryPoints:
-    """Verify that script entry points exist."""
+    """Verify that command entry points exist."""
 
     @pytest.fixture
     def project_root(self) -> Path:
         """Get the project root directory."""
         return Path(__file__).parent.parent.parent
 
-    def test_validate_config_script_exists(self, project_root: Path) -> None:
-        """validate_config script should exist."""
-        assert (project_root / "scripts" / "validate_config.py").is_file()
+    def test_validate_config_module_exists(self, project_root: Path) -> None:
+        """validate_config utility module should exist."""
+        assert (project_root / "src" / "utils" / "validate_config.py").is_file()
 
     def test_validate_config_help_works(self, project_root: Path) -> None:
-        """validate_config --help should work."""
+        """validate-config help should work via the unified CLI."""
         import subprocess
 
         result = subprocess.run(
-            ["python", project_root / "scripts" / "validate_config.py", "--help"],
+            ["python", "-m", "scripts", "config", "validate", "--help"],
             capture_output=True,
             text=True,
+            cwd=project_root,
         )
         assert result.returncode == 0
-        assert "Validate a configuration bundle" in result.stdout
+        assert "校验 bundle" in result.stdout or "validate" in result.stdout.lower()

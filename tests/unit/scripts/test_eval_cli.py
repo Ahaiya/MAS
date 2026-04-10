@@ -29,3 +29,18 @@ def test_resolve_input_file_rejects_conflicting_inputs(tmp_path: Path) -> None:
     right = tmp_path / "right.md"
     with pytest.raises(typer.BadParameter):
         eval_cli._resolve_input_file(left, right)
+
+
+def test_default_output_dir_uses_task_name_and_dim() -> None:
+    class _Resolved:
+        class _Policy:
+            scoring_context = {"task_name": "maker_hackathon"}
+
+        class _Bundle:
+            metadata = {"active_task_id": "fallback_task"}
+
+        policy_snapshot = _Policy()
+        artifact_bundle = _Bundle()
+
+    out_dir = eval_cli._default_output_dir(_Resolved(), "a4")
+    assert out_dir == eval_cli._DEFAULT_OUTPUT_BASE / "maker_hackathon" / "A4"

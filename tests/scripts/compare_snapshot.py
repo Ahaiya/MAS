@@ -67,12 +67,12 @@ def _compare(golden: dict, trace: dict, feedback: dict) -> bool:
     else:
         _ok(f"dimension IDs match ({len(cur_dims)} dimensions)")
 
-        # 5. final_score per dimension
+        # 5. score per dimension
         for dim_id in gld_dims:
             if dim_id not in cur_dims:
                 continue
-            cur_score = cur_dims[dim_id].get("final_score")
-            gld_score = gld_dims[dim_id].get("final_score")
+            cur_score = cur_dims[dim_id].get("score", cur_dims[dim_id].get("final_score"))
+            gld_score = gld_dims[dim_id].get("score", gld_dims[dim_id].get("final_score"))
             if cur_score != gld_score:
                 _fail(f"score regression in '{dim_id}': current={cur_score}, golden={gld_score}")
                 all_ok = False

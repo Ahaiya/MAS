@@ -49,7 +49,7 @@ real-provider = [
 ]
 
 [project.scripts]
-validate-config = "scripts.validate_config:main"
+validate-config = "src.utils.validate_config:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

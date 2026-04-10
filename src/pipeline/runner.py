@@ -82,6 +82,17 @@ from src.policies.aggregation import compute_composite
 DEFAULT_CHECKPOINT_MAX_RETRIES = 2
 
 
+def _simplify_feedback_indicator_score(payload: dict[str, Any] | None) -> dict[str, Any] | None:
+    """Return a display-oriented indicator score payload for feedback.json."""
+    if not isinstance(payload, dict) or not payload:
+        return None
+    composite_score = payload.get("composite_score") or {}
+    score = composite_score.get("canonical_score")
+    if score is None:
+        return None
+    return {"score": int(score)}
+
+
 def _get_rater_ids(bundle: ResolvedArtifactBundle) -> List[str]:
     """Read required rater IDs from the adjudication policy (config-driven)."""
     return list(
@@ -1221,14 +1232,12 @@ class PipelineRunner:
             )
 
             # 将聚合后的指标分写入 feedback。
-            # `indicator_score` 是面向工程评价场景的主命名；
-            # `composite` 继续保留为兼容别名，避免外环 probe / 统计脚本断裂。
-            indicator_score = build_indicator_score_payload(
+            # `feedback.json` 仅保留简化后的 `indicator_score` 展示载荷。
+            indicator_score = _simplify_feedback_indicator_score(build_indicator_score_payload(
                 composite,
                 bundle_metadata=bundle.artifact_bundle.metadata,
-            )
+            ))
             feedback["indicator_score"] = indicator_score
-            feedback["composite"] = indicator_score
 
             feedback_output_ref = f"dims:{len(feedback.get('dimensions', {}))}"
             store.record_node_success(
@@ -1246,12 +1255,6 @@ class PipelineRunner:
                 "output_indicator_score",
                 indicator_score,
                 summary="Indicator-level aggregate score written into feedback",
-            )
-            self._debug_write_node_artifact(
-                "node_feedback",
-                "output_composite",
-                indicator_score,
-                summary="Compatibility alias of indicator-level aggregate score",
             )
             self._debug_node_finish(
                 "node_feedback",

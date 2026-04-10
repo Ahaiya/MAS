@@ -33,10 +33,12 @@ def _write_run_artifacts(run_dir: Path, *, run_id: str = "run-20716") -> None:
                 "dimensions": {
                     "problem_analysis": {
                         "dimension_name": "Problem Analysis",
-                        "canonical_score": 4,
-                        "display_score": "4",
-                        "confidence": 0.88,
-                        "evidence_count": 2,
+                        "score": 4,
+                        "evidence": [
+                            {"span_id": "span-01", "quote": "Strong framing."},
+                            {"span_id": "span-02", "quote": "Concrete example."},
+                        ],
+                        "audit": {"decision_confidence": 0.88},
                     }
                 }
             },
@@ -65,10 +67,12 @@ def _write_snapshot(path: Path, *, essay_id: str = "20716") -> None:
                     "dimensions": {
                         "problem_analysis": {
                             "dimension_name": "Problem Analysis",
-                            "canonical_score": 4,
-                            "display_score": "4",
-                            "confidence": 0.9,
-                            "evidence_count": 2,
+                            "score": 4,
+                            "evidence": [
+                                {"span_id": "span-01", "quote": "Strong framing."},
+                                {"span_id": "span-02", "quote": "Concrete example."},
+                            ],
+                            "audit": {"decision_confidence": 0.9},
                         }
                     }
                 },

@@ -9,9 +9,9 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Callable
 
-from scripts.compute_coverage_metrics import compute_metrics_for_essay
 from src.outer_loop.metrics.consistency import compute_consistency
 from src.outer_loop.metrics.qwk import qwk_for_dimension
+from src.utils.compute_coverage_metrics import compute_metrics_for_essay
 
 _PROBE_ARTIFACT_HINTS = {
     "run_trace.json",
@@ -508,12 +508,12 @@ def feedback_grounding_probe(artifacts_dir: Path, **_: Any) -> ProbeResult:
         closed = 0
         for dim_data in dimensions.values():
             descriptors = list(dim_data.get("descriptor_refs") or [])
-            evidence = list(dim_data.get("evidence_span_ids") or [])
+            evidence = list(dim_data.get("evidence") or dim_data.get("evidence_span_ids") or [])
             if descriptors and evidence:
                 closed += 1
 
         closure_rate = _safe_div(closed, total_dimensions)
-        violations = list(feedback.get("violations") or [])
+        violations = list(((feedback.get("audit") or {}).get("violations")) or feedback.get("violations") or [])
         violation_count = len(violations)
         if violation_count > 0:
             samples_with_violations += 1
@@ -720,14 +720,18 @@ def _load_mas_scores_for_qwk(
         dim_data = raw_dim_data if isinstance(raw_dim_data, dict) else {}
         if dim_id is None:
             continue
-        score = _as_int(dim_data.get("canonical_score"))
+        score = _as_int(dim_data.get("score"))
+        if score is None:
+            score = _as_int(dim_data.get("canonical_score"))
         if score is None:
             score = _as_int(dim_data.get("final_score"))
         if score is not None:
             dim_scores[dim_id] = score
 
     composite = feedback.get("indicator_score") or feedback.get("composite") or {}
-    composite_score = _as_int(((composite.get("composite_score") or {}).get("canonical_score")))
+    composite_score = _as_int(composite.get("score"))
+    if composite_score is None:
+        composite_score = _as_int(((composite.get("composite_score") or {}).get("canonical_score")))
     return dim_scores, composite_score
 
 

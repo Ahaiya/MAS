@@ -23,51 +23,51 @@ _PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
-from scripts import compute_coverage_metrics as coverage_metrics_cli
-from scripts import compute_qwk as qwk_cli
 from scripts import eval as eval_cli
 from scripts import outer_loop as outer_loop_cli
-from scripts import validate_config as validate_config_cli
+from src.utils import compute_coverage_metrics as coverage_metrics_cli
+from src.utils import compute_qwk as qwk_cli
+from src.utils import validate_config as validate_config_cli
 
 app = typer.Typer(
     name="mas",
     help="MAS 统一入口。官方推荐使用 `python -m scripts ...` 进入所有评估、外环、任务启动、指标与配置命令。",
 )
-eval_app = typer.Typer(name="eval", help="评估入口。")
 outer_app = typer.Typer(name="outer-loop", help="外环优化入口。")
 task_app = typer.Typer(name="task", help="任务启动入口。")
 metrics_app = typer.Typer(name="metrics", help="指标与诊断工具。")
 config_app = typer.Typer(name="config", help="配置校验工具。")
 
-app.add_typer(eval_app, name="eval")
 app.add_typer(outer_app, name="outer-loop")
 app.add_typer(task_app, name="task")
 app.add_typer(metrics_app, name="metrics")
 app.add_typer(config_app, name="config")
 
 
-@eval_app.command("engineering")
-def eval_engineering(
+@app.command("eval")
+def eval_command(
     input_path: Annotated[
         Path | None,
-        typer.Argument(metavar="INPUT_FILE", help="待评估的工程项目记录文件。"),
+        typer.Argument(metavar="INPUT_FILE", help="待评估的工程材料文件。"),
     ] = None,
     input_file: Annotated[
         Path | None,
-        typer.Option("--input", "-i", help="兼容写法：待评估的工程项目记录文件。"),
+        typer.Option("--input", "-i", help="兼容写法：待评估的工程材料文件。"),
     ] = None,
-    sample_id: Annotated[str, typer.Option("--id")] = "",
     bundle: Annotated[Path, typer.Option("--bundle", "-b")] = eval_cli._DEFAULT_BUNDLE,
+    dim: Annotated[str, typer.Option("--dim")] = "",
+    model_config: Annotated[Path, typer.Option("--model-config", "-m")] = eval_cli._DEFAULT_MODEL_CONFIG,
     output_dir: Annotated[Path | None, typer.Option("--output-dir", "-o")] = None,
     verbose: Annotated[bool, typer.Option("--verbose/--no-verbose", "-v")] = True,
     debug_bundle: Annotated[bool, typer.Option("--debug-bundle/--no-debug-bundle")] = True,
 ) -> None:
-    """工程评价主入口。使用当前 active task bundle 评估单个工程任务样本。"""
+    """工程评价主入口。使用任务背景 bundle 和所选维度配置评估单个工程材料样本。"""
     eval_cli.main(
         input_path=input_path,
         input_file=input_file,
-        sample_id=sample_id,
         bundle=bundle,
+        dim=dim,
+        model_config=model_config,
         output_dir=output_dir,
         verbose=verbose,
         debug_bundle=debug_bundle,

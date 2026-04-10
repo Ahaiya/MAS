@@ -1,7 +1,7 @@
 schema_version: ""
 
-task_id: ""
-task_name: ""
+dim_id: ""
+dim_name: ""
 indicator_description: ""
 
 scale:

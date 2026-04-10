@@ -11,28 +11,20 @@ Canonical output schema (Dict[str, Any]):
     "dimensions": {
       "<dimension_id>": {
         "dimension_name": str,
-        "canonical_score": int,
-        "final_score": int,              # backward-compatible alias
-        "display_score": str,
-        "display_annotation": str | None,
+        "score": int,
         "descriptor_refs": List[str],
-        "evidence_span_ids": List[str],
-        "evidence_count": int,
-        "feedback_text": str,
-        "commentary": str,               # same value as feedback_text
-        "uncertainty_note": str | None,
-        "decision_confidence": float,
-        "confidence": float,             # backward-compatible alias
-        "rationale": str,                # backward-compatible alias
-        "scorer_rationale": str,         # scorer justification passthrough
-        "was_adjudicated": bool,
+        "evidence": List[Dict[str, str]],
+        "feedback": str,
+        "audit": {
+          "uncertainty_note": str | None,
+          "decision_confidence": float,
+          "was_adjudicated": bool,
+          "scoring_records": List[Dict[str, Any]],
+        },
       },
       ...
     },
-    "violations": List[Dict[str, str]],
     "generated_at": str,
-    "summary": str,
-    "provider": str,
   }
 """
 
@@ -49,9 +41,11 @@ from src.contracts.evidence import (
     EvidenceSpan,
     ObservationConfidence,
 )
-from src.contracts.scoring import FinalDimensionDecision, ScoreHypothesis
+from src.contracts.scoring import (
+    FinalDimensionDecision,
+    ScoreHypothesis,
+)
 from src.policies.explanation import (
-    enforce_explanation_policy,
     render_dimension_explanation,
 )
 from src.providers.base import BaseProvider, LLMRequest
@@ -156,6 +150,34 @@ def _find_primary_hypothesis(
     return sorted(dim_hyps, key=lambda h: (h.rater_id, h.hypothesis_id))[0]
 
 
+def _serialize_scoring_records(
+    span_by_id: Dict[str, EvidenceSpan],
+    dim_hyps: List[ScoreHypothesis],
+) -> List[Dict[str, Any]]:
+    records: List[Dict[str, Any]] = []
+    for hyp in sorted(dim_hyps, key=lambda h: (h.rater_id, h.hypothesis_id)):
+        evidence = []
+        for span_id in hyp.evidence_span_ids:
+            span = span_by_id.get(span_id)
+            evidence.append(
+                {
+                    "span_id": span_id,
+                    "quote": ((span.text_quote or "").strip() if span is not None else ""),
+                }
+            )
+        records.append(
+            {
+                "rater_id": hyp.rater_id,
+                "score": hyp.score.canonical_score,
+                "confidence": hyp.confidence,
+                "descriptor_refs": list(hyp.descriptor_refs),
+                "evidence": evidence,
+                "rationale": hyp.rationale,
+            }
+        )
+    return records
+
+
 def run(
     decisions: List[FinalDimensionDecision],
     observations: List[DimensionObservation],
@@ -231,6 +253,7 @@ def run(
         scorer_rationale = (
             (selected_hyp.rationale or "").strip() if selected_hyp is not None else ""
         )
+        dim_hyps = hyps_by_dim.get(dim_id, [])
         override_template = overrides.get(dim_id)
 
         decision_spans = [
@@ -264,43 +287,33 @@ def run(
 
         explanations.append(explanation)
 
-        evidence_count = len(decision.evidence_span_ids)
-        evidence_count = max(evidence_count, len(obs.supporting_span_ids))
+        rendered_evidence = []
+        for span_id in explanation.evidence_span_ids:
+            span = span_by_id.get(span_id)
+            rendered_evidence.append(
+                {
+                    "span_id": span_id,
+                    "quote": ((span.text_quote or "").strip() if span is not None else ""),
+                }
+            )
 
         dimensions_out[dim_id] = {
             "dimension_name": explanation.dimension_name,
-            "canonical_score": explanation.canonical_score,
-            "final_score": explanation.canonical_score,
-            "display_score": explanation.display_score,
-            "display_annotation": decision.final_score.display_annotation,
+            "score": explanation.canonical_score,
             "descriptor_refs": list(explanation.descriptor_refs),
-            "evidence_span_ids": list(explanation.evidence_span_ids),
-            "evidence_count": evidence_count,
-            "feedback_text": feedback_text,
-            "commentary": feedback_text,
-            "uncertainty_note": explanation.uncertainty_note,
-            "decision_confidence": decision.decision_confidence,
-            "confidence": decision.decision_confidence,
-            "rationale": decision.decision_note or "",
-            "scorer_rationale": scorer_rationale,
-            "was_adjudicated": decision.adjudication_id is not None,
+            "evidence": rendered_evidence,
+            "feedback": feedback_text,
+            "audit": {
+                "uncertainty_note": explanation.uncertainty_note,
+                "decision_confidence": decision.decision_confidence,
+                "was_adjudicated": decision.adjudication_id is not None,
+                "scoring_records": _serialize_scoring_records(
+                    span_by_id, dim_hyps
+                ),
+            },
         }
-
-    violations = enforce_explanation_policy(explanations, resolved_policy)
-    provider_name = provider.name
-    mode_label = "LLM-generated"
 
     return {
         "dimensions": dimensions_out,
-        "violations": [
-            {
-                "dimension_id": violation.dimension_id,
-                "violation_type": violation.violation_type,
-                "detail": violation.detail,
-            }
-            for violation in violations
-        ],
         "generated_at": datetime.now(timezone.utc).isoformat(),
-        "summary": f"{mode_label} feedback for {len(decisions)} dimension(s).",
-        "provider": provider_name,
     }

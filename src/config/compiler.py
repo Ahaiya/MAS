@@ -267,15 +267,23 @@ def _build_rubric_snapshot_legacy(rubric_file_data: dict[str, Any]) -> RubricSna
 
 
 def _build_rubric_snapshot_task(rubric_file_data: dict[str, Any]) -> RubricSnapshot:
-    """Build RubricSnapshot from the simplified task rubric format.
+    """Build RubricSnapshot from the simplified task/dimension rubric format.
 
     Converts:
     - ``dimensions[].code`` (e.g. ``"A4-1"``) → ``dimension_id = "a4_1"``
     - ``dimensions[].anchors`` → ``levels`` list with rank/summary/descriptors
     - ``scale`` → synthetic ScaleEntry with ``scale_id = "ordinal_{min}_{max}"``
     """
-    task_id = rubric_file_data.get("task_id", "unknown")
-    task_name = rubric_file_data.get("task_name", "")
+    rubric_key = (
+        rubric_file_data.get("dim_id")
+        or rubric_file_data.get("task_id")
+        or "unknown"
+    )
+    rubric_name = (
+        rubric_file_data.get("dim_name")
+        or rubric_file_data.get("task_name")
+        or ""
+    )
     indicator_description = str(rubric_file_data.get("indicator_description", "") or "")
     scale_data: dict[str, Any] = rubric_file_data.get("scale", {})
 
@@ -336,9 +344,9 @@ def _build_rubric_snapshot_task(rubric_file_data: dict[str, Any]) -> RubricSnaps
 
     scales = [scale_entry]
     return RubricSnapshot(
-        rubric_id=f"task_{task_id}",
+        rubric_id=f"dim_{rubric_key}",
         rubric_version="1.0",
-        rubric_name=task_name,
+        rubric_name=rubric_name,
         dimensions=dimensions,
         scales=scales,
         indicator_description=indicator_description,

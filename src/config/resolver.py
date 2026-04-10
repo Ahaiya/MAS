@@ -28,6 +28,7 @@ from src.config.schema import (
     AggregationFileSchema,
     BundleFileSchema,
     ChunkingPolicyFileSchema,
+    DimensionRubricFileSchema,
     ExplanationFileSchema,
     PromptFileSchema,
     RubricFileSchema,
@@ -53,6 +54,7 @@ class ResolverError(Exception):
 # Maps source file path prefix patterns to their Pydantic schema classes.
 # Order matters: more specific patterns first.
 _SCHEMA_ROUTE: list[tuple[str, type]] = [
+    ("rubrics/dimension/", DimensionRubricFileSchema),
     ("rubrics/tasks/", TaskRubricFileSchema),
     ("rubrics/", RubricFileSchema),
     ("policies/adjudication/", SimplifiedAdjudicationFileSchema),
@@ -193,9 +195,8 @@ class ConfigResolver:
     ) -> ArtifactBundle:
         """Parse a simplified bundle YAML (no 'artifact_bundle' wrapper) into ArtifactBundle.
 
-        Path templates like ``{active_task_id}`` are substituted with
-        ``task_{active_task_id}`` to match the ``task_<id>_*.yaml`` file
-        naming convention used by engineering evaluation tasks.
+        Path templates may reference ``{active_task_id}``, ``{active_dim_id}``,
+        or the legacy ``{task_file_prefix}`` placeholder.
 
         Args:
             raw: Parsed YAML content.
@@ -215,11 +216,15 @@ class ConfigResolver:
             ) from exc
 
         task_id = bundle_doc.active_task_id
-        # Files are named task_{id}_*.yaml; substitute accordingly.
+        dim_id = bundle_doc.active_dim_id or task_id
         task_file_prefix = f"task_{task_id}"
 
         def _sub(path: str) -> str:
-            return path.replace("{active_task_id}", task_file_prefix)
+            return (
+                path.replace("{task_file_prefix}", task_file_prefix)
+                .replace("{active_task_id}", task_id)
+                .replace("{active_dim_id}", dim_id)
+            )
 
         def _strip_configs(path: str) -> str:
             """Strip leading 'configs/' to produce a path relative to configs_root."""
@@ -232,9 +237,10 @@ class ConfigResolver:
             return ArtifactRef(ref_uri=ref_uri, source_file=source_file)
 
         try:
+            rubric_template = bundle_doc.rubric.get("dimension") or bundle_doc.rubric["task"]
             rubric_ref = _make_ref(
-                bundle_doc.rubric["task"],
-                f"rubric://task_{task_id}/v1",
+                rubric_template,
+                f"rubric://dimension_{dim_id}/v1",
             )
             adj_ref = _make_ref(
                 bundle_doc.policies["adjudication"],
@@ -280,6 +286,11 @@ class ConfigResolver:
             source_documents=[],
             chunking_policy_ref=chunking_ref,
             scoring_context_ref=scoring_context_ref,
+            metadata={
+                "active_task_id": task_id,
+                "active_dim_id": dim_id,
+                "selected_indicator_ids": [dim_id.upper()],
+            },
         )
 
     def load_artifact(self, ref: ArtifactRef) -> ArtifactRef:

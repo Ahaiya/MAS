@@ -1,5 +1,5 @@
 """
-Unit tests for scripts/compute_coverage_metrics.py.
+Unit tests for src/utils/compute_coverage_metrics.py.
 """
 
 from __future__ import annotations
@@ -7,7 +7,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from scripts.compute_coverage_metrics import compute_metrics_for_essay
+from src.utils.compute_coverage_metrics import compute_metrics_for_essay
 
 
 def _write_json(path: Path, payload: dict) -> None:

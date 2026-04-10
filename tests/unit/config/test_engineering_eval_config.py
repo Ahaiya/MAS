@@ -14,8 +14,8 @@ import yaml
 from pathlib import Path
 
 from src.config.schema import (
+    DimensionRubricFileSchema,
     SimplifiedBundleFileSchema,
-    TaskRubricFileSchema,
     TaskContextFileSchema,
     SimplifiedAdjudicationFileSchema,
     SimplifiedAggregationFileSchema,
@@ -37,7 +37,8 @@ class TestSimplifiedBundleFileSchema:
         data = yaml.safe_load(BUNDLE_PATH.read_text())
         schema = SimplifiedBundleFileSchema(**data)
         assert schema.bundle_id == "engineering_eval_baseline"
-        assert schema.active_task_id == "a4"
+        assert schema.active_task_id == "maker_hackathon"
+        assert schema.active_dim_id == "a4"
         assert "chunking" in schema.prompts
         assert "adjudication" in schema.policies
 
@@ -54,43 +55,43 @@ class TestSimplifiedBundleFileSchema:
             assert key in schema.policies, f"Missing policy key: {key}"
 
 
-class TestTaskRubricFileSchema:
-    def test_validates_task_a4_rubric(self):
-        path = CONFIGS_ROOT / "rubrics/tasks/task_a4_rubric.yaml"
+class TestDimensionRubricFileSchema:
+    def test_validates_dimension_a4_rubric(self):
+        path = CONFIGS_ROOT / "rubrics/dimension/a4_rubric.yaml"
         data = yaml.safe_load(path.read_text())
-        schema = TaskRubricFileSchema(**data)
-        assert schema.task_id == "a4"
+        schema = DimensionRubricFileSchema(**data)
+        assert schema.dim_id == "a4"
         assert len(schema.dimensions) == 3
         assert schema.scale["min"] == 1
         assert schema.scale["max"] == 5
 
     def test_dimension_codes(self):
-        path = CONFIGS_ROOT / "rubrics/tasks/task_a4_rubric.yaml"
+        path = CONFIGS_ROOT / "rubrics/dimension/a4_rubric.yaml"
         data = yaml.safe_load(path.read_text())
-        schema = TaskRubricFileSchema(**data)
+        schema = DimensionRubricFileSchema(**data)
         codes = [d["code"] for d in schema.dimensions]
         assert "A4-1" in codes
         assert "A4-2" in codes
         assert "A4-3" in codes
 
     def test_anchors_have_5_levels(self):
-        path = CONFIGS_ROOT / "rubrics/tasks/task_a4_rubric.yaml"
+        path = CONFIGS_ROOT / "rubrics/dimension/a4_rubric.yaml"
         data = yaml.safe_load(path.read_text())
-        schema = TaskRubricFileSchema(**data)
+        schema = DimensionRubricFileSchema(**data)
         for dim in schema.dimensions:
             assert len(dim["anchors"]) == 5, f"{dim['code']} should have 5 anchor levels"
 
 
 class TestTaskContextFileSchema:
-    def test_validates_task_a4_context(self):
-        path = CONFIGS_ROOT / "tasks/task_a4_context.yaml"
+    def test_validates_task_context(self):
+        path = CONFIGS_ROOT / "tasks/task_context.yaml"
         data = yaml.safe_load(path.read_text())
         schema = TaskContextFileSchema(**data)
         assert schema.material_context["type"] == "conversation"
         assert "evidence_focus" in schema.material_context
 
     def test_scoring_context_is_list(self):
-        path = CONFIGS_ROOT / "tasks/task_a4_context.yaml"
+        path = CONFIGS_ROOT / "tasks/task_context.yaml"
         data = yaml.safe_load(path.read_text())
         schema = TaskContextFileSchema(**data)
         assert isinstance(schema.scoring_context, list)
@@ -141,12 +142,12 @@ class TestConfigResolverSimplifiedBundle:
 
     def test_rubric_ref_source_file(self, resolver):
         bundle = resolver.load_bundle_file(BUNDLE_PATH)
-        assert bundle.rubric_ref.source_file == "rubrics/tasks/task_a4_rubric.yaml"
+        assert bundle.rubric_ref.source_file == "rubrics/dimension/a4_rubric.yaml"
 
     def test_scoring_context_ref_source_file(self, resolver):
         bundle = resolver.load_bundle_file(BUNDLE_PATH)
         assert bundle.scoring_context_ref is not None
-        assert bundle.scoring_context_ref.source_file == "tasks/task_a4_context.yaml"
+        assert bundle.scoring_context_ref.source_file == "tasks/task_context.yaml"
 
     def test_chunking_ref_source_file(self, resolver):
         bundle = resolver.load_bundle_file(BUNDLE_PATH)
@@ -245,7 +246,7 @@ class TestConfigCompilerEngineeringEval:
 
     def test_rubric_snapshot_preserves_raw_task_rubric(self, result):
         raw = result.rubric_snapshot.raw_task_rubric
-        assert raw["task_id"] == "a4"
+        assert raw["dim_id"] == "a4"
         assert len(raw["dimensions"]) == 3
 
     def test_policy_snapshot_scoring_context_list(self, result):
