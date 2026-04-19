@@ -64,7 +64,7 @@ python -m scripts eval "data/training/maker_hackathon/sample.md"
 - 默认输出目录为：
 
 ```bash
-artifacts/{task_name}/{dim}
+artifacts/{task_name}/{sample_name}/{dim}
 ```
 
 ### 2.3 常见示例
@@ -85,7 +85,7 @@ python -m scripts eval "data/training/maker_hackathon/sample.md" --dim b1
 
 ```bash
 python -m scripts eval "data/training/maker_hackathon/sample.md" \
-  --output-dir artifacts/maker_hackathon/A4
+  --output-dir artifacts/maker_hackathon/sample/A4
 ```
 
 关闭详细日志：
@@ -125,7 +125,7 @@ python -m scripts eval --input "data/training/maker_hackathon/sample.md"
   - 不传时使用 bundle 中声明的默认维度。
 - `--output-dir`, `-o`
   - 指定产出目录。
-  - 不传时自动写入 `artifacts/{task_name}/{dim}`
+  - 不传时自动写入 `artifacts/{task_name}/{sample_name}/{dim}`
 - `--verbose / --no-verbose`
   - 是否打印详细执行过程、节点时间线、各维度反馈和 LLM 统计。
   - 默认开启。
@@ -415,19 +415,19 @@ python -m scripts metrics coverage --eval-dir artifacts/eval --no-write
 
 这里需要特别注意：
 
-- `python -m scripts eval ...` 的默认输出目录是 `artifacts/{task_name}/{dim}`
+- `python -m scripts eval ...` 的默认输出目录是 `artifacts/{task_name}/{sample_name}/{dim}`
 - `python -m scripts metrics qwk ...` 和 `python -m scripts metrics coverage ...` 的默认 `--eval-dir` 仍然是 `artifacts/eval`
 
-所以如果你要直接分析 `eval` 产物，通常需要显式传：
+如果你要直接分析 `python -m scripts eval ...` 生成的单样本产物，`coverage` 通常要把 `--eval-dir` 指到它的父目录，因为它会把子目录当作一个计算单元：
 
 ```bash
---eval-dir artifacts/{task_name}/{dim}
+--eval-dir artifacts/{task_name}/{sample_name} --essay-id {dim}
 ```
 
 例如：
 
 ```bash
-python -m scripts metrics coverage --eval-dir artifacts/maker_hackathon/A4 --essay-id 6
+python -m scripts metrics coverage --eval-dir artifacts/maker_hackathon/sample --essay-id A4
 ```
 
 ---
@@ -470,7 +470,7 @@ python -m scripts eval "data/training/maker_hackathon/sample.md"
 
 ```bash
 python -m scripts eval "data/training/maker_hackathon/sample.md" --dim A4
-python -m scripts metrics coverage --eval-dir artifacts/maker_hackathon/A4 --essay-id 7
+python -m scripts metrics coverage --eval-dir artifacts/maker_hackathon/sample --essay-id A4
 ```
 
 ### 7.3 跑外环优化
@@ -503,5 +503,3 @@ python -m scripts task confirm --task-id a1
 ```bash
 python -m scripts --help
 ```
-
-

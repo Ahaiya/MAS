@@ -20,3 +20,6 @@ experiments/probes/**
 
 # Evaluation artifacts
 artifacts/**
+
+
+.playwright-cli

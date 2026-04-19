@@ -186,14 +186,15 @@ def _materialize_bundle_with_dim_override(bundle: Path, dim: str | None) -> tupl
     return temp_path, temp_path
 
 
-def _default_output_dir(resolved, dim: str) -> Path:
+def _default_output_dir(resolved, sample_name: str, dim: str) -> Path:
     raw_ctx = resolved.policy_snapshot.scoring_context or {}
     task_name = _sanitize_path_component(
         str(raw_ctx.get("task_name") or resolved.artifact_bundle.metadata.get("active_task_id") or ""),
         fallback="task",
     )
+    sample_dir = _sanitize_path_component(sample_name, fallback="sample")
     dim_name = _sanitize_path_component(_normalize_dim_id(dim).upper(), fallback="DIM")
-    return _DEFAULT_OUTPUT_BASE / task_name / dim_name
+    return _DEFAULT_OUTPUT_BASE / task_name / sample_dir / dim_name
 
 
 def _wrap_providers(default_provider, rater_providers, stage_providers):
@@ -455,7 +456,7 @@ def main(
     ),
     output_dir: Path = typer.Option(
         None, "--output-dir", "-o",
-        help="产出目录（默认自动联动为 artifacts/{task_name}/{dim}）。",
+        help="产出目录（默认自动联动为 artifacts/{task_name}/{sample_name}/{dim}）。",
     ),
     verbose: bool = typer.Option(
         True, "--verbose/--no-verbose", "-v",
@@ -532,7 +533,7 @@ def main(
 
     # 确定输出目录
     effective_dim = dim.strip() or str(resolved.artifact_bundle.metadata.get("active_dim_id") or "")
-    out_dir = output_dir if output_dir else _default_output_dir(resolved, effective_dim)
+    out_dir = output_dir if output_dir else _default_output_dir(resolved, essay_id, effective_dim)
     typer.echo(f"[init] 输出目录: {out_dir}")
 
     typer.echo("=" * 68)

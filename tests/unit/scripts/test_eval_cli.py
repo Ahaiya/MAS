@@ -31,7 +31,7 @@ def test_resolve_input_file_rejects_conflicting_inputs(tmp_path: Path) -> None:
         eval_cli._resolve_input_file(left, right)
 
 
-def test_default_output_dir_uses_task_name_and_dim() -> None:
+def test_default_output_dir_uses_task_name_sample_and_dim() -> None:
     class _Resolved:
         class _Policy:
             scoring_context = {"task_name": "maker_hackathon"}
@@ -42,5 +42,5 @@ def test_default_output_dir_uses_task_name_and_dim() -> None:
         policy_snapshot = _Policy()
         artifact_bundle = _Bundle()
 
-    out_dir = eval_cli._default_output_dir(_Resolved(), "a4")
-    assert out_dir == eval_cli._DEFAULT_OUTPUT_BASE / "maker_hackathon" / "A4"
+    out_dir = eval_cli._default_output_dir(_Resolved(), "sample", "a4")
+    assert out_dir == eval_cli._DEFAULT_OUTPUT_BASE / "maker_hackathon" / "sample" / "A4"
