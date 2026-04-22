@@ -12,6 +12,11 @@ prompt_template: |
   ## Chunking Size Guide
   {{ chunk_size_hint }}
 
+  {% if chunking_hints %}
+  ## Task-Specific Chunking Notes
+  {{ chunking_hints }}
+
+  {% endif %}
   ## Document Text
   {{ normalized_text }}
 

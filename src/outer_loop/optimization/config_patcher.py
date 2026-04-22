@@ -19,6 +19,7 @@ DEFAULT_ALLOWED_FILE_PATTERNS: tuple[str, ...] = (
     "configs/prompts/evidence_extraction_overrides/*.yaml",
     "configs/prompts/explanation.yaml",
     "configs/prompts/explanation_overrides/*.yaml",
+    "configs/tasks/*.yaml",
     "configs/policies/adjudication/engineering_eval_adjudication.yaml",
     "configs/policies/chunking/engineering_eval_chunking.yaml",
     "configs/policies/aggregation/engineering_eval_aggregation.yaml",

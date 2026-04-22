@@ -863,9 +863,86 @@ export function mountWorkbench({ root, selectionMenu, toastNode, state }) {
       });
     });
 
-    root.querySelector("[data-release]")?.addEventListener("click", () => {
-      state.releasedStudents[state.activeStudent] = true;
-      showToast("当前学生已 Release，左侧状态更新为 ✓。");
+    root.querySelector("[data-release]")?.addEventListener("click", async () => {
+      const activeSample = getActiveSample();
+      const sampleId = activeSample.id;
+      const originalSample = state.originalValues[sampleId] || {};
+
+      const scoreCorrections = [];
+      const feedbackCorrections = [];
+      const evidenceAdditions = [];
+
+      for (const observations of Object.values(activeSample.observationsByDimension)) {
+        for (const obs of observations) {
+          const original = originalSample[obs.id];
+          if (!original) continue;
+
+          // obs.id is like "a4_1"; backend expects "A4-1"
+          const dimCode = obs.id.toUpperCase().replace(/_/g, "-");
+
+          if (obs.score !== original.score) {
+            scoreCorrections.push({
+              dimension_code: dimCode,
+              original_score: original.score,
+              corrected_score: obs.score,
+            });
+          }
+
+          if (obs.feedback.trim() !== original.feedback.trim()) {
+            feedbackCorrections.push({
+              dimension_code: dimCode,
+              original_feedback: original.feedback,
+              corrected_feedback: obs.feedback.trim(),
+            });
+          }
+
+          if (obs.manualEvidence.length > 0) {
+            evidenceAdditions.push({
+              dimension_code: dimCode,
+              added_quotes: obs.manualEvidence.map((e) => e.quote),
+            });
+          }
+        }
+      }
+
+      const hasChanges = scoreCorrections.length > 0
+        || feedbackCorrections.length > 0
+        || evidenceAdditions.length > 0;
+
+      if (!hasChanges) {
+        state.releasedStudents[sampleId] = true;
+        showToast("已 Release（无修改内容）。");
+        render({ preserveInspectorScroll: true, preservePageScroll: true });
+        return;
+      }
+
+      try {
+        const response = await fetch("/api/corrections", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            sample_id: sampleId,
+            score_corrections: scoreCorrections,
+            feedback_corrections: feedbackCorrections,
+            evidence_additions: evidenceAdditions,
+          }),
+        });
+
+        const result = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+          showToast(`提交失败：${result.error || response.status}`);
+          return;
+        }
+
+        const total = scoreCorrections.length + feedbackCorrections.length + evidenceAdditions.length;
+        state.releasedStudents[sampleId] = true;
+        showToast(`已提交 ${total} 条修改意见，下次评估时将自动应用。`);
+      } catch {
+        showToast("提交失败：无法连接到服务器，请确认 python scripts/server.py 正在运行。");
+        return;
+      }
+
       render({ preserveInspectorScroll: true, preservePageScroll: true });
     });
 

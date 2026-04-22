@@ -70,6 +70,10 @@ _SCHEMA_ROUTE: list[tuple[str, type]] = [
 
 def _resolve_schema_class(source_file: str) -> type | None:
     """Return the schema class for a given source file path, or None if unknown."""
+    # Rubric files under the task-scoped directory take priority over the generic
+    # "tasks/" prefix which routes to TaskContextFileSchema.
+    if source_file.startswith("tasks/") and "/dimension/" in source_file:
+        return DimensionRubricFileSchema
     for prefix, schema_cls in _SCHEMA_ROUTE:
         if source_file.startswith(prefix):
             return schema_cls

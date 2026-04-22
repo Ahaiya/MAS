@@ -157,10 +157,21 @@ def compute_composite(
         return None
 
     method = variant.get("aggregation_method", "")
-    weights: Dict[str, int] = {
-        k: int(v) for k, v in variant.get("weights", {}).items()
-    }
     source_raters: List[str] = variant.get("source_raters", [])
+
+    raw_weights = variant.get("weights", {})
+    if raw_weights == "auto_equal":
+        # Derive equal weights at runtime from the dimensions actually present in
+        # the data, so the policy file doesn't need to enumerate dimension codes.
+        if "direct" in method:
+            auto_dim_ids: List[str] = [d.dimension_id for d in decisions]
+        else:
+            auto_dim_ids = list({
+                h.dimension_id for h in hypotheses if h.rater_id in source_raters
+            })
+        weights: Dict[str, int] = {dim_id: 1 for dim_id in auto_dim_ids}
+    else:
+        weights = {k: int(v) for k, v in raw_weights.items()}
 
     if method == "average_per_trait_then_weighted_sum":
         total, contributing_dims, weight_total = _compute_average_then_weighted(

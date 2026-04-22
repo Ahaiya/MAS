@@ -94,6 +94,7 @@ def run(
     template: PromptTemplate,
     override_template: Optional[PromptTemplate] = None,
     evidence_focus: str = "",
+    extraction_hints: str = "",
 ) -> List[EvidenceSpan]:
     """
     Extract evidence spans for one dimension using a configured provider.
@@ -106,6 +107,7 @@ def run(
         template         : Loaded extraction prompt template.
         override_template: Optional per-dimension override template.
         evidence_focus   : Optional task-level evidence focus string.
+        extraction_hints : Optional per-dimension extraction hints from task context.
 
     Returns:
         List of EvidenceSpan objects parsed from the LLM response.
@@ -118,6 +120,7 @@ def run(
         template,
         override_template=override_template,
         evidence_focus=evidence_focus,
+        extraction_hints=extraction_hints,
     )
     template_used = override_template or template
     request = LLMRequest(

@@ -71,7 +71,32 @@ function mapSection(sectionName, content) {
     };
   }
 
-  return null;
+  // Generic fallback: infer role from section name keywords so other sample
+  // formats still display rather than being silently dropped.
+  const lower = sectionName.toLowerCase();
+  if (lower.includes("human") || lower.includes("student") || lower.includes("学生") || lower.includes("用户")) {
+    return {
+      role: "学生",
+      roleTag: "human",
+      kind: "human",
+      phase: "学生作答",
+    };
+  }
+  if (lower.includes("system") || lower.includes("init") || lower.includes("phase") || lower.includes("系统")) {
+    return {
+      role: "系统",
+      roleTag: "system",
+      kind: "system",
+      phase: sectionName,
+    };
+  }
+  // Treat anything else as assistant/mentor output.
+  return {
+    role: "AI",
+    roleTag: "mentor",
+    kind: "assistant",
+    phase: sectionName,
+  };
 }
 
 export function parseSampleMarkdown(markdown) {

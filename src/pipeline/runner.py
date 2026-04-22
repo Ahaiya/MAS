@@ -542,6 +542,17 @@ class PipelineRunner:
         task_ctx = scoring_context or {}
         material_ctx = task_ctx.get("material_context", {})
         evidence_focus = str(material_ctx.get("evidence_focus", ""))
+        chunking_hints = str(task_ctx.get("chunking_hints") or "")
+
+        # Build per-dimension extraction_hints lookup keyed by dimension code
+        _extraction_hints_by_code: dict[str, str] = {}
+        for _entry in (task_ctx.get("scoring_context") or []):
+            if isinstance(_entry, dict):
+                _code = str(_entry.get("code") or "")
+                _hints = str(_entry.get("extraction_hints") or "").strip()
+                if _code:
+                    _extraction_hints_by_code[_code] = _hints
+
         token_threshold = self._token_threshold_from_policy(chunking_policy)
         rater_ids = _get_rater_ids(bundle)
 
@@ -622,6 +633,7 @@ class PipelineRunner:
                     .get("material_context", {})
                     .get("type", "")
                 ) or None,
+                chunking_hints=chunking_hints,
             )
             self._last_normalized_request = _norm_req
             ckpt = ckpt_mgr.create_checkpoint(
@@ -724,6 +736,9 @@ class PipelineRunner:
                                 f"evidence_extraction_override_{plan.dimension_id}"
                             ),
                             evidence_focus=evidence_focus,
+                            extraction_hints=_extraction_hints_by_code.get(
+                                str((rubric.dimension_by_id.get(plan.dimension_id) or {}).get("code", "")), ""
+                            ),
                         )
                         for plan in plans
                     }
@@ -1229,6 +1244,7 @@ class PipelineRunner:
                 override_templates=explanation_overrides,
                 evidence_focus=evidence_focus,
                 audience="evaluator",
+                scoring_context=scoring_context,
             )
 
             # 将聚合后的指标分写入 feedback。

@@ -59,6 +59,7 @@ class OuterLoopAgent:
         provider: BaseProvider,
         bundle_path: Path | str,
         training_set_path: Path | str,
+        annotations_path: Path | str | None = None,
         artifacts_output_base: Path | str = "artifacts/eval",
         experiments_dir: Path | str = "experiments",
         prompts_dir: Path | str = "src/outer_loop/prompts",
@@ -78,6 +79,7 @@ class OuterLoopAgent:
 
         self.bundle_path = Path(bundle_path)
         self.training_set_path = Path(training_set_path)
+        self.annotations_path = Path(annotations_path) if annotations_path is not None else None
         self.artifacts_output_base = Path(artifacts_output_base)
         self.experiments_dir = Path(experiments_dir)
         self.probes_dir = self.experiments_dir / "probes"
@@ -176,7 +178,7 @@ class OuterLoopAgent:
                 probes = self.run_probes_fn(
                     selected_probes,
                     artifacts_dir,
-                    tsv_path=self.training_set_path,
+                    tsv_path=self.annotations_path or self.training_set_path,
                 )
                 serialized_probes = self._serialize_probe_results(probes)
                 probe_results_payload.update(serialized_probes)
@@ -308,7 +310,7 @@ class OuterLoopAgent:
         cold_probes = self.run_probes_fn(
             probe_names,
             cold_artifacts,
-            tsv_path=self.training_set_path,
+            tsv_path=self.annotations_path or self.training_set_path,
         )
         serialized_probes = self._serialize_probe_results(cold_probes)
 
@@ -407,16 +409,39 @@ class OuterLoopAgent:
     def _summarize_current_config(self) -> str:
         configs_root = self.config_patcher.configs_root
         bundle_cfg = self._load_bundle_doc()
-        scoring_context_rel = self._bundle_source_file(
-            bundle_cfg,
-            "scoring_context_source_file",
-            default="prompts/tasks/task_bootstrap_scoring_context.yaml",
-        )
-        rubric_rel = self._bundle_source_file(
-            bundle_cfg,
-            "rubric_source_file",
-            default="rubrics/tasks/task_bootstrap_rubric.yaml",
-        )
+
+        # Resolve scoring context and rubric paths from either bundle format
+        if "artifact_bundle" in bundle_cfg:
+            # Legacy full bundle format
+            artifact_bundle = bundle_cfg.get("artifact_bundle", {})
+            scoring_context_rel = artifact_bundle.get(
+                "scoring_context_source_file",
+                "prompts/tasks/task_bootstrap_scoring_context.yaml",
+            )
+            rubric_rel = artifact_bundle.get(
+                "rubric_source_file", "rubrics/tasks/task_bootstrap_rubric.yaml"
+            )
+        else:
+            # Simplified bundle format: resolve templates using active_task_id / active_dim_id
+            task_id = str(bundle_cfg.get("active_task_id") or "")
+            dim_id = str(bundle_cfg.get("active_dim_id") or task_id)
+            context_template = (bundle_cfg.get("context") or {}).get("task", "")
+            rubric_dim_template = (bundle_cfg.get("rubric") or {}).get("dimension", "")
+            scoring_context_rel = (
+                context_template
+                .replace("{active_task_id}", task_id)
+                .replace("{active_dim_id}", dim_id)
+                .removeprefix("configs/")
+                or "tasks/task_context.yaml"
+            )
+            rubric_rel = (
+                rubric_dim_template
+                .replace("{active_task_id}", task_id)
+                .replace("{active_dim_id}", dim_id)
+                .removeprefix("configs/")
+                or f"rubrics/dimension/{dim_id}_rubric.yaml"
+            )
+
         focus_files = [
             (scoring_context_rel, "scoring_context"),
             (rubric_rel, "task_rubric"),
@@ -424,10 +449,29 @@ class OuterLoopAgent:
             ("prompts/evidence_extraction.yaml", "evidence_extraction"),
             ("policies/adjudication/engineering_eval_adjudication.yaml", "adjudication_policy"),
             ("policies/aggregation/engineering_eval_aggregation.yaml", "aggregation_policy"),
-            ("bundles/engineering_eval_baseline.bundle.yaml", "bundle"),
         ]
 
         lines: list[str] = []
+        # Bundle summary (simplified format)
+        if "artifact_bundle" not in bundle_cfg:
+            task_id = str(bundle_cfg.get("active_task_id") or "")
+            dim_id = str(bundle_cfg.get("active_dim_id") or task_id)
+            lines.append(
+                f"- bundle: active_task_id={task_id}, active_dim_id={dim_id}, "
+                f"scoring_context={scoring_context_rel}, rubric={rubric_rel}"
+            )
+        else:
+            artifact_bundle = bundle_cfg.get("artifact_bundle", {})
+            provider_cfg = artifact_bundle.get("provider_config", {}).get("default", {})
+            lines.append(
+                "- bundle: rubric={rubric}, scoring_context={scoring_context}, "
+                "default_model={model}".format(
+                    rubric=artifact_bundle.get("rubric_source_file"),
+                    scoring_context=artifact_bundle.get("scoring_context_source_file"),
+                    model=provider_cfg.get("model"),
+                )
+            )
+
         for rel_path, label in focus_files:
             path = configs_root / rel_path
             if not path.exists():
@@ -436,19 +480,6 @@ class OuterLoopAgent:
             if not isinstance(loaded, dict):
                 lines.append(f"- {label}: present but not a YAML mapping")
                 continue
-            if label == "bundle":
-                artifact_bundle = loaded.get("artifact_bundle", {})
-                provider_cfg = artifact_bundle.get("provider_config", {}).get("default", {})
-                lines.append(
-                    "- bundle: rubric={rubric}, scoring_context={scoring_context}, "
-                    "default_model={model}, default_api_key_env={api_key_env}".format(
-                        rubric=artifact_bundle.get("rubric_source_file"),
-                        scoring_context=artifact_bundle.get("scoring_context_source_file"),
-                        model=provider_cfg.get("model"),
-                        api_key_env=provider_cfg.get("api_key_env"),
-                    )
-                )
-                continue
 
             prompt_text = loaded.get("prompt_template")
             if isinstance(prompt_text, str):
@@ -456,24 +487,33 @@ class OuterLoopAgent:
                 continue
 
             if label == "scoring_context":
-                calibration = (
-                    loaded.get("scoring_context", {}).get("calibration_notes")
-                    if isinstance(loaded.get("scoring_context"), dict)
-                    else None
-                )
-                cal_len = len(calibration) if isinstance(calibration, str) else 0
-                lines.append(
-                    f"- scoring_context: path={rel_path}, calibration_notes chars={cal_len}"
-                )
+                sc = loaded.get("scoring_context")
+                if isinstance(sc, list):
+                    filled = sum(
+                        1 for e in sc
+                        if isinstance(e, dict) and str(e.get("calibration_notes") or "").strip()
+                    )
+                    lines.append(
+                        f"- scoring_context: path={rel_path}, "
+                        f"dims_with_notes={filled}/{len(sc)} "
+                        f"(file_overwrite to update calibration_notes)"
+                    )
+                elif isinstance(sc, dict):
+                    cal_len = len(str(sc.get("calibration_notes") or ""))
+                    lines.append(
+                        f"- scoring_context: path={rel_path}, calibration_notes chars={cal_len}"
+                    )
+                else:
+                    lines.append(f"- scoring_context: path={rel_path}, no scoring_context key")
                 continue
 
             if label == "task_rubric":
                 rubric_core = loaded.get("rubric_core", {})
-                dimensions = rubric_core.get("dimensions") or []
+                dimensions = rubric_core.get("dimensions") or loaded.get("dimensions") or []
                 dim_ids = [
-                    str(item.get("dimension_id"))
+                    str(item.get("dimension_id") or item.get("code", ""))
                     for item in dimensions
-                    if isinstance(item, dict) and item.get("dimension_id")
+                    if isinstance(item, dict)
                 ]
                 lines.append(
                     f"- task_rubric: path={rel_path}, dimensions={', '.join(dim_ids) or 'none'}"

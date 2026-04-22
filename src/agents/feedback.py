@@ -70,6 +70,7 @@ def _render_commentary(
     override_template: Optional[PromptTemplate] = None,
     evidence_focus: str = "",
     audience: str = "evaluator",
+    feedback_hints: str = "",
 ) -> str:
     """Render commentary through a configured real provider."""
 
@@ -83,6 +84,7 @@ def _render_commentary(
         hypotheses=hypotheses,
         evidence_focus=evidence_focus,
         audience=audience,
+        feedback_hints=feedback_hints,
     )
     response = provider.complete(
         LLMRequest(
@@ -190,6 +192,7 @@ def run(
     override_templates: Optional[Dict[str, PromptTemplate]] = None,
     evidence_focus: str = "",
     audience: str = "evaluator",
+    scoring_context: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     """Assemble a unified feedback dict from final scoring decisions.
 
@@ -243,6 +246,16 @@ def run(
     max_length = _max_commentary_length(resolved_policy)
     overrides = override_templates or {}
 
+    # Build feedback_hints lookup keyed by dimension code (e.g. "A4-1")
+    feedback_hints_by_code: Dict[str, str] = {}
+    raw_ctx = scoring_context if isinstance(scoring_context, dict) else {}
+    for entry in (raw_ctx.get("scoring_context") or []):
+        if isinstance(entry, dict):
+            code = str(entry.get("code") or "")
+            hints = str(entry.get("feedback_hints") or "").strip()
+            if code:
+                feedback_hints_by_code[code] = hints
+
     explanations = []
     dimensions_out: Dict[str, Any] = {}
 
@@ -255,6 +268,10 @@ def run(
         )
         dim_hyps = hyps_by_dim.get(dim_id, [])
         override_template = overrides.get(dim_id)
+
+        dim_meta = resolved_rubric.dimension_by_id.get(dim_id, {})
+        dim_code = str(dim_meta.get("code", ""))
+        feedback_hints = feedback_hints_by_code.get(dim_code, "")
 
         decision_spans = [
             span_by_id[sid]
@@ -283,6 +300,7 @@ def run(
             override_template=override_template,
             evidence_focus=evidence_focus,
             audience=audience,
+            feedback_hints=feedback_hints,
         )
 
         explanations.append(explanation)

@@ -38,8 +38,12 @@ task_app = typer.Typer(name="task", help="Task setup workflow.")
 app.add_typer(task_app, name="task")
 
 _DEFAULT_BUNDLE = _PROJECT_ROOT / "configs" / "bundles" / "engineering_eval_baseline.bundle.yaml"
-# Default: single .md file or a directory of .md files; TSV also accepted for legacy ASAP use.
-_DEFAULT_TRAINING_SET = _PROJECT_ROOT / "data" / "1组—虚拟故居重建计划.md"
+# Default training set: single .md file or directory of .md files; TSV also accepted for ASAP.
+_DEFAULT_TRAINING_SET = _PROJECT_ROOT / "data" / "training" / "maker_hackathon" / "sample.md"
+# Human-score annotations TSV for QWK probe (optional; falls back to training_set if not set).
+_DEFAULT_ANNOTATIONS_PATH = (
+    _PROJECT_ROOT / "data" / "training" / "maker_hackathon" / "annotations.tsv"
+)
 _DEFAULT_EXPERIMENT_LOG = _PROJECT_ROOT / "experiments" / "experiment_log.yaml"
 _DEFAULT_EXPERIMENTS_DIR = _PROJECT_ROOT / "experiments"
 _DEFAULT_ARTIFACTS_BASE = _PROJECT_ROOT / "artifacts" / "eval"
@@ -104,6 +108,7 @@ def _build_agent(
     *,
     bundle: Path,
     training_set: Path,
+    annotations: Path | None = None,
 ) -> OuterLoopAgent:
     experiment_log = ExperimentLog.load(_DEFAULT_EXPERIMENT_LOG)
     patcher = ConfigPatcher(
@@ -114,6 +119,10 @@ def _build_agent(
 
     provider = _build_outer_loop_provider()
 
+    effective_annotations = annotations if annotations is not None else (
+        _DEFAULT_ANNOTATIONS_PATH if _DEFAULT_ANNOTATIONS_PATH.exists() else None
+    )
+
     return OuterLoopAgent(
         experiment_log=experiment_log,
         config_patcher=patcher,
@@ -121,6 +130,7 @@ def _build_agent(
         provider=provider,
         bundle_path=bundle,
         training_set_path=training_set,
+        annotations_path=effective_annotations,
         artifacts_output_base=_DEFAULT_ARTIFACTS_BASE,
         experiments_dir=_DEFAULT_EXPERIMENTS_DIR,
         prompts_dir=_DEFAULT_PROMPTS_DIR,
@@ -166,12 +176,14 @@ def run(
     max_iterations: Annotated[int, typer.Option("--max-iterations", min=1)] = 5,
     bundle: Annotated[Path, typer.Option("--bundle")] = _DEFAULT_BUNDLE,
     training_set: Annotated[Path, typer.Option("--training-set")] = _DEFAULT_TRAINING_SET,
+    annotations: Annotated[Path | None, typer.Option("--annotations")] = None,
 ) -> None:
     """Run the outer-loop optimization loop."""
     try:
         agent = _build_agent(
             bundle=bundle,
             training_set=training_set,
+            annotations=annotations,
         )
         records = agent.run_loop(max_iterations=max_iterations, stop_on_target=True)
     except Exception as exc:

@@ -30,6 +30,7 @@ import typer
 
 from src.agents.config_resolver import run as resolve_bundle
 from src.contracts.artifact_bundle import ProviderEntryConfig
+from src.outer_loop.correction_agent import check_and_apply_corrections
 from src.outer_loop.experiments.batch_runner import run_single_eval
 from src.providers.factory import build_provider, build_provider_map
 from src.providers.logging_provider import LoggingProvider
@@ -535,6 +536,33 @@ def main(
     effective_dim = dim.strip() or str(resolved.artifact_bundle.metadata.get("active_dim_id") or "")
     out_dir = output_dir if output_dir else _default_output_dir(resolved, essay_id, effective_dim)
     typer.echo(f"[init] 输出目录: {out_dir}")
+
+    # ── 内环启动前检查：处理待应用的人类批改意见 ──────────────────────────────
+    try:
+        correction_provider = build_provider(
+            ProviderEntryConfig(
+                api_key_env="OUTER_LOOP_API_KEY",
+                model=__import__("os").environ.get("OUTER_LOOP_MODEL", "").strip(),
+                api_base=__import__("os").environ.get("OUTER_LOOP_API_BASE", "").strip(),
+            )
+        )
+        applied = check_and_apply_corrections(
+            provider=correction_provider,
+            configs_root=_PROJECT_ROOT / "configs",
+            snapshots_root=_PROJECT_ROOT / "experiments" / "snapshots",
+        )
+        if applied:
+            typer.echo("[correction] 已应用教师批改意见，配置已更新，重新加载 bundle")
+            resolved_bundle_path, temp_bundle_path = _materialize_bundle_with_dim_override(
+                bundle, dim.strip()
+            )
+            try:
+                resolved = resolve_bundle(resolved_bundle_path)
+            finally:
+                if temp_bundle_path is not None:
+                    temp_bundle_path.unlink(missing_ok=True)
+    except Exception as exc:
+        typer.echo(f"[correction] 跳过：{exc}")
 
     typer.echo("=" * 68)
     typer.echo(f"[开始评估] 样本 ID: {essay_id}")

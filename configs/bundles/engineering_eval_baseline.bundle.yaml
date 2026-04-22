@@ -2,14 +2,13 @@ schema_version: "2.0"
 
 bundle_id: "engineering_eval_baseline"
 active_task_id: "maker_hackathon"
-active_dim_id: ""
 
 rubric:
   source: "configs/rubrics/source/rubric.md"
-  dimension: "configs/rubrics/dimension/{active_dim_id}_rubric.yaml"
+  dimension: "configs/tasks/{active_task_id}/dimension/{active_dim_id}_rubric.yaml"
 
 context:
-  task: "configs/tasks/task_context.yaml"
+  task: "configs/tasks/{active_task_id}/task_context.yaml"
 
 prompts:
   chunking: "configs/prompts/chunking.yaml"

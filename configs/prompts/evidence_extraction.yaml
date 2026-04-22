@@ -12,6 +12,11 @@ prompt_template: |
   ## Evidence Focus
   {{ evidence_focus }}
 
+  {% if extraction_hints %}
+  ## Extraction Hints
+  {{ extraction_hints }}
+
+  {% endif %}
   ## Candidate Chunks
   {% for chunk in chunks %}
   [{{ chunk.id }}]{% if chunk.title %} {{ chunk.title }}{% endif %}

@@ -621,7 +621,8 @@ class TaskContextFileSchema(BaseModel):
     material_context: dict   # {type, description, evidence_focus}
     score_anchors: list = []
     human_instructions: str = ""
-    scoring_context: list = []  # [{code, calibration_notes}]
+    chunking_hints: str = ""
+    scoring_context: list = []  # [{code, extraction_hints, calibration_notes, feedback_hints}]
 
 
 class SimplifiedAdjudicationFileSchema(BaseModel):

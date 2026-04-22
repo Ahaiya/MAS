@@ -4,8 +4,24 @@ export function createInitialState(data) {
   const defaultObservations = defaultSample.observationsByDimension[defaultDimension] || [];
   const defaultObservation = defaultObservations[0];
 
+  // Capture original AI-generated scores and feedback before any user edits.
+  // Shape: { [sampleId]: { [observationId]: { score, feedback } } }
+  const originalValues = {};
+  for (const sample of data.samples) {
+    originalValues[sample.id] = {};
+    for (const observations of Object.values(sample.observationsByDimension)) {
+      for (const obs of observations) {
+        originalValues[sample.id][obs.id] = {
+          score: obs.score,
+          feedback: obs.feedback,
+        };
+      }
+    }
+  }
+
   return {
     data: structuredClone(data),
+    originalValues,
     activeStudent: defaultSample.id,
     activeDimension: defaultDimension,
     activeObservationId: defaultObservation?.id || null,

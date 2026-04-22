@@ -64,6 +64,7 @@ def build_extraction_prompt(
     template: PromptTemplate,
     override_template: Optional[PromptTemplate] = None,
     evidence_focus: str = "",
+    extraction_hints: str = "",
 ) -> str:
     """
     Build the evidence-extraction prompt for a single dimension.
@@ -113,6 +114,7 @@ def build_extraction_prompt(
         "dimension_name": dim.get("name", plan.dimension_id),
         "dimension_anchors": _dimension_anchor_entries(dim),
         "evidence_focus": evidence_focus,
+        "extraction_hints": extraction_hints,
         "chunks": chunks,
     }
     chosen_template = override_template or template
@@ -221,6 +223,7 @@ def build_explanation_prompt(
     hypotheses: Optional[List[ScoreHypothesis]] = None,
     evidence_focus: str = "",
     audience: str = "evaluator",
+    feedback_hints: str = "",
 ) -> str:
     """
     Build the explanation/feedback prompt for a finalised dimension decision.
@@ -287,6 +290,7 @@ def build_explanation_prompt(
         "evidence_spans": flat_spans,
         "evidence_focus": evidence_focus,
         "audience": audience,
+        "feedback_hints": feedback_hints,
     }
 
     chosen_template = override_template or template

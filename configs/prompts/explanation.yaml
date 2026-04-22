@@ -33,6 +33,11 @@ prompt_template: |
   and evidence chain. Use professional evaluation language.
   {% endif %}
 
+  {% if feedback_hints %}
+  ## Feedback Notes
+  {{ feedback_hints }}
+
+  {% endif %}
   ## Instructions
   1. Base feedback strictly on the provided scoring rationale and key evidence.
   2. Do not introduce evaluation criteria outside the provided rationale.

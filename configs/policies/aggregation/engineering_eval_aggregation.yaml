@@ -22,17 +22,11 @@ aggregation_policy:
         - "rater_1"
         - "rater_2"
       aggregation_method: "average_per_trait_then_weighted_average"
-      weights:
-        a4_1: 1
-        a4_2: 1
-        a4_3: 1
+      weights: "auto_equal"
 
     - variant_id: "with_resolution"
       applies_when: "resolution_used"
       source_raters:
         - "rater_3"
       aggregation_method: "direct_weighted_average"
-      weights:
-        a4_1: 1
-        a4_2: 1
-        a4_3: 1
+      weights: "auto_equal"

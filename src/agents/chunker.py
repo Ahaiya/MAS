@@ -251,6 +251,7 @@ def _render_chunking_prompt(
     chunk_size_hint: str,
     word_count: int,
     normalized_text: str,
+    chunking_hints: str = "",
 ) -> str:
     return render_template(
         template,
@@ -259,6 +260,7 @@ def _render_chunking_prompt(
             "chunk_size_hint": chunk_size_hint,
             "word_count": word_count,
             "normalized_text": normalized_text,
+            "chunking_hints": chunking_hints,
         },
     )
 
@@ -372,6 +374,7 @@ def run(
     token_threshold: int = 4000,
     chunking_policy: Optional[Dict[str, Any]] = None,
     material_type: Optional[str] = None,
+    chunking_hints: str = "",
 ) -> Tuple[NormalizedRequest, NormalizedDocument]:
     """
     LLM-assisted chunking entrypoint.
@@ -409,6 +412,7 @@ def run(
                 chunk_size_hint=chunk_size_hint,
                 word_count=word_count,
                 normalized_text=normalized_text,
+                chunking_hints=chunking_hints,
             )
             response = provider.complete(
                 LLMRequest(
@@ -456,6 +460,7 @@ def run(
             chunk_size_hint=chunk_size_hint,
             word_count=word_count,
             normalized_text=_summaries_text(hard_chunks),
+            chunking_hints=chunking_hints,
         )
         # 每个 chunk JSON 对象约 250 tokens，预留 512 token 余量，上限 8192
         output_max_tokens = min(8192, max(2048, len(hard_chunks) * 250 + 512))
