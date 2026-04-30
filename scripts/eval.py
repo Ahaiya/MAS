@@ -30,8 +30,8 @@ import typer
 
 from src.agents.config_resolver import run as resolve_bundle
 from src.contracts.artifact_bundle import ProviderEntryConfig
+from src.evaluation.runner import run_single_eval
 from src.outer_loop.correction_agent import check_and_apply_corrections
-from src.outer_loop.experiments.batch_runner import run_single_eval
 from src.providers.factory import build_provider, build_provider_map
 from src.providers.logging_provider import LoggingProvider
 from src.providers.prompt_loader import PromptLoader
@@ -196,6 +196,16 @@ def _default_output_dir(resolved, sample_name: str, dim: str) -> Path:
     sample_dir = _sanitize_path_component(sample_name, fallback="sample")
     dim_name = _sanitize_path_component(_normalize_dim_id(dim).upper(), fallback="DIM")
     return _DEFAULT_OUTPUT_BASE / task_name / sample_dir / dim_name
+
+
+def _task_context_target_file(resolved) -> str:
+    source_file = getattr(resolved.artifact_bundle.scoring_context_ref, "source_file", "")
+    if source_file:
+        return f"configs/{source_file.removeprefix('configs/')}"
+    active_task_id = str(resolved.artifact_bundle.metadata.get("active_task_id") or "").strip()
+    if active_task_id:
+        return f"configs/tasks/{active_task_id}/task_context.yaml"
+    return "configs/tasks/task_context.yaml"
 
 
 def _wrap_providers(default_provider, rater_providers, stage_providers):
@@ -550,6 +560,7 @@ def main(
             provider=correction_provider,
             configs_root=_PROJECT_ROOT / "configs",
             snapshots_root=_PROJECT_ROOT / "experiments" / "snapshots",
+            target_file=_task_context_target_file(resolved),
         )
         if applied:
             typer.echo("[correction] 已应用教师批改意见，配置已更新，重新加载 bundle")

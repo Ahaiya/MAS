@@ -1,0 +1,23 @@
+schema_version: "2.0"
+
+task_name: "physics_experiment"
+
+material_context:
+  type: "document"
+  description: "用AI算法挖掘单摆运动的动力学规律 — 课前预习报告"
+  evidence_focus: ""
+
+# 全局评分指引（注入评分阶段）
+human_instructions: "整体评分偏高，请慎重打分，尤其是对于细节的把控。"
+
+# 分块阶段指引（注入 chunking 阶段）
+chunking_hints: ""
+
+score_anchors: []
+
+# 各维度配置（每项注入对应阶段）
+scoring_context:
+  - code: "A1-1"
+    extraction_hints: "重点寻找学生针对实验中可能出现的实际问题提出的具体、可操作的改进方案或解决方案，例如涉及拍摄条件优化、算法参数调试、辅助验证与修正等步骤的详细描述。"
+    calibration_notes: "不应仅凭学生列出了多个变量名称或进行了理论层面的分析就给予高分（4分）。达到4分需要学生展现出对变量间复杂关系的深度分析，而不仅仅是表面罗列或简单提及。"
+    feedback_hints: "生成反馈时，应侧重激励学生的学习主动性，同时基于学生提交文本的实际篇幅和深度给出客观评价。如果文本过短或分析停留在表层，应在肯定已有分析的基础上明确指出这一不足，并引导学生进行更深入的思考。"

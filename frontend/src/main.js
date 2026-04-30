@@ -1,6 +1,6 @@
-import { mountWorkbench } from "./app.js";
-import { loadReviewWorkbenchData } from "./data/loadReviewData.js";
-import { createInitialState } from "./state.js";
+import { mountWorkbench } from "./app.js?v=20260434";
+import { loadReviewWorkbenchData } from "./data/loadReviewData.js?v=20260434";
+import { createInitialState } from "./state.js?v=20260434";
 
 const app = document.getElementById("app");
 const selectionMenu = document.getElementById("selection-menu");
@@ -35,7 +35,8 @@ function renderError(error) {
             <h1 class="panel-title">前端数据加载失败</h1>
             <p class="panel-summary">${error.message}</p>
             <p class="panel-summary">
-              请从仓库根目录启动静态服务，并确保浏览器能访问目录索引，然后再打开 <code>/frontend/index.html</code>。
+              请从仓库根目录运行 <code>python scripts/server.py</code>，然后打开
+              <code>http://127.0.0.1:8000/frontend/index.html</code>。
             </p>
           </div>
         </div>

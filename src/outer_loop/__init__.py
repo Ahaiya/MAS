@@ -1,12 +1,1 @@
-"""外环子系统入口，承载评测分析、实验编排与后续优化能力。
-
-当前阶段：
-- `metrics/` 已承接现有的评测指标计算逻辑。
-- `datasets/`、`experiments/`、`optimization/` 预留给后续外环开发。
-
-设计原则：
-- 不直接侵入内环主执行路径；
-- 通过兼容层逐步接管原 `src.evaluation` 的职责；
-- 让后续外环代码有清晰、稳定的落点。
-"""
-
+"""Human-feedback outer loop for applying teacher corrections."""

@@ -8,8 +8,8 @@ from pathlib import Path
 import yaml
 from jinja2 import Template
 
+from src.outer_loop.config_patcher import ChangeProposal, ConfigPatcher
 from src.outer_loop.correction_models import PendingCorrections
-from src.outer_loop.optimization.config_patcher import ChangeProposal, ConfigPatcher
 from src.providers.base import BaseProvider, LLMRequest
 
 _PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -26,9 +26,11 @@ class CorrectionAgent:
         provider: BaseProvider,
         config_patcher: ConfigPatcher,
         prompts_dir: Path | str | None = None,
+        target_file: Path | str = _DEFAULT_TARGET_FILE,
     ) -> None:
         self.provider = provider
         self.config_patcher = config_patcher
+        self.target_file = str(target_file)
 
         prompts_root = Path(prompts_dir) if prompts_dir else _DEFAULT_PROMPTS_DIR
         system_path = prompts_root / "correction_system.md"
@@ -50,7 +52,7 @@ class CorrectionAgent:
         if pending.is_empty():
             return False
 
-        target_path = self.config_patcher.configs_root / _DEFAULT_TARGET_FILE
+        target_path = self.config_patcher.resolve_target_path(self.target_file)
         current_content = (
             target_path.read_text(encoding="utf-8")
             if target_path.exists()
@@ -107,7 +109,7 @@ class CorrectionAgent:
         proposal = ChangeProposal(
             change_unit="scoring.task_context",
             change_type="file_overwrite",
-            target_file=_DEFAULT_TARGET_FILE,
+            target_file=self.target_file,
             target_path="",
             new_value=new_yaml,
             rationale=f"根据 {len(pending.events)} 条教师批改意见自动更新",
@@ -145,6 +147,7 @@ def check_and_apply_corrections(
     snapshots_root: Path,
     pending_path: Path | None = None,
     prompts_dir: Path | None = None,
+    target_file: Path | str = _DEFAULT_TARGET_FILE,
     iter_id: str = "correction",
 ) -> bool:
     """Check for pending human corrections and apply them before the inner loop.
@@ -160,6 +163,7 @@ def check_and_apply_corrections(
         provider=provider,
         config_patcher=patcher,
         prompts_dir=prompts_dir,
+        target_file=target_file,
     )
     return agent.process(pending, iter_id=iter_id)
 

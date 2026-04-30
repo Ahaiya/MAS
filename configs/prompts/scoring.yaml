@@ -9,6 +9,11 @@ prompt_template: |
   {{ anchor.rank }}: {{ anchor.text }}
   {% endfor %}
 
+  {% if material_description %}
+  ## Material Description
+  {{ material_description }}
+
+  {% endif %}
   ## Evidence Focus
   {{ evidence_focus }}
 
@@ -35,6 +40,11 @@ prompt_template: |
   {% for prior in prior_rater_context %}
   - {{ prior.rater_id }} scored {{ prior.score }}: "{{ prior.justification }}"
   {% endfor %}
+  {% endif %}
+
+  {% if human_instructions %}
+  ## Human Instructions
+  {{ human_instructions }}
   {% endif %}
 
   ## Instructions

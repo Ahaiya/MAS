@@ -9,6 +9,11 @@ prompt_template: |
   {{ anchor.rank }}: {{ anchor.text }}
   {% endfor %}
 
+  {% if material_description %}
+  ## Material Description
+  {{ material_description }}
+
+  {% endif %}
   ## Evidence Focus
   {{ evidence_focus }}
 

@@ -94,6 +94,7 @@ def run(
     template: PromptTemplate,
     override_template: Optional[PromptTemplate] = None,
     evidence_focus: str = "",
+    material_description: str = "",
     extraction_hints: str = "",
 ) -> List[EvidenceSpan]:
     """
@@ -120,6 +121,7 @@ def run(
         template,
         override_template=override_template,
         evidence_focus=evidence_focus,
+        material_description=material_description,
         extraction_hints=extraction_hints,
     )
     template_used = override_template or template

@@ -1,4 +1,0 @@
-prompt_template: "Evaluate {{ dimension_name }} for the following text: {{ text }}"
-metadata:
-  template_version: "v1"
-  compatible_dimensions: ["*"]

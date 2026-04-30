@@ -21,6 +21,7 @@ from src.contracts.artifact_bundle import RubricSnapshot
 from src.contracts.evidence import DimensionObservation, EvidenceSpan
 from src.contracts.request_models import CoveragePlan, NormalizedDocument
 from src.contracts.scoring import FinalDimensionDecision, ScoreHypothesis
+from src.policies.rubric_core import get_scale_range
 from src.providers.prompt_loader import PromptTemplate, render_template
 
 
@@ -64,6 +65,7 @@ def build_extraction_prompt(
     template: PromptTemplate,
     override_template: Optional[PromptTemplate] = None,
     evidence_focus: str = "",
+    material_description: str = "",
     extraction_hints: str = "",
 ) -> str:
     """
@@ -114,6 +116,7 @@ def build_extraction_prompt(
         "dimension_name": dim.get("name", plan.dimension_id),
         "dimension_anchors": _dimension_anchor_entries(dim),
         "evidence_focus": evidence_focus,
+        "material_description": material_description,
         "extraction_hints": extraction_hints,
         "chunks": chunks,
     }
@@ -190,6 +193,8 @@ def build_scoring_prompt(
         calibration_notes = str(raw_ctx.get("calibration_notes") or "")
 
     score_anchors = list(raw_ctx.get("score_anchors") or [])
+    human_instructions = str(raw_ctx.get("human_instructions") or "")
+    material_description = str((raw_ctx.get("material_context") or {}).get("description", ""))
 
     prior_rater_context = [
         {
@@ -204,9 +209,11 @@ def build_scoring_prompt(
         "dimension_name": dim.get("name", observation.dimension_id),
         "dimension_anchors": _dimension_anchor_entries(dim),
         "evidence_focus": evidence_focus,
+        "material_description": material_description,
         "evidence_spans": flat_spans,
         "score_anchors": score_anchors,
         "calibration_notes": calibration_notes,
+        "human_instructions": human_instructions,
         "prior_rater_context": prior_rater_context,
     }
 
@@ -231,6 +238,8 @@ def build_explanation_prompt(
     Context variables injected (matching explanation.yaml v2):
         dimension_name   : Human-readable dimension name from rubric.
         final_score      : Integer canonical score from the final decision.
+        max_score        : Maximum score for this dimension's rubric scale.
+        scale_max        : Alias of max_score for templates that prefer scale wording.
         was_adjudicated  : Whether decision was adjudicated.
         justification_1  : Adjudicator rationale (adjudicated) or rater_1 rationale.
         justification_2  : Rater_2 rationale (non-adjudicated path only).
@@ -252,6 +261,7 @@ def build_explanation_prompt(
         Rendered prompt string ready to send to a provider.
     """
     dim = rubric.dimension_by_id.get(decision.dimension_id, {})
+    scale_min, scale_max = get_scale_range(rubric, decision.dimension_id)
     was_adjudicated = decision.adjudication_id is not None
 
     # Extract rater justifications from hypotheses
@@ -284,6 +294,11 @@ def build_explanation_prompt(
     context = {
         "dimension_name": dim.get("name", decision.dimension_id),
         "final_score": decision.final_score.canonical_score,
+        "min_score": scale_min,
+        "max_score": scale_max,
+        "scale_min": scale_min,
+        "scale_max": scale_max,
+        "scale_ref": decision.final_score.scale_ref,
         "was_adjudicated": was_adjudicated,
         "justification_1": justification_1,
         "justification_2": justification_2,

@@ -1,3 +1,6 @@
+import { submitCorrections } from "./api/correctionsApi.js?v=20260434";
+import { renderMarkdown } from "./renderMarkdown.js?v=20260434";
+
 function trimText(text, maxLength) {
   return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
 }
@@ -458,7 +461,6 @@ export function mountWorkbench({ root, selectionMenu, toastNode, state }) {
         <div class="rail-mark">MAS</div>
         <div class="rail-copy">
           <div class="rail-eyebrow">Task / ${escapeHtml(activeSample.project)}</div>
-          <div class="rail-title">沉浸式智能评估审核台</div>
         </div>
       </div>
       <div class="context-ribbon context-ribbon--sidebar">
@@ -476,10 +478,10 @@ export function mountWorkbench({ root, selectionMenu, toastNode, state }) {
               data-student-id="${sample.id}"
               title="${escapeHtml(sample.name)}"
             >
-              <div class="student-avatar">${escapeHtml(sample.label.slice(0, 2))}</div>
+              <div class="student-avatar">${escapeHtml(sample.name.slice(0, 1).toUpperCase())}</div>
               <div class="student-meta">
                 <div class="student-name">${escapeHtml(sample.name)}</div>
-                <div class="student-desc">${escapeHtml(sample.subtitle)}</div>
+                <div class="student-desc">${escapeHtml(sample.project)}</div>
               </div>
               <div class="student-status ${statusClass}">${released ? "✓" : "·"}</div>
             </button>
@@ -531,27 +533,20 @@ export function mountWorkbench({ root, selectionMenu, toastNode, state }) {
         ${activeSample.transcript.length === 0 ? `
           <div class="placeholder-note">
             当前样本未找到对应的 <code>data/training/${escapeHtml(activeSample.project)}/${escapeHtml(activeSample.sampleName)}.md</code>，
-            因此暂时只能展示右侧评估产物，无法建立左侧证据定位。
+            因此暂时只能展示评估产物，无法建立原文证据定位。
           </div>
         ` : `
-          <div class="timeline">
+          <div class="source-document">
             ${activeSample.transcript.map((entry) => {
               const relatedEvidence = evidenceByEntry.get(entry.id) || [];
-              const isHuman = entry.kind === "human";
-              const isSystem = entry.kind === "system" || entry.kind === "meta";
               const isActive = relatedEvidence.some((item) => item.spanId === state.activeSpanId);
+              const rawText = entry.rawContent || entry.content;
+              const bodyHtml = entry.kind === "document"
+                ? renderMarkdown(rawText)
+                : escapeHtml(rawText).replace(/\n/g, "<br>");
               return `
-                <article id="reader-entry-${entry.id}" class="entry ${isHuman ? "is-human" : ""} ${isSystem ? "is-system" : ""} ${isActive ? "is-active" : ""}" data-entry-id="${entry.id}">
-                  <div class="entry-meta">
-                    <div class="entry-role">
-                      <span class="role-badge">${escapeHtml(entry.roleTag)}</span>
-                      <span>${escapeHtml(entry.role)}</span>
-                      <span>·</span>
-                      <span>${escapeHtml(entry.phase)}</span>
-                    </div>
-                      <span>${escapeHtml(entry.time)}</span>
-                  </div>
-                  <p class="entry-content">${renderTextWithEvidenceHighlights(entry.rawContent || entry.content, relatedEvidence, state.activeSpanId)}</p>
+                <article id="reader-entry-${entry.id}" class="entry entry--document ${isActive ? "is-active" : ""}" data-entry-id="${entry.id}">
+                  <div class="entry-content markdown-body">${bodyHtml}</div>
                   ${relatedEvidence.length > 0 ? `
                     <div class="quote-stack">
                       ${relatedEvidence.map((evidence) => `
@@ -573,12 +568,12 @@ export function mountWorkbench({ root, selectionMenu, toastNode, state }) {
           </div>
         `}
         <div class="selection-hint">
-          在左侧阅读区选择任意文本，会弹出“新增证据”菜单。新增证据会即时写入当前维度观测点，并参与左右联动。
+          在原文展示区选择任意文本，会弹出“新增证据”菜单。新增证据会即时写入当前维度观测点，并参与证据联动。
         </div>
       </div>
       <footer class="panel-footer">
         <div class="footer-note">
-          当前样本：<strong>${escapeHtml(activeSample.name)}</strong> · 数据来自真实 <code>data/</code> 与 <code>artifacts/</code>
+          当前样本：<strong>${escapeHtml(activeSample.name)}</strong> · Task: ${escapeHtml(activeSample.project)}
         </div>
         <button class="ghost-btn" data-reset-manual>清空人工增补</button>
       </footer>
@@ -917,29 +912,18 @@ export function mountWorkbench({ root, selectionMenu, toastNode, state }) {
       }
 
       try {
-        const response = await fetch("/api/corrections", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            sample_id: sampleId,
-            score_corrections: scoreCorrections,
-            feedback_corrections: feedbackCorrections,
-            evidence_additions: evidenceAdditions,
-          }),
+        await submitCorrections({
+          sample_id: sampleId,
+          score_corrections: scoreCorrections,
+          feedback_corrections: feedbackCorrections,
+          evidence_additions: evidenceAdditions,
         });
-
-        const result = await response.json().catch(() => ({}));
-
-        if (!response.ok) {
-          showToast(`提交失败：${result.error || response.status}`);
-          return;
-        }
 
         const total = scoreCorrections.length + feedbackCorrections.length + evidenceAdditions.length;
         state.releasedStudents[sampleId] = true;
         showToast(`已提交 ${total} 条修改意见，下次评估时将自动应用。`);
-      } catch {
-        showToast("提交失败：无法连接到服务器，请确认 python scripts/server.py 正在运行。");
+      } catch (error) {
+        showToast(`提交失败：${error.message || "无法连接到服务器，请确认 python scripts/server.py 正在运行。"}`);
         return;
       }
 

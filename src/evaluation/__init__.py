@@ -1,33 +1,8 @@
-"""评测兼容层入口，保留历史 `src.evaluation` 导入路径。
+"""Evaluation runtime helpers for the MAS scoring pipeline."""
 
-实际实现已经迁移到 `src.outer_loop.metrics`，这里继续暴露同名能力，
-避免现有脚本、测试和外部调用在第二轮结构调整中被打断。
-"""
-
-from src.outer_loop.metrics.consistency import (
-    ConsistencyReport,
-    DimensionConsistency,
-    compute_consistency,
-    extract_hypotheses_from_trace,
-)
-from src.outer_loop.metrics.export import (
-    DimensionScoreRecord,
-    RunExport,
-    export_run,
-    export_snapshot,
-)
-from src.outer_loop.metrics.qwk import QWKResult, qwk, qwk_for_dimension
+from src.evaluation.runner import RunResult, run_single_eval
 
 __all__ = [
-    "ConsistencyReport",
-    "DimensionConsistency",
-    "DimensionScoreRecord",
-    "QWKResult",
-    "RunExport",
-    "compute_consistency",
-    "export_run",
-    "export_snapshot",
-    "extract_hypotheses_from_trace",
-    "qwk",
-    "qwk_for_dimension",
+    "RunResult",
+    "run_single_eval",
 ]

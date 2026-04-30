@@ -542,6 +542,7 @@ class PipelineRunner:
         task_ctx = scoring_context or {}
         material_ctx = task_ctx.get("material_context", {})
         evidence_focus = str(material_ctx.get("evidence_focus", ""))
+        material_description = str(material_ctx.get("description", ""))
         chunking_hints = str(task_ctx.get("chunking_hints") or "")
 
         # Build per-dimension extraction_hints lookup keyed by dimension code
@@ -736,6 +737,7 @@ class PipelineRunner:
                                 f"evidence_extraction_override_{plan.dimension_id}"
                             ),
                             evidence_focus=evidence_focus,
+                            material_description=material_description,
                             extraction_hints=_extraction_hints_by_code.get(
                                 str((rubric.dimension_by_id.get(plan.dimension_id) or {}).get("code", "")), ""
                             ),

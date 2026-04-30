@@ -1,29 +1,4 @@
-import { parseSampleMarkdown } from "./parseSampleMarkdown.js";
-
-const DIMENSION_META = {
-  A4: {
-    code: "A4",
-    title: "用户理解与需求洞察",
-    subtitle: "自动读取该维度的证据链、评分分歧、裁决记录与最终反馈。",
-  },
-  B1: {
-    code: "B1",
-    title: "系统架构",
-    subtitle: "自动读取该维度的证据链、评分分歧、裁决记录与最终反馈。",
-  },
-  C2: {
-    code: "C2",
-    title: "风险分析",
-    subtitle: "自动读取该维度的证据链、评分分歧、裁决记录与最终反馈。",
-  },
-  F2: {
-    code: "F2",
-    title: "伦理与社会责任",
-    subtitle: "自动读取该维度的证据链、评分分歧、裁决记录与最终反馈。",
-  },
-};
-
-const PREFERRED_DIMENSION_ORDER = ["A4", "B1", "C2", "F2"];
+import { parseSampleMarkdown } from "./parseSampleMarkdown.js?v=20260434";
 
 function resolveUrl(relativePath) {
   return new URL(relativePath, import.meta.url);
@@ -124,6 +99,18 @@ function parseRubricAnchors(yamlText) {
   return result;
 }
 
+function parseRubricSourceNames(markdownText) {
+  if (!markdownText) return {};
+  const result = {};
+  // Matches table rows like: | A4 用户需求与痛点分析* |
+  const pattern = /\|\s*([A-Z]\d+)\s+([^*|\r\n]+?)\*?\s*\|/g;
+  let match;
+  while ((match = pattern.exec(markdownText)) !== null) {
+    result[match[1].trim()] = match[2].trim();
+  }
+  return result;
+}
+
 async function listDirectories(relativePath) {
   const response = await fetch(resolveUrl(relativePath));
   if (!response.ok) {
@@ -164,24 +151,7 @@ function findTranscriptId(transcript, quote) {
 }
 
 function sortDimensionCodes(codes) {
-  return [...new Set(codes)].sort((left, right) => {
-    const leftIndex = PREFERRED_DIMENSION_ORDER.indexOf(left);
-    const rightIndex = PREFERRED_DIMENSION_ORDER.indexOf(right);
-    const normalizedLeft = leftIndex === -1 ? Number.MAX_SAFE_INTEGER : leftIndex;
-    const normalizedRight = rightIndex === -1 ? Number.MAX_SAFE_INTEGER : rightIndex;
-    if (normalizedLeft !== normalizedRight) {
-      return normalizedLeft - normalizedRight;
-    }
-    return left.localeCompare(right);
-  });
-}
-
-function resolveDimensionMeta(code) {
-  return DIMENSION_META[code] || {
-    code,
-    title: `${code} 维度`,
-    subtitle: "自动读取该维度的证据链、评分分歧、裁决记录与最终反馈。",
-  };
+  return [...new Set(codes)].sort((left, right) => left.localeCompare(right));
 }
 
 function extractWorkflowName(markdown) {
@@ -298,7 +268,7 @@ async function discoverArtifactCatalog() {
   return samples;
 }
 
-async function loadSample(project, sampleName, dimensionCodes) {
+async function loadSample(project, sampleName, dimensionCodes, dimensionNameMap = {}) {
   const sampleMarkdown = await fetchTextIfExists(`../../../data/training/${project}/${sampleName}.md`);
   const transcript = sampleMarkdown ? parseSampleMarkdown(sampleMarkdown) : [];
   const dimensionEntries = await Promise.all(dimensionCodes.map(async (code) => {
@@ -311,7 +281,6 @@ async function loadSample(project, sampleName, dimensionCodes) {
       fetchTextIfExists(`../../../configs/rubrics/dimension/${code.toLowerCase()}_rubric.yaml`),
     ]);
     const rubricAnchors = parseRubricAnchors(rubricYaml);
-
     return {
       code,
       observations: buildDimensionObservations(
@@ -331,7 +300,14 @@ async function loadSample(project, sampleName, dimensionCodes) {
     dimensionEntries.map(({ code, observations }) => [code, observations]),
   );
   const dimensionMeta = Object.fromEntries(
-    dimensionCodes.map((code) => [code, resolveDimensionMeta(code)]),
+    dimensionEntries.map(({ code, observations }) => [
+      code,
+      {
+        code,
+        title: dimensionNameMap[code] || observations[0]?.title || `${code} 维度`,
+        subtitle: "自动读取该维度的证据链、评分分歧、裁决记录与最终反馈。",
+      },
+    ]),
   );
   const dimensionScores = Object.fromEntries(
     dimensionEntries.map(({ code, observations }) => [code, weightedAverageScore(observations)]),
@@ -353,13 +329,19 @@ async function loadSample(project, sampleName, dimensionCodes) {
 }
 
 export async function loadReviewWorkbenchData() {
-  const catalog = await discoverArtifactCatalog();
+  const [catalog, rubricSourceText] = await Promise.all([
+    discoverArtifactCatalog(),
+    fetchTextIfExists("../../../configs/rubrics/source/rubric.md"),
+  ]);
+
   if (catalog.length === 0) {
     throw new Error("未在 artifacts/{task}/{sample_name}/{dim} 下发现可展示的 feedback.json 产物。");
   }
 
+  const dimensionNameMap = parseRubricSourceNames(rubricSourceText);
+
   const samples = await Promise.all(
-    catalog.map((item) => loadSample(item.project, item.sampleName, item.dimensionCodes)),
+    catalog.map((item) => loadSample(item.project, item.sampleName, item.dimensionCodes, dimensionNameMap)),
   );
 
   return {

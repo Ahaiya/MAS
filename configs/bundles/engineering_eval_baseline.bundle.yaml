@@ -1,7 +1,7 @@
 schema_version: "2.0"
 
 bundle_id: "engineering_eval_baseline"
-active_task_id: "maker_hackathon"
+active_task_id: "physics_experiment"
 
 rubric:
   source: "configs/rubrics/source/rubric.md"
