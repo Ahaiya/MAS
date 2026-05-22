@@ -7,19 +7,48 @@ __pycache__/
 *.pyo
 *.pyd
 *.egg-info/
+*.egg-info
+
+# Virtual environments
+.venv/
+venv/
+env/
 
 # Test / coverage artifacts
 .coverage
 .pytest_cache/
+htmlcov/
+
+# IDE configs
+.idea/
+.vscode/
+
+# Secrets — never commit actual keys
+# .env.example is intentionally tracked (template only)
+.env
+
+# Evaluation artifacts (runtime output)
+artifacts/**
+!artifacts/.gitkeep
+
+# Training / sample data (privacy-sensitive student materials)
+# Keep: data/training/maker_hackathon/sample.md  (demo)
+# Keep: data/training/{任务名称}/学生 ID.md        (placeholder template)
+data/training/physics_experiment/
+data/training/anchors/
 
 # Outer-loop dynamic artifacts
 experiments/snapshots/**
 !experiments/snapshots/.gitkeep
 experiments/probes/**
 !experiments/probes/.gitkeep
+experiments/processed_corrections/
+experiments/pending_corrections.json
 
-# Evaluation artifacts
-artifacts/**
+# Playwright CLI session files
+.playwright-cli/
 
-
-.playwright-cli
+# Build / dist
+dist/
+build/
+*.whl
