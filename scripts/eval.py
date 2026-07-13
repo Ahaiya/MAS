@@ -28,7 +28,7 @@ if str(_PROJECT_ROOT) not in sys.path:
 
 import typer
 
-from src.agents.config_resolver import run as resolve_bundle
+from src.config.compiler import ConfigCompiler
 from src.contracts.artifact_bundle import ProviderEntryConfig
 from src.evaluation.runner import run_single_eval
 from src.outer_loop.correction_agent import check_and_apply_corrections
@@ -496,7 +496,7 @@ def main(
     if dim.strip():
         typer.echo(f"[init] 维度配置: { _normalize_dim_id(dim).upper() }")
     try:
-        resolved = resolve_bundle(resolved_bundle_path)
+        resolved = ConfigCompiler().compile(resolved_bundle_path)
     finally:
         if temp_bundle_path is not None:
             temp_bundle_path.unlink(missing_ok=True)
@@ -568,7 +568,7 @@ def main(
                 bundle, dim.strip()
             )
             try:
-                resolved = resolve_bundle(resolved_bundle_path)
+                resolved = ConfigCompiler().compile(resolved_bundle_path)
             finally:
                 if temp_bundle_path is not None:
                     temp_bundle_path.unlink(missing_ok=True)

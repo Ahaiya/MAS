@@ -1,11 +1,11 @@
-"""Dev server for MAS frontend review workbench.
+"""MAS 前端审核台的开发服务器。
 
-Serves the project root as a static file server (with directory listing)
-and exposes a POST /api/corrections endpoint to receive human correction
-events from the frontend, writing them to experiments/pending_corrections.json.
+将项目根目录作为静态文件服务器（支持目录列表），并暴露
+POST /api/corrections 端点以接收前端的人工批改事件，
+将其写入 experiments/pending_corrections.json。
 
-Usage:
-    python scripts/server.py          # default port 8000
+用法：
+    python scripts/server.py          # 默认端口 8000
     python scripts/server.py --port 8080
 """
 
@@ -25,14 +25,14 @@ _ALLOWED_LIST_FIELDS = {"score_corrections", "feedback_corrections", "evidence_a
 
 
 class MASHandler(SimpleHTTPRequestHandler):
-    """Extends SimpleHTTPRequestHandler with the /api/corrections POST endpoint."""
+    """继承 SimpleHTTPRequestHandler，增加 /api/corrections POST 端点。"""
 
     def __init__(self, *args, **kwargs):
-        # Serve the project root so artifacts/, data/, configs/, frontend/ are all accessible.
+        # 服务项目根目录，使 artifacts/、data/、configs/、frontend/ 均可访问。
         super().__init__(*args, directory=str(_PROJECT_ROOT), **kwargs)
 
     # ------------------------------------------------------------------
-    # CORS helpers
+    # CORS 辅助方法
     # ------------------------------------------------------------------
 
     def _send_cors_headers(self) -> None:
@@ -45,13 +45,13 @@ class MASHandler(SimpleHTTPRequestHandler):
         self._send_cors_headers()
         self.end_headers()
 
-    # Inject CORS into every response (including static files).
+    # 为每个响应（包括静态文件）注入 CORS 头。
     def end_headers(self) -> None:
         self._send_cors_headers()
         super().end_headers()
 
     # ------------------------------------------------------------------
-    # POST dispatcher
+    # POST 分发
     # ------------------------------------------------------------------
 
     def do_POST(self) -> None:  # noqa: N802
@@ -102,12 +102,12 @@ class MASHandler(SimpleHTTPRequestHandler):
         if not isinstance(evidence_additions, list):
             evidence_additions = []
 
-        # Skip if nothing to record.
+        # 没有需要记录的内容时跳过。
         if not score_corrections and not feedback_corrections and not evidence_additions:
             self._json_response(200, {"ok": True, "sample_id": sample_id, "skipped": True})
             return
 
-        # Read existing pending file (or start fresh).
+        # 读取已有的待处理文件（或从头开始）。
         if _PENDING_PATH.exists():
             try:
                 existing = json.loads(_PENDING_PATH.read_text(encoding="utf-8"))
@@ -120,7 +120,7 @@ class MASHandler(SimpleHTTPRequestHandler):
         if not isinstance(corrections_list, list):
             corrections_list = []
 
-        # Upsert: replace any previous entry for the same sample.
+        # 更新或插入：替换同一样本此前的记录。
         corrections_list = [c for c in corrections_list if c.get("sample_id") != sample_id]
 
         event = {
@@ -152,7 +152,7 @@ class MASHandler(SimpleHTTPRequestHandler):
         )
         self._json_response(200, {"ok": True, "sample_id": sample_id, "total_items": n_total})
 
-    # Silence request logs unless verbose.
+    # 默认静默请求日志。
     def log_message(self, format: str, *args: object) -> None:
         pass
 

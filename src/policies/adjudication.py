@@ -1,20 +1,18 @@
 """
 裁决策略模块，负责按配置评估冲突触发器并生成冲突记录。
 
-Adjudication Policy — config-driven trigger evaluation.
+Adjudication Policy — 配置驱动的触发器评估。
 
-Evaluates adjudication triggers from PolicySnapshot configuration.
-Supports three trigger types:
+从 PolicySnapshot 配置中评估裁决触发器。
+支持三种触发器类型：
 
-- score_distance: Conflict when |score1 - score2| exceeds a threshold.
-- pattern_match: Conflict when cross-dimension score patterns match
-  (e.g., cusp rule).
-- adjacent_drift: Conflict when adjacent disagreements accumulate across
-  multiple dimensions in a consistent direction.
+- score_distance: 当 |score1 - score2| 超过阈值时发生冲突。
+- pattern_match: 当跨维度分数模式匹配时发生冲突
+  （例如，cusp rule）。
+- adjacent_drift: 当相邻分歧在多个维度上沿一致方向累积时发生冲突。
 
-All thresholds, patterns, dimension lists, and score values are read
-from config — no business logic values are hardcoded here.
-"""
+所有阈值、模式、维度列表和分数值均从配置中读取
+—— 此处没有硬编码任何业务逻辑值。"""
 
 from __future__ import annotations
 
@@ -35,7 +33,7 @@ def _hid(seed: str, length: int = 12) -> str:
 
 
 def _compare(operator: str, threshold: int, actual: int) -> bool:
-    """Evaluate a comparison operator from config."""
+    """评估来自 config 的比较运算符。"""
     if operator == ">":
         return actual > threshold
     if operator == ">=":
@@ -52,7 +50,7 @@ def _compare(operator: str, threshold: int, actual: int) -> bool:
 
 
 def _action_to_resolution_path(action: str) -> ResolutionPath:
-    """Map a config action string to a ResolutionPath."""
+    """将 config 动作字符串映射到 ResolutionPath。"""
     mapping = {
         "invoke_resolution": ResolutionPath.THIRD_RATER,
         "re_extract": ResolutionPath.RE_EXTRACT,
@@ -65,7 +63,7 @@ def _action_to_resolution_path(action: str) -> ResolutionPath:
 def _dimension_matches(
     dim_id: str, applies_to: List[str], exclusions: List[str]
 ) -> bool:
-    """Check if a dimension is applicable for a trigger."""
+    """检查某个维度是否适用于触发器。"""
     if dim_id in exclusions:
         return False
     if "*" in applies_to:
@@ -76,26 +74,25 @@ def _dimension_matches(
 def _group_hypotheses_by_rater(
     hypotheses: List[ScoreHypothesis],
 ) -> Dict[str, Dict[str, ScoreHypothesis]]:
-    """Group hypotheses by rater_id then dimension_id."""
+    """按 rater_id 然后 dimension_id 对假设进行分组。"""
     by_rater: Dict[str, Dict[str, ScoreHypothesis]] = {}
     for hyp in hypotheses:
         by_rater.setdefault(hyp.rater_id, {})[hyp.dimension_id] = hyp
     return by_rater
 
 
-# ── Score Distance Trigger ────────────────────────────────────────────────────
+# ── 分数差距触发器 ────────────────────────────────────────────────────────────
 
 
 def evaluate_score_distance_trigger(
     trigger: Dict[str, Any],
     hypotheses_by_dim: Dict[str, List[ScoreHypothesis]],
 ) -> List[ConflictRecord]:
-    """Evaluate a score_distance trigger against hypotheses.
-
-    For each applicable dimension, checks all pairs of hypotheses.
-    If |score1 - score2| violates the threshold condition, emits a
-    ConflictRecord.
-    """
+    """针对假设评估 score_distance 触发器。
+    
+        对于每个适用的维度，检查所有假设对。
+        如果 |score1 - score2| 违反阈值条件，则生成一个
+        ConflictRecord。"""
     trigger_id = trigger.get("trigger_id", "unknown_trigger")
     applies_to = trigger.get("applies_to_dimensions", ["*"])
     exclusions = trigger.get("exclusions", [])
@@ -139,7 +136,7 @@ def evaluate_score_distance_trigger(
     return conflicts
 
 
-# ── Pattern Match (Cusp) Trigger ──────────────────────────────────────────────
+# ── 模式匹配（尖点）触发器 ────────────────────────────────────────────────────
 
 
 def _check_cusp_pattern(
@@ -148,15 +145,14 @@ def _check_cusp_pattern(
     expected_all: List[int],
     check_one_minus_one: bool,
 ) -> bool:
-    """Check if (scores_a, scores_b) or vice versa matches the cusp pattern.
-
-    One rater must match expected_all exactly.
-    If check_one_minus_one is True, the other rater must have exactly
-    one score that's 1 less than the corresponding expected value,
-    with all other scores matching expected.
-
-    All score values come from config — none are hardcoded here.
-    """
+    """检查 (scores_a, scores_b) 或反之是否匹配 cusp pattern。
+    
+        一个评分者必须完全匹配 expected_all。
+        如果 check_one_minus_one 为 True，另一个评分者必须恰好有
+        一个分数比对应的期望值小 1，
+        且所有其他分数均与期望匹配。
+    
+        所有分数值均来自 config —— 此处没有任何硬编码。"""
 
     def matches_expected(scores: List[int]) -> bool:
         return scores == expected_all
@@ -176,11 +172,10 @@ def evaluate_pattern_match_trigger(
     trigger: Dict[str, Any],
     hypotheses: List[ScoreHypothesis],
 ) -> List[ConflictRecord]:
-    """Evaluate a pattern_match (cusp) trigger against hypotheses.
-
-    Checks if two raters' scores across specified dimensions match a
-    configured cross-dimension pattern.
-    """
+    """针对假设评估 pattern_match (cusp) 触发器。
+    
+        检查两个评分者在指定维度上的分数是否匹配
+        配置的跨维度模式。"""
     trigger_id = trigger.get("trigger_id", "unknown_trigger")
     applies_to = trigger.get("applies_to_dimensions", [])
     exclusions = trigger.get("exclusions", [])
@@ -257,7 +252,7 @@ def evaluate_pattern_match_trigger(
     return conflicts
 
 
-# ── Adjacent Drift Trigger ────────────────────────────────────────────────────
+# ── 相邻漂移触发器 ────────────────────────────────────────────────────────────
 
 
 def _emit_adjacent_drift_conflicts(
@@ -267,7 +262,7 @@ def _emit_adjacent_drift_conflicts(
     r_b: str,
     drifted_dims: List[Tuple[str, ScoreHypothesis, ScoreHypothesis, int]],
 ) -> List[ConflictRecord]:
-    """Build one conflict per drifted dimension for a qualifying drift pattern."""
+    """为符合条件的漂移模式按每个漂移维度构建一个冲突。"""
     direction = "higher" if drifted_dims[0][3] > 0 else "lower"
     matched_dims = [dim_id for dim_id, *_ in drifted_dims]
     conflict_detail = (
@@ -296,13 +291,12 @@ def evaluate_adjacent_drift_trigger(
     trigger: Dict[str, Any],
     hypotheses: List[ScoreHypothesis],
 ) -> List[ConflictRecord]:
-    """Evaluate adjacent one-point drift across multiple dimensions.
-
-    A trigger matches when a pair of raters has enough exactly-adjacent
-    disagreements across the configured dimensions. When
-    ``require_same_direction`` is enabled, the matched disagreements must
-    all point in the same direction within the emitted group.
-    """
+    """评估跨多个维度的相邻一分漂移。
+    
+        当一对评分者在配置的维度上具有足够的完全相邻
+        分歧时，触发器匹配。当启用
+        ``require_same_direction`` 时，匹配的分歧必须
+        在生成的组内全部指向同一方向。"""
     trigger_id = trigger.get("trigger_id", "unknown_trigger")
     applies_to = trigger.get("applies_to_dimensions", ["*"])
     exclusions = trigger.get("exclusions", [])
@@ -379,27 +373,26 @@ def evaluate_adjacent_drift_trigger(
     return conflicts
 
 
-# ── Evaluate All Triggers ─────────────────────────────────────────────────────
+# ── 评估所有触发器 ────────────────────────────────────────────────────────────
 
 
 def evaluate_all_triggers(
     hypotheses: List[ScoreHypothesis],
     policy: PolicySnapshot,
 ) -> List[ConflictRecord]:
-    """Evaluate all configured adjudication triggers.
-
-    Reads triggers from ``policy.adjudication_policy["triggers"]`` and
-    evaluates each by type. Deduplicates by conflict_id and by
-    dimension+hypothesis pair so the highest-priority trigger wins when
-    multiple rules match the same disagreement.
-
-    Args:
-        hypotheses: All ScoreHypotheses from the scoring stage.
-        policy: PolicySnapshot containing trigger definitions.
-
-    Returns:
-        Deduplicated list of ConflictRecord objects.
-    """
+    """评估所有配置的裁决触发器。
+    
+        从 ``policy.adjudication_policy["triggers"]`` 读取触发器，并
+        按类型评估每个触发器。通过 conflict_id 和
+        dimension+hypothesis 对进行去重，以便在
+        多条规则匹配同一分歧时，优先级最高的触发器胜出。
+    
+        Args:
+            hypotheses: 来自评分阶段的所有 ScoreHypotheses。
+            policy: 包含触发器定义的 PolicySnapshot。
+    
+        Returns:
+            去重后的 ConflictRecord 对象列表。"""
     triggers = policy.adjudication_policy.get("triggers", [])
     sorted_triggers = sorted(triggers, key=lambda t: t.get("priority", 0))
 

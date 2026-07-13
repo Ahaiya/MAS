@@ -1,18 +1,16 @@
 """
 观察构建 Agent，负责把证据片段聚合成维度级观察摘要。
 
-Observation Builder — deterministic DimensionObservation assembly.
+Observation Builder — 确定性的 DimensionObservation 组装。
 
-Groups EvidenceSpans by facet IDs and support polarity, then builds one
-FacetFinding per required facet from the CoveragePlan.
+按 facet ID 和支持极性对 EvidenceSpans 进行分组，然后从 CoveragePlan 中为每个必需的 facet 构建一个 FacetFinding。
 
-Observation confidence is derived from facet evidence coverage:
-  - All required facets have evidence  -> HIGH
-  - Some required facets have evidence -> MEDIUM
-  - No required facets have evidence   -> LOW
+观察置信度源自 facet 证据覆盖率：
+  - 所有必需的 facet 都有证据  -> HIGH
+  - 部分必需的 facet 有证据 -> MEDIUM
+  - 没有必需的 facet 有证据   -> LOW
 
-Observation ID is derived from the plan ID and span IDs (deterministic).
-"""
+观察 ID 源自 plan ID 和 span ID（确定性）。"""
 
 from __future__ import annotations
 
@@ -44,15 +42,14 @@ def _dedupe_preserve(items: List[str]) -> List[str]:
 
 
 def run(spans: List[EvidenceSpan], plan: CoveragePlan) -> DimensionObservation:
-    """Build a DimensionObservation from evidence spans and coverage plan.
-
-    Args:
-        spans: EvidenceSpans extracted for this dimension.
-        plan: The CoveragePlan that defines required facets.
-
-    Returns:
-        A DimensionObservation with FacetFindings for every required facet.
-    """
+    """根据证据 span 和覆盖计划构建 DimensionObservation。
+    
+        Args:
+            spans: 为此维度提取的 EvidenceSpans。
+            plan: 定义必需 facet 的 CoveragePlan。
+    
+        Returns:
+            一个为每个必需 facet 包含 FacetFindings 的 DimensionObservation。"""
     target_unit_ids = set(plan.target_unit_ids)
     coverage_miss_span_ids = [
         span.span_id
@@ -94,7 +91,7 @@ def run(spans: List[EvidenceSpan], plan: CoveragePlan) -> DimensionObservation:
         if not supporting and not counter:
             uncertainty_notes.append(f"facet '{facet_id}' has no evidence")
 
-    # Determine confidence from facet coverage
+    # 根据 facet 覆盖率确定置信度
     covered = sum(
         1
         for ff in facet_findings
@@ -111,7 +108,7 @@ def run(spans: List[EvidenceSpan], plan: CoveragePlan) -> DimensionObservation:
     if confidence == ObservationConfidence.LOW:
         uncertainty_notes.append("observation has significant coverage gaps")
 
-    # Deterministic observation_id from plan + sorted span IDs
+    # 根据 plan + 排序后的 span ID 生成确定性的 observation_id
     span_seed = ":".join(sorted(s.span_id for s in spans))
     observation_id = f"obs-{_hid(f'{plan.plan_id}:{span_seed}')}"
 

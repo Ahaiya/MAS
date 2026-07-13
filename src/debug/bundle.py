@@ -1,17 +1,15 @@
 """调试包写入器，负责为单次运行输出可回放、可视化的调试产物。
 
-Debug bundle writer for development-time pipeline inspection.
+调试包写入器，用于开发时的 pipeline 检查。
 
-Writes a self-contained debug bundle for a single evaluation run:
-- events.jsonl        : ordered execution and LLM-call events
-- node_artifacts/     : per-node input/output snapshots
-- llm_calls/          : per-call metadata plus prompt/response blobs
-- summary.json        : viewer-friendly aggregate index
-- viewer/index.html   : static HTML inspector
+为单次评估运行写入一个自包含的调试包：
+- events.jsonl        : 有序的执行和 LLM-call 事件
+- node_artifacts/     : 每个节点的输入/输出快照
+- llm_calls/          : 每次调用的元数据以及 prompt/response blobs
+- summary.json        : 适合查看器的聚合索引
+- viewer/index.html   : 静态 HTML 检查器
 
-The bundle is intended for local debugging only. It is not used in normal
-production execution paths.
-"""
+该调试包仅供本地调试使用。它不在正常的生产执行路径中使用。"""
 
 from __future__ import annotations
 
@@ -35,7 +33,7 @@ def _preview_text(value: str, limit: int = 160) -> str:
 
 
 class DebugBundleWriter:
-    """Persist a development-only debug bundle for one pipeline run."""
+    """为一个 pipeline 运行持久化仅供开发的调试包。"""
 
     def __init__(
         self,

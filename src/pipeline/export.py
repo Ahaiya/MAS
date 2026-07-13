@@ -1,21 +1,20 @@
 """
 流水线导出模块，负责把最终决策整理成稳定的结构化输出。
 
-Pipeline Export — structured output assembly.
+Pipeline Export — 结构化输出组装。
 
-Explicitly separates trait-level dimension outputs from the optional
-aggregate indicator output. Consumers (e.g., feedback assembler, evaluation
-harness) should reference this module to access the canonical output format.
+显式地将 trait 级别的维度输出与可选的
+聚合指标输出分离。消费者（例如 feedback assembler、evaluation
+harness）应参考此模块以访问规范的输出格式。
 
 Design:
-- build_pipeline_output() takes FinalDimensionDecision[] and an optional
-  CompositeDecision, and returns a plain dict with three top-level keys:
-    * "trait_scores"    — list of per-dimension score entries
-    * "indicator_score" — aggregate indicator score payload, or None
-    * "composite"       — compatibility alias of indicator_score, or None
-- No business logic or aggregation formula lives here; this module only
-  assembles the output structure from already-computed results.
-"""
+- build_pipeline_output() 接收 FinalDimensionDecision[] 和一个可选的
+  CompositeDecision，并返回一个带有三个顶级键的普通 dict：
+    * "trait_scores"    — 每个维度分数条目的列表
+    * "indicator_score" — 聚合指标分数负载，或 None
+    * "composite"       — indicator_score 的兼容别名，或 None
+- 这里不包含业务逻辑或聚合公式；此模块仅
+  根据已计算的结果组装输出结构。"""
 
 from __future__ import annotations
 
@@ -29,12 +28,11 @@ def build_indicator_score_payload(
     *,
     bundle_metadata: Optional[Dict[str, Any]] = None,
 ) -> Optional[Dict[str, Any]]:
-    """Serialize the aggregate score using indicator-centric naming.
-
-    `composite` remains the internal contract type, but for engineering
-    evaluation the user-facing meaning is "selected indicator score"
-    (for example, the A4 aggregate score across its observation points).
-    """
+    """使用以指标为中心的命名方式序列化聚合分数。
+    
+        `composite` 仍然是内部契约类型，但对于工程
+        评估，面向用户的含义是“所选指标分数”
+        （例如，跨越其观察点的 A4 聚合分数）。"""
     if composite is None:
         return None
 
@@ -73,18 +71,17 @@ def build_pipeline_output(
     *,
     bundle_metadata: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
-    """Assemble the final pipeline output dict.
-
-    Args:
-        decisions: Authoritative dimension-level decisions.
-        composite: Optional aggregated composite score.
-
-    Returns:
-        Dict with:
-            "trait_scores": list of per-dimension score dicts
-            "indicator_score": indicator-centric aggregate payload or None
-            "composite": compatibility alias for legacy readers
-    """
+    """组装最终的流水线输出 dict。
+    
+        Args:
+            decisions: 权威的维度级决策。
+            composite: 可选的聚合 composite 分数。
+    
+        Returns:
+            包含以下内容的 dict：
+                "trait_scores": 每个维度分数 dict 的列表
+                "indicator_score": 以指标为中心的聚合负载或 None
+                "composite": 面向旧版读者的兼容别名"""
     trait_scores = [
         {
             "dimension_id": d.dimension_id,

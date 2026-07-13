@@ -1,19 +1,18 @@
-#!/usr/bin/env python3
-"""Validate configuration bundles.
+# !/usr/bin/env python3
+"""验证配置 bundles。
 
-Recommended entry:
+推荐入口：
   python -m scripts config validate --bundle ...
 
-Compiles a bundle YAML file through the full resolver/compiler pipeline
-and reports version closure, schema validation, and freeze hash.
-"""
+通过完整的 resolver/compiler pipeline 编译 bundle YAML 文件
+并报告 version closure、schema validation 和 freeze hash。"""
 
 import sys
 from pathlib import Path
 
 import typer
 
-# Ensure project root is on sys.path when run as a script
+# 当作为脚本运行时，确保项目根目录在 sys.path 上
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from src.config.compiler import ConfigCompiler, ConfigCompileError
@@ -39,11 +38,10 @@ def main(
         help="Show detailed validation results.",
     ),
 ) -> None:
-    """Validate a configuration bundle.
-
-    Loads the bundle, resolves all artifact references, validates each
-    against its schema, computes freeze hashes, and reports the result.
-    """
+    """验证配置 bundle。
+    
+        加载 bundle，解析所有 artifact 引用，根据各自的
+        schema 验证每一项，计算 freeze hashes，并报告结果。"""
     if not bundle.exists():
         typer.echo(f"ERROR: Bundle file not found: {bundle}", err=True)
         raise typer.Exit(code=1)
@@ -56,7 +54,7 @@ def main(
     try:
         resolved = compiler.compile(bundle)
     except ConfigCompileError as exc:
-        typer.echo(f"FAIL: Bundle validation failed.", err=True)
+        typer.echo("FAIL: Bundle validation failed.", err=True)
         typer.echo(f"      {exc}", err=True)
         raise typer.Exit(code=1)
 

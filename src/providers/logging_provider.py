@@ -1,26 +1,25 @@
 """日志 Provider 包装器，负责把每次 LLM 调用的关键信息输出到终端和调试包。
 
-LoggingProvider — transparent wrapper that prints LLM call details to the terminal.
+LoggingProvider — 透明包装器，将 LLM 调用详情打印到终端。
 
-Wraps any BaseProvider and logs each complete() call without modifying the
-underlying provider or any pipeline code.  Printed fields per call:
+包装任何 BaseProvider，并记录每次 complete() 调用，且不修改
+底层 provider 或任何 pipeline 代码。每次调用打印的字段：
 
-  Pre-call:   label  call#  model  prompt-char-count  [json] flag
-  Post-call:  elapsed  prompt_tokens+completion_tokens=total  response preview
+  调用前：   label  call#  model  prompt-char-count  [json] flag
+  调用后：  elapsed  prompt_tokens+completion_tokens=total  响应预览
 
-Cumulative stats (call_count, total_tokens, total_elapsed) are available as
-properties so callers can compute per-essay deltas:
+累计统计（call_count, total_tokens, total_elapsed）作为属性可用，
+以便调用者可以计算每篇文章的增量（delta）：
 
     before_calls = p.call_count
     runner.run(request)
     delta = p.call_count - before_calls
 
-Usage:
+用法：
     from src.providers.logging_provider import LoggingProvider
 
     provider = LoggingProvider(real_provider, label="rater_1")
-    # provider is a drop-in replacement for real_provider in PipelineRunner
-"""
+    # provider 是 PipelineRunner 中 real_provider 的直接替代品"""
 
 from __future__ import annotations
 
@@ -37,18 +36,18 @@ if TYPE_CHECKING:
 
 
 def _smart_preview(content: str) -> str:
-    """Parse JSON response and return a concise, readable one-line preview."""
+    """解析 JSON 响应并返回简洁、可读的单行预览。"""
     try:
         data = json.loads(content)
     except Exception:
         snippet = content[:60].replace("\n", " ").replace("\r", " ")
         return f'"{snippet}"'
 
-    # Scoring hypothesis: show proposed score
+    # 评分假设：显示建议分数
     if "proposed_score" in data:
         return f"score={data['proposed_score']}"
 
-    # Evidence extraction: show span count + first few words from distinct spans
+    # 证据提取：显示 span 数量 + 来自不同 span 的前几个词
     if "evidence_spans" in data:
         spans = data["evidence_spans"]
         n = len(spans)
@@ -62,13 +61,13 @@ def _smart_preview(content: str) -> str:
                 snippets.append('"' + " ".join(words) + '…"')
         return f"{n} spans: {', '.join(snippets)}"
 
-    # Fallback
+    # 回退
     snippet = content[:60].replace("\n", " ").replace("\r", " ")
     return f'"{snippet}"'
 
 
 class LoggingProvider(BaseProvider):
-    """Wraps a BaseProvider; logs each complete() call to *file* (default: stdout)."""
+    """包装 BaseProvider；将每次 complete() 调用记录到 *file*（默认：stdout）。"""
 
     def __init__(
         self,
@@ -79,12 +78,11 @@ class LoggingProvider(BaseProvider):
     ) -> None:
         """
         Args:
-            inner: The real provider to delegate to.
-            label: Human-readable stage/rater name shown in every log line,
-                   e.g. "rater_1", "evidence_extraction", "feedback".
-            file:  Output stream.  Defaults to sys.stdout so output is
-                   interleaved with typer.echo() without buffering issues.
-        """
+            inner: 要委托的真实 provider。
+            label: 每行日志中显示的易于阅读的阶段/评分者名称，
+                   例如 "rater_1", "evidence_extraction", "feedback"。
+            file:  输出流。默认为 sys.stdout，以便输出与
+                   typer.echo() 交错且无缓冲问题。"""
         self._inner = inner
         self._label = label
         self._file = file if file is not None else sys.stdout
@@ -109,15 +107,15 @@ class LoggingProvider(BaseProvider):
             self._call_count += 1
             call_no = self._call_count
 
-        # Resolve model name consistently across nested wrappers.
-        # Priority: request override > wrapped provider chain > "?"
+        # 在嵌套包装器之间一致地解析模型名称。
+        # 优先级：request override > wrapped provider chain > "?"
         model = request.model_id or self.model_id
 
         structured_tag = "  [json]" if request.output_schema else ""
         prompt_len = len(request.prompt)
         label_col = f"{self._label:<22}" if self._label else f"{'llm':<22}"
 
-        # ── Pre-call line ──────────────────────────────────────────────────────
+        # ── 调用前行 ──────────────────────────────────────────────────────
         print(
             f"         ▶ {label_col}  #{call_no:<3}  "
             f"{model:<20}  {prompt_len:>5} p-chars{structured_tag}",
@@ -169,7 +167,7 @@ class LoggingProvider(BaseProvider):
 
         u = response.usage
 
-        # ── Post-call line ─────────────────────────────────────────────────────
+        # ── 调用后行 ─────────────────────────────────────────────────────
         token_str = f"{u.prompt_tokens}+{u.completion_tokens}={u.total_tokens} tok"
         preview = _smart_preview(response.content)
         print(
@@ -194,11 +192,11 @@ class LoggingProvider(BaseProvider):
 
         return response
 
-    # ── Cumulative stats ───────────────────────────────────────────────────────
+    # ── 累计统计 ───────────────────────────────────────────────────────
 
     @property
     def model_id(self) -> str:
-        """Model identifier of the wrapped provider."""
+        """被包装 provider 的模型标识符。"""
         p = self._inner
         visited: set[int] = set()
         while p is not None and id(p) not in visited:
@@ -214,19 +212,19 @@ class LoggingProvider(BaseProvider):
 
     @property
     def call_count(self) -> int:
-        """Total number of complete() calls made through this wrapper."""
+        """通过此包装器进行的 complete() 调用总数。"""
         return self._call_count
 
     @property
     def total_tokens(self) -> int:
-        """Cumulative total tokens across all calls."""
+        """所有调用累计的 token 总数。"""
         return self._total_tokens
 
     @property
     def total_elapsed(self) -> float:
-        """Cumulative wall-clock seconds spent inside complete() calls."""
+        """花在 complete() 调用内部的累计挂钟秒数。"""
         return self._total_elapsed
 
     def set_debug_writer(self, debug_writer: "DebugBundleWriter | None") -> None:
-        """Attach or detach the per-run debug bundle writer."""
+        """附加或分离每次运行的调试包写入器。"""
         self._debug_writer = debug_writer

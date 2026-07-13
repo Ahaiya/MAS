@@ -1,5 +1,4 @@
 """引用定位工具，负责把抽取到的引文重新对齐到原文字符区间。"""
-
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -12,7 +11,7 @@ from src.contracts.request_models import TextUnit
 
 @dataclass(frozen=True)
 class QuoteMatchResult:
-    """Result of matching an extracted quote back to the source document."""
+    """将抽取到的引文匹配回源文档的结果。"""
 
     start_offset: Optional[int]
     end_offset: Optional[int]
@@ -22,7 +21,7 @@ class QuoteMatchResult:
 
 
 def _normalize_with_map(text: str) -> Tuple[str, List[int]]:
-    """Collapse whitespace to single spaces and keep normalized->raw index map."""
+    """将空白字符折叠为单个空格，并保留 normalized->raw 的索引映射。"""
     tokens = list(re.finditer(r"\S+", text))
     if not tokens:
         return "", []
@@ -47,14 +46,14 @@ def _normalize_with_map(text: str) -> Tuple[str, List[int]]:
 
 
 def _map_offsets(norm_start: int, norm_end: int, index_map: Sequence[int]) -> Tuple[int, int]:
-    """Convert normalized offsets back into source text offsets."""
+    """将 normalized offsets 转换回源文本的 offsets。"""
     start = index_map[norm_start]
     end = index_map[norm_end - 1] + 1
     return start, end
 
 
 def _candidate_starts(quote: str, text: str) -> List[int]:
-    """Generate promising fuzzy window starts using matching blocks alignment."""
+    """使用 matching blocks alignment 生成潜在的 fuzzy window 起点。"""
     if not text:
         return []
     if not quote:
@@ -84,7 +83,7 @@ def _fuzzy_find(
     *,
     min_ratio: float = 0.85,
 ) -> Optional[Tuple[int, int, float]]:
-    """Find a high-similarity window in text for quote."""
+    """在文本中为 quote 寻找高相似度的 window。"""
     if not quote or not normalized_text:
         return None
 
@@ -113,7 +112,7 @@ def _locate_unit_id(
     end_offset: int,
     text_units: Sequence[TextUnit],
 ) -> Optional[str]:
-    """Return unit_id with maximum overlap against [start_offset, end_offset)."""
+    """返回与 [start_offset, end_offset) 重叠度最大的 unit_id。"""
     best_unit_id: Optional[str] = None
     best_overlap = -1
     best_seq = float("inf")
@@ -148,7 +147,7 @@ def match_quote(
     normalized_text: str,
     text_units: List[TextUnit],
 ) -> QuoteMatchResult:
-    """Locate quote in normalized_text and return offsets + owning unit_id."""
+    """在 normalized_text 中定位 quote 并返回 offsets + 所属的 unit_id。"""
     if not quote or not normalized_text:
         return _unmatched()
 
@@ -164,7 +163,7 @@ def match_quote(
             confidence=1.0,
         )
 
-    # Prepare normalized forms for level 2 and 3.
+    # 为 level 2 和 3 准备 normalized forms。
     normalized_doc, doc_map = _normalize_with_map(normalized_text)
     normalized_quote, _ = _normalize_with_map(quote)
     if not normalized_doc or not normalized_quote or not doc_map:

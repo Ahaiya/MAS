@@ -1,12 +1,12 @@
 """
 反馈组装 Agent，负责把最终裁决结果整理成稳定的用户反馈结构。
 
-Feedback Assembler — unified feedback output for real LLM runs.
+Feedback Assembler — real LLM 运行的统一反馈输出。
 
-This is the canonical feedback entrypoint for the pipeline. It always returns
-the same top-level structure and the same per-dimension fields.
+这是流水线标准的反馈入口点。它始终返回
+相同的顶层结构和相同的按维度字段。
 
-Canonical output schema (Dict[str, Any]):
+标准输出 schema (Dict[str, Any]):
   {
     "dimensions": {
       "<dimension_id>": {
@@ -25,8 +25,7 @@ Canonical output schema (Dict[str, Any]):
       ...
     },
     "generated_at": str,
-  }
-"""
+  }"""
 
 from __future__ import annotations
 
@@ -72,7 +71,7 @@ def _render_commentary(
     audience: str = "evaluator",
     feedback_hints: str = "",
 ) -> str:
-    """Render commentary through a configured real provider."""
+    """通过配置的 real provider 渲染评论。"""
 
     template_used = override_template or template
     prompt_text = build_explanation_prompt(
@@ -124,7 +123,7 @@ def _render_commentary(
 
 
 def _fallback_observation(decision: FinalDimensionDecision) -> DimensionObservation:
-    """Build a minimal observation when no observation is available for a dimension."""
+    """当某个维度没有可用的 observation 时，构建一个最小的 observation。"""
     return DimensionObservation(
         observation_id=f"obs-feedback-fallback-{decision.dimension_id}",
         document_id="unknown",
@@ -142,7 +141,7 @@ def _find_primary_hypothesis(
     hyp_by_id: Dict[str, ScoreHypothesis],
     hyps_by_dim: Dict[str, List[ScoreHypothesis]],
 ) -> Optional[ScoreHypothesis]:
-    """Find the scorer hypothesis that best matches a final decision."""
+    """寻找最匹配最终决策的 scorer hypothesis。"""
     primary = hyp_by_id.get(decision.primary_hypothesis_id)
     if primary is not None:
         return primary
@@ -194,26 +193,25 @@ def run(
     audience: str = "evaluator",
     scoring_context: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
-    """Assemble a unified feedback dict from final scoring decisions.
-
-    Args:
-        decisions: FinalDimensionDecision objects (one per dimension).
-        observations: DimensionObservation objects for optional evidence counts.
-        spans: EvidenceSpan objects for commentary and citation rendering.
-        hypotheses: Optional ScoreHypothesis objects for scorer rationale lookup.
-        rubric: RubricSnapshot for dimension metadata.
-        policy: PolicySnapshot containing explanation policy config.
-        provider: Real provider used to generate commentary text.
-        template: Explanation prompt template paired with provider.
-        override_templates: Optional per-dimension explanation override templates.
-        evidence_focus: Optional task-level evidence focus string.
-        audience: Feedback audience ("student" or "evaluator").
-
-    Returns:
-        Unified feedback dict with stable keys across deterministic and real runs.
-    """
-    # Backward compatibility:
-    # legacy calls use run(decisions, observations, spans, rubric, policy, ...)
+    """从最终评分决策组装统一的 feedback dict。
+    
+        Args:
+            decisions: FinalDimensionDecision 对象（每个维度一个）。
+            observations: DimensionObservation 对象，用于可选的 evidence 计数。
+            spans: EvidenceSpan 对象，用于评论和引用渲染。
+            hypotheses: 可选的 ScoreHypothesis 对象，用于 scorer 原理查找。
+            rubric: RubricSnapshot，用于维度元数据。
+            policy: PolicySnapshot，包含解释策略配置。
+            provider: 用于生成评论文本的 Real provider。
+            template: 与 provider 配对的 Explanation prompt 模板。
+            override_templates: 可选的按维度解释覆盖模板。
+            evidence_focus: 可选的任务级 evidence focus 字符串。
+            audience: 反馈受众（"student" 或 "evaluator"）。
+    
+        Returns:
+            在 deterministic 和 real 运行中具有稳定键的统一 feedback dict。"""
+    # 向后兼容：
+    # 遗留调用使用 run(decisions, observations, spans, rubric, policy, ...)
     if (
         isinstance(hypotheses, RubricSnapshot)
         and isinstance(rubric, PolicySnapshot)
@@ -246,7 +244,7 @@ def run(
     max_length = _max_commentary_length(resolved_policy)
     overrides = override_templates or {}
 
-    # Build feedback_hints lookup keyed by dimension code (e.g. "A4-1")
+    # 构建以维度代码（例如 "A4-1"）为键的 feedback_hints 查找表
     feedback_hints_by_code: Dict[str, str] = {}
     raw_ctx = scoring_context if isinstance(scoring_context, dict) else {}
     for entry in (raw_ctx.get("scoring_context") or []):

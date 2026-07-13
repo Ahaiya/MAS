@@ -1,17 +1,14 @@
 """
 Prompt 构造器，负责把 typed contract 映射为各阶段模板可渲染的上下文。
 
-Node prompt builders — map typed contracts to Jinja2 context dicts.
+Node prompt 构造器 —— 将 typed contract 映射为 Jinja2 上下文字典。
 
-Each builder function:
-1. Receives typed contract objects (plan, observation, decision, spans, rubric).
-2. Extracts the Jinja2 context variables expected by the corresponding template.
-3. Calls render_template() and returns the rendered string.
+每个构造器函数：
+1. 接收 typed contract 对象 (plan, observation, decision, spans, rubric)。
+2. 提取对应模板所期望的 Jinja2 上下文变量。
+3. 调用 render_template() 并返回渲染后的字符串。
 
-No rubric trait names, dimension codes, score values, or policy thresholds are
-hardcoded here.  All domain values flow from the contract objects and the
-RubricSnapshot that was resolved from configs/ at runtime.
-"""
+此处不硬编码任何 rubric trait 名称、dimension codes、score values 或 policy thresholds。所有 domain values 均源自 contract 对象和运行时从 configs/ 解析出的 RubricSnapshot。"""
 
 from __future__ import annotations
 
@@ -26,7 +23,7 @@ from src.providers.prompt_loader import PromptTemplate, render_template
 
 
 def _level_anchor_text(level: Dict[str, Any]) -> str:
-    """Prefer full descriptor text over coarse scale labels."""
+    """优先使用完整的 descriptor 文本，而非粗略的 scale 标签。"""
     descriptors = [
         str(item).strip()
         for item in (level.get("descriptors") or [])
@@ -38,7 +35,7 @@ def _level_anchor_text(level: Dict[str, Any]) -> str:
 
 
 def _dimension_anchor_entries(dim: Dict[str, Any]) -> List[Dict[str, Any]]:
-    """Return only the current dimension's anchors, ordered high-to-low."""
+    """仅返回当前 dimension 的 anchors，按从高到低排序。"""
     levels = sorted(
         dim.get("levels", []) or [],
         key=lambda item: int(item.get("rank", 0)),
@@ -69,25 +66,24 @@ def build_extraction_prompt(
     extraction_hints: str = "",
 ) -> str:
     """
-    Build the evidence-extraction prompt for a single dimension.
-
-    Context variables injected (matching evidence_extraction.yaml v2):
-        dimension_name    : Human-readable dimension name from rubric.
-        dimension_anchors : Current-dimension anchors only [{rank, text}].
-        evidence_focus    : Task-level guidance on what to look for.
-        chunks            : Candidate chunks [{id, title, text}].
-
+    为单个 dimension 构建 evidence-extraction prompt。
+    
+    注入的上下文变量 (匹配 evidence_extraction.yaml v2)：
+        dimension_name    : 来自 rubric 的可读 dimension 名称。
+        dimension_anchors : 仅当前 dimension 的 anchors [{rank, text}]。
+        evidence_focus    : 关于寻找什么的任务级指导。
+        chunks            : 候选 chunks [{id, title, text}]。
+    
     Args:
-        plan    : CoveragePlan defining which dimension and facets to cover.
-        document: NormalizedDocument containing the essay text.
-        rubric  : RubricSnapshot providing dimension metadata.
-        template         : Loaded default PromptTemplate.
-        override_template: Optional per-dimension override PromptTemplate.
-        evidence_focus   : Optional task-level evidence focus string.
-
+        plan    : 定义要覆盖哪些 dimension 和 facets 的 CoveragePlan。
+        document: 包含文章文本的 NormalizedDocument。
+        rubric  : 提供 dimension 元数据的 RubricSnapshot。
+        template         : 已加载的默认 PromptTemplate。
+        override_template: 可选的按 dimension 覆盖的 PromptTemplate。
+        evidence_focus   : 可选的任务级 evidence focus 字符串。
+    
     Returns:
-        Rendered prompt string ready to send to a provider.
-    """
+        渲染好准备发送给 provider 的 prompt 字符串。"""
     dim: Dict[str, Any] = rubric.dimension_by_id.get(plan.dimension_id, {})
     units_by_id = {u.unit_id: u for u in document.text_units}
 
@@ -135,33 +131,32 @@ def build_scoring_prompt(
     evidence_focus: str = "",
 ) -> str:
     """
-    Build the scoring prompt for a single dimension.
-
-    Context variables injected (matching scoring.yaml v2):
-        dimension_name      : Human-readable dimension name from rubric.
-        dimension_anchors   : Current-dimension anchors only [{rank, text}].
-        evidence_focus      : Task-level guidance on what to look for.
-        evidence_spans      : Flat list [{span_id, chunk_id, quote, support_type}].
-        score_anchors       : Anchor examples from scoring_context.
-        calibration_notes   : Per-dimension or global calibration reminders.
-        prior_rater_context : Prior rater scores for adjudication path.
-
+    为单个 dimension 构建 scoring prompt。
+    
+    注入的上下文变量 (匹配 scoring.yaml v2)：
+        dimension_name      : 来自 rubric 的可读 dimension 名称。
+        dimension_anchors   : 仅当前 dimension 的 anchors [{rank, text}]。
+        evidence_focus      : 关于寻找什么的任务级指导。
+        evidence_spans      : 扁平列表 [{span_id, chunk_id, quote, support_type}]。
+        score_anchors       : 来自 scoring_context 的 Anchor 示例。
+        calibration_notes   : 按 dimension 或全局的 calibration 提醒。
+        prior_rater_context : 用于 adjudication 路径的先前 rater 分数。
+    
     Args:
-        observation   : DimensionObservation summarising extracted evidence.
-        evidence_spans: Relevant EvidenceSpan objects supporting the observation.
-        rubric        : RubricSnapshot for dimension/scale/level lookup.
-        template      : Loaded PromptTemplate (should be scoring.yaml).
-        scoring_context: Optional task-level scoring context (full file dict).
-        override_template: Optional per-dimension override PromptTemplate.
-        evidence_focus   : Optional task-level evidence focus string.
-
+        observation   : 总结提取证据的 DimensionObservation。
+        evidence_spans: 支持该 observation 的相关 EvidenceSpan 对象。
+        rubric        : 用于 dimension/scale/level 查找的 RubricSnapshot。
+        template      : 已加载的 PromptTemplate (应为 scoring.yaml)。
+        scoring_context: 可选的任务级 scoring context (完整文件字典)。
+        override_template: 可选的按 dimension 覆盖的 PromptTemplate。
+        evidence_focus   : 可选的任务级 evidence focus 字符串。
+    
     Returns:
-        Rendered prompt string ready to send to a provider.
-    """
+        渲染好准备发送给 provider 的 prompt 字符串。"""
     dim = rubric.dimension_by_id.get(observation.dimension_id, {})
     dim_code = str(dim.get("code", ""))
 
-    # Build flat evidence_spans list from all facet findings
+    # 从所有 facet findings 构建扁平的 evidence_spans 列表
     span_by_id = {span.span_id: span for span in evidence_spans}
     seen_ids: set = set()
     flat_spans = []
@@ -180,7 +175,7 @@ def build_scoring_prompt(
                 "support_type": span.support_type or "supporting",
             })
 
-    # calibration_notes: per-dimension lookup (from task context list), then global fallback
+    # calibration_notes: 按 dimension 查找 (从 task context list 中获取)，然后全局回退
     raw_ctx = scoring_context if isinstance(scoring_context, dict) else {}
     calibration_notes = ""
     per_dim_list = raw_ctx.get("scoring_context") or []
@@ -233,38 +228,37 @@ def build_explanation_prompt(
     feedback_hints: str = "",
 ) -> str:
     """
-    Build the explanation/feedback prompt for a finalised dimension decision.
-
-    Context variables injected (matching explanation.yaml v2):
-        dimension_name   : Human-readable dimension name from rubric.
-        final_score      : Integer canonical score from the final decision.
-        max_score        : Maximum score for this dimension's rubric scale.
-        scale_max        : Alias of max_score for templates that prefer scale wording.
-        was_adjudicated  : Whether decision was adjudicated.
-        justification_1  : Adjudicator rationale (adjudicated) or rater_1 rationale.
-        justification_2  : Rater_2 rationale (non-adjudicated path only).
-        evidence_spans   : Flat list [{span_id, quote, support_type}].
-        evidence_focus   : Task-level guidance on what to look for.
-        audience         : "student" for learner-facing, "evaluator" for professional.
-
+    为已最终确定的 dimension decision 构建 explanation/feedback prompt。
+    
+    注入的上下文变量 (匹配 explanation.yaml v2)：
+        dimension_name   : 来自 rubric 的可读 dimension 名称。
+        final_score      : 来自最终 decision 的整数规范 score。
+        max_score        : 此 dimension 的 rubric scale 的最高 score。
+        scale_max        : max_score 的别名，用于偏好 scale 措辞的模板。
+        was_adjudicated  : decision 是否经过 adjudicated。
+        justification_1  : Adjudicator 理由 (adjudicated) 或 rater_1 理由。
+        justification_2  : Rater_2 理由 (仅限非 adjudicated 路径)。
+        evidence_spans   : 扁平列表 [{span_id, quote, support_type}]。
+        evidence_focus   : 关于寻找什么的任务级指导。
+        audience         : 面向学习者的为 "student"，面向专业人员的为 "evaluator"。
+    
     Args:
-        decision        : FinalDimensionDecision containing score and evidence refs.
-        evidence_spans  : EvidenceSpan objects available to this decision.
-        rubric          : RubricSnapshot for dimension metadata.
-        template        : Loaded global explanation PromptTemplate.
-        override_template: Optional per-dimension override PromptTemplate.
-        hypotheses      : ScoreHypothesis list for extracting rater justifications.
-        evidence_focus  : Optional task-level evidence focus string.
-        audience        : Feedback audience ("student" or "evaluator").
-
+        decision        : 包含 score 和 evidence refs 的 FinalDimensionDecision。
+        evidence_spans  : 此 decision 可用的 EvidenceSpan 对象。
+        rubric          : 用于 dimension 元数据的 RubricSnapshot。
+        template        : 已加载的全局 explanation PromptTemplate。
+        override_template: 可选的按 dimension 覆盖的 PromptTemplate。
+        hypotheses      : 用于提取 rater justifications 的 ScoreHypothesis 列表。
+        evidence_focus  : 可选的任务级 evidence focus 字符串。
+        audience        : Feedback audience ("student" 或 "evaluator")。
+    
     Returns:
-        Rendered prompt string ready to send to a provider.
-    """
+        渲染好准备发送给 provider 的 prompt 字符串。"""
     dim = rubric.dimension_by_id.get(decision.dimension_id, {})
     scale_min, scale_max = get_scale_range(rubric, decision.dimension_id)
     was_adjudicated = decision.adjudication_id is not None
 
-    # Extract rater justifications from hypotheses
+    # 从 hypotheses 中提取 rater justifications
     dim_hyps = [h for h in (hypotheses or []) if h.dimension_id == decision.dimension_id]
     hyps_by_rater = {h.rater_id: h for h in dim_hyps}
 
@@ -278,7 +272,7 @@ def build_explanation_prompt(
         justification_1 = (r1_hyp.rationale or "") if r1_hyp else ""
         justification_2 = (r2_hyp.rationale or "") if r2_hyp else ""
 
-    # Build flat evidence_spans from decision.evidence_span_ids
+    # 从 decision.evidence_span_ids 构建扁平的 evidence_spans
     span_by_id = {span.span_id: span for span in evidence_spans}
     flat_spans = []
     for span_id in decision.evidence_span_ids:

@@ -1,4 +1,4 @@
-"""Single-document evaluation runner used by the main eval CLI."""
+"""主 eval CLI 使用的单文档评估运行器。"""
 
 from __future__ import annotations
 
@@ -50,7 +50,7 @@ def run_single_eval(
     verbose: bool = False,
     debug_bundle: bool = False,
 ) -> RunResult:
-    """Run one document through the pipeline and persist standard artifacts."""
+    """通过 pipeline 运行单个文档，并持久化标准 artifacts。"""
     _ = verbose
     output_dir.mkdir(parents=True, exist_ok=True)
 

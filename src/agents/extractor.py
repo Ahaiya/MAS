@@ -1,14 +1,13 @@
 """
 证据抽取 Agent，负责从候选文本中提取可被评分和反馈引用的证据片段。
 
-Evidence Extractor — calls a configured provider to extract EvidenceSpan objects.
+Evidence Extractor — 调用已配置的 provider 来提取 EvidenceSpan 对象。
 
-Builds the extraction prompt via prompt_builders, calls the provider,
-parses structured JSON output into EvidenceSpan contracts.
+通过 prompt_builders 构建抽取 prompt，调用 provider，
+将结构化 JSON 输出解析为 EvidenceSpan contracts。
 
-Contract boundary: all domain knowledge (facet IDs, dimension scope) flows
-from the CoveragePlan and RubricSnapshot; nothing is hardcoded here.
-"""
+Contract 边界：所有领域知识（facet IDs、dimension 范围）均
+来自 CoveragePlan 和 RubricSnapshot；此处不硬编码任何内容。"""
 
 from __future__ import annotations
 
@@ -49,7 +48,7 @@ def _match_with_chunk_hint(
     chunk_id: Optional[str],
     document: NormalizedDocument,
 ) -> QuoteMatchResult:
-    """Match quote globally, then retry locally within chunk when hinted."""
+    """全局匹配 quote，然后在有提示时在 chunk 内进行局部重试。"""
     global_match = match_quote(quote, document.normalized_text, document.text_units)
     if global_match.match_method != "unmatched" or not chunk_id:
         return global_match
@@ -98,22 +97,21 @@ def run(
     extraction_hints: str = "",
 ) -> List[EvidenceSpan]:
     """
-    Extract evidence spans for one dimension using a configured provider.
-
+    使用已配置的 provider 为一个 dimension 提取 evidence spans。
+    
     Args:
-        plan     : CoveragePlan specifying dimension and required facets.
-        document : NormalizedDocument with the essay text.
-        rubric   : RubricSnapshot for dimension metadata.
-        provider : Configured BaseProvider to call.
-        template         : Loaded extraction prompt template.
-        override_template: Optional per-dimension override template.
-        evidence_focus   : Optional task-level evidence focus string.
-        extraction_hints : Optional per-dimension extraction hints from task context.
-
+        plan     : 指定 dimension 和所需 facets 的 CoveragePlan。
+        document : 包含 essay 文本的 NormalizedDocument。
+        rubric   : 用于 dimension 元数据的 RubricSnapshot。
+        provider : 要调用的已配置 BaseProvider。
+        template         : 已加载的抽取 prompt 模板。
+        override_template: 可选的按 dimension 覆盖的模板。
+        evidence_focus   : 可选的任务级 evidence focus 字符串。
+        extraction_hints : 可选的来自任务上下文的按 dimension 抽取提示。
+    
     Returns:
-        List of EvidenceSpan objects parsed from the LLM response.
-        Returns an empty list (not an error) if the LLM returns no spans.
-    """
+        从 LLM 响应中解析出的 EvidenceSpan 对象列表。
+        如果 LLM 未返回 spans，则返回空列表（非错误）。"""
     prompt_text = build_extraction_prompt(
         plan,
         document,
@@ -141,7 +139,7 @@ def run(
     )
     response = provider.complete(request)
 
-    # Parse structured output, fall back to content parsing
+    # 解析结构化输出，回退到内容解析
     if response.structured_data is not None:
         data = response.structured_data
     else:
@@ -211,7 +209,7 @@ def run(
             )
         )
 
-    # Guarantee at least one span per required facet so coverage validation passes
+    # 保证每个所需 facet 至少有一个 span，以便通过 coverage validation
     covered_facets = {f for s in spans for f in s.facet_ids}
     for facet_id in plan.required_facets:
         if facet_id not in covered_facets:

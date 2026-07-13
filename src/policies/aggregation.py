@@ -1,30 +1,22 @@
 """
 聚合策略模块，负责按配置计算 composite 总分。
 
-Aggregation Policy — config-driven composite score computation.
+聚合策略 — 基于配置驱动的 composite 分数计算。
 
-Evaluates the aggregation formula from PolicySnapshot configuration.
-Supports aggregation methods:
+从 PolicySnapshot 配置评估聚合公式。
+支持的聚合方法：
 
-- average_per_trait_then_weighted_sum: For each dimension, average the scores
-  from the configured source_raters, then multiply by the configured weight.
-  Used when no third-rater resolution occurred.
-- average_per_trait_then_weighted_average: Same as above, but divide by the
-  total participating weight so the final score stays on the original scale.
+- average_per_trait_then_weighted_sum: 对于每个维度，对配置的 source_raters 的评分求平均，然后乘以配置的权重。在未发生第三评分者裁决时使用。
+- average_per_trait_then_weighted_average: 同上，但除以总参与权重，使最终分数保持在原始量表上。
 
-- direct_weighted_sum: Use FinalDimensionDecision.final_score directly for
-  each dimension, multiplied by the configured weight.
-  Used when third-rater resolution was applied.
-- direct_weighted_average: Same as above, but normalized by total
-  participating weight.
+- direct_weighted_sum: 对每个维度直接使用 FinalDimensionDecision.final_score，乘以配置的权重。在应用了第三评分者裁决时使用。
+- direct_weighted_average: 同上，但通过总参与权重进行归一化。
 
-Variant selection:
-  - If any AdjudicationRecord has is_resolved=True → "resolution_used" variant.
-  - Otherwise → "resolution_not_used" variant.
+变体选择：
+  - 如果任何 AdjudicationRecord 的 is_resolved=True → "resolution_used" 变体。
+  - 否则 → "resolution_not_used" 变体。
 
-All dimension weights, rater IDs, and variant conditions are read from
-PolicySnapshot.aggregation_policy — nothing is hardcoded here.
-"""
+所有维度权重、评分者 ID 和变体条件均从 PolicySnapshot.aggregation_policy 读取 — 这里没有任何硬编码。"""
 
 from __future__ import annotations
 
@@ -50,14 +42,14 @@ def _round_half_up(value: float) -> int:
 
 
 def _is_resolution_used(adjudications: List[AdjudicationRecord]) -> bool:
-    """Return True if any adjudication record was successfully resolved."""
+    """如果任何裁决记录被成功解决，则返回 True。"""
     return any(a.is_resolved for a in adjudications)
 
 
 def _select_variant(
     variants: List[Dict[str, Any]], resolution_used: bool
 ) -> Optional[Dict[str, Any]]:
-    """Select the appropriate formula variant based on resolution status."""
+    """根据裁决状态选择适当的公式变体。"""
     applies_when = "resolution_used" if resolution_used else "resolution_not_used"
     for v in variants:
         if v.get("applies_when") == applies_when:
@@ -70,10 +62,9 @@ def _compute_average_then_weighted(
     source_raters: List[str],
     weights: Dict[str, int],
 ) -> tuple[float, List[str], float]:
-    """Compute weighted sum using per-rater averages per dimension.
-
-    Returns (weighted_total, contributing_dim_ids, contributing_weight_total).
-    """
+    """使用每个维度中各评分者的平均值计算加权和。
+    
+        返回 (weighted_total, contributing_dim_ids, contributing_weight_total)。"""
     by_dim: Dict[str, Dict[str, int]] = {}
     for h in hypotheses:
         if h.rater_id in source_raters:
@@ -102,10 +93,9 @@ def _compute_direct_weighted(
     decisions: List[FinalDimensionDecision],
     weights: Dict[str, int],
 ) -> tuple[float, List[str], float]:
-    """Compute weighted sum using final_score.canonical_score directly.
-
-    Returns (weighted_total, contributing_dim_ids, contributing_weight_total).
-    """
+    """直接使用 final_score.canonical_score 计算加权和。
+    
+        返回 (weighted_total, contributing_dim_ids, contributing_weight_total)。"""
     total = 0.0
     contributing: List[str] = []
     contributing_weight_total = 0.0
@@ -128,24 +118,21 @@ def compute_composite(
     policy: PolicySnapshot,
     policy_ref: str = "",
 ) -> Optional[CompositeDecision]:
-    """Compute an optional CompositeDecision from config-driven formula.
-
-    Reads the composite_formula from policy.aggregation_policy, selects the
-    appropriate variant based on whether resolution was used, computes the
-    weighted aggregate score, and returns a CompositeDecision.
-
-    Returns None if no composite_formula is defined in the policy.
-
-    Args:
-        decisions: FinalDimensionDecision list (one per dimension).
-        hypotheses: ScoreHypothesis list (all raters, all dimensions).
-        adjudications: AdjudicationRecord list for resolution status check.
-        policy: PolicySnapshot containing aggregation policy config.
-        policy_ref: Optional URI reference to the aggregation policy artifact.
-
-    Returns:
-        CompositeDecision, or None if aggregation is not configured.
-    """
+    """从配置驱动的公式计算可选的 CompositeDecision。
+    
+        从 policy.aggregation_policy 读取 composite_formula，根据是否使用了裁决选择适当的变体，计算加权汇总分数，并返回 CompositeDecision。
+    
+        如果策略中未定义 composite_formula，则返回 None。
+    
+        Args:
+            decisions: FinalDimensionDecision 列表（每个维度一个）。
+            hypotheses: ScoreHypothesis 列表（所有评分者，所有维度）。
+            adjudications: AdjudicationRecord 列表，用于检查裁决状态。
+            policy: 包含聚合策略配置的 PolicySnapshot。
+            policy_ref: 可选的 URI 引用，指向聚合策略产物。
+    
+        Returns:
+            CompositeDecision，如果未配置聚合则为 None。"""
     agg = policy.aggregation_policy
     variants = agg.get("composite_formula", [])
     if not variants:
@@ -161,8 +148,8 @@ def compute_composite(
 
     raw_weights = variant.get("weights", {})
     if raw_weights == "auto_equal":
-        # Derive equal weights at runtime from the dimensions actually present in
-        # the data, so the policy file doesn't need to enumerate dimension codes.
+        # 在运行时根据实际存在的维度推导出相等的权重
+        # 数据中，因此策略文件不需要枚举维度代码。
         if "direct" in method:
             auto_dim_ids: List[str] = [d.dimension_id for d in decisions]
         else:
@@ -196,7 +183,7 @@ def compute_composite(
     else:
         return None
 
-    # Determine contributing decision IDs from contributing dimensions
+    # 根据参与计算的维度确定贡献的决策 ID
     decision_by_dim = {d.dimension_id: d for d in decisions}
     contributing_decision_ids = [
         decision_by_dim[dim_id].decision_id
@@ -204,11 +191,11 @@ def compute_composite(
         if dim_id in decision_by_dim
     ]
 
-    # Build a scale_ref from the policy; fallback to policy_id
+    # 从策略构建 scale_ref；回退至 policy_id
     policy_id = agg.get("policy_id", "aggregation")
     composite_id = f"composite-{_hid(policy_id + str(composite_score_val))}"
 
-    # Use a synthetic composite scale ref (not a rubric scale — composite has its own range)
+    # 使用合成的 composite 量表引用（不是 rubric 量表 — composite 有其自身的范围）
     composite_score = create_score_representation(
         canonical_score=composite_score_val,
         scale_ref=f"composite:{policy_id}",

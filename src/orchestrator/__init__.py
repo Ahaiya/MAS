@@ -1,1 +1,3 @@
-"""编排子系统入口，封装状态机、路由、检查点与运行追踪能力。"""
+"""移除 StateGraph/router 后保留的 Orchestrator 工具。"""
+
+__all__: list[str] = []

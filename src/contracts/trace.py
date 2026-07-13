@@ -1,46 +1,33 @@
 """
 追踪契约，定义运行轨迹、节点记录与回放所需的元数据结构。
 
-Trace and Replay Metadata Contracts
+追踪与回放元数据契约
 
-Defines the audit trail and replay structures for the evaluation pipeline:
+为评估流水线定义审计轨迹与回放结构：
 
-  Node execution  -> NodeTrace   (per-node input/output refs, timing, fallback history)
-  NodeTrace[]     -> RunTrace    (top-level envelope, bundle version, terminal status)
-  Node snapshot   -> CheckpointRef (pointer to a persisted node state snapshot)
+  节点执行   -> NodeTrace   （每个节点的输入/输出引用、耗时、回退历史）
+  NodeTrace[] -> RunTrace   （顶层封装、bundle 版本、最终状态）
+  节点快照   -> CheckpointRef （指向持久化节点状态快照的指针）
 
-Design invariants:
-- All models are frozen (immutable) dataclasses.
-- bundle_version is stored verbatim — replay must use the exact same bundle.
-- node_traces are ordered; the orchestrator appends them as nodes complete.
-- fallback_history records the sequence of re-try/re-route events for audit.
-- input_ref and output_ref are opaque storage keys (e.g., filesystem paths or
-  object storage URIs). This contract does not define storage implementation.
-- from_dict() rejects unknown keys (strict schema enforcement).
-- datetime fields are serialized as ISO 8601 UTC strings.
-"""
+设计不变式：
+- 所有模型均为冻结（不可变）的 dataclass。
+- bundle_version 按原样存储 — 回放时必须使用完全相同的 bundle。
+- node_traces 是有序的；编排器在节点完成后依次追加。
+- fallback_history 记录重新尝试/重新路由事件的序列，用于审计。
+- input_ref 和 output_ref 是不透明的存储键（例如文件系统路径或
+  对象存储 URI）。本契约不定义存储实现。
+- datetime 字段以 ISO 8601 UTC 字符串形式序列化。"""
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
 
-# ── Strict deserialization helper ──────────────────────────────────────────────
-
-
-def _check_no_extra(data: Dict[str, Any], allowed: frozenset, cls_name: str) -> None:
-    extra = set(data) - allowed
-    if extra:
-        raise TypeError(
-            f"{cls_name}.from_dict() received unexpected fields: {sorted(extra)}"
-        )
-
-
 def _parse_dt(value: Any) -> datetime:
-    """Parse an ISO 8601 string or pass through a datetime."""
+    """解析 ISO 8601 字符串，或原样传递 datetime 对象。"""
     if isinstance(value, str):
         dt = datetime.fromisoformat(value)
         if dt.tzinfo is None:
@@ -59,7 +46,7 @@ def _parse_dt_optional(value: Any) -> Optional[datetime]:
 
 
 class NodeStatus(str, Enum):
-    """Execution status of a single pipeline node."""
+    """单个流水线节点的执行状态。"""
 
     PENDING = "pending"
     IN_PROGRESS = "in_progress"
@@ -72,7 +59,7 @@ class NodeStatus(str, Enum):
 
 
 class RunStatus(str, Enum):
-    """Overall status of an evaluation run."""
+    """一次评估运行的整体状态。"""
 
     IN_PROGRESS = "in_progress"
     COMPLETED = "completed"
@@ -85,19 +72,16 @@ class RunStatus(str, Enum):
 
 @dataclass(frozen=True)
 class CheckpointRef:
-    """A pointer to a persisted node state snapshot.
-
-    The orchestrator writes a checkpoint after each successful node execution.
-    On failure or replay, the run can be resumed from the last checkpoint
-    without re-executing earlier nodes.
-
-    Attributes:
-        checkpoint_id: Unique ID for this checkpoint.
-        node_id: The node whose output was snapshotted.
-        run_id: The evaluation run this checkpoint belongs to.
-        snapshot_key: Opaque storage key (path or URI) of the snapshot artifact.
-        created_at: UTC timestamp when the checkpoint was written.
-    """
+    """指向一个持久化节点状态快照的指针。
+    
+    编排器在每个节点成功执行后写入检查点。在失败或回放时，运行可以从最后一个检查点恢复，而无需重新执行前面的节点。
+    
+    属性：
+        checkpoint_id: 此检查点的唯一 ID。
+        node_id: 被快照的节点。
+        run_id: 此检查点所属的评估运行。
+        snapshot_key: 快照制品的不透明存储键（路径或 URI）。
+        created_at: 检查点写入时的 UTC 时间戳。"""
 
     checkpoint_id: str
     node_id: str
@@ -114,21 +98,6 @@ class CheckpointRef:
             "created_at": self.created_at.isoformat(),
         }
 
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> CheckpointRef:
-        _check_no_extra(
-            data,
-            frozenset({"checkpoint_id", "node_id", "run_id", "snapshot_key",
-                       "created_at"}),
-            "CheckpointRef",
-        )
-        return cls(
-            checkpoint_id=data["checkpoint_id"],
-            node_id=data["node_id"],
-            run_id=data["run_id"],
-            snapshot_key=data["snapshot_key"],
-            created_at=_parse_dt(data["created_at"]),
-        )
 
 
 # ── NodeTrace ──────────────────────────────────────────────────────────────────
@@ -136,26 +105,23 @@ class CheckpointRef:
 
 @dataclass(frozen=True)
 class NodeTrace:
-    """Execution record for a single pipeline node within a run.
-
-    The orchestrator appends one NodeTrace per node execution. Fallback
-    events (re-extract, re-score, re-route) are recorded in fallback_history
-    as ordered labels so the full resolution path is auditable.
-
-    Attributes:
-        node_id: Identifier for this node instance (matches orchestrator graph node).
-        run_id: Parent RunTrace.run_id.
-        node_type: Semantic type label (e.g., "preprocess", "extract", "score").
-        status: Terminal execution status of this node.
-        started_at: UTC timestamp when node execution began.
-        finished_at: UTC timestamp when node execution ended. None if still running.
-        input_ref: Opaque key pointing to the serialized node input. None if pending.
-        output_ref: Opaque key pointing to the serialized node output. None on failure.
-        checkpoint: CheckpointRef if a snapshot was written after this node. Else None.
-        fallback_history: Ordered list of fallback/retry event labels for this node.
-        error_message: Error description if status is FAILED. None otherwise.
-        metadata: Arbitrary key-value pairs for pipeline-specific audit data.
-    """
+    """单个流水线节点在一次运行中的执行记录。
+    
+    编排器为每个节点执行追加一条 NodeTrace。回退事件（重新提取、重新打分、重新路由）以有序标签形式记录在 fallback_history 中，从而使完整解析路径可审计。
+    
+    属性：
+        node_id: 该节点实例的标识符（与编排器图节点一致）。
+        run_id: 父级 RunTrace.run_id。
+        node_type: 语义类型标签（例如 "preprocess"、"extract"、"score"）。
+        status: 该节点的最终执行状态。
+        started_at: 节点执行开始时的 UTC 时间戳。
+        finished_at: 节点执行结束时的 UTC 时间戳。如果仍在运行，则为 None。
+        input_ref: 指向序列化节点输入的不透明键。如果尚未启动，则为 None。
+        output_ref: 指向序列化节点输出的不透明键。如果失败，则为 None。
+        checkpoint: 如果此节点之后写入了快照，则为 CheckpointRef，否则为 None。
+        fallback_history: 该节点回退/重试事件标签的有序列表。
+        error_message: 如果 status 为 FAILED，则为错误描述，否则为 None。
+        metadata: 用于流水线特定审计数据的任意键值对。"""
 
     node_id: str
     run_id: str
@@ -171,7 +137,7 @@ class NodeTrace:
     metadata: Dict[str, Any]
 
     def elapsed_seconds(self) -> Optional[float]:
-        """Wall-clock seconds between started_at and finished_at, or None."""
+        """started_at 与 finished_at 之间的挂钟秒数，若无则为 None。"""
         if self.finished_at is None:
             return None
         delta = self.finished_at - self.started_at
@@ -193,32 +159,6 @@ class NodeTrace:
             "metadata": dict(self.metadata),
         }
 
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> NodeTrace:
-        _check_no_extra(
-            data,
-            frozenset({
-                "node_id", "run_id", "node_type", "status", "started_at",
-                "finished_at", "input_ref", "output_ref", "checkpoint",
-                "fallback_history", "error_message", "metadata",
-            }),
-            "NodeTrace",
-        )
-        raw_ckpt = data.get("checkpoint")
-        return cls(
-            node_id=data["node_id"],
-            run_id=data["run_id"],
-            node_type=data["node_type"],
-            status=NodeStatus(data["status"]),
-            started_at=_parse_dt(data["started_at"]),
-            finished_at=_parse_dt_optional(data.get("finished_at")),
-            input_ref=data.get("input_ref"),
-            output_ref=data.get("output_ref"),
-            checkpoint=CheckpointRef.from_dict(raw_ckpt) if raw_ckpt else None,
-            fallback_history=list(data.get("fallback_history") or []),
-            error_message=data.get("error_message"),
-            metadata=dict(data.get("metadata") or {}),
-        )
 
 
 # ── RunTrace ───────────────────────────────────────────────────────────────────
@@ -226,27 +166,21 @@ class NodeTrace:
 
 @dataclass(frozen=True)
 class RunTrace:
-    """Top-level audit trace for a complete evaluation run.
-
-    One RunTrace is produced per EvaluationRequest. It captures the frozen
-    bundle version, all node execution records, and the terminal validation
-    result — providing everything needed for replay and regression testing.
-
-    Attributes:
-        run_id: Globally unique identifier for this evaluation run.
-        bundle_version: Verbatim frozen bundle version string. Must match exactly
-                        for replay to produce identical results.
-        bundle_id: Bundle identifier (without version).
-        request_id: Links back to the originating EvaluationRequest.
-        status: Overall run status.
-        started_at: UTC timestamp when the run began.
-        finished_at: UTC timestamp when the run ended. None if still running.
-        node_traces: Ordered list of NodeTrace records, one per executed node.
-        terminal_validation_passed: True if the final output passed schema/policy
-                                    validation. None if validation was not yet run.
-        replay_metadata: Arbitrary key-value pairs enabling exact replay
-                         (e.g., provider, seed, artifact manifest paths).
-    """
+    """一次完整评估运行的顶层审计轨迹。
+    
+    每个 EvaluationRequest 生成一个 RunTrace。它记录冻结的 bundle 版本、所有节点执行记录以及最终的验证结果 — 提供回放和回归测试所需的一切。
+    
+    属性：
+        run_id: 此次评估运行的全局唯一标识符。
+        bundle_version: 按原样记录的冻结 bundle 版本字符串。回放时必须精确匹配，才能产生相同结果。
+        bundle_id: Bundle 标识符（不含版本）。
+        request_id: 链接回原始 EvaluationRequest。
+        status: 整体运行状态。
+        started_at: 运行开始时的 UTC 时间戳。
+        finished_at: 运行结束时的 UTC 时间戳。如果仍在运行，则为 None。
+        node_traces: 有序 NodeTrace 记录列表，每个已执行节点一条。
+        terminal_validation_passed: 如果最终输出通过 schema/policy 验证，则为 True。如果尚未运行验证，则为 None。
+        replay_metadata: 用于实现精确回放的任意键值对（例如 provider、seed、制品清单路径）。"""
 
     run_id: str
     bundle_version: str
@@ -260,14 +194,14 @@ class RunTrace:
     replay_metadata: Dict[str, Any]
 
     def get_node_trace(self, node_id: str) -> Optional[NodeTrace]:
-        """Return the NodeTrace for the given node_id, or None."""
+        """返回给定 node_id 对应的 NodeTrace，若不存在则返回 None。"""
         for nt in self.node_traces:
             if nt.node_id == node_id:
                 return nt
         return None
 
     def failed_nodes(self) -> List[NodeTrace]:
-        """Return all NodeTraces with FAILED status."""
+        """返回所有状态为 FAILED 的 NodeTrace。"""
         return [nt for nt in self.node_traces if nt.status == NodeStatus.FAILED]
 
     def to_dict(self) -> Dict[str, Any]:
@@ -283,27 +217,3 @@ class RunTrace:
             "terminal_validation_passed": self.terminal_validation_passed,
             "replay_metadata": dict(self.replay_metadata),
         }
-
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> RunTrace:
-        _check_no_extra(
-            data,
-            frozenset({
-                "run_id", "bundle_version", "bundle_id", "request_id", "status",
-                "started_at", "finished_at", "node_traces",
-                "terminal_validation_passed", "replay_metadata",
-            }),
-            "RunTrace",
-        )
-        return cls(
-            run_id=data["run_id"],
-            bundle_version=data["bundle_version"],
-            bundle_id=data["bundle_id"],
-            request_id=data["request_id"],
-            status=RunStatus(data["status"]),
-            started_at=_parse_dt(data["started_at"]),
-            finished_at=_parse_dt_optional(data.get("finished_at")),
-            node_traces=[NodeTrace.from_dict(nt) for nt in (data.get("node_traces") or [])],
-            terminal_validation_passed=data.get("terminal_validation_passed"),
-            replay_metadata=dict(data.get("replay_metadata") or {}),
-        )

@@ -1,59 +1,41 @@
 """
 评分与裁决契约，定义假设、冲突、裁决与最终决定等核心结构。
 
-Scoring and Adjudication Contracts
+评分与裁决契约
 
-Defines the intermediate data shapes for the multi-rater scoring, conflict
-detection, adjudication, and final decision stages:
+定义多评分者评分、冲突检测、裁决与最终决定阶段的中间数据结构：
 
-  DimensionObservation[]  -> ScoreHypothesis[]  (one per rater per dimension)
-  ScoreHypothesis[]       -> ConflictRecord[]   (consistency checker output)
-  ConflictRecord[]        -> AdjudicationRecord[] (adjudicator output)
-  AdjudicationRecord[]    -> FinalDimensionDecision[] (one per dimension)
-  FinalDimensionDecision[] -> CompositeDecision (optional, aggregation policy)
+  DimensionObservation[]  -> ScoreHypothesis[]  （每个评分者每个维度一个）
+  ScoreHypothesis[]       -> ConflictRecord[]   （一致性检查器输出）
+  ConflictRecord[]        -> AdjudicationRecord[] （裁决器输出）
+  AdjudicationRecord[]    -> FinalDimensionDecision[] （每个维度一个）
+  FinalDimensionDecision[] -> CompositeDecision （可选，聚合策略）
 
-Design invariants:
-- All models are frozen (immutable) dataclasses.
-- dimension_id, descriptor_refs, rater_id, policy_rule_id are all opaque strings
-  sourced from rubric or policy config artifacts. No hardcoded trait names or
-  adjudication thresholds appear here.
-- ScoreHypothesis.score uses ScoreRepresentation — the actual valid range is
-  enforced by the rubric config scale, not by this contract.
-- confidence is a float in [0.0, 1.0].
-- from_dict() rejects unknown keys (strict schema enforcement).
-"""
+设计不变式：
+- 所有模型均为 frozen（不可变）dataclass。
+- dimension_id、descriptor_refs、rater_id、policy_rule_id 均为源自评分量规或策略配置产物的不透明字符串。此处不出现硬编码的特质名称或裁决阈值。
+- ScoreHypothesis.score 使用 ScoreRepresentation —— 实际有效范围由评分量规配置量表强制执行，而非本契约。
+- confidence 为 [0.0, 1.0] 范围内的浮点数。"""
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
 from src.contracts.score_representation import ScoreRepresentation
 
 
-# ── Strict deserialization helper ──────────────────────────────────────────────
-
-
-def _check_no_extra(data: Dict[str, Any], allowed: frozenset, cls_name: str) -> None:
-    extra = set(data) - allowed
-    if extra:
-        raise TypeError(
-            f"{cls_name}.from_dict() received unexpected fields: {sorted(extra)}"
-        )
-
-
 # ── ConflictType ───────────────────────────────────────────────────────────────
 
 
 class ConflictType(str, Enum):
-    """Type of scoring conflict detected by the Consistency Checker.
-
-    NON_ADJACENT   – scores differ by more than allowed adjacent range (from policy).
-    CUSP           – at least one score is on a policy-defined boundary between levels.
-    ADJACENT_DRIFT – multiple adjacent disagreements drift in the same direction.
-    OTHER          – other policy-defined conflict type.
-    """
+    """Consistency Checker 检测到的评分冲突类型。
+    
+        NON_ADJACENT   – 评分之间的差距超过策略允许的相邻范围。
+        CUSP           – 至少有一个评分位于策略定义的等级边界上。
+        ADJACENT_DRIFT – 多个相邻分歧向同一方向漂移。
+        OTHER          – 其他策略定义的冲突类型。"""
 
     NON_ADJACENT = "non_adjacent"
     CUSP = "cusp"
@@ -65,14 +47,13 @@ class ConflictType(str, Enum):
 
 
 class ResolutionPath(str, Enum):
-    """Resolution path recommended or taken for a ConflictRecord.
-
-    THIRD_RATER    – invoke a third scoring pass to break the tie.
-    RE_EXTRACT     – re-run evidence extraction before re-scoring.
-    RE_SCORE       – re-run scoring without new extraction.
-    POLICY_AVERAGE – resolve by policy-defined averaging formula.
-    HUMAN_REVIEW   – escalate to human reviewer (unresolvable automatically).
-    """
+    """针对 ConflictRecord 建议或实际采取的解决路径。
+    
+        THIRD_RATER    – 引入第三次评分以打破平局。
+        RE_EXTRACT     – 重新评分前重新运行证据提取。
+        RE_SCORE       – 不重新提取证据，直接重新评分。
+        POLICY_AVERAGE – 通过策略定义的平均公式解决。
+        HUMAN_REVIEW   – 升级至人工审核（无法自动解决）。"""
 
     THIRD_RATER = "third_rater"
     RE_EXTRACT = "re_extract"
@@ -86,23 +67,21 @@ class ResolutionPath(str, Enum):
 
 @dataclass(frozen=True)
 class ScoreHypothesis:
-    """A single rater's score proposal for one dimension.
-
-    Scoring subagents produce one ScoreHypothesis per (rater, dimension) pair.
-    Each hypothesis must reference the descriptor levels and evidence spans
-    that justify the proposed score — unsupported hypotheses are invalid.
-
-    Attributes:
-        hypothesis_id: Unique ID for this score proposal within the run.
-        observation_id: The DimensionObservation this hypothesis is based on.
-        dimension_id: Opaque dimension identifier from rubric config.
-        rater_id: Identifies which scoring agent produced this hypothesis.
-        score: ScoreRepresentation with canonical_score and scale_ref.
-        descriptor_refs: Rubric descriptor level references that justify the score.
-        evidence_span_ids: EvidenceSpan IDs cited as rationale.
-        rationale: Free-text scoring rationale (for audit trail).
-        confidence: Rater confidence in [0.0, 1.0].
-    """
+    """单个评分者针对某一维度提出的评分建议。
+    
+        评分子智能体为每个（评分者，维度）对生成一个 ScoreHypothesis。
+        每个假设必须引用能够证明所建议评分合理性的描述符等级和证据片段——缺乏支持的假设无效。
+    
+        属性：
+            hypothesis_id: 本次运行中该评分建议的唯一 ID。
+            observation_id: 该假设所基于的 DimensionObservation。
+            dimension_id: 来自评分量规配置的不透明维度标识符。
+            rater_id: 标识生成该假设的评分代理。
+            score: 包含 canonical_score 和 scale_ref 的 ScoreRepresentation。
+            descriptor_refs: 用于证明评分合理性的评分量规描述符等级引用。
+            evidence_span_ids: 作为理由引用的 EvidenceSpan ID。
+            rationale: 自由文本评分理由（用于审计追踪）。
+            confidence: 评分者的置信度，范围 [0.0, 1.0]。"""
 
     hypothesis_id: str
     observation_id: str
@@ -134,28 +113,6 @@ class ScoreHypothesis:
             "confidence": self.confidence,
         }
 
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> ScoreHypothesis:
-        _check_no_extra(
-            data,
-            frozenset({
-                "hypothesis_id", "observation_id", "dimension_id", "rater_id",
-                "score", "descriptor_refs", "evidence_span_ids", "rationale",
-                "confidence",
-            }),
-            "ScoreHypothesis",
-        )
-        return cls(
-            hypothesis_id=data["hypothesis_id"],
-            observation_id=data["observation_id"],
-            dimension_id=data["dimension_id"],
-            rater_id=data["rater_id"],
-            score=ScoreRepresentation.from_dict(data["score"]),
-            descriptor_refs=list(data.get("descriptor_refs") or []),
-            evidence_span_ids=list(data.get("evidence_span_ids") or []),
-            rationale=data["rationale"],
-            confidence=data["confidence"],
-        )
 
 
 # ── ConflictRecord ─────────────────────────────────────────────────────────────
@@ -163,21 +120,18 @@ class ScoreHypothesis:
 
 @dataclass(frozen=True)
 class ConflictRecord:
-    """A detected scoring disagreement between two or more ScoreHypotheses.
-
-    Produced by the Consistency Checker when adjudication policy triggers are met
-    (e.g., non-adjacent scores, cusp condition). The recommended_path field
-    suggests which ResolutionPath the orchestrator should take.
-
-    Attributes:
-        conflict_id: Unique ID for this conflict within the run.
-        dimension_id: Opaque dimension identifier from rubric config.
-        hypothesis_ids: IDs of the conflicting ScoreHypotheses.
-        conflict_type: Category of conflict (from policy definitions).
-        trigger_rule_id: Adjudication policy rule that triggered this record.
-        conflict_detail: Human-readable description of the conflict.
-        recommended_path: Suggested resolution path from policy evaluation.
-    """
+    """在两个或多个 ScoreHypothesis 之间检测到的评分分歧。
+    
+        当满足裁决策略触发条件（例如非相邻评分、边界条件）时，由一致性检查器生成。recommended_path 字段建议编排器应采用哪种 ResolutionPath。
+    
+        属性：
+            conflict_id: 本次运行中该冲突的唯一 ID。
+            dimension_id: 来自评分量规配置的不透明维度标识符。
+            hypothesis_ids: 存在冲突的 ScoreHypothesis 的 ID。
+            conflict_type: 冲突类别（来自策略定义）。
+            trigger_rule_id: 触发该记录的裁决策略规则。
+            conflict_detail: 冲突的可读描述。
+            recommended_path: 策略评估建议的解决路径。"""
 
     conflict_id: str
     dimension_id: str
@@ -198,25 +152,6 @@ class ConflictRecord:
             "recommended_path": self.recommended_path.value,
         }
 
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> ConflictRecord:
-        _check_no_extra(
-            data,
-            frozenset({
-                "conflict_id", "dimension_id", "hypothesis_ids", "conflict_type",
-                "trigger_rule_id", "conflict_detail", "recommended_path",
-            }),
-            "ConflictRecord",
-        )
-        return cls(
-            conflict_id=data["conflict_id"],
-            dimension_id=data["dimension_id"],
-            hypothesis_ids=list(data.get("hypothesis_ids") or []),
-            conflict_type=ConflictType(data["conflict_type"]),
-            trigger_rule_id=data["trigger_rule_id"],
-            conflict_detail=data["conflict_detail"],
-            recommended_path=ResolutionPath(data["recommended_path"]),
-        )
 
 
 # ── AdjudicationRecord ─────────────────────────────────────────────────────────
@@ -224,23 +159,20 @@ class ConflictRecord:
 
 @dataclass(frozen=True)
 class AdjudicationRecord:
-    """The outcome of applying an adjudication policy to a ConflictRecord.
-
-    Produced by the Adjudicator. If the conflict could not be resolved
-    automatically (is_resolved=False), resolved_score will be None and the
-    orchestrator routes to human review.
-
-    Attributes:
-        adjudication_id: Unique ID for this adjudication attempt.
-        conflict_id: The ConflictRecord that triggered this adjudication.
-        dimension_id: Opaque dimension identifier from rubric config.
-        resolution_path: The path that was actually taken.
-        policy_rule_id: Policy rule that governed the resolution.
-        resolved_score: The adjudicated score. None if unresolved.
-        resolver_hypothesis_id: If a third-rater resolved it, their hypothesis ID.
-        resolution_note: Optional explanation of the resolution decision.
-        is_resolved: True if a final score was produced; False if escalated.
-    """
+    """将裁决策略应用于 ConflictRecord 的结果。
+    
+        由裁决器生成。如果冲突无法自动解决（is_resolved=False），则 resolved_score 为 None，编排器将路由至人工审核。
+    
+        属性：
+            adjudication_id: 本次裁决尝试的唯一 ID。
+            conflict_id: 触发本次裁决的 ConflictRecord。
+            dimension_id: 来自评分量规配置的不透明维度标识符。
+            resolution_path: 实际采用的路径。
+            policy_rule_id: 支配该解决过程的策略规则。
+            resolved_score: 裁决后的评分。若未解决则为 None。
+            resolver_hypothesis_id: 如果由第三方评分者解决，则为该评分者的假设 ID。
+            resolution_note: 对裁决决定的可选说明。
+            is_resolved: 如果已生成最终评分则为 True；如果已升级则为 False。"""
 
     adjudication_id: str
     conflict_id: str
@@ -265,29 +197,6 @@ class AdjudicationRecord:
             "is_resolved": self.is_resolved,
         }
 
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> AdjudicationRecord:
-        _check_no_extra(
-            data,
-            frozenset({
-                "adjudication_id", "conflict_id", "dimension_id", "resolution_path",
-                "policy_rule_id", "resolved_score", "resolver_hypothesis_id",
-                "resolution_note", "is_resolved",
-            }),
-            "AdjudicationRecord",
-        )
-        raw_score = data.get("resolved_score")
-        return cls(
-            adjudication_id=data["adjudication_id"],
-            conflict_id=data["conflict_id"],
-            dimension_id=data["dimension_id"],
-            resolution_path=ResolutionPath(data["resolution_path"]),
-            policy_rule_id=data["policy_rule_id"],
-            resolved_score=ScoreRepresentation.from_dict(raw_score) if raw_score else None,
-            resolver_hypothesis_id=data.get("resolver_hypothesis_id"),
-            resolution_note=data.get("resolution_note"),
-            is_resolved=data["is_resolved"],
-        )
 
 
 # ── FinalDimensionDecision ─────────────────────────────────────────────────────
@@ -295,27 +204,22 @@ class AdjudicationRecord:
 
 @dataclass(frozen=True)
 class FinalDimensionDecision:
-    """The single authoritative score decision for one rubric dimension.
-
-    Produced by the Adjudicator (or directly from scoring if no conflict arose).
-    This is the object consumed by the Feedback assembler and by the Aggregation
-    policy to compute an optional CompositeDecision.
-
-    The complete audit trail is preserved through the chain:
-      evidence_span_ids -> descriptor_refs -> final_score -> adjudication_id
-
-    Attributes:
-        decision_id: Unique ID for this decision within the run.
-        dimension_id: Opaque dimension identifier from rubric config.
-        final_score: Authoritative ScoreRepresentation for this dimension.
-        primary_hypothesis_id: The hypothesis (or resolver hypothesis) that prevailed.
-        adjudication_id: If conflict was adjudicated, the AdjudicationRecord ID.
-                         None if no conflict occurred.
-        evidence_span_ids: Evidence spans supporting the final decision.
-        descriptor_refs: Rubric descriptor levels aligned to the final score.
-        decision_confidence: Composite confidence for the final decision.
-        decision_note: Optional explanation or note for audit.
-    """
+    """针对某一评分量规维度的单一权威评分决定。
+    
+        由裁决器生成（若未发生冲突，则直接来自评分）。这是反馈组装器与聚合策略用于计算可选的 CompositeDecision 时所消费的对象。
+    
+        完整的审计追踪通过以下链得以保留：evidence_span_ids -> descriptor_refs -> final_score -> adjudication_id
+    
+        属性：
+            decision_id: 本次运行中该决定的唯一 ID。
+            dimension_id: 来自评分量规配置的不透明维度标识符。
+            final_score: 该维度的权威 ScoreRepresentation。
+            primary_hypothesis_id: 占优势的假设（或裁决者假设）。
+            adjudication_id: 如果冲突经过裁决，则为 AdjudicationRecord 的 ID。若未发生冲突则为 None。
+            evidence_span_ids: 支持最终决定的证据片段。
+            descriptor_refs: 与最终评分一致的评分量规描述符等级。
+            decision_confidence: 最终决定的综合置信度。
+            decision_note: 用于审计的可选说明或备注。"""
 
     decision_id: str
     dimension_id: str
@@ -340,28 +244,6 @@ class FinalDimensionDecision:
             "decision_note": self.decision_note,
         }
 
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> FinalDimensionDecision:
-        _check_no_extra(
-            data,
-            frozenset({
-                "decision_id", "dimension_id", "final_score", "primary_hypothesis_id",
-                "adjudication_id", "evidence_span_ids", "descriptor_refs",
-                "decision_confidence", "decision_note",
-            }),
-            "FinalDimensionDecision",
-        )
-        return cls(
-            decision_id=data["decision_id"],
-            dimension_id=data["dimension_id"],
-            final_score=ScoreRepresentation.from_dict(data["final_score"]),
-            primary_hypothesis_id=data["primary_hypothesis_id"],
-            adjudication_id=data.get("adjudication_id"),
-            evidence_span_ids=list(data.get("evidence_span_ids") or []),
-            descriptor_refs=list(data.get("descriptor_refs") or []),
-            decision_confidence=data["decision_confidence"],
-            decision_note=data.get("decision_note"),
-        )
 
 
 # ── CompositeDecision ──────────────────────────────────────────────────────────
@@ -369,21 +251,17 @@ class FinalDimensionDecision:
 
 @dataclass(frozen=True)
 class CompositeDecision:
-    """Optional aggregated score across selected dimensions.
-
-    Produced by the Aggregation policy when enabled. The aggregation formula,
-    participating dimensions, and weights are all stored in aggregation_detail
-    which reflects the content of the aggregation policy config — nothing is
-    hardcoded here.
-
-    Attributes:
-        composite_id: Unique ID for this composite result.
-        aggregation_policy_ref: URI ref to the aggregation policy artifact used.
-        contributing_decision_ids: FinalDimensionDecision IDs that fed this composite.
-        composite_score: Aggregated ScoreRepresentation.
-        aggregation_detail: Snapshot of formula/weight details from the policy.
-        composite_note: Optional note about the aggregation result.
-    """
+    """跨选定维度的可选聚合评分。
+    
+        在启用时由聚合策略生成。聚合公式、参与维度与权重均存储在 aggregation_detail 中，其反映聚合策略配置的内容——此处无任何硬编码。
+    
+        属性：
+            composite_id: 该复合结果的唯一 ID。
+            aggregation_policy_ref: 指向所用聚合策略产物的 URI 引用。
+            contributing_decision_ids: 贡献给该复合结果的 FinalDimensionDecision ID。
+            composite_score: 聚合后的 ScoreRepresentation。
+            aggregation_detail: 来自策略的公式/权重详情快照。
+            composite_note: 关于聚合结果的可选备注。"""
 
     composite_id: str
     aggregation_policy_ref: str
@@ -401,22 +279,3 @@ class CompositeDecision:
             "aggregation_detail": dict(self.aggregation_detail),
             "composite_note": self.composite_note,
         }
-
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> CompositeDecision:
-        _check_no_extra(
-            data,
-            frozenset({
-                "composite_id", "aggregation_policy_ref", "contributing_decision_ids",
-                "composite_score", "aggregation_detail", "composite_note",
-            }),
-            "CompositeDecision",
-        )
-        return cls(
-            composite_id=data["composite_id"],
-            aggregation_policy_ref=data["aggregation_policy_ref"],
-            contributing_decision_ids=list(data.get("contributing_decision_ids") or []),
-            composite_score=ScoreRepresentation.from_dict(data["composite_score"]),
-            aggregation_detail=dict(data.get("aggregation_detail") or {}),
-            composite_note=data.get("composite_note"),
-        )

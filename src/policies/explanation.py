@@ -1,23 +1,21 @@
 """
 解释策略模块，负责渲染维度反馈并执行证据约束与引用校验。
 
-Explanation Policy — config-driven explanation rendering and citation enforcement.
+Explanation Policy — 基于配置的解释渲染与引用强制执行。
 
-Renders per-dimension explanations from FinalDimensionDecision, EvidenceSpan,
-and RubricSnapshot, then validates the citation chain (descriptor ref →
-evidence span → canonical score) against policy requirements.
+从 FinalDimensionDecision、EvidenceSpan 和 RubricSnapshot 渲染各维度的解释，然后根据策略要求验证引用链（descriptor ref →
+evidence span → canonical score）。
 
 Supported policy flags (all read from PolicySnapshot.explanation_policy):
-  requirements.require_descriptor_alignment  – descriptor_refs must be non-empty
-  requirements.require_evidence_links        – evidence_span_ids must be non-empty
-  requirements.require_score_citation        – canonical_score must be non-negative
-  citation_rules.min_citations_per_dimension – minimum evidence citations count
-  output_constraints.max_commentary_length_per_dimension – commentary length cap
-  output_constraints.require_evidence_score_chain – chain must be closed
+  requirements.require_descriptor_alignment  – descriptor_refs 必须非空
+  requirements.require_evidence_links        – evidence_span_ids 必须非空
+  requirements.require_score_citation        – canonical_score 必须非负
+  citation_rules.min_citations_per_dimension – 最小 evidence citations 数量
+  output_constraints.max_commentary_length_per_dimension – commentary 长度上限
+  output_constraints.require_evidence_score_chain – 链必须闭合
 
-All dimension names, descriptor text, and score values come from RubricSnapshot
-or FinalDimensionDecision — nothing is hardcoded here.
-"""
+所有 dimension 名称、descriptor 文本和 score 值均来自 RubricSnapshot
+或 FinalDimensionDecision — 这里没有任何硬编码。"""
 
 from __future__ import annotations
 
@@ -33,27 +31,26 @@ from src.contracts.evidence import (
 from src.contracts.scoring import FinalDimensionDecision
 
 
-# ── Output types ──────────────────────────────────────────────────────────────
+# ── 输出类型 ──────────────────────────────────────────────────────────────
 
 
 @dataclass(frozen=True)
 class DimensionExplanation:
-    """Structured, policy-compliant explanation for one dimension.
-
-    All referenced values must trace back to config artifacts (rubric
-    descriptors) or contract objects (evidence span IDs, canonical scores).
-
-    Attributes:
-        dimension_id: Opaque dimension identifier from rubric config.
-        dimension_name: Human-readable name from rubric config.
-        canonical_score: Authoritative integer score (computation use only).
-        display_score: Display string (may include annotation).
-        scale_ref: Scale reference from the rubric.
-        descriptor_refs: Rubric descriptor references cited for this score.
-        evidence_span_ids: Evidence span IDs supporting the explanation.
-        commentary: Structured commentary text (bounded by policy max length).
-        uncertainty_note: Optional note if confidence is low or adjudication used.
-    """
+    """针对单一维度的结构化、符合策略的解释。
+    
+        所有引用的值必须可追溯到 config artifacts（rubric
+    descriptors）或 contract objects（evidence span IDs、canonical scores）。
+    
+        Attributes:
+            dimension_id: 来自 rubric config 的不透明 dimension 标识符。
+            dimension_name: 来自 rubric config 的易读名称。
+            canonical_score: 权威整数 score（仅供计算使用）。
+            display_score: 显示字符串（可能包含注释）。
+            scale_ref: 来自 rubric 的 scale reference。
+            descriptor_refs: 为此 score 引用的 rubric descriptor references。
+            evidence_span_ids: 支持该解释的 evidence span IDs。
+            commentary: 结构化的 commentary 文本（受策略最大长度限制）。
+            uncertainty_note: 如果置信度低或使用了裁决，则提供的可选注释。"""
 
     dimension_id: str
     dimension_name: str
@@ -68,20 +65,19 @@ class DimensionExplanation:
 
 @dataclass(frozen=True)
 class ExplanationViolation:
-    """A policy violation in the citation chain for one dimension.
-
-    Attributes:
-        dimension_id: Which dimension produced the violation.
-        violation_type: Short identifier (e.g., "missing_descriptor_ref").
-        detail: Human-readable description of the violation.
-    """
+    """针对单一维度引用链的策略违规。
+    
+        Attributes:
+            dimension_id: 哪个维度产生了违规。
+            violation_type: 短标识符（例如，"missing_descriptor_ref"）。
+            detail: 易读的违规描述。"""
 
     dimension_id: str
     violation_type: str
     detail: str
 
 
-# ── Internal helpers ──────────────────────────────────────────────────────────
+# ── 内部辅助函数 ──────────────────────────────────────────────────────────
 
 
 def _get_requirements(policy: PolicySnapshot) -> Dict[str, Any]:
@@ -116,7 +112,7 @@ def _build_commentary(
     max_length: int,
     scorer_rationale: Optional[str] = None,
 ) -> str:
-    """Build a short, evidence-anchored commentary string."""
+    """构建一个简短的、以证据为锚点的 commentary 字符串。"""
     rationale = (scorer_rationale or "").strip()
     if rationale:
         return rationale[:max_length]
@@ -165,7 +161,7 @@ def _build_commentary(
     if facet_lines:
         return " ".join(facet_lines)[:max_length]
 
-    # Find descriptor summary for the score from rubric levels
+    # 从 rubric levels 中查找该 score 的 descriptor 摘要
     descriptor_summary = ""
     dim_cfg = rubric.dimension_by_id.get(dim_id, {})
     for level in dim_cfg.get("levels", []):
@@ -173,7 +169,7 @@ def _build_commentary(
             descriptor_summary = level.get("summary", "")
             break
 
-    # Find a relevant evidence quote from the final decision references.
+    # 从最终决策引用中查找相关的 evidence quote。
     span_quote = ""
     for span_id in decision.evidence_span_ids:
         quoted = _quoted(span_id)
@@ -194,7 +190,7 @@ def _build_commentary(
 
 
 def _fallback_observation(decision: FinalDimensionDecision) -> DimensionObservation:
-    """Create a minimal observation when upstream observation is unavailable."""
+    """当上游 observation 不可用时，创建一个最小的 observation。"""
     return DimensionObservation(
         observation_id=f"obs-fallback-{decision.dimension_id}",
         document_id="unknown",
@@ -211,7 +207,7 @@ def _build_uncertainty_note(
     decision: FinalDimensionDecision,
     low_confidence_threshold: float,
 ) -> Optional[str]:
-    """Return an uncertainty note if conditions warrant one."""
+    """如果条件需要，返回一个 uncertainty note。"""
     reasons: List[str] = []
     if decision.decision_confidence < low_confidence_threshold:
         reasons.append(
@@ -224,7 +220,7 @@ def _build_uncertainty_note(
     return "Note: " + "; ".join(reasons) + "."
 
 
-# ── Public API ────────────────────────────────────────────────────────────────
+# ── 公共 API ────────────────────────────────────────────────────────────────
 
 
 def render_dimension_explanation(
@@ -235,17 +231,16 @@ def render_dimension_explanation(
     observation: Optional[DimensionObservation] = None,
     scorer_rationale: Optional[str] = None,
 ) -> DimensionExplanation:
-    """Render a structured, policy-bounded explanation for one dimension.
-
-    Args:
-        decision: Authoritative score decision for this dimension.
-        spans: EvidenceSpan list (filtered or full — only this dim's spans used).
-        rubric: RubricSnapshot for dimension name and descriptor lookup.
-        policy: PolicySnapshot containing explanation policy config.
-
-    Returns:
-        A frozen DimensionExplanation.
-    """
+    """渲染针对单一维度的结构化、受策略约束的解释。
+    
+        Args:
+            decision: 该维度的权威 score 决策。
+            spans: EvidenceSpan 列表（已过滤或完整 — 仅使用该维度的 spans）。
+            rubric: 用于 dimension 名称和 descriptor 查找的 RubricSnapshot。
+            policy: 包含 explanation policy config 的 PolicySnapshot。
+    
+        Returns:
+            一个不可变的 DimensionExplanation。"""
     constraints = _get_output_constraints(policy)
     max_len: int = int(constraints.get("max_commentary_length_per_dimension", 500))
     low_conf_threshold = _get_low_confidence_threshold(policy)
@@ -254,7 +249,7 @@ def render_dimension_explanation(
     dim_cfg = rubric.dimension_by_id.get(dim_id, {})
     dimension_name: str = dim_cfg.get("name", dim_id)
 
-    # Filter spans to this dimension
+    # 将 spans 过滤至该维度
     dim_spans = [s for s in spans if s.dimension_id == dim_id]
 
     obs = observation or _fallback_observation(decision)
@@ -285,24 +280,23 @@ def validate_citation_chain(
     explanation: DimensionExplanation,
     policy: PolicySnapshot,
 ) -> List[ExplanationViolation]:
-    """Validate the citation chain for one DimensionExplanation.
-
-    Checks required flags from policy.explanation_policy["requirements"] and
-    citation_rules, returns a list of ExplanationViolation objects (empty = OK).
-
-    Args:
-        explanation: The DimensionExplanation to validate.
-        policy: PolicySnapshot containing explanation policy config.
-
-    Returns:
-        List of ExplanationViolation (may be empty if all checks pass).
-    """
+    """验证单个 DimensionExplanation 的引用链。
+    
+        检查来自 policy.explanation_policy["requirements"] 和
+    citation_rules 的所需标志，返回 ExplanationViolation 对象列表（空 = OK）。
+    
+        Args:
+            explanation: 要验证的 DimensionExplanation。
+            policy: 包含 explanation policy config 的 PolicySnapshot。
+    
+        Returns:
+            ExplanationViolation 列表（如果所有检查通过，可能为空）。"""
     reqs = _get_requirements(policy)
     citation_rules = _get_citation_rules(policy)
     dim_id = explanation.dimension_id
     violations: List[ExplanationViolation] = []
 
-    # Check descriptor alignment
+    # 检查 descriptor 对齐情况
     if reqs.get("require_descriptor_alignment", False):
         if not explanation.descriptor_refs:
             violations.append(ExplanationViolation(
@@ -314,8 +308,10 @@ def validate_citation_chain(
                 ),
             ))
 
-    # Check evidence links
-    if reqs.get("require_evidence_links", False):
+    has_evidence_links = reqs.get("require_evidence_links", False)
+
+    # 检查 evidence links
+    if has_evidence_links:
         if not explanation.evidence_span_ids:
             violations.append(ExplanationViolation(
                 dimension_id=dim_id,
@@ -325,31 +321,18 @@ def validate_citation_chain(
                     f"evidence_span_ids is empty."
                 ),
             ))
-    else:
-        # Even without require_evidence_links, check min_citations
-        min_citations = int(citation_rules.get("min_citations_per_dimension", 0))
-        if min_citations > 0 and len(explanation.evidence_span_ids) < min_citations:
-            violations.append(ExplanationViolation(
-                dimension_id=dim_id,
-                violation_type="insufficient_evidence_citations",
-                detail=(
-                    f"Dimension '{dim_id}': min_citations_per_dimension={min_citations} "
-                    f"but found {len(explanation.evidence_span_ids)}."
-                ),
-            ))
 
-    # Check min_citations when evidence_links required (additional specificity)
-    if reqs.get("require_evidence_links", False):
-        min_citations = int(citation_rules.get("min_citations_per_dimension", 0))
-        if min_citations > 0 and len(explanation.evidence_span_ids) < min_citations:
-            violations.append(ExplanationViolation(
-                dimension_id=dim_id,
-                violation_type="insufficient_evidence_citations",
-                detail=(
-                    f"Dimension '{dim_id}': min_citations_per_dimension={min_citations} "
-                    f"but found {len(explanation.evidence_span_ids)}."
-                ),
-            ))
+    # 无论是否需要 evidence_links，都检查最小引用数。
+    min_citations = int(citation_rules.get("min_citations_per_dimension", 0))
+    if min_citations > 0 and len(explanation.evidence_span_ids) < min_citations:
+        violations.append(ExplanationViolation(
+            dimension_id=dim_id,
+            violation_type="insufficient_evidence_citations",
+            detail=(
+                f"Dimension '{dim_id}': min_citations_per_dimension={min_citations} "
+                f"but found {len(explanation.evidence_span_ids)}."
+            ),
+        ))
 
     return violations
 
@@ -358,15 +341,14 @@ def enforce_explanation_policy(
     explanations: List[DimensionExplanation],
     policy: PolicySnapshot,
 ) -> List[ExplanationViolation]:
-    """Run citation chain validation across all explanations.
-
-    Args:
-        explanations: All DimensionExplanation objects to validate.
-        policy: PolicySnapshot containing explanation policy config.
-
-    Returns:
-        Deduplicated list of all ExplanationViolation objects found.
-    """
+    """对所有 explanations 运行引用链验证。
+    
+        Args:
+            explanations: 所有要验证的 DimensionExplanation 对象。
+            policy: 包含 explanation policy config 的 PolicySnapshot。
+    
+        Returns:
+            所有找到的 ExplanationViolation 对象的去重列表。"""
     all_violations: List[ExplanationViolation] = []
     for exp in explanations:
         all_violations.extend(validate_citation_chain(exp, policy))

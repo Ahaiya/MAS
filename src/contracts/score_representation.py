@@ -3,19 +3,15 @@
 
 Score Representation Contract
 
-Defines the explicit separation of canonical (integer) score from display form.
+定义 canonical (integer) score 与展示形式之间的明确分离。
 
-Key principle: the canonical_score is the authoritative integer used for ALL
-computation — QWK, aggregation formulas, adjudication trigger evaluation.
-The display_annotation is a purely cosmetic modifier that NEVER affects
-computation. Rules for when and how annotations are applied live in
-configs/ display overlay config, NOT in this contract.
+关键原则：canonical_score 是用于所有计算（QWK、聚合公式、裁决触发评估）的权威整数。
+display_annotation 是纯粹的装饰性修饰符，绝不会影响计算。应用注释的时机和方式的规则存在于
+configs/ display overlay config 中，而不是在此契约中。
 
-Invariant:  display_score == str(canonical_score) + (display_annotation or "")
+不变量：display_score == str(canonical_score) + (display_annotation or "")
 
-No score scale ranges, trait names, annotation values, or formula details
-are hardcoded here. All such data flows through rubric config artifacts.
-"""
+此处不对分数尺度范围、特征名称、注释值或公式细节进行硬编码。所有此类数据通过 rubric config artifacts 流转。"""
 
 from __future__ import annotations
 
@@ -25,19 +21,18 @@ from typing import Any, Dict, Optional
 
 @dataclass(frozen=True)
 class ScoreRepresentation:
-    """Canonical integer score with optional display annotation.
-
-    Attributes:
-        canonical_score: Integer score used for all computation.
-                         Valid range is defined by scale_ref config, not this class.
-        display_annotation: Optional cosmetic modifier (e.g., "-").
-                            Allowed values come from display overlay config.
-                            None means no annotation; display is the plain integer.
-        display_score: Rendered display string.
-                       Invariant: display_score == str(canonical_score) + (display_annotation or "")
-        scale_ref: Reference to the scale definition in the rubric config artifact.
-                   Must match a scale_id in the loaded RubricSnapshot.
-    """
+    """带有可选 display annotation 的 Canonical integer score。
+    
+        Attributes:
+            canonical_score: 用于所有计算的整数分数。
+                             有效范围由 scale_ref config 定义，而不是由此类定义。
+            display_annotation: 可选的装饰性修饰符（例如，"-"）。
+                                允许的值来自 display overlay config。
+                                None 表示没有注释；展示为纯整数。
+            display_score: 渲染后的展示字符串。
+                           不变量：display_score == str(canonical_score) + (display_annotation or "")
+            scale_ref: 对 rubric config artifact 中尺度定义的引用。
+                       必须与已加载 RubricSnapshot 中的 scale_id 匹配。"""
 
     canonical_score: int
     display_annotation: Optional[str]
@@ -59,11 +54,11 @@ class ScoreRepresentation:
             )
 
     def is_annotated(self) -> bool:
-        """Return True if this score carries a display annotation."""
+        """如果此分数带有 display annotation，则返回 True。"""
         return self.display_annotation is not None
 
     def to_dict(self) -> Dict[str, Any]:
-        """Serialize to a plain dict (JSON-safe)."""
+        """序列化为纯 dict (JSON-safe)。"""
         return {
             "canonical_score": self.canonical_score,
             "display_annotation": self.display_annotation,
@@ -73,7 +68,7 @@ class ScoreRepresentation:
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> ScoreRepresentation:
-        """Deserialize from a plain dict produced by to_dict()."""
+        """从 to_dict() 生成的纯 dict 反序列化。"""
         return cls(
             canonical_score=data["canonical_score"],
             display_annotation=data.get("display_annotation"),
@@ -87,20 +82,19 @@ def create_score_representation(
     scale_ref: str,
     display_annotation: Optional[str] = None,
 ) -> ScoreRepresentation:
-    """Factory: create a ScoreRepresentation with auto-computed display_score.
-
-    Computes display_score = str(canonical_score) + (display_annotation or ""),
-    ensuring the invariant is always satisfied at creation time.
-
-    Args:
-        canonical_score: Integer score for computation.
-        scale_ref: Reference to the rubric scale (e.g., "ordinal_4", "ordinal_10").
-        display_annotation: Optional display modifier (e.g., "-").
-                            None produces a plain integer display.
-
-    Returns:
-        A new, frozen ScoreRepresentation.
-    """
+    """工厂方法：创建一个自动计算 display_score 的 ScoreRepresentation。
+    
+        计算 display_score = str(canonical_score) + (display_annotation or "")，
+        确保在创建时始终满足不变量。
+    
+        Args:
+            canonical_score: 用于计算的整数分数。
+            scale_ref: 对 rubric scale 的引用（例如，"ordinal_4", "ordinal_10"）。
+            display_annotation: 可选的 display modifier（例如，"-"）。
+                                None 产生纯整数展示。
+    
+        Returns:
+            一个新的、冻结的 ScoreRepresentation。"""
     display_score = str(canonical_score) + (display_annotation or "")
     return ScoreRepresentation(
         canonical_score=canonical_score,

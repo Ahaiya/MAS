@@ -1,4 +1,4 @@
-"""Safe config mutation layer for the human correction loop."""
+"""用于人工纠正循环的安全 config 变更层。"""
 
 from __future__ import annotations
 
@@ -28,7 +28,7 @@ class ChangeProposal:
 
 
 class ConfigPatcher:
-    """Validate and apply controlled config changes with snapshot/rollback."""
+    """验证并应用带有快照/回滚功能的受控 config 更改。"""
 
     def __init__(
         self,
@@ -70,7 +70,7 @@ class ConfigPatcher:
         return True, "ok"
 
     def resolve_target_path(self, target_file: str) -> Path:
-        """Resolve a whitelisted config target under ``configs_root``."""
+        """解析 ``configs_root`` 下的白名单 config 目标。"""
         return self._resolve_target_path(self._normalize_target_file(target_file))
 
     def apply(self, proposal: ChangeProposal, iter_id: str) -> tuple[bool, str]:
@@ -89,7 +89,7 @@ class ConfigPatcher:
                 target_path=target_path,
             )
 
-            # Post-write parse guard: ensures the file remains valid YAML.
+            # 写入后解析保护：确保文件保持为有效的 YAML。
             yaml.safe_load(target_path.read_text(encoding="utf-8"))
         except Exception as exc:
             self.rollback(normalized_iter)

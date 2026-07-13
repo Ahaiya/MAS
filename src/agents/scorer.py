@@ -1,14 +1,13 @@
 """
 评分 Agent，负责基于维度观察和证据生成单个评分假设。
 
-Scorer — calls a configured provider to produce a ScoreHypothesis.
+Scorer — 调用已配置的 provider 以生成 ScoreHypothesis。
 
-Builds the scoring prompt via prompt_builders, calls the provider,
-parses structured JSON output into a ScoreHypothesis contract.
+通过 prompt_builders 构建评分提示，调用 provider，
+将结构化的 JSON 输出解析为 ScoreHypothesis 契约。
 
-The valid score range is resolved from the RubricSnapshot; no hardcoded
-score values or dimension codes appear here.
-"""
+有效的评分范围从 RubricSnapshot 中解析；此处不包含硬编码的
+评分值或维度代码。"""
 
 from __future__ import annotations
 
@@ -47,7 +46,7 @@ def _merge_request_params(
     base: Optional[Dict[str, Any]],
     overrides: Optional[Dict[str, Any]],
 ) -> Dict[str, Any]:
-    """Merge request params, preserving nested dicts such as extra_body."""
+    """合并请求参数，保留如 extra_body 等嵌套字典。"""
     merged: Dict[str, Any] = dict(base or {})
     for key, value in (overrides or {}).items():
         if isinstance(merged.get(key), dict) and isinstance(value, dict):
@@ -113,22 +112,21 @@ def run(
     evidence_focus: str = "",
 ) -> ScoreHypothesis:
     """
-    Score one dimension using a configured provider.
-
-    Args:
-        observation  : DimensionObservation for the dimension.
-        evidence_spans: Evidence spans referenced in the observation.
-        rubric       : RubricSnapshot for scale/descriptor lookup.
-        provider     : Configured BaseProvider to call.
-        template     : Loaded scoring prompt template.
-        rater_id     : Rater identifier (e.g. "rater_1").
-        scoring_context: Optional task-level scoring context (full file dict).
-        override_template: Optional per-dimension scoring override template.
-        evidence_focus   : Optional task-level evidence focus string.
-
-    Returns:
-        ScoreHypothesis with score clamped to the valid rubric scale range.
-    """
+    使用已配置的 provider 对单个维度进行评分。
+    
+    参数：
+        observation  : 该维度的 DimensionObservation。
+        evidence_spans: 观察中引用的 Evidence spans。
+        rubric       : 用于 scale/descriptor 查找的 RubricSnapshot。
+        provider     : 要调用的已配置 BaseProvider。
+        template     : 已加载的评分提示模板。
+        rater_id     : 评分者标识符（例如 "rater_1"）。
+        scoring_context: 可选的任务级评分上下文（完整文件字典）。
+        override_template: 可选的单维度评分覆盖模板。
+        evidence_focus   : 可选的任务级证据焦点字符串。
+    
+    返回：
+        ScoreHypothesis，其分数被限制在有效的 rubric scale 范围内。"""
     prompt_text = build_scoring_prompt(
         observation,
         evidence_spans,

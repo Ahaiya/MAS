@@ -1,1 +1,1 @@
-"""Human-feedback outer loop for applying teacher corrections."""
+"""用于应用教师修正的人类反馈外循环。"""

@@ -3,37 +3,20 @@
 
 Request Normalization and Text Segmentation Contracts
 
-Defines the data shapes for the evaluation request pipeline:
+定义了评估请求流水线的数据结构：
   EvaluationRequest -> NormalizedRequest -> NormalizedDocument (with TextUnit[])
   NormalizedDocument + RubricSnapshot -> CoveragePlan[]
 
-Design invariants:
-- All models are frozen (immutable) dataclasses.
-- No dimension names, trait codes, scale ranges, or facet names are hardcoded here.
-  All such values are opaque strings that flow in from rubric config artifacts.
-- from_dict() is strict: unknown keys raise TypeError to catch schema drift early.
-- to_dict() produces plain JSON-safe dicts; datetime is serialized as ISO 8601.
-"""
+设计不变量：
+- 所有模型均为冻结（不可变）的 dataclasses。
+- 此处不对维度名称、特征代码、刻度范围或分面名称进行硬编码。所有此类值均是从 rubric config 制品流入的不透明字符串。
+- to_dict() 生成普通的 JSON 安全字典；datetime 序列化为 ISO 8601 格式。"""
 
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import datetime
 from typing import Any, Dict, List, Optional
-
-# ── Strict deserialization helper ──────────────────────────────────────────────
-
-_SENTINEL = object()
-
-_KNOWN_FIELDS: Dict[str, frozenset] = {}  # populated by each class
-
-
-def _check_no_extra(data: Dict[str, Any], allowed: frozenset, cls_name: str) -> None:
-    extra = set(data) - allowed
-    if extra:
-        raise TypeError(
-            f"{cls_name}.from_dict() received unexpected fields: {sorted(extra)}"
-        )
 
 
 # ── TextUnit ───────────────────────────────────────────────────────────────────
@@ -41,24 +24,22 @@ def _check_no_extra(data: Dict[str, Any], allowed: frozenset, cls_name: str) -> 
 
 @dataclass(frozen=True)
 class TextUnit:
-    """A contiguous slice of text within a NormalizedDocument.
-
-    Offsets are character-level, 0-indexed, half-open [start_offset, end_offset).
-
-    Attributes:
-        unit_id: Unique identifier within the document.
-        document_id: Parent document reference.
-        text: The actual text content of this unit.
-        start_offset: Inclusive start character offset in the full document text.
-        end_offset: Exclusive end character offset.
-        unit_type: Semantic type — e.g., "sentence", "paragraph", "full_document".
-        sequence_index: Zero-based position of this unit in document order.
-        chunk_title: Optional semantic title when chunk is produced by LLM chunker.
-        chunk_method: Chunking method marker ("rule", "llm_semantic", "llm_hierarchical").
-        source_type: Source classification for this unit when the document is a
-                     dialogue log ("human", "ai", "system", "mixed", "unknown").
-        source_label: Optional raw source label (for example "human_input").
-    """
+    """NormalizedDocument 内的连续文本切片。
+    
+        偏移量是字符级别的，从 0 开始索引，半开区间 [start_offset, end_offset)。
+    
+        Attributes:
+            unit_id: 文档内的唯一标识符。
+            document_id: 父文档引用。
+            text: 此单元的实际文本内容。
+            start_offset: 在完整文档文本中包含的起始字符偏移量。
+            end_offset: 不包含的结束字符偏移量。
+            unit_type: 语义类型 — 例如 "sentence"、"paragraph"、"full_document"。
+            sequence_index: 此单元在文档顺序中从 0 开始的位置。
+            chunk_title: 当分块由 LLM chunker 生成时的可选语义标题。
+            chunk_method: 分块方法标记（"rule"、"llm_semantic"、"llm_hierarchical"）。
+            source_type: 当文档是对话日志时此单元的来源分类（"human"、"ai"、"system"、"mixed"、"unknown"）。
+            source_label: 可选的原始来源标签（例如 "human_input"）。"""
 
     unit_id: str
     document_id: str
@@ -84,7 +65,7 @@ class TextUnit:
             )
 
     def span_length(self) -> int:
-        """Number of characters covered by this unit."""
+        """此单元覆盖的字符数。"""
         return self.end_offset - self.start_offset
 
     def to_dict(self) -> Dict[str, Any]:
@@ -102,29 +83,6 @@ class TextUnit:
             "source_label": self.source_label,
         }
 
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> TextUnit:
-        _check_no_extra(
-            data,
-            frozenset({"unit_id", "document_id", "text", "start_offset",
-                       "end_offset", "unit_type", "sequence_index",
-                       "chunk_title", "chunk_method", "source_type",
-                       "source_label"}),
-            "TextUnit",
-        )
-        return cls(
-            unit_id=data["unit_id"],
-            document_id=data["document_id"],
-            text=data["text"],
-            start_offset=data["start_offset"],
-            end_offset=data["end_offset"],
-            unit_type=data["unit_type"],
-            sequence_index=data["sequence_index"],
-            chunk_title=data.get("chunk_title"),
-            chunk_method=data.get("chunk_method", "rule"),
-            source_type=data.get("source_type", "unknown"),
-            source_label=data.get("source_label"),
-        )
 
 
 # ── EvaluationRequest ──────────────────────────────────────────────────────────
@@ -132,14 +90,13 @@ class TextUnit:
 
 @dataclass(frozen=True)
 class EvaluationRequest:
-    """Raw inbound evaluation request — the system boundary entry point.
-
-    Attributes:
-        raw_text: The student essay or text to evaluate. Must be non-empty.
-        bundle_ref: URI-style reference to the ArtifactBundle to use.
-        request_id: Caller-supplied ID. None means the pipeline will generate one.
-        metadata: Arbitrary caller metadata (e.g., essay_id, source, session_id).
-    """
+    """原始入站评估请求 — 系统边界入口点。
+    
+        Attributes:
+            raw_text: 要评估的学生作文或文本。必须非空。
+            bundle_ref: 指向要使用的 ArtifactBundle 的 URI 样式引用。
+            request_id: 调用方提供的 ID。None 表示流水线将生成一个。
+            metadata: 任意调用方元数据（例如 essay_id、source、session_id）。"""
 
     raw_text: str
     bundle_ref: str
@@ -154,19 +111,6 @@ class EvaluationRequest:
             "metadata": dict(self.metadata),
         }
 
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> EvaluationRequest:
-        _check_no_extra(
-            data,
-            frozenset({"raw_text", "bundle_ref", "request_id", "metadata"}),
-            "EvaluationRequest",
-        )
-        return cls(
-            raw_text=data["raw_text"],
-            bundle_ref=data["bundle_ref"],
-            request_id=data.get("request_id"),
-            metadata=data.get("metadata") or {},
-        )
 
 
 # ── NormalizedRequest ──────────────────────────────────────────────────────────
@@ -174,19 +118,18 @@ class EvaluationRequest:
 
 @dataclass(frozen=True)
 class NormalizedRequest:
-    """An EvaluationRequest after input normalization.
-
-    The preprocessing node converts EvaluationRequest -> NormalizedRequest,
-    recording what transformations were applied so the run is auditable.
-
-    Attributes:
-        request_id: Authoritative ID (generated by pipeline if not in raw request).
-        raw_text: Original text, preserved verbatim for audit trail.
-        bundle_ref: Forwarded from EvaluationRequest.
-        normalized_at: UTC timestamp of normalization.
-        normalization_notes: List of applied normalization steps (e.g., "strip_bom").
-        metadata: Forwarded caller metadata plus any pipeline-added fields.
-    """
+    """输入标准化后的 EvaluationRequest。
+    
+        预处理节点将 EvaluationRequest 转换为 NormalizedRequest，
+        记录应用了哪些转换，以便运行可审计。
+    
+        Attributes:
+            request_id: 权威 ID（如果原始请求中没有，则由流水线生成）。
+            raw_text: 原始文本，原样保留以供审计追踪。
+            bundle_ref: 从 EvaluationRequest 转发而来。
+            normalized_at: 标准化的 UTC 时间戳。
+            normalization_notes: 已应用的标准化步骤列表（例如 "strip_bom"）。
+            metadata: 转发的调用方元数据以及流水线添加的任何字段。"""
 
     request_id: str
     raw_text: str
@@ -205,29 +148,6 @@ class NormalizedRequest:
             "metadata": dict(self.metadata),
         }
 
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> NormalizedRequest:
-        _check_no_extra(
-            data,
-            frozenset({"request_id", "raw_text", "bundle_ref", "normalized_at",
-                       "normalization_notes", "metadata"}),
-            "NormalizedRequest",
-        )
-        ts_raw = data["normalized_at"]
-        if isinstance(ts_raw, str):
-            ts = datetime.fromisoformat(ts_raw)
-            if ts.tzinfo is None:
-                ts = ts.replace(tzinfo=timezone.utc)
-        else:
-            ts = ts_raw
-        return cls(
-            request_id=data["request_id"],
-            raw_text=data["raw_text"],
-            bundle_ref=data["bundle_ref"],
-            normalized_at=ts,
-            normalization_notes=list(data.get("normalization_notes") or []),
-            metadata=dict(data.get("metadata") or {}),
-        )
 
 
 # ── NormalizedDocument ─────────────────────────────────────────────────────────
@@ -235,21 +155,20 @@ class NormalizedRequest:
 
 @dataclass(frozen=True)
 class NormalizedDocument:
-    """A normalized, segmented document ready for evidence extraction.
-
-    Produced by the text preprocessing node from a NormalizedRequest.
-
-    Attributes:
-        document_id: Unique document identifier (may equal request_id).
-        request_id: Links back to the originating NormalizedRequest.
-        normalized_text: Full normalized text (canonical form used for all offsets).
-        text_units: Ordered list of TextUnit slices (sentences, paragraphs, etc.).
-        char_count: Total character count of normalized_text.
-        word_count: Approximate word count (whitespace-tokenized).
-        document_metadata: Pipeline-generated document metadata.
-        document_type: Optional high-level type hint ("essay", "report", "dialogue", "unknown").
-        token_estimate: Approximate token count hint for branch selection in long-doc processing.
-    """
+    """准备好进行证据提取的标准化、分段的文档。
+    
+        由文本预处理节点从 NormalizedRequest 生成。
+    
+        Attributes:
+            document_id: 唯一文档标识符（可能等于 request_id）。
+            request_id: 链接回原始的 NormalizedRequest。
+            normalized_text: 完整的标准化文本（用于所有偏移量的规范形式）。
+            text_units: TextUnit 切片的有序列表（句子、段落等）。
+            char_count: normalized_text 的总字符数。
+            word_count: 大致字数统计（按空格分词）。
+            document_metadata: 流水线生成的文档元数据。
+            document_type: 可选的高级类型提示（"essay"、"report"、"dialogue"、"unknown"）。
+            token_estimate: 用于长文档处理中分支选择的大致 token 计数提示。"""
 
     document_id: str
     request_id: str
@@ -262,7 +181,7 @@ class NormalizedDocument:
     token_estimate: int = 0
 
     def get_unit(self, unit_id: str) -> Optional[TextUnit]:
-        """Look up a TextUnit by its unit_id. Returns None if not found."""
+        """通过 unit_id 查找 TextUnit。如果未找到，则返回 None。"""
         for u in self.text_units:
             if u.unit_id == unit_id:
                 return u
@@ -281,26 +200,6 @@ class NormalizedDocument:
             "token_estimate": self.token_estimate,
         }
 
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> NormalizedDocument:
-        _check_no_extra(
-            data,
-            frozenset({"document_id", "request_id", "normalized_text", "text_units",
-                       "char_count", "word_count", "document_metadata",
-                       "document_type", "token_estimate"}),
-            "NormalizedDocument",
-        )
-        return cls(
-            document_id=data["document_id"],
-            request_id=data["request_id"],
-            normalized_text=data["normalized_text"],
-            text_units=[TextUnit.from_dict(u) for u in data.get("text_units", [])],
-            char_count=data["char_count"],
-            word_count=data["word_count"],
-            document_metadata=dict(data.get("document_metadata") or {}),
-            document_type=data.get("document_type", "unknown"),
-            token_estimate=data.get("token_estimate", 0),
-        )
 
 
 # ── CoveragePlan ───────────────────────────────────────────────────────────────
@@ -308,25 +207,21 @@ class NormalizedDocument:
 
 @dataclass(frozen=True)
 class CoveragePlan:
-    """A per-dimension extraction plan produced by the Coverage Planner.
-
-    Specifies which text units to search, which facets to satisfy, and
-    how many evidence units are required — all values sourced from the
-    rubric config artifact, never hardcoded.
-
-    Attributes:
-        plan_id: Unique identifier for this plan.
-        document_id: The NormalizedDocument this plan applies to.
-        dimension_id: Opaque dimension identifier from rubric config.
-                      Must NOT be assumed to equal any hardcoded trait name.
-        target_unit_ids: TextUnit IDs that extraction workers should scan.
-        required_facets: Facet IDs the observation must cover (from rubric config).
-        minimum_evidence_units: Min evidence spans required (from rubric config).
-        allowed_evidence_scopes: Valid scope types (e.g., ["span", "global"]).
-        coverage_strategy: Extraction strategy hint (e.g., "full_scan", "targeted").
-        relevance_scores: Optional relevance score map (chunk/unit id -> score) from
-                          LLM-based coverage planning; empty for full-scan plans.
-    """
+    """由 Coverage Planner 生成的按维度的提取计划。
+    
+        指定要搜索哪些文本单元、要满足哪些分面，以及
+        需要多少证据单元 — 所有值均来源于 rubric config 制品，从不硬编码。
+    
+        Attributes:
+            plan_id: 此计划的唯一标识符。
+            document_id: 此计划适用的 NormalizedDocument。
+            dimension_id: 来自 rubric config 的不透明维度标识符。绝不能假定其等于任何硬编码的特征名称。
+            target_unit_ids: 提取工作线程应扫描的 TextUnit ID。
+            required_facets: 观察必须覆盖的分面 ID（来自 rubric config）。
+            minimum_evidence_units: 所需的最小证据跨度数（来自 rubric config）。
+            allowed_evidence_scopes: 有效的范围类型（例如 ["span", "global"]）。
+            coverage_strategy: 提取策略提示（例如 "full_scan"、"targeted"）。
+            relevance_scores: 来自基于 LLM 的覆盖规划的可选相关性分数映射（chunk/unit id -> score）；对于 full-scan 计划为空。"""
 
     plan_id: str
     document_id: str
@@ -350,25 +245,3 @@ class CoveragePlan:
             "coverage_strategy": self.coverage_strategy,
             "relevance_scores": dict(self.relevance_scores),
         }
-
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> CoveragePlan:
-        _check_no_extra(
-            data,
-            frozenset({"plan_id", "document_id", "dimension_id", "target_unit_ids",
-                       "required_facets", "minimum_evidence_units",
-                       "allowed_evidence_scopes", "coverage_strategy",
-                       "relevance_scores"}),
-            "CoveragePlan",
-        )
-        return cls(
-            plan_id=data["plan_id"],
-            document_id=data["document_id"],
-            dimension_id=data["dimension_id"],
-            target_unit_ids=list(data.get("target_unit_ids") or []),
-            required_facets=list(data.get("required_facets") or []),
-            minimum_evidence_units=data["minimum_evidence_units"],
-            allowed_evidence_scopes=list(data.get("allowed_evidence_scopes") or []),
-            coverage_strategy=data["coverage_strategy"],
-            relevance_scores=dict(data.get("relevance_scores") or {}),
-        )

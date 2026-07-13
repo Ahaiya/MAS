@@ -1,6 +1,6 @@
-"""Package entrypoint for the unified MAS CLI.
+"""统一 MAS CLI 的包入口。
 
-Recommended invocation:
+推荐调用方式：
   python -m scripts ...
 """
 

@@ -1,13 +1,12 @@
 """
 文本切分 Agent，负责把原始作文整理成后续可消费的分段文本单元。
 
-LLM-assisted document chunker.
+LLM 辅助文档切分器。
 
-Converts EvaluationRequest -> (NormalizedRequest, NormalizedDocument), using:
-- short-document semantic chunking (single LLM call),
-- long-document hierarchical chunking (hard split + summary + LLM call),
-- strict LLM execution with explicit failure on chunking errors.
-"""
+将 EvaluationRequest 转换为 (NormalizedRequest, NormalizedDocument)，使用：
+- 短文档语义切分（单次 LLM 调用），
+- 长文档分层切分（硬分割 + 摘要 + LLM 调用），
+- 严格的 LLM 执行，切分错误时显式失败。"""
 
 from __future__ import annotations
 
@@ -84,7 +83,7 @@ def _chinese_ratio(text: str) -> float:
 
 
 def _estimate_tokens(text: str) -> int:
-    """Approximate token count by language profile (no tokenizer dependency)."""
+    """按语言配置估算的 token 数量（无 tokenizer 依赖）。"""
     if not text:
         return 0
     if _chinese_ratio(text) >= 0.2:
@@ -146,7 +145,7 @@ def _create_llm_units_from_text_match(
         chunk_text = chunk["text"]
         start = normalized_text.find(chunk_text, cursor)
         if start == -1:
-            # Retry with stripped text for providers that trim chunk edges.
+            # 针对裁剪分块边缘的 providers，使用已剥离的文本进行重试。
             stripped = chunk_text.strip()
             if stripped:
                 start = normalized_text.find(stripped, cursor)
@@ -212,12 +211,11 @@ def _resolve_material_strategy(
     chunking_policy: Optional[Dict[str, Any]],
     material_type: Optional[str],
 ) -> str:
-    """Look up material strategy text from chunking policy.
-
-    Uses ``material_type`` as primary key (from material_context.type),
-    falls back to ``document_type`` (auto-detected), then falls back to
-    the raw ``material_type or document_type`` string if no policy entry.
-    """
+    """从 chunking policy 中查找素材策略文本。
+    
+        使用 ``material_type`` 作为主键（来自 material_context.type），
+        回退到 ``document_type``（自动检测），如果不存在策略条目，
+        则回退到原始的 ``material_type or document_type`` 字符串。"""
     if not isinstance(chunking_policy, dict):
         return material_type or document_type
     doc_proc = chunking_policy.get("document_processing", {})
@@ -226,7 +224,7 @@ def _resolve_material_strategy(
     strategies = doc_proc.get("material_strategies", {})
     if not isinstance(strategies, dict):
         return material_type or document_type
-    # Try material_type first, then document_type
+    # 首先尝试 material_type，然后是 document_type
     for key in (material_type, document_type):
         if key and key in strategies:
             return str(strategies[key])
@@ -234,7 +232,7 @@ def _resolve_material_strategy(
 
 
 def _resolve_chunk_size_hint(chunking_policy: Optional[Dict[str, Any]]) -> str:
-    """Read chunk_size_hint from chunking policy; returns empty string if absent."""
+    """从 chunking policy 读取 chunk_size_hint；如果不存在则返回空字符串。"""
     if not isinstance(chunking_policy, dict):
         return ""
     doc_proc = chunking_policy.get("document_processing", {})
@@ -377,19 +375,18 @@ def run(
     chunking_hints: str = "",
 ) -> Tuple[NormalizedRequest, NormalizedDocument]:
     """
-    LLM-assisted chunking entrypoint.
-
+    LLM 辅助切分入口点。
+    
     Args:
-        request: The evaluation request with raw text.
-        provider: LLM provider for completion calls.
-        template: Chunking prompt template.
-        token_threshold: Token count above which hierarchical chunking is used.
-        chunking_policy: Optional policy dict (inner ``chunking_policy`` section)
-            providing ``material_strategies`` and ``chunk_size_hint``.
-        material_type: Override for material type lookup (e.g. ``"conversation"``
-            from ``material_context.type``).  Takes precedence over auto-detected
-            ``document_type`` when looking up ``material_strategies``.
-    """
+        request: 包含原始文本的评估请求。
+        provider: 用于 completion 调用的 LLM provider。
+        template: 切分提示词模板。
+        token_threshold: 超过此 token 数量则使用分层切分。
+        chunking_policy: 可选的策略字典（内部的 ``chunking_policy`` 部分），
+            提供 ``material_strategies`` 和 ``chunk_size_hint``。
+        material_type: 素材类型查找的覆盖值（例如来自 ``material_context.type`` 的
+            ``"conversation"``）。在查找 ``material_strategies`` 时，优先级高于自动检测的
+            ``document_type``。"""
     normalized_text = request.raw_text.strip()
     source_spans = extract_dialogue_source_spans(normalized_text)
     document_type = _resolve_document_type(request)

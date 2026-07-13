@@ -28,8 +28,7 @@ PipelineRunner 是系统唯一的编排入口。职责如下：
   re_score_scope（all_dimensions/conflicted_only）与策略化 resolution。
 - [2026-03-30] feedback 阶段前执行 compute_composite，聚合指标分写入
   feedback_dict["indicator_score"]，同时保留 feedback_dict["composite"]
-  作为兼容别名，并作为运行输出属性保留。
-"""
+  作为兼容别名，并作为运行输出属性保留。"""
 
 from __future__ import annotations
 
@@ -60,14 +59,13 @@ from src.contracts.scoring import (
     CompositeDecision,
     ConflictRecord,
     FinalDimensionDecision,
+    ResolutionPath,
     ScoreHypothesis,
 )
 from src.debug.bundle import DebugBundleWriter
-from src.contracts.trace import CheckpointRef, NodeTrace, RunStatus, RunTrace
+from src.contracts.trace import RunStatus, RunTrace
 from src.orchestrator.checkpoints import CheckpointManager, RetryLimitExceeded
-from src.orchestrator.graph import StateGraph
-from src.orchestrator.router import route_after_adjudication, route_after_consistency_check
-from src.orchestrator.states import PipelineState
+from src.orchestrator.states import PipelineState, TERMINAL_STATES
 from src.orchestrator.trace_store import TraceStore
 from src.pipeline.validators import (
     terminal_validation,
@@ -83,7 +81,7 @@ DEFAULT_CHECKPOINT_MAX_RETRIES = 2
 
 
 def _simplify_feedback_indicator_score(payload: dict[str, Any] | None) -> dict[str, Any] | None:
-    """Return a display-oriented indicator score payload for feedback.json."""
+    """返回面向展示的指标评分载荷，用于 feedback.json。"""
     if not isinstance(payload, dict) or not payload:
         return None
     composite_score = payload.get("composite_score") or {}
@@ -94,7 +92,7 @@ def _simplify_feedback_indicator_score(payload: dict[str, Any] | None) -> dict[s
 
 
 def _get_rater_ids(bundle: ResolvedArtifactBundle) -> List[str]:
-    """Read required rater IDs from the adjudication policy (config-driven)."""
+    """从 adjudication policy 中读取所需的 rater ID 列表（配置驱动）。"""
     return list(
         bundle.policy_snapshot.adjudication_policy
         .get("raters", {})
@@ -102,22 +100,62 @@ def _get_rater_ids(bundle: ResolvedArtifactBundle) -> List[str]:
     )
 
 
-class PipelineRunner:
-    """Drives the evaluation pipeline for one EvaluationRequest.
+# ResolutionPath 的严重程度排序：数值越大 = 越严重。
+_PATH_SEVERITY = {
+    ResolutionPath.POLICY_AVERAGE: 0,
+    ResolutionPath.THIRD_RATER: 0,
+    ResolutionPath.RE_SCORE: 1,
+    ResolutionPath.RE_EXTRACT: 2,
+    ResolutionPath.HUMAN_REVIEW: 3,
+}
 
-    Args:
-        bundle          : A frozen ResolvedArtifactBundle (from ConfigCompiler).
-        provider        : Default BaseProvider for real LLM calls (used by stages
-                          and raters that have no specific override).
-        rater_providers : Optional per-rater provider map {rater_id: BaseProvider}.
-                          Takes precedence over `provider` for the scoring stage.
-        stage_providers : Optional per-stage provider map {stage_name: BaseProvider}.
-                          Takes precedence over `provider` for named stages.
-                          Recognised stage names: "chunking", "coverage_planning",
-                          "evidence_extraction", "feedback".
-        prompt_templates: Optional dict mapping template name to PromptTemplate.
-                          Required for real provider mode.
-    """
+_PATH_TO_STATE = {
+    ResolutionPath.THIRD_RATER: PipelineState.ADJUDICATED,
+    ResolutionPath.POLICY_AVERAGE: PipelineState.ADJUDICATED,
+    ResolutionPath.RE_SCORE: PipelineState.RE_SCORE,
+    ResolutionPath.RE_EXTRACT: PipelineState.RE_EXTRACT,
+    ResolutionPath.HUMAN_REVIEW: PipelineState.HUMAN_REVIEW,
+}
+
+
+def _route_after_consistency_check(conflicts: List[ConflictRecord]) -> PipelineState:
+    """根据一致性检查器的冲突决定下一状态。"""
+    if not conflicts:
+        return PipelineState.FEEDBACK_RENDERED
+    worst_path = max(
+        (cr.recommended_path for cr in conflicts),
+        key=lambda p: _PATH_SEVERITY.get(p, 0),
+    )
+    return _PATH_TO_STATE[worst_path]
+
+
+def _route_after_adjudication(records: List[AdjudicationRecord]) -> PipelineState:
+    """根据 adjudication 记录决定下一状态。"""
+    unresolved = [r for r in records if not r.is_resolved]
+    if not unresolved:
+        return PipelineState.FEEDBACK_RENDERED
+    worst_path = max(
+        (r.resolution_path for r in unresolved),
+        key=lambda p: _PATH_SEVERITY.get(p, 0),
+    )
+    return _PATH_TO_STATE[worst_path]
+
+
+class PipelineRunner:
+    """驱动单个 EvaluationRequest 的评价流水线。
+    
+        Args:
+            bundle          : 冻结的 ResolvedArtifactBundle（来自 ConfigCompiler）。
+            provider        : 真实 LLM 调用的默认 BaseProvider（供未指定特定覆盖的
+                              阶段和 rater 使用）。
+            rater_providers : 可选的按 rater 指定的 provider 映射 {rater_id: BaseProvider}。
+                              在评分阶段优先于 `provider`。
+            stage_providers : 可选的按阶段指定的 provider 映射 {stage_name: BaseProvider}。
+                              在命名阶段优先于 `provider`。
+                              可识别的阶段名称："chunking"、"coverage_planning"、
+                              "evidence_extraction"、"feedback"。
+            prompt_templates: 可选的 dict，将模板名映射到 PromptTemplate。
+                              真实 provider 模式下必需。"""
 
     def __init__(
         self,
@@ -157,83 +195,78 @@ class PipelineRunner:
 
     @property
     def last_request(self) -> Optional[EvaluationRequest]:
-        """EvaluationRequest used in the most recent run() call."""
+        """最近一次 run() 调用中使用的 EvaluationRequest。"""
         return self._last_request
 
     @property
     def last_normalized_request(self) -> Optional[NormalizedRequest]:
-        """NormalizedRequest produced in the most recent run() call."""
+        """最近一次 run() 调用中生成的 NormalizedRequest。"""
         return self._last_normalized_request
 
     @property
     def last_hypotheses(self) -> List[ScoreHypothesis]:
-        """ScoreHypotheses produced in the most recent run() call.
-
-        Contains one hypothesis per (rater, dimension) pair — e.g. 12 entries
-        for 6 dimensions × 2 raters. Empty if run() has not been called or if
-        the pipeline failed before the scoring stage.
-        """
+        """最近一次 run() 调用中生成的 ScoreHypotheses。
+        
+                每个 (rater, dimension) 对包含一个 hypothesis — 例如 6 个维度 × 2 个
+                rater 共 12 条记录。若 run() 未被调用或流水线在评分阶段之前失败，
+                则为空。"""
         return list(self._last_hypotheses)
 
     @property
     def last_spans(self) -> List[EvidenceSpan]:
-        """EvidenceSpans produced in the most recent run() call (all dimensions).
-
-        Empty if run() has not been called or if the pipeline failed before
-        the evidence extraction stage.
-        """
+        """最近一次 run() 调用中生成的 EvidenceSpans（所有维度）。
+        
+                若 run() 未被调用或流水线在证据抽取阶段之前失败，则为空。"""
         return list(self._last_spans)
 
     @property
     def last_observations(self) -> List[DimensionObservation]:
-        """DimensionObservations produced in the most recent run() call.
-
-        One observation per dimension. Empty if run() has not been called or
-        if the pipeline failed before the observation building stage.
-        """
+        """最近一次 run() 调用中生成的 DimensionObservations。
+        
+                每个维度一条 observation。若 run() 未被调用或流水线在 observation 构建
+                阶段之前失败，则为空。"""
         return list(self._last_observations)
 
     @property
     def last_plans(self) -> List[CoveragePlan]:
-        """CoveragePlans produced in the most recent run() call."""
+        """最近一次 run() 调用中生成的 CoveragePlans。"""
         return list(self._last_plans)
 
     @property
     def last_document(self) -> Optional[NormalizedDocument]:
-        """NormalizedDocument produced in the most recent run() call."""
+        """最近一次 run() 调用中生成的 NormalizedDocument。"""
         return self._last_document
 
     @property
     def last_conflicts(self) -> List[ConflictRecord]:
-        """ConflictRecords produced in the most recent run() call."""
+        """最近一次 run() 调用中生成的 ConflictRecords。"""
         return list(self._last_conflicts)
 
     @property
     def last_adjudications(self) -> List[AdjudicationRecord]:
-        """AdjudicationRecords produced in the most recent run() call."""
+        """最近一次 run() 调用中生成的 AdjudicationRecords。"""
         return list(self._last_adjudications)
 
     @property
     def last_adjudication_records(self) -> List[AdjudicationRecord]:
-        """Alias of last_adjudications (used by eval artifact export)."""
+        """last_adjudications 的别名（供 eval artifact 导出使用）。"""
         return list(self._last_adjudications)
 
     @property
     def last_decisions(self) -> List[FinalDimensionDecision]:
-        """FinalDimensionDecisions produced in the most recent run() call."""
+        """最近一次 run() 调用中生成的 FinalDimensionDecisions。"""
         return list(self._last_decisions)
 
     @property
     def last_composite(self) -> Optional[CompositeDecision]:
-        """CompositeDecision produced in the most recent run() call."""
+        """最近一次 run() 调用中生成的 CompositeDecision。"""
         return self._last_composite
 
     def _provider_for_rater(self, rater_id: str) -> BaseProvider:
-        """Return the provider to use for a specific rater.
-
-        Priority: explicit rater_providers > default provider.
-        Raises RuntimeError if no provider is available.
-        """
+        """返回用于指定 rater 的 provider。
+        
+                优先级：显式 rater_providers > 默认 provider。
+                若无可用 provider 则抛出 RuntimeError。"""
         if rater_id in self._rater_providers:
             return self._rater_providers[rater_id]
         if self._provider is not None:
@@ -244,11 +277,10 @@ class PipelineRunner:
         )
 
     def _provider_for_stage(self, stage: str) -> BaseProvider:
-        """Return the provider to use for a named pipeline stage.
-
-        Priority: explicit stage_providers > default provider.
-        Raises RuntimeError if no provider is available.
-        """
+        """返回用于命名流水线阶段的 provider。
+        
+                优先级：显式 stage_providers > 默认 provider。
+                若无可用 provider 则抛出 RuntimeError。"""
         if stage in self._stage_providers:
             return self._stage_providers[stage]
         if self._provider is not None:
@@ -270,7 +302,7 @@ class PipelineRunner:
         return "unknown"
 
     def _tpl(self, name: str) -> PromptTemplate:
-        """Return a named PromptTemplate; raises KeyError if missing."""
+        """返回指定名称的 PromptTemplate；缺失时抛出 KeyError。"""
         if name not in self._prompt_templates:
             raise KeyError(
                 f"Prompt template '{name}' not found. "
@@ -279,17 +311,17 @@ class PipelineRunner:
         return self._prompt_templates[name]
 
     def _chunking_policy(self) -> Optional[dict]:
-        """Read optional chunking policy snapshot (introduced in Stage F)."""
+        """读取可选的 chunking policy 快照（Stage F 引入）。"""
         raw = getattr(self._bundle.policy_snapshot, "chunking_policy", None)
         return raw if isinstance(raw, dict) else None
 
     def _scoring_context(self) -> Optional[dict]:
-        """Read optional scoring context snapshot (introduced in Stage K)."""
+        """读取可选的 scoring context 快照（Stage K 引入）。"""
         raw = getattr(self._bundle.policy_snapshot, "scoring_context", None)
         return raw if isinstance(raw, dict) else None
 
     def _checkpoint_max_retries(self) -> int:
-        """Read max_retries from bundle operational params with safe fallback."""
+        """从 bundle operational params 中读取 max_retries，带安全回退。"""
         op_params = getattr(self._bundle, "operational_params", None)
         if op_params is None:
             return DEFAULT_CHECKPOINT_MAX_RETRIES
@@ -300,7 +332,7 @@ class PipelineRunner:
 
     @staticmethod
     def _token_threshold_from_policy(chunking_policy: Optional[dict]) -> int:
-        """Resolve token threshold from chunking policy with safe fallback."""
+        """从 chunking policy 中解析 token 阈值，带安全回退。"""
         default_threshold = 4000
         if not isinstance(chunking_policy, dict):
             return default_threshold
@@ -321,7 +353,7 @@ class PipelineRunner:
 
     @staticmethod
     def _extraction_char_budget(chunking_policy: Optional[dict]) -> Optional[int]:
-        """Read max_chars_per_dimension from extraction_budget section."""
+        """从 extraction_budget 部分读取 max_chars_per_dimension。"""
         if not isinstance(chunking_policy, dict):
             return None
         policy = chunking_policy
@@ -339,10 +371,9 @@ class PipelineRunner:
         units: List, max_chars: int
     ) -> List:
         """均匀采样 text_units，使总字符数不超过 max_chars。
-
-        从全量 units 中按等间距选取，保证覆盖文档首、中、尾。
-        若全量不超过预算则原样返回。
-        """
+        
+                从全量 units 中按等间距选取，保证覆盖文档首、中、尾。
+                若全量不超过预算则原样返回。"""
         total_chars = sum(len(u.text) for u in units)
         if total_chars <= max_chars:
             return list(units)
@@ -361,7 +392,7 @@ class PipelineRunner:
 
     @staticmethod
     def _chunk_method_label(document: NormalizedDocument) -> str:
-        """Get chunking method label for node trace output_ref."""
+        """获取节点 trace output_ref 的分块方法标签。"""
         method = document.document_metadata.get("chunking")
         if isinstance(method, str) and method.strip():
             return method.strip()
@@ -373,7 +404,7 @@ class PipelineRunner:
 
     @staticmethod
     def _extraction_ref(spans: List[EvidenceSpan]) -> str:
-        """Build extraction summary with match-method diagnostics."""
+        """构建带有匹配方法诊断的提取摘要。"""
         n_exact = 0
         n_fuzzy = 0
         n_unmatched = 0
@@ -392,7 +423,7 @@ class PipelineRunner:
 
     @staticmethod
     def _debug_jsonable(value: Any) -> Any:
-        """Convert contracts and nested values into JSON-safe payloads."""
+        """将 contracts 和嵌套值转换为 JSON 安全的载荷。"""
         if value is None:
             return None
         if hasattr(value, "to_dict"):
@@ -406,7 +437,7 @@ class PipelineRunner:
         return value
 
     def _provider_bindings(self) -> List[Dict[str, Any]]:
-        """Summarize provider/model bindings for debug manifests."""
+        """为 debug 清单汇总 provider/model 绑定。"""
         seen = []
         if self._provider is not None:
             seen.append(
@@ -527,13 +558,12 @@ class PipelineRunner:
         self,
         request: EvaluationRequest,
     ) -> Tuple[RunTrace, Dict[str, Any]]:
-        """Execute the evaluation pipeline.
-
-        Returns:
-            (RunTrace, feedback_dict) where feedback_dict is the output of
-            feedback.run(). If the pipeline fails or is escalated to
-            HUMAN_REVIEW, feedback_dict is empty {}.
-        """
+        """执行评估 pipeline。
+        
+                Returns:
+                    (RunTrace, feedback_dict) 其中 feedback_dict 是
+                    feedback.run() 的输出。如果 pipeline 失败或升级至
+                    HUMAN_REVIEW，则 feedback_dict 为空 {}。"""
         bundle = self._bundle
         rubric = bundle.rubric_snapshot
         policy = bundle.policy_snapshot
@@ -545,7 +575,7 @@ class PipelineRunner:
         material_description = str(material_ctx.get("description", ""))
         chunking_hints = str(task_ctx.get("chunking_hints") or "")
 
-        # Build per-dimension extraction_hints lookup keyed by dimension code
+        # 构建以 dimension code 为键的 per-dimension extraction_hints 查找表
         _extraction_hints_by_code: dict[str, str] = {}
         for _entry in (task_ctx.get("scoring_context") or []):
             if isinstance(_entry, dict):
@@ -562,11 +592,11 @@ class PipelineRunner:
         bundle_version = bundle.artifact_bundle.bundle_version
         request_id = request.request_id or f"req-{hashlib.md5(request.raw_text.encode()).hexdigest()[:12]}"
 
-        graph = StateGraph()
+        state = PipelineState.INIT
         store = TraceStore(run_id, bundle_id, bundle_version, request_id)
         ckpt_mgr = CheckpointManager(run_id, max_retries=self._checkpoint_max_retries())
 
-        # Carry-forward pipeline data
+        # 延续 pipeline 数据
         self._last_request = request
         self._last_normalized_request = None
         self._last_hypotheses = []
@@ -611,10 +641,10 @@ class PipelineRunner:
                     summary="Original evaluation request",
                 )
 
-            # ── Stage 0: Config already resolved (bundle is pre-compiled) ──────
-            graph.advance(PipelineState.CONFIG_RESOLVED)
+            # ── Stage 0: Config 已解析（bundle 已预编译） ──────
+            state = PipelineState.CONFIG_RESOLVED
 
-            # ── Stage 1: Preprocess ──────────────────────────────────────────
+            # ── Stage 1: 预处理 ──────────────────────────────────────────
             store.record_node_start("node_preprocess", "preprocess",
                                     input_ref=request_id)
             self._debug_node_start(
@@ -668,10 +698,10 @@ class PipelineRunner:
                 preprocess_output_ref,
                 metadata={"checkpoint_id": ckpt.checkpoint_id},
             )
-            graph.advance(PipelineState.PREPROCESSED)
+            state = PipelineState.PREPROCESSED
             self._last_document = document
 
-            # ── Stage 2: Build plans (均匀采样 or 全量 → every dimension) ──────
+            # ── Stage 2: 构建计划（均匀采样 or 全量 → every dimension） ──────
             char_budget = self._extraction_char_budget(chunking_policy)
             sampled_units = self._sample_units_by_budget(
                 document.text_units, char_budget
@@ -696,16 +726,16 @@ class PipelineRunner:
                     allowed_evidence_scopes=["span", "global"],
                     coverage_strategy=coverage_strategy,
                 ))
-            graph.advance(PipelineState.COVERAGE_PLANNED)
+            state = PipelineState.COVERAGE_PLANNED
             self._last_plans = list(plans)
 
-            # ── Main loop — supports RE_EXTRACT / RE_SCORE re-entry ──────────
-            while not graph.is_terminal():
-                cs = graph.current_state
+            # ── Main loop — 支持 RE_EXTRACT / RE_SCORE 重入 ──────────
+            while not state in TERMINAL_STATES:
+                cs = state
 
-                # RE_EXTRACT: re-enter pipeline at COVERAGE_PLANNED
+                # RE_EXTRACT: 在 COVERAGE_PLANNED 处重新进入 pipeline
                 if cs == PipelineState.RE_EXTRACT:
-                    graph.advance(PipelineState.COVERAGE_PLANNED)
+                    state = PipelineState.COVERAGE_PLANNED
                     cs = PipelineState.COVERAGE_PLANNED
 
                 # COVERAGE_PLANNED → EVIDENCE_EXTRACTED
@@ -778,7 +808,7 @@ class PipelineRunner:
                         metadata={"checkpoint_id": ckpt.checkpoint_id},
                     )
                     self._last_spans = all_spans_flat
-                    graph.advance(PipelineState.EVIDENCE_EXTRACTED)
+                    state = PipelineState.EVIDENCE_EXTRACTED
                     cs = PipelineState.EVIDENCE_EXTRACTED
 
                 # EVIDENCE_EXTRACTED → OBSERVATION_BUILT
@@ -829,12 +859,12 @@ class PipelineRunner:
                         metadata={"checkpoint_id": ckpt.checkpoint_id},
                     )
                     self._last_observations = list(observations)
-                    graph.advance(PipelineState.OBSERVATION_BUILT)
+                    state = PipelineState.OBSERVATION_BUILT
                     cs = PipelineState.OBSERVATION_BUILT
 
-                # RE_SCORE: re-enter pipeline at OBSERVATION_BUILT
+                # RE_SCORE: 在 OBSERVATION_BUILT 处重新进入 pipeline
                 if cs == PipelineState.RE_SCORE:
-                    graph.advance(PipelineState.OBSERVATION_BUILT)
+                    state = PipelineState.OBSERVATION_BUILT
                     cs = PipelineState.OBSERVATION_BUILT
 
                 # OBSERVATION_BUILT → SCORED
@@ -899,10 +929,10 @@ class PipelineRunner:
                         scorer_output_ref,
                         metadata={"checkpoint_id": ckpt.checkpoint_id},
                     )
-                    graph.advance(PipelineState.SCORED)
+                    state = PipelineState.SCORED
                     cs = PipelineState.SCORED
 
-                # SCORED → CONSISTENCY_CHECKED → route
+                # SCORED → CONSISTENCY_CHECKED → 路由
                 if cs == PipelineState.SCORED:
                     store.record_node_start("node_consistency_checker",
                                             "check_consistency",
@@ -953,9 +983,9 @@ class PipelineRunner:
                         "success",
                         consistency_output_ref,
                     )
-                    graph.advance(PipelineState.CONSISTENCY_CHECKED)
+                    state = PipelineState.CONSISTENCY_CHECKED
 
-                    next_state = route_after_consistency_check(conflicts)
+                    next_state = _route_after_consistency_check(conflicts)
                     self._debug_route_decision(
                         "route_after_consistency_check",
                         PipelineState.CONSISTENCY_CHECKED,
@@ -966,7 +996,7 @@ class PipelineRunner:
                     )
 
                     if next_state == PipelineState.FEEDBACK_RENDERED:
-                        # No conflicts — resolve directly to final decisions.
+                        # 无冲突 — 直接解析为最终决策。
                         adj_records, decisions = reconciliation.resolve(
                             conflicts,
                             hypotheses,
@@ -980,7 +1010,7 @@ class PipelineRunner:
                             decisions,
                             summary="Final decisions derived directly from scorer hypotheses",
                         )
-                        graph.advance(PipelineState.FEEDBACK_RENDERED)
+                        state = PipelineState.FEEDBACK_RENDERED
                         break
 
                     elif next_state == PipelineState.ADJUDICATED:
@@ -1065,7 +1095,7 @@ class PipelineRunner:
                                     ),
                                 )
 
-                        graph.advance(PipelineState.ADJUDICATED)
+                        state = PipelineState.ADJUDICATED
                         store.record_node_start("node_adjudicator", "adjudicate",
                                                 input_ref=f"conflicts:{len(conflicts)}")
                         self._debug_node_start(
@@ -1116,7 +1146,7 @@ class PipelineRunner:
                             adjudicator_output_ref,
                         )
 
-                        next_state2 = route_after_adjudication(adj_records)
+                        next_state2 = _route_after_adjudication(adj_records)
                         self._debug_route_decision(
                             "route_after_adjudication",
                             PipelineState.ADJUDICATED,
@@ -1125,7 +1155,7 @@ class PipelineRunner:
                             "Route selected from adjudication outcome",
                             metadata={"adjudication_count": len(adj_records)},
                         )
-                        graph.advance(next_state2)
+                        state = next_state2
 
                         if next_state2 == PipelineState.FEEDBACK_RENDERED:
                             break
@@ -1135,7 +1165,7 @@ class PipelineRunner:
                                 {},
                             )
                         else:
-                            # RE_EXTRACT or RE_SCORE from adjudication
+                            # 来自裁决的 RE_EXTRACT 或 RE_SCORE
                             fb_type = (
                                 "re_extract"
                                 if next_state2 == PipelineState.RE_EXTRACT
@@ -1150,21 +1180,21 @@ class PipelineRunner:
                                 ckpt_mgr.record_fallback(fb_type)
                             except RetryLimitExceeded as exc:
                                 store.record_force_fail(str(exc))
-                                graph.force_fail()
+                                state = PipelineState.FAILED
                                 return (
                                     store.build_run_trace(RunStatus.FAILED),
                                     {},
                                 )
 
                     elif next_state == PipelineState.HUMAN_REVIEW:
-                        graph.advance(PipelineState.HUMAN_REVIEW)
+                        state = PipelineState.HUMAN_REVIEW
                         return (
                             store.build_run_trace(RunStatus.HUMAN_REVIEW),
                             {},
                         )
 
                     else:
-                        # RE_EXTRACT or RE_SCORE directly from consistency checker
+                        # 直接来自一致性检查器的 RE_EXTRACT 或 RE_SCORE
                         fb_type = (
                             "re_extract"
                             if next_state == PipelineState.RE_EXTRACT
@@ -1177,24 +1207,24 @@ class PipelineRunner:
                                 detail="Fallback requested by consistency checker route",
                             )
                             ckpt_mgr.record_fallback(fb_type)
-                            graph.advance(next_state)
+                            state = next_state
                         except RetryLimitExceeded as exc:
                             store.record_force_fail(str(exc))
-                            graph.force_fail()
+                            state = PipelineState.FAILED
                             return (
                                 store.build_run_trace(RunStatus.FAILED),
                                 {},
                             )
-                    # Continue the while loop (handles RE_EXTRACT / RE_SCORE state)
+                    # 继续 while 循环（处理 RE_EXTRACT / RE_SCORE 状态）
 
-            # ── Post-loop: graph is at FEEDBACK_RENDERED (or terminal) ────────
-            if graph.is_terminal() and graph.current_state != PipelineState.VALIDATED:
-                # Reached a terminal state other than VALIDATED without our break
+            # ── Post-loop: graph 处于 FEEDBACK_RENDERED（或终端状态） ────────
+            if state in TERMINAL_STATES and state != PipelineState.VALIDATED:
+                # 在没有我们 break 的情况下到达了非 VALIDATED 的终端状态
                 return store.build_run_trace(RunStatus.FAILED), {}
 
             if decisions is None:
                 store.record_force_fail("Pipeline ended without producing decisions")
-                graph.force_fail()
+                state = PipelineState.FAILED
                 return store.build_run_trace(RunStatus.FAILED), {}
 
             # ── Stage: Composite Score ───────────────────────────────────────
@@ -1280,10 +1310,10 @@ class PipelineRunner:
                 feedback_output_ref,
             )
 
-            # ── Terminal validation ──────────────────────────────────────────
+            # ── 终端验证 ──────────────────────────────────────────
             terminal_passed = terminal_validation(decisions, plans, rubric)
 
-            graph.advance(PipelineState.VALIDATED)
+            state = PipelineState.VALIDATED
 
             run_trace = store.build_run_trace(
                 status=RunStatus.COMPLETED,
@@ -1296,9 +1326,9 @@ class PipelineRunner:
             if self._debug_writer is not None:
                 self._debug_writer.emit_event(
                     "run_failed",
-                    state=graph.current_state.value if graph.current_state is not None else None,
+                    state=state.value if state is not None else None,
                     error_message=str(exc),
                 )
             store.record_force_fail(str(exc))
-            graph.force_fail()
+            state = PipelineState.FAILED
             return store.build_run_trace(RunStatus.FAILED), {}

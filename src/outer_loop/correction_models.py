@@ -1,4 +1,4 @@
-"""Human correction data models for outer-loop feedback integration."""
+"""用于外环反馈集成的人工纠正数据模型。"""
 
 from __future__ import annotations
 
@@ -11,15 +11,15 @@ import json
 
 @dataclass
 class ScoreCorrection:
-    """Human changed a final dimension score."""
-    dimension_code: str   # e.g. "A4-1"
+    """人工修改了最终的维度分数。"""
+    dimension_code: str   # 例如 "A4-1"
     original_score: int
     corrected_score: int
 
 
 @dataclass
 class FeedbackCorrection:
-    """Human rewrote the feedback text for a dimension."""
+    """人工重写了某个维度的反馈文本。"""
     dimension_code: str
     original_feedback: str
     corrected_feedback: str
@@ -27,14 +27,14 @@ class FeedbackCorrection:
 
 @dataclass
 class EvidenceAddition:
-    """Human added evidence quotes the AI missed."""
+    """人工添加了 AI 遗漏的证据引用。"""
     dimension_code: str
     added_quotes: list[str]
 
 
 @dataclass
 class CorrectionEvent:
-    """All corrections submitted by a human for one sample."""
+    """人工针对单个样本提交的所有纠正。"""
     sample_id: str
     timestamp: str
     score_corrections: list[ScoreCorrection] = field(default_factory=list)
@@ -109,7 +109,7 @@ class CorrectionEvent:
 
 
 class PendingCorrections:
-    """Queue of correction events waiting to be processed."""
+    """等待处理的纠正事件队列。"""
 
     DEFAULT_PATH = Path("experiments/pending_corrections.json")
     ARCHIVE_DIR = Path("experiments/processed_corrections")
@@ -135,7 +135,7 @@ class PendingCorrections:
         return not self.events
 
     def archive(self) -> None:
-        """Move pending file to processed archive and clear the queue."""
+        """将待处理文件移动到已处理归档并清空队列。"""
         if not self.path.exists():
             return
         self.ARCHIVE_DIR.mkdir(parents=True, exist_ok=True)

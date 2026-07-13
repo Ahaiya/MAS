@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Unified CLI entrypoint for MAS operations.
+"""MAS 统一 CLI 入口。
 
-Recommended invocation:
+推荐调用方式：
   python -m scripts ...
 
-Compatibility alias:
+兼容别名：
   python scripts/mas.py ...
 """
 

@@ -1,4 +1,4 @@
-"""Helpers for identifying human/AI/system source regions inside dialogue logs."""
+"""用于识别对话日志内人类/AI/系统源区域的辅助函数。"""
 
 from __future__ import annotations
 
@@ -21,21 +21,20 @@ def _classify_section(label: str) -> str:
 
 
 def extract_dialogue_source_spans(markdown_text: str) -> List[Dict[str, Any]]:
-    """Return source-labeled content ranges for markdown dialogue logs.
-
-    The current training data format stores each dialogue event as:
-
-    ### section_name
-    标签: ...
-    时间: ...
-    ```text|json
-    ...
-    ```
-
-    We record the offsets of the fenced content so later stages can determine
-    whether an extracted quote came from a human turn or from assistant/system
-    scaffolding.
-    """
+    """返回 markdown 对话日志中带源标签的内容范围。
+    
+        当前的训练数据格式将每个对话事件存储为：
+    
+        ### section_name
+        标签: ...
+        时间: ...
+        ```text|json
+        ...
+        ```
+    
+        我们记录围栏内容的偏移量，以便后续阶段可以确定
+        提取的引语是来自人类轮次还是来自助手/系统
+        脚手架。"""
     spans: List[Dict[str, Any]] = []
     for section_match in _SECTION_RE.finditer(markdown_text):
         label = section_match.group("label").strip()
@@ -67,7 +66,7 @@ def source_for_range(
     *,
     allow_mixed: bool,
 ) -> Tuple[str, Optional[str]]:
-    """Return dominant source_type/source_label for a character range."""
+    """返回字符范围的主要 source_type/source_label。"""
     if start_offset is None or end_offset is None or end_offset <= start_offset:
         return "unknown", None
     if not source_spans:

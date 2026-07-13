@@ -1,20 +1,19 @@
 """
 Provider 抽象层，定义模型调用请求、响应与错误边界。
 
-Provider interface — capability boundary definition.
+Provider 接口 — 能力边界定义。
 
-This module defines ONLY the transport-level abstractions:
-- LLMRequest  : structured input to a provider call
-- LLMResponse : structured output from a provider call
-- TokenUsage  : token accounting
-- ProviderCapability : advertised capabilities of a provider
-- ProviderError hierarchy : call-level and parse-level errors
-- BaseProvider : abstract base all concrete providers must implement
+本模块仅定义传输级别的抽象：
+- LLMRequest  : provider 调用的结构化输入
+- LLMResponse : provider 调用的结构化输出
+- TokenUsage  : token 统计
+- ProviderCapability : provider 声明的能力
+- ProviderError hierarchy : 调用级别和解析级别的错误
+- BaseProvider : 所有具体 provider 必须实现的抽象基类
 
-BOUNDARY RULE (enforced by test_provider_interface.py):
-  This module must remain free of policy, orchestrator, and rubric imports.
-  It handles only transport-level concerns: call formatting, execution, parsing.
-"""
+BOUNDARY RULE (由 test_provider_interface.py 强制执行)：
+  本模块必须保持不包含 policy、orchestrator 和 rubric 的导入。
+  它只处理传输级别的问题：调用格式化、执行、解析。"""
 
 from __future__ import annotations
 
@@ -24,11 +23,11 @@ from enum import Enum, auto
 from typing import Any, Dict, Optional
 
 
-# ── Value objects ──────────────────────────────────────────────────────────────
+# ── 值对象 ──────────────────────────────────────────────────────────────────
 
 @dataclass(frozen=True)
 class TokenUsage:
-    """Token accounting returned by a provider call."""
+    """Provider 调用返回的 token 统计。"""
 
     prompt_tokens: int
     completion_tokens: int
@@ -38,16 +37,15 @@ class TokenUsage:
 @dataclass(frozen=True)
 class LLMRequest:
     """
-    Provider-agnostic request envelope.
-
+    与 Provider 无关的请求封装。
+    
     Fields:
-        prompt        : The main user/task prompt text (required, non-empty).
-        system        : Optional system instruction passed separately.
-        model_id      : Optional model identifier override.
-        params        : Provider-specific call parameters (temperature, max_tokens, …).
-        output_schema : Optional JSON schema dict requesting structured output.
-        metadata      : Optional non-provider metadata for tracing / debug tools.
-    """
+        prompt        : 主要用户/任务 prompt 文本（必填，非空）。
+        system        : 单独传递的可选 system 指令。
+        model_id      : 可选的 model 标识符覆盖。
+        params        : Provider 特定的调用参数（temperature, max_tokens, …）。
+        output_schema : 请求结构化输出的可选 JSON schema 字典。
+        metadata      : 用于追踪/调试工具的可选非 provider 元数据。"""
 
     prompt: str
     system: Optional[str] = None
@@ -64,16 +62,14 @@ class LLMRequest:
 @dataclass(frozen=True)
 class LLMResponse:
     """
-    Provider-agnostic response envelope.
-
+    与 Provider 无关的响应封装。
+    
     Fields:
-        content         : Raw text content from the model.
-        structured_data : Parsed structured output (set when output_schema was provided
-                          and parsing succeeded; None otherwise).
-        usage           : Token usage accounting.
-        provider_name   : Name of the provider that produced this response.
-        model_id        : Model identifier used for this call.
-    """
+        content         : 来自模型的原始文本内容。
+        structured_data : 解析后的结构化输出（当提供了 output_schema 且解析成功时设置；否则为 None）。
+        usage           : Token 使用统计。
+        provider_name   : 生成此响应的 provider 名称。
+        model_id        : 此调用使用的 model 标识符。"""
 
     content: str
     structured_data: Optional[Dict[str, Any]]
@@ -82,78 +78,74 @@ class LLMResponse:
     model_id: str
 
 
-# ── Capability enum ────────────────────────────────────────────────────────────
+# ── 能力枚举 ────────────────────────────────────────────────────────────────
 
 class ProviderCapability(Enum):
-    """Capabilities a provider may advertise."""
+    """Provider 可能声明的能力。"""
 
     TEXT_COMPLETION = auto()
     STRUCTURED_OUTPUT = auto()
 
 
-# ── Error hierarchy ────────────────────────────────────────────────────────────
+# ── 错误层级 ────────────────────────────────────────────────────────────────
 
 class ProviderError(Exception):
-    """Base class for all provider-level errors."""
+    """所有 provider 级别错误的基类。"""
 
 
 class ProviderCallError(ProviderError):
-    """Raised when the underlying API call fails (network, auth, rate-limit, …)."""
-
+    """当底层 API 调用失败时引发（network, auth, rate-limit, …）。"""
     def __init__(self, message: str, *, status_code: Optional[int] = None) -> None:
         super().__init__(message)
         self.status_code = status_code
 
 
 class ProviderParseError(ProviderError):
-    """Raised when the provider response cannot be parsed into the expected shape."""
+    """当 provider 响应无法解析为预期形状时引发。"""
 
     def __init__(self, message: str, *, raw_content: str = "") -> None:
         super().__init__(message)
         self.raw_content = raw_content
 
 
-# ── Abstract base provider ─────────────────────────────────────────────────────
+# ── 抽象基类 Provider ───────────────────────────────────────────────────────
 
 class BaseProvider(abc.ABC):
     """
-    Abstract base class for all LLM provider adapters.
-
-    A concrete provider is responsible for:
-    - Formatting an LLMRequest into the API-specific payload.
-    - Executing the API call (with retry/timeout managed internally).
-    - Parsing the API response into an LLMResponse.
-    - Raising ProviderCallError or ProviderParseError on failure.
-
-    A concrete provider MUST NOT:
-    - Contain rubric semantics (dimension names, score ranges, descriptor logic).
-    - Contain policy logic (conflict resolution, score combining, citation rules).
-    - Perform state machine routing.
-    """
+    所有 LLM provider 适配器的抽象基类。
+    
+    具体 provider 负责：
+    - 将 LLMRequest 格式化为特定于 API 的 payload。
+    - 执行 API 调用（内部管理重试/超时）。
+    - 将 API 响应解析为 LLMResponse。
+    - 失败时引发 ProviderCallError 或 ProviderParseError。
+    
+    具体 provider 绝不能：
+    - 包含 rubric 语义（维度名称、分数范围、描述符逻辑）。
+    - 包含 policy 逻辑（冲突解决、分数组合、引用规则）。
+    - 执行状态机路由。"""
 
     @property
     @abc.abstractmethod
     def name(self) -> str:
-        """Unique identifier for this provider (e.g. "openai_compatible")."""
+        """此 provider 的唯一标识符（例如 "openai_compatible"）。"""
 
     @property
     @abc.abstractmethod
     def capabilities(self) -> frozenset[ProviderCapability]:
-        """Set of capabilities this provider supports."""
+        """此 provider 支持的能力集合。"""
 
     @abc.abstractmethod
     def complete(self, request: LLMRequest) -> LLMResponse:
         """
-        Execute a single completion call.
-
+        执行单次补全调用。
+        
         Args:
-            request: The LLMRequest containing prompt, optional system message,
-                     optional model override, optional output schema, and params.
-
+            request: 包含 prompt、可选 system 消息、可选 model 覆盖、可选输出 schema 和 params 的 LLMRequest。
+        
         Returns:
-            LLMResponse with content, optional structured_data, and usage info.
-
+            包含 content、可选 structured_data 和 usage 信息的 LLMResponse。
+        
         Raises:
-            ProviderCallError: If the API call itself fails.
-            ProviderParseError: If the response cannot be parsed.
-        """
+            ProviderCallError: 如果 API 调用本身失败。
+            ProviderParseError: 如果响应无法解析。"""

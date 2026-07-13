@@ -1,23 +1,22 @@
 """
 冲突协调 Agent，统一处理一致性检查、冲突判定与裁决收口。
 
-Reconciliation Agent — unified conflict detection and score resolution.
+Reconciliation Agent — 统一的冲突检测与评分解决机制。
 
-This module merges the consistency-check and adjudication responsibilities into
-a single policy-driven interface:
+本模块将 consistency-check 和 adjudication 职责合并到
+一个单一的基于策略的接口中：
 
-1) run()     -> detect conflicts and decide whether resolution scoring is needed
-2) resolve() -> produce adjudication records + final per-dimension decisions
+1) run()     -> 检测冲突并决定是否需要 resolution scoring
+2) resolve() -> 生成 adjudication 记录 + 最终的每维度决策
 
-The runner can still execute these as two distinct pipeline nodes/states
-(CONSISTENCY_CHECKED, ADJUDICATED) while sharing one implementation surface.
-"""
+runner 仍然可以将这些作为两个独立的 pipeline 节点/状态
+(CONSISTENCY_CHECKED, ADJUDICATED) 执行，同时共享一个实现层面。"""
 
 from __future__ import annotations
 
 import hashlib
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Tuple
 
 from src.contracts.artifact_bundle import PolicySnapshot
 from src.contracts.score_representation import (
@@ -52,7 +51,7 @@ def _resolution_strategy(policy: PolicySnapshot) -> Dict[str, str]:
 
 
 def _normalize_strategy_name(name: str) -> str:
-    # Backward compatibility for pre-L stage policy naming.
+    # 为 pre-L 阶段的 policy 命名提供向后兼容。
     if name == "use_rater_3_as_authoritative":
         return "use_resolution_rater_as_authoritative"
     return name
@@ -82,12 +81,12 @@ def _average_confidence(dim_hyps: List[ScoreHypothesis]) -> float:
 
 
 def _pick_default_hypothesis(dim_hyps: List[ScoreHypothesis]) -> ScoreHypothesis:
-    # Deterministic fallback: smallest rater_id, then hypothesis_id.
+    # 确定性回退：最小的 rater_id，其次是 hypothesis_id。
     return sorted(dim_hyps, key=lambda h: (h.rater_id, h.hypothesis_id))[0]
 
 
 def _pick_highest_hypothesis(dim_hyps: List[ScoreHypothesis]) -> ScoreHypothesis:
-    # For optional fallback strategies such as "use_higher_score".
+    # 用于可选的回退策略，例如 "use_higher_score"。
     return sorted(
         dim_hyps,
         key=lambda h: (-h.score.canonical_score, h.rater_id, h.hypothesis_id),
@@ -106,12 +105,11 @@ def run(
     hypotheses: List[ScoreHypothesis],
     policy: PolicySnapshot,
 ) -> ReconciliationResult:
-    """Detect conflicts and compute resolution scoring scope.
-
-    Args:
-        hypotheses: All current ScoreHypothesis records.
-        policy: PolicySnapshot with adjudication triggers/strategy.
-    """
+    """检测冲突并计算 resolution scoring 范围。
+    
+        Args:
+            hypotheses: 所有当前的 ScoreHypothesis 记录。
+            policy: 带有 adjudication 触发器/策略的 PolicySnapshot。"""
     conflicts = evaluate_all_triggers(hypotheses, policy)
 
     strategy = _resolution_strategy(policy)
@@ -144,7 +142,7 @@ def resolve(
     hypotheses: List[ScoreHypothesis],
     policy: PolicySnapshot,
 ) -> Tuple[List[AdjudicationRecord], List[FinalDimensionDecision]]:
-    """Resolve conflicts and build final per-dimension decisions."""
+    """解决冲突并构建最终的每维度决策。"""
     resolution_rater = _resolution_rater_label(policy)
     strategy_cfg = _resolution_strategy(policy)
     default_strategy = _normalize_strategy_name(
@@ -212,7 +210,7 @@ def resolve(
                 is_resolved=True,
             )
         else:
-            # Default strategy: use resolution rater as authoritative.
+            # 默认策略：将 resolution rater 作为权威。
             resolution_hyps = [
                 hyp for hyp in dim_hyps if hyp.rater_id == resolution_rater
             ]
@@ -279,8 +277,8 @@ def resolve(
                     is_resolved=True,
                 )
             else:
-                # Escalate unresolved, while still preserving a deterministic fallback
-                # score so downstream consumers always receive one decision per dimension.
+                # 升级未解决的冲突，同时仍然保留确定性回退
+                # score，以便下游消费者始终在每个维度上收到一个决策。
                 decision_confidence = min(primary_hyp.confidence, 0.4)
                 decision_note = (
                     f"conflict unresolved, fallback to {primary_hyp.rater_id}"
@@ -315,8 +313,8 @@ def resolve(
             )
         )
 
-    # Defensive guard: if a conflict references a dimension with no hypotheses,
-    # preserve the unresolved adjudication signal for routing.
+    # 防御性保护：如果冲突引用了一个没有 hypotheses 的维度，
+    # 保留未解决的 adjudication 信号以进行路由。
     for dim_id, conflict in sorted(conflicts_by_dim.items()):
         if dim_id in by_dim:
             continue

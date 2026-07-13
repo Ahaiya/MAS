@@ -1,5 +1,4 @@
-"""Correction Agent — interprets human corrections and updates task_context.yaml."""
-
+"""Correction Agent — 解释人工修正并更新 task_context.yaml。"""
 from __future__ import annotations
 
 import re
@@ -18,7 +17,7 @@ _DEFAULT_TARGET_FILE = "configs/tasks/task_context.yaml"
 
 
 class CorrectionAgent:
-    """Interprets human correction events and applies targeted updates to task_context.yaml."""
+    """解释人工修正事件并对 task_context.yaml 应用定向更新。"""
 
     def __init__(
         self,
@@ -45,10 +44,9 @@ class CorrectionAgent:
         self.user_template = Template(user_template_path.read_text(encoding="utf-8"))
 
     def process(self, pending: PendingCorrections, iter_id: str = "correction") -> bool:
-        """Process pending corrections, update task_context.yaml, and archive corrections.
-
-        Returns True if corrections were applied successfully, False otherwise.
-        """
+        """处理待处理的修正，更新 task_context.yaml，并归档修正。
+        
+                如果修正成功应用则返回 True，否则返回 False。"""
         if pending.is_empty():
             return False
 
@@ -123,14 +121,14 @@ class CorrectionAgent:
 
     @staticmethod
     def _extract_yaml(text: str) -> str:
-        """Extract YAML content from a fenced code block or raw text."""
+        """从围栏代码块或原始文本中提取 YAML 内容。"""
         match = re.search(
             r"```(?:yaml|yml)?\s*(.*?)```",
             text.strip(),
             flags=re.IGNORECASE | re.DOTALL,
         )
         raw = match.group(1).strip() if match else text.strip()
-        # Validate it parses as a dict
+        # 验证其解析为 dict
         try:
             loaded = yaml.safe_load(raw)
             if not isinstance(loaded, dict):
@@ -150,10 +148,9 @@ def check_and_apply_corrections(
     target_file: Path | str = _DEFAULT_TARGET_FILE,
     iter_id: str = "correction",
 ) -> bool:
-    """Check for pending human corrections and apply them before the inner loop.
-
-    Returns True if corrections were found and applied, False if nothing to do.
-    """
+    """在内部循环之前检查待处理的人工修正并应用它们。
+    
+        如果发现并应用了修正则返回 True，如果没有需要处理的则返回 False。"""
     pending = PendingCorrections.load(pending_path)
     if pending.is_empty():
         return False

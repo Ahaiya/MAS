@@ -1,26 +1,22 @@
 """
 OpenAI 兼容 Provider 适配器，负责对接兼容 Chat Completions 的网关。
 
-OpenAI-compatible provider adapter.
+OpenAI 兼容的 Provider 适配器。
 
-Supports any API endpoint that follows the OpenAI Chat Completions interface,
-including OpenAI, DeepSeek, local models via LM Studio / Ollama, etc.
+支持任何遵循 OpenAI Chat Completions 接口的 API endpoint，
+包括 OpenAI、DeepSeek、通过 LM Studio / Ollama 运行的本地模型等。
 
-Lazy-imports the `openai` package so the module remains importable even when the
-`real-provider` optional dependency group is not installed.  Calling `complete()`
-without the package installed raises ImportError with an actionable message.
+延迟导入 `openai` 包，以便即使未安装 `real-provider` 可选依赖组，该模块仍可被导入。如果在未安装该包的情况下调用 `complete()`，将抛出带有可操作提示信息的 ImportError。
 
-Configuration (all optional, read from constructor args):
-  api_key    : Provider API key.
-  api_base   : Base URL override (e.g. "https://api.deepseek.com/v1").
-  model_id   : Model name (e.g. "gpt-4o", "deepseek-chat").
-  timeout    : Request timeout seconds (default 60).
-  max_retries: Max retry attempts on transient failures (default 3).
-"""
+配置（均为可选，从构造函数参数读取）：
+  api_key       : Provider API key。
+  api_base      : Base URL 覆盖（例如 "https://api.deepseek.com/v1"）。
+  model_id      : 模型名称（例如 "gpt-4o"、"deepseek-chat"）。
+  timeout       : 请求超时秒数（默认 60）。
+  default_params: Provider 默认请求参数，会合并到每次调用中。"""
 
 from __future__ import annotations
 
-import time
 from typing import Any, Dict, Optional
 
 from src.providers.base import (
@@ -34,18 +30,13 @@ from src.providers.base import (
 )
 
 _DEFAULT_TIMEOUT = 60
-_DEFAULT_MAX_RETRIES = 3
-_DEFAULT_RETRY_DELAY = 1.0
-_RETRYABLE_STATUS_CODES = {429, 500, 502, 503, 504}
 
 
 class OpenAICompatibleProvider(BaseProvider):
     """
-    Adapter for OpenAI and OpenAI-compatible REST APIs.
-
-    Wraps the `openai` Python SDK (lazy import).  The SDK must be installed
-    from the `real-provider` extras group to actually call the API.
-    """
+    适用于 OpenAI 及 OpenAI 兼容 REST APIs 的适配器。
+    
+    封装 `openai` Python SDK（延迟导入）。必须从 `real-provider` 扩展依赖组安装该 SDK 才能实际调用 API。"""
 
     def __init__(
         self,
@@ -55,16 +46,12 @@ class OpenAICompatibleProvider(BaseProvider):
         api_base: Optional[str] = None,
         default_params: Optional[Dict[str, Any]] = None,
         timeout: float = _DEFAULT_TIMEOUT,
-        max_retries: int = _DEFAULT_MAX_RETRIES,
-        retry_delay: float = _DEFAULT_RETRY_DELAY,
     ) -> None:
         self._api_key = api_key
         self._model_id = model_id
         self._api_base = api_base
         self._default_params = dict(default_params or {})
         self._timeout = timeout
-        self._max_retries = max_retries
-        self._retry_delay = retry_delay
 
     @property
     def name(self) -> str:
@@ -90,7 +77,7 @@ class OpenAICompatibleProvider(BaseProvider):
             api_key=self._api_key,
             base_url=self._api_base,
             timeout=self._timeout,
-            max_retries=0,  # We handle retries ourselves
+            max_retries=0,  # 重试由 GuardedProvider 处理
         )
 
         messages = []
@@ -108,32 +95,18 @@ class OpenAICompatibleProvider(BaseProvider):
         if request.output_schema is not None:
             call_kwargs["response_format"] = {"type": "json_object"}
 
-        last_exc: Exception = RuntimeError("No attempts made")
-        for attempt in range(self._max_retries + 1):
-            try:
-                response = client.chat.completions.create(**call_kwargs)
-                return self._parse_response(request, response)
-            except _openai.APIStatusError as exc:
-                last_exc = exc
-                if exc.status_code not in _RETRYABLE_STATUS_CODES:
-                    raise ProviderCallError(
-                        f"API error {exc.status_code}: {exc.message}",
-                        status_code=exc.status_code,
-                    ) from exc
-                if attempt < self._max_retries:
-                    time.sleep(self._retry_delay * (attempt + 1))
-            except _openai.APIConnectionError as exc:
-                last_exc = exc
-                if attempt < self._max_retries:
-                    time.sleep(self._retry_delay * (attempt + 1))
-            except _openai.APITimeoutError as exc:
-                last_exc = exc
-                if attempt < self._max_retries:
-                    time.sleep(self._retry_delay * (attempt + 1))
-
-        raise ProviderCallError(
-            f"Provider call failed after {self._max_retries + 1} attempts: {last_exc}"
-        ) from last_exc
+        try:
+            response = client.chat.completions.create(**call_kwargs)
+            return self._parse_response(request, response)
+        except _openai.APIStatusError as exc:
+            raise ProviderCallError(
+                f"API error {exc.status_code}: {exc.message}",
+                status_code=exc.status_code,
+            ) from exc
+        except _openai.APIConnectionError as exc:
+            raise ProviderCallError(f"API connection error: {exc}") from exc
+        except _openai.APITimeoutError as exc:
+            raise ProviderCallError(f"API timeout: {exc}") from exc
 
     def _parse_response(
         self,
@@ -190,12 +163,10 @@ def _merge_params(
     default_params: Dict[str, Any],
     request_params: Dict[str, Any],
 ) -> Dict[str, Any]:
-    """Merge provider defaults with per-request overrides.
-
-    Request params win. When both sides provide nested dicts (for example
-    ``extra_body``), merge that level as well so a retry can override only the
-    specific nested key it needs.
-    """
+    """将 Provider 默认值与单次请求的覆盖值合并。
+    
+        请求参数优先。当双方都提供嵌套字典时（例如
+        ``extra_body``），也会合并该层级，以便重试时仅覆盖其需要的特定嵌套键。"""
     merged: Dict[str, Any] = dict(default_params or {})
     for key, value in (request_params or {}).items():
         if isinstance(merged.get(key), dict) and isinstance(value, dict):

@@ -1,20 +1,16 @@
 """
 Provider 工厂，负责按配置装配真实 provider 及其包装层。
 
-Provider Factory — builds BaseProvider instances from ProviderEntryConfig.
+Provider Factory — 根据 ProviderEntryConfig 构建 BaseProvider 实例。
 
-Reads model, api_base, and API key from the config entry plus environment
-variables.  All secret values stay in env; the bundle only stores the *name*
-of the env var (api_key_env).
+从配置条目及环境变量中读取 model、api_base 和 API key。所有密钥值保留在 env 中；bundle 仅存储环境变量的 *名称* (api_key_env)。
 
-Fallback resolution order for model / api_base:
-  1. Value set directly in ProviderEntryConfig (non-empty string)
-  2. Corresponding global env var (LLM_MODEL / LLM_API_BASE)
-  3. Hardcoded safe default ("gpt-4o-mini" / None)
+model / api_base 的回退解析顺序：
+  1. 直接在 ProviderEntryConfig 中设置的值（非空字符串）
+  2. 对应的全局环境变量 (LLM_MODEL / LLM_API_BASE)
+  3. 硬编码的安全默认值 ("gpt-4o-mini" / None)
 
-BOUNDARY RULE: this module must not import rubric, policy, or orchestrator
-modules.  It only bridges ProviderEntryConfig → BaseProvider.
-"""
+BOUNDARY RULE：此模块不得导入 rubric、policy 或 orchestrator 模块。它仅桥接 ProviderEntryConfig → BaseProvider。"""
 
 from __future__ import annotations
 
@@ -27,17 +23,16 @@ from src.providers.openai_compatible import OpenAICompatibleProvider
 
 
 def build_provider(entry: ProviderEntryConfig) -> BaseProvider:
-    """Instantiate a GuardedProvider from a ProviderEntryConfig + env vars.
-
-    Args:
-        entry: A ProviderEntryConfig (model, api_base, api_key_env).
-
-    Returns:
-        A ready-to-use BaseProvider (GuardedProvider wrapping OpenAICompatibleProvider).
-
-    Raises:
-        ValueError: If the resolved API key is empty.
-    """
+    """从 ProviderEntryConfig 和环境变量实例化一个 GuardedProvider。
+    
+        Args:
+            entry: 一个 ProviderEntryConfig (model, api_base, api_key_env)。
+    
+        Returns:
+            一个可直接使用的 BaseProvider (包装 OpenAICompatibleProvider 的 GuardedProvider)。
+    
+        Raises:
+            ValueError: 如果解析出的 API key 为空。"""
     api_key = os.environ.get(entry.api_key_env, "") or os.environ.get("LLM_API_KEY", "")
     if not api_key:
         raise ValueError(
@@ -47,7 +42,7 @@ def build_provider(entry: ProviderEntryConfig) -> BaseProvider:
 
     model = entry.model or os.environ.get("LLM_MODEL", "gpt-4o-mini")
     api_base_raw = entry.api_base or os.environ.get("LLM_API_BASE", "")
-    api_base = api_base_raw or None  # OpenAICompatibleProvider expects None for default
+    api_base = api_base_raw or None  # OpenAICompatibleProvider 默认期望 None
 
     timeout = float(os.environ.get("LLM_TIMEOUT_SECONDS", "60"))
     max_retries = int(os.environ.get("LLM_MAX_RETRIES", "3"))
@@ -59,7 +54,6 @@ def build_provider(entry: ProviderEntryConfig) -> BaseProvider:
         api_base=api_base,
         default_params=entry.params,
         timeout=timeout,
-        max_retries=0,  # retries handled by GuardedProvider
     )
     return GuardedProvider(inner, RetryConfig(max_retries=max_retries, retry_delay_seconds=retry_delay))
 
@@ -69,13 +63,12 @@ def build_provider_map(provider_config: ProviderConfig) -> tuple[
     dict[str, BaseProvider],
     dict[str, BaseProvider],
 ]:
-    """Build all providers declared in a ProviderConfig.
-
-    Returns:
-        (default_provider, rater_providers, stage_providers)
-        where rater_providers maps rater_id → BaseProvider
-        and stage_providers maps stage_name → BaseProvider.
-    """
+    """构建在 ProviderConfig 中声明的所有 providers。
+    
+        Returns:
+            (default_provider, rater_providers, stage_providers)
+            其中 rater_providers 映射 rater_id → BaseProvider
+            而 stage_providers 映射 stage_name → BaseProvider。"""
     default = build_provider(provider_config.default)
     rater_providers = {
         rater_id: build_provider(entry)

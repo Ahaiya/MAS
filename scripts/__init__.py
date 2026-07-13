@@ -1,4 +1,4 @@
-"""Unified MAS CLI package."""
+"""MAS CLI 统一包。"""
 
 __all__ = ["app"]
 

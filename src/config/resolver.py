@@ -1,18 +1,17 @@
 """
-配置引用解析器，负责把 bundle 中的相对引用解析为可验证的工件路径。
+配置引用解析器，负责将 bundle 中的相对引用解析为可验证的工件路径。
 
-Config Resolver: Loads and validates artifact references from bundle YAML files.
+配置解析器：从 bundle YAML 文件中加载并验证工件引用。
 
-Responsibilities:
-- Parse bundle YAML file into ArtifactBundle dataclass
-- Load each referenced artifact file from configs/
-- Validate each artifact against its Pydantic schema
-- Compute content hash for each artifact
-- Return ArtifactRef with loaded_data and content_hash populated
+职责：
+- 将 bundle YAML 文件解析为 ArtifactBundle dataclass
+- 从 configs/ 加载每个被引用的工件文件
+- 根据对应的 Pydantic schema 验证每个工件
+- 计算每个工件的内容哈希
+- 返回已填充 loaded_data 和 content_hash 的 ArtifactRef
 
-Does NOT contain: rubric semantics, adjudication logic, aggregation formulas,
-or any business facts. All schema validation is structural only.
-"""
+不包含：rubric 语义、裁决逻辑、聚合公式，
+或任何业务事实。所有 schema 验证仅为结构性验证。"""
 
 from __future__ import annotations
 
@@ -24,21 +23,14 @@ from pydantic import ValidationError
 
 from src.config.freeze import compute_content_hash
 from src.config.schema import (
-    AdjudicationFileSchema,
-    AggregationFileSchema,
-    BundleFileSchema,
-    ChunkingPolicyFileSchema,
     DimensionRubricFileSchema,
-    ExplanationFileSchema,
     PromptFileSchema,
-    RubricFileSchema,
-    ScoringContextFileSchema,
-    SimplifiedBundleFileSchema,
     SimplifiedAdjudicationFileSchema,
     SimplifiedAggregationFileSchema,
+    SimplifiedBundleFileSchema,
     SimplifiedChunkingPolicyFileSchema,
-    TaskRubricFileSchema,
     TaskContextFileSchema,
+    TaskRubricFileSchema,
 )
 from src.contracts.artifact_bundle import (
     ArtifactBundle,
@@ -48,30 +40,26 @@ from src.contracts.artifact_bundle import (
 
 
 class ResolverError(Exception):
-    """Raised when artifact loading or schema validation fails."""
+    """在工件加载或 schema 验证失败时抛出。"""
 
 
-# Maps source file path prefix patterns to their Pydantic schema classes.
-# Order matters: more specific patterns first.
+# 将源文件路径前缀模式映射到对应的 Pydantic schema 类。
+# 顺序很重要：更具体的模式在前。
 _SCHEMA_ROUTE: list[tuple[str, type]] = [
     ("rubrics/dimension/", DimensionRubricFileSchema),
     ("rubrics/tasks/", TaskRubricFileSchema),
-    ("rubrics/", RubricFileSchema),
     ("policies/adjudication/", SimplifiedAdjudicationFileSchema),
     ("policies/aggregation/", SimplifiedAggregationFileSchema),
-    ("policies/explanation/", ExplanationFileSchema),
     ("policies/chunking/", SimplifiedChunkingPolicyFileSchema),
     ("tasks/", TaskContextFileSchema),
-    ("prompts/tasks/", ScoringContextFileSchema),
-    ("prompts/scoring_context.yaml", ScoringContextFileSchema),
     ("prompts/", PromptFileSchema),
 ]
 
 
 def _resolve_schema_class(source_file: str) -> type | None:
-    """Return the schema class for a given source file path, or None if unknown."""
-    # Rubric files under the task-scoped directory take priority over the generic
-    # "tasks/" prefix which routes to TaskContextFileSchema.
+    """返回给定源文件路径对应的 schema 类，如果未知则返回 None。"""
+    # 任务作用域目录下的 rubric 文件优先于通用
+    # "tasks/" 前缀，该前缀会路由到 TaskContextFileSchema。
     if source_file.startswith("tasks/") and "/dimension/" in source_file:
         return DimensionRubricFileSchema
     for prefix, schema_cls in _SCHEMA_ROUTE:
@@ -81,30 +69,28 @@ def _resolve_schema_class(source_file: str) -> type | None:
 
 
 class ConfigResolver:
-    """Loads bundle YAML files and resolves artifact references.
-
-    Args:
-        configs_root: Root directory for all config files (default: 'configs/').
-    """
+    """加载 bundle YAML 文件并解析工件引用。
+    
+        Args:
+            configs_root: 所有配置文件所在的根目录（默认：'configs/'）。"""
 
     def __init__(self, configs_root: Path | str = "configs") -> None:
         self.configs_root = Path(configs_root)
 
     def load_bundle_file(self, bundle_path: Path | str) -> ArtifactBundle:
-        """Parse a bundle YAML file into an ArtifactBundle.
-
-        The returned bundle has unloaded refs (no loaded_data or content_hash).
-        Call load_artifact() on each ref to populate those fields.
-
-        Args:
-            bundle_path: Absolute or relative path to the bundle YAML file.
-
-        Returns:
-            ArtifactBundle with all refs parsed but not yet loaded.
-
-        Raises:
-            ResolverError: If file does not exist or YAML parse fails.
-        """
+        """将 bundle YAML 文件解析为 ArtifactBundle。
+        
+                返回的 bundle 中的引用尚未加载（没有 loaded_data 或 content_hash）。
+                对每个引用调用 load_artifact() 以填充这些字段。
+        
+                Args:
+                    bundle_path: bundle YAML 文件的绝对路径或相对路径。
+        
+                Returns:
+                    所有引用已解析但尚未加载的 ArtifactBundle。
+        
+                Raises:
+                    ResolverError: 当文件不存在或 YAML 解析失败时抛出。"""
         bundle_path = Path(bundle_path)
         if not bundle_path.exists():
             raise ResolverError(f"Bundle file not found: {bundle_path}")
@@ -114,104 +100,26 @@ class ConfigResolver:
         except yaml.YAMLError as exc:
             raise ResolverError(f"Failed to parse bundle YAML {bundle_path}: {exc}") from exc
 
-        # Detect simplified bundle format (no 'artifact_bundle' wrapper key)
-        if "artifact_bundle" not in raw:
-            return self._load_simplified_bundle(raw, bundle_path)
-
-        try:
-            bundle_doc = BundleFileSchema(**raw)
-            schema_version = SchemaVersion(str(bundle_doc.schema_version))
-            ab = bundle_doc.artifact_bundle
-
-            rubric_ref = ArtifactRef(
-                ref_uri=ab.rubric_core_ref,
-                source_file=ab.rubric_source_file,
-            )
-            adj_ref = ArtifactRef(
-                ref_uri=ab.adjudication_policy_ref,
-                source_file=ab.adjudication_source_file,
-            )
-            agg_ref = ArtifactRef(
-                ref_uri=ab.aggregation_policy_ref,
-                source_file=ab.aggregation_source_file,
-            )
-            exp_ref = ArtifactRef(
-                ref_uri=ab.explanation_policy_ref,
-                source_file=ab.explanation_source_file,
-            )
-
-            prompt_files: list[str] = list(ab.prompt_templates or [])
-            prompt_refs = [
-                ArtifactRef(
-                    ref_uri=f"ops://prompts/{Path(pf).stem}/v1",
-                    source_file=pf,
-                )
-                for pf in prompt_files
-            ]
-
-            chunking_ref = None
-            if ab.chunking_policy_ref and ab.chunking_source_file:
-                chunking_ref = ArtifactRef(
-                    ref_uri=ab.chunking_policy_ref,
-                    source_file=ab.chunking_source_file,
-                )
-
-            scoring_context_ref = None
-            if ab.scoring_context_ref and ab.scoring_context_source_file:
-                scoring_context_ref = ArtifactRef(
-                    ref_uri=ab.scoring_context_ref,
-                    source_file=ab.scoring_context_source_file,
-                )
-
-            return ArtifactBundle(
-                bundle_id=ab.bundle_id,
-                bundle_version=str(ab.bundle_version),
-                bundle_name=ab.bundle_name,
-                description=ab.description,
-                schema_version=schema_version,
-                rubric_ref=rubric_ref,
-                adjudication_policy_ref=adj_ref,
-                aggregation_policy_ref=agg_ref,
-                explanation_policy_ref=exp_ref,
-                prompt_refs=prompt_refs,
-                source_documents=list(ab.source_documents or []),
-                validation_rules=[
-                    rule.model_dump() if hasattr(rule, "model_dump") else dict(rule)
-                    for rule in (ab.validation_rules or [])
-                ],
-                metadata=dict(ab.metadata or {}),
-                provider_config_raw=(
-                    ab.provider_config.model_dump() if ab.provider_config is not None else None
-                ),
-                operational_params_raw=(
-                    ab.operational_params.model_dump()
-                    if ab.operational_params is not None
-                    else None
-                ),
-                chunking_policy_ref=chunking_ref,
-                scoring_context_ref=scoring_context_ref,
-            )
-        except (ValidationError, KeyError, ValueError) as exc:
-            raise ResolverError(f"Malformed bundle file {bundle_path}: {exc}") from exc
+        # 该仓库仅使用简化的 bundle 格式。
+        return self._load_simplified_bundle(raw, bundle_path)
 
     def _load_simplified_bundle(
         self, raw: dict[str, Any], bundle_path: Path
     ) -> ArtifactBundle:
-        """Parse a simplified bundle YAML (no 'artifact_bundle' wrapper) into ArtifactBundle.
-
-        Path templates may reference ``{active_task_id}``, ``{active_dim_id}``,
-        or the legacy ``{task_file_prefix}`` placeholder.
-
-        Args:
-            raw: Parsed YAML content.
-            bundle_path: Original file path (for error messages).
-
-        Returns:
-            ArtifactBundle with all refs parsed but not yet loaded.
-
-        Raises:
-            ResolverError: If YAML is malformed or required keys are missing.
-        """
+        """将简化的 bundle YAML（没有 'artifact_bundle' 包装器）解析为 ArtifactBundle。
+        
+                路径模板可引用 ``{active_task_id}``、``{active_dim_id}``
+                或旧版的 ``{task_file_prefix}`` 占位符。
+        
+                Args:
+                    raw: 已解析的 YAML 内容。
+                    bundle_path: 原始文件路径（用于错误信息）。
+        
+                Returns:
+                    所有引用已解析但尚未加载的 ArtifactBundle。
+        
+                Raises:
+                    ResolverError: 当 YAML 格式错误或缺少必填键时抛出。"""
         try:
             bundle_doc = SimplifiedBundleFileSchema(**raw)
         except ValidationError as exc:
@@ -231,7 +139,7 @@ class ConfigResolver:
             )
 
         def _strip_configs(path: str) -> str:
-            """Strip leading 'configs/' to produce a path relative to configs_root."""
+            """移除前导的 'configs/'，以生成相对于 configs_root 的路径。"""
             if path.startswith("configs/"):
                 return path[len("configs/"):]
             return path
@@ -298,17 +206,16 @@ class ConfigResolver:
         )
 
     def load_artifact(self, ref: ArtifactRef) -> ArtifactRef:
-        """Load an artifact file, validate its schema, and return a populated ref.
-
-        Args:
-            ref: An ArtifactRef with source_file set (loaded_data may be None).
-
-        Returns:
-            A new ArtifactRef with loaded_data and content_hash populated.
-
-        Raises:
-            ResolverError: If file is missing, YAML parse fails, or schema validation fails.
-        """
+        """加载工件文件，验证其 schema，并返回已填充的引用。
+        
+                Args:
+                    ref: 已设置 source_file 的 ArtifactRef（loaded_data 可能为 None）。
+        
+                Returns:
+                    已填充 loaded_data 和 content_hash 的新 ArtifactRef。
+        
+                Raises:
+                    ResolverError: 当文件缺失、YAML 解析失败或 schema 验证失败时抛出。"""
         artifact_path = self.configs_root / ref.source_file
         if not artifact_path.exists():
             raise ResolverError(f"Artifact file not found: {artifact_path}")

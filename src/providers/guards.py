@@ -1,25 +1,24 @@
 """
 Provider 守护层，负责补充重试、超时和解析失败保护。
 
-Provider guardrails — retry, timeout, and parse-failure protection.
+Provider 守护层 — 重试、超时和解析失败保护。
 
-GuardedProvider wraps any BaseProvider and adds:
-- Automatic retry with configurable delay for transient ProviderCallErrors.
-- Timeout enforcement via a background thread; exceeding the limit raises
-  ProviderCallError with a "timeout" message.
-- ProviderParseError is NOT retried (it indicates a data problem, not a
-  transient network/API problem).
+GuardedProvider 包装任何 BaseProvider 并添加：
+- 针对瞬时 ProviderCallError 的带有可配置延迟的自动重试。
+- 通过后台线程执行超时；超过限制会抛出
+  带有 "timeout" 消息的 ProviderCallError。
+- ProviderParseError 不会重试（它表示数据问题，而不是
+  瞬时网络/API 问题）。
 
-RetryConfig holds all guardrail parameters and validates them at construction.
+RetryConfig 包含所有守护层参数，并在构造时对其进行验证。
 
-This module has no knowledge of rubric dimensions, policies, or orchestration.
-"""
+此模块不了解 rubric 维度、策略或编排。"""
 
 from __future__ import annotations
 
 import time
 from concurrent.futures import ThreadPoolExecutor, TimeoutError as FuturesTimeoutError
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Optional
 
 from src.providers.base import (
@@ -37,17 +36,16 @@ from src.providers.base import (
 @dataclass(frozen=True)
 class RetryConfig:
     """
-    Configuration for GuardedProvider retry and timeout behaviour.
-
-    Attributes:
-        max_retries          : Number of *additional* attempts after the first
-                               call fails.  0 means no retries (fail fast).
-                               Must be >= 0.
-        retry_delay_seconds  : Seconds to wait between attempts.  0.0 for
-                               immediate retry.
-        timeout_seconds      : Per-call wall-clock timeout in seconds.
-                               None disables timeout enforcement.
-    """
+    GuardedProvider 重试和超时行为的配置。
+    
+    属性：
+        max_retries          : 首次调用失败后的*额外*尝试次数。
+                               0 表示不重试（快速失败）。
+                               必须 >= 0。
+        retry_delay_seconds  : 尝试之间等待的秒数。0.0 表示
+                               立即重试。
+        timeout_seconds      : 每次调用的挂钟超时时间（秒）。
+                               None 禁用超时强制执行。"""
 
     max_retries: int = 3
     retry_delay_seconds: float = 1.0
@@ -69,14 +67,13 @@ class RetryConfig:
 
 class GuardedProvider(BaseProvider):
     """
-    Decorator that wraps a BaseProvider with retry and timeout guardrails.
-
-    Usage::
-
+    用重试和超时守护层包装 BaseProvider 的装饰器。
+    
+    用法::
+    
         inner = OpenAICompatibleProvider(api_key=..., model_id=...)
         guarded = GuardedProvider(inner, RetryConfig(max_retries=3, timeout_seconds=30))
-        response = guarded.complete(request)
-    """
+        response = guarded.complete(request)"""
 
     def __init__(self, inner: BaseProvider, config: RetryConfig) -> None:
         self._inner = inner
@@ -94,26 +91,25 @@ class GuardedProvider(BaseProvider):
 
     def complete(self, request: LLMRequest) -> LLMResponse:
         """
-        Execute the inner provider's complete() with retry and timeout.
-
-        Retry policy:
-        - Only ProviderCallError triggers a retry.
-        - ProviderParseError is re-raised immediately (no retry).
-        - After max_retries+1 total attempts, the last ProviderCallError
-          is re-raised.
-
-        Timeout policy:
-        - When timeout_seconds is set, the call runs in a background thread.
-        - If it does not complete within timeout_seconds, ProviderCallError
-          is raised with "timeout" in the message.
-        """
+        带重试和超时执行内部 provider 的 complete()。
+        
+        重试策略：
+        - 只有 ProviderCallError 触发重试。
+        - ProviderParseError 立即重新抛出（不重试）。
+        - 在总共 max_retries+1 次尝试后，最后一个 ProviderCallError
+          被重新抛出。
+        
+        超时策略：
+        - 当设置了 timeout_seconds 时，调用在后台线程中运行。
+        - 如果未在 timeout_seconds 内完成，将抛出 ProviderCallError
+          并在消息中包含 "timeout"。"""
         last_exc: Exception = ProviderCallError("no attempts made")
 
         for attempt in range(self._config.max_retries + 1):
             try:
                 return self._call_with_timeout(request)
             except ProviderParseError:
-                raise  # Not retryable
+                raise  # 不可重试
             except ProviderCallError as exc:
                 last_exc = exc
                 if attempt < self._config.max_retries:
@@ -125,7 +121,7 @@ class GuardedProvider(BaseProvider):
     # ── Internal helpers ───────────────────────────────────────────────────────
 
     def _call_with_timeout(self, request: LLMRequest) -> LLMResponse:
-        """Run inner.complete() optionally under a wall-clock timeout."""
+        """在可选的挂钟超时下运行 inner.complete()。"""
         if self._config.timeout_seconds is None:
             return self._inner.complete(request)
 
