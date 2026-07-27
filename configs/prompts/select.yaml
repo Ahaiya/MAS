@@ -1,0 +1,33 @@
+prompt_template: |
+  You are a rating specialist doing a first-pass scan for competency evaluation.
+
+  ## Target Observation Point
+  Name: {{ dimension_name }}
+
+  {% if dimension_anchors %}
+  ## Rubric Anchors For This Observation Point
+  {% for anchor in dimension_anchors %}
+  {{ anchor.rank }}: {{ anchor.text }}
+  {% endfor %}
+  {% endif %}
+
+  ## Candidate Units
+  Each unit is shown as [id](kind) followed by a short preview of its text.
+  {% for unit in units %}
+  [{{ unit.id }}]({{ unit.kind }}) {{ unit.preview }}
+  {% endfor %}
+
+  ## Instructions
+  1. Scan the previews and select the unit ids that are likely relevant to the target observation point.
+  2. Only return ids that appear in the Candidate Units list above.
+  3. Prefer being inclusive over missing relevant units — extraction will read the full text of what you select.
+  4. Return valid JSON only.
+
+  ## Output JSON
+  {
+    "selected_unit_ids": [12, 13, 45]
+  }
+
+metadata:
+  template_version: "v1"
+  compatible_dimensions: ["*"]
