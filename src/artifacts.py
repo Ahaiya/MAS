@@ -2,9 +2,9 @@
 产物落盘：三层目录 `artifacts/{task}/{sample}/{dim}/`。
 
 `package.json`（切分后带编号单元）落在 sample 层，该 sample 下所有 dim 共享，
-供把 feedback.json/rater_chains.json 里的 unit_ids 解读回原文。`feedback.json`
-与 `rater_chains.json` 落在 dim 层，每个一级指标一份。纯 IO，无 LLM、无业务
-逻辑——内容组装在 agents/report.py，本模块只管写盘。"""
+供把 feedback.json/rater_chains.json 里的 unit_ids 解读回原文。`feedback.json`、
+`rater_chains.json` 与 `run_trace.json` 落在 dim 层，每个一级指标一份。纯 IO，
+无 LLM、无业务逻辑——内容组装在 agents/report.py 与 engine.py，本模块只管写盘。"""
 
 from __future__ import annotations
 
@@ -48,3 +48,10 @@ def write_rater_chains_artifact(
 ) -> Path:
     """写 rater_chains.json 到 dim 层。"""
     return _write_json(dim_dir(base_dir, task, sample, dim) / "rater_chains.json", rater_chains_report)
+
+
+def write_run_trace_artifact(
+    base_dir: Path, task: str, sample: str, dim: str, run_trace: Dict[str, Any]
+) -> Path:
+    """写 run_trace.json 到 dim 层（仅成本/性能，不含决策）。"""
+    return _write_json(dim_dir(base_dir, task, sample, dim) / "run_trace.json", run_trace)

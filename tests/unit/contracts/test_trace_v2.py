@@ -41,10 +41,12 @@ def test_run_trace_summary_constructs_with_valid_fields() -> None:
         total_tokens=4000,
         total_ms=8000.0,
         adjudicated_dims=["a4_2"],
+        stage_traces=[_stage_trace()],
     )
     assert summary.run_id == "run-1"
     assert summary.adjudicated_dims == ["a4_2"]
     assert summary.to_dict()["dim"] == "a4"
+    assert summary.to_dict()["stage_traces"] == [_stage_trace().to_dict()]
 
 
 def test_run_trace_summary_is_immutable() -> None:
@@ -55,6 +57,7 @@ def test_run_trace_summary_is_immutable() -> None:
         total_tokens=0,
         total_ms=0.0,
         adjudicated_dims=[],
+        stage_traces=[],
     )
     with pytest.raises(dataclasses.FrozenInstanceError):
         summary.total_tokens = 1  # type: ignore[misc]

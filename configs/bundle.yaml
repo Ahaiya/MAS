@@ -1,0 +1,14 @@
+schema_version: "2.0"
+
+bundle_id: "default"
+active_task_id: "maker_hackathon"
+
+policies:
+  adjudication: "configs/policies/adjudication/engineering_eval_adjudication.yaml"
+
+prompts:
+  select: "configs/prompts/select.yaml"
+  extraction: "configs/prompts/extraction.yaml"
+  scoring: "configs/prompts/rater_scoring.yaml"
+  adjudication: "configs/prompts/adjudication.yaml"
+  feedback: "configs/prompts/feedback.yaml"

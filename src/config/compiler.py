@@ -21,6 +21,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+import yaml
+
 from src.config.freeze import compute_bundle_hash
 from src.config.resolver import ConfigResolver, ResolverError
 from src.contracts.artifact_bundle import (
@@ -346,6 +348,36 @@ def _build_rubric_snapshot_task(rubric_file_data: dict[str, Any]) -> RubricSnaps
         dimension_by_code={d["code"]: d for d in dimensions},
         scale_by_id={s["scale_id"]: s for s in scales},
     )
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# v2 —— Engine 门面用的轻量入口点。
+#
+# v2 的 bundle.yaml 不需要 ArtifactBundle/ConfigResolver 那一整套工件引用/冻结
+# 哈希机制（那是为 v1 面向单一 active_dim_id 的编译流程设计的）；engine 需要的
+# 只是「给定 task_id + dim_id，直接读那份 rubric yaml 建出 RubricSnapshot」，
+# 以及「列出某任务下所有一级指标 dim_id，供缺省评全部一级指标时使用」。两者都
+# 直接读文件，复用上面已有的 _build_rubric_snapshot 判别逻辑，不新建一套。
+# ═══════════════════════════════════════════════════════════════════════════
+
+
+def list_task_dimension_ids(configs_root: Path | str, task_id: str) -> list[str]:
+    """列出某任务下所有一级指标 dim_id（按文件名排序），用于"缺省评全部一级指标"。"""
+    dimension_dir = Path(configs_root) / "tasks" / task_id / "dimension"
+    if not dimension_dir.exists():
+        raise ConfigCompileError(f"Task dimension directory not found: {dimension_dir}")
+    suffix = "_rubric.yaml"
+    return sorted(p.name[: -len(suffix)] for p in dimension_dir.glob(f"*{suffix}"))
+
+
+def load_dimension_rubric(configs_root: Path | str, task_id: str, dim_id: str) -> RubricSnapshot:
+    """直接读 configs/tasks/{task_id}/dimension/{dim_id}_rubric.yaml 构建
+    RubricSnapshot，不经过 bundle 级别的工件引用解析。"""
+    path = Path(configs_root) / "tasks" / task_id / "dimension" / f"{dim_id}_rubric.yaml"
+    if not path.exists():
+        raise ConfigCompileError(f"Dimension rubric file not found: {path}")
+    data = yaml.safe_load(path.read_text(encoding="utf-8"))
+    return _build_rubric_snapshot(data)
 
 
 def _build_policy_snapshot(

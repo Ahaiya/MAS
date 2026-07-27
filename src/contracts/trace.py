@@ -222,9 +222,12 @@ class RunTrace:
 # ═══════════════════════════════════════════════════════════════════════════
 # v2 契约 —— 轻量 trace（收集器模式，与上方 v1 RunTrace/NodeTrace 并存）
 #
-# 阶段函数（segment/rate/reconcile/adjudicate/feedback）返回结果时附带
-# StageTrace；engine 只收集，不手动插桩。只记成本/性能，不含决策数据、
-# 不含 checkpoint/replay 机制。
+# 收集方式（engine.py 落地时的实际做法）：select/extract/score/reconcile/
+# feedback 各阶段函数（rater.py/reconcile.py/report.py）本身不产出 StageTrace、
+# 不感知 trace——engine 把每个阶段用到的 provider 包一层旁路计数器，在调用前后
+# 各拍一次调用数/token 用量快照做差，配合调用耗时拼出 StageTrace。business
+# logic 因此不被插桩代码侵入，只记成本/性能，不含决策数据、不含 checkpoint/
+# replay 机制。
 # ═══════════════════════════════════════════════════════════════════════════
 
 
@@ -286,7 +289,9 @@ class RunTraceSummary:
             dim: 被评价的一级指标标识符。
             total_tokens: 全部阶段的 token 总数。
             total_ms: 全部阶段的耗时总和（毫秒）。
-            adjudicated_dims: 触发了 Rater3 仲裁的二级指标标识符列表。"""
+            adjudicated_dims: 触发了 Rater3 仲裁的二级指标标识符列表。
+            stage_traces: 阶段级明细（stage/rater/llm_calls/tokens/ms），
+                total_tokens/total_ms 是其汇总。"""
 
     run_id: str
     bundle_ref: str
@@ -294,6 +299,7 @@ class RunTraceSummary:
     total_tokens: int
     total_ms: float
     adjudicated_dims: List[str]
+    stage_traces: List[StageTrace]
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -303,4 +309,5 @@ class RunTraceSummary:
             "total_tokens": self.total_tokens,
             "total_ms": self.total_ms,
             "adjudicated_dims": list(self.adjudicated_dims),
+            "stage_traces": [st.to_dict() for st in self.stage_traces],
         }
