@@ -18,7 +18,7 @@ from src.contracts.artifact_bundle import RubricSnapshot
 from src.contracts.evidence import DimensionObservation, EvidenceSpan
 from src.contracts.package import DataPackage
 from src.contracts.request_models import CoveragePlan, NormalizedDocument
-from src.contracts.scoring import FinalDimensionDecision, ScoreHypothesis
+from src.contracts.scoring import FinalDimensionDecision, RaterChainResult, ScoreHypothesis
 from src.policies.rubric_core import get_scale_range
 from src.providers.prompt_loader import PromptTemplate, render_template
 
@@ -410,5 +410,38 @@ def build_rater_scoring_prompt(
         "dimension_name": dimension.get("name", dimension.get("dimension_id", "")),
         "dimension_anchors": _dimension_anchor_entries(dimension),
         "units": _units_by_ids(package, evidence_unit_ids),
+    }
+    return render_template(template, context)
+
+
+def build_adjudication_prompt(
+    package: DataPackage,
+    dimension: Dict[str, Any],
+    chain_a: RaterChainResult,
+    chain_b: RaterChainResult,
+    template: PromptTemplate,
+) -> str:
+    """
+    为 adjudicate 阶段构建 prompt：Rater3 看双链各自引用的证据编号 + 完整原文
+    （package 全部单元）+ rubric anchors，但看不到双方分数（防锚定）。
+
+    注入的上下文变量 (匹配 adjudication.yaml)：
+        dimension_name    : 来自 rubric 的可读 dimension 名称。
+        dimension_anchors : 仅当前 dimension 的 anchors [{rank, text}]。
+        units             : 完整原文的全部单元 [{id, kind, text}]（不止双链各自的
+                             证据子集——Rater3 可以看到前两条链没看到的单元）。
+        raters_evidence   : 双链各自引用的证据编号 [{rater_id, evidence_unit_ids}]，
+                             不含任何分数字段。
+
+    Returns:
+        渲染好准备发送给 provider 的 prompt 字符串。"""
+    context = {
+        "dimension_name": dimension.get("name", dimension.get("dimension_id", "")),
+        "dimension_anchors": _dimension_anchor_entries(dimension),
+        "units": [{"id": unit.id, "kind": unit.kind, "text": unit.text} for unit in package.units],
+        "raters_evidence": [
+            {"rater_id": chain_a.rater_id, "evidence_unit_ids": list(chain_a.evidence_unit_ids)},
+            {"rater_id": chain_b.rater_id, "evidence_unit_ids": list(chain_b.evidence_unit_ids)},
+        ],
     }
     return render_template(template, context)

@@ -9,8 +9,9 @@ select 阶段越界编号静默过滤（只是候选范围，不是证据主张�
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Sequence, Set
+from typing import Any, Dict, List, Sequence
 
+from src.agents.llm_json import call_llm, coerce_int_ids, reject_out_of_bounds
 from src.agents.prompt_builders import (
     build_rater_extraction_prompt,
     build_rater_scoring_prompt,
@@ -21,9 +22,8 @@ from src.contracts.package import DataPackage
 from src.contracts.score_representation import create_score_representation
 from src.contracts.scoring import DimensionScore, RaterChainResult
 from src.policies.rubric_core import get_scale_range, get_scale_ref
-from src.providers.base import BaseProvider, LLMRequest, LLMResponse
+from src.providers.base import BaseProvider
 from src.providers.prompt_loader import PromptTemplate
-from src.providers.structured_output import normalize_structured_output
 
 _SELECT_OUTPUT_SCHEMA = {
     "type": "object",
@@ -49,67 +49,6 @@ _SCORING_OUTPUT_SCHEMA = {
 DEFAULT_SELECT_PREVIEW_BYTES = 200
 
 
-def _parse_json_response(response: LLMResponse, schema: Dict[str, Any]) -> Dict[str, Any]:
-    if response.structured_data is not None:
-        return response.structured_data
-    return normalize_structured_output(response.content, schema=schema)
-
-
-def _call_llm(
-    provider: BaseProvider,
-    prompt_text: str,
-    schema: Dict[str, Any],
-    *,
-    node_id: str,
-    stage_name: str,
-    dimension_id: str,
-    rater_id: str,
-    template: PromptTemplate,
-) -> Dict[str, Any]:
-    """三趟共用的请求构造 + 调用 + 解析：select/extract/score 的差异只在提示词、
-    schema 与拿到 data 后如何校验/组装，这一段管道形状完全一致。"""
-    request = LLMRequest(
-        prompt=prompt_text,
-        output_schema=schema,
-        metadata={
-            "node_id": node_id,
-            "stage_name": stage_name,
-            "dimension_id": dimension_id,
-            "rater_id": rater_id,
-            "template_source": template.source_path,
-        },
-    )
-    response = provider.complete(request)
-    return _parse_json_response(response, schema)
-
-
-def _coerce_int_ids(raw: Any) -> List[int]:
-    """把模型返回的 unit_ids 原样容错转换为 int 列表，去重且保持首次出现顺序。"""
-    if not isinstance(raw, list):
-        return []
-    seen: Set[int] = set()
-    ids: List[int] = []
-    for item in raw:
-        try:
-            unit_id = int(item)
-        except (TypeError, ValueError):
-            continue
-        if unit_id in seen:
-            continue
-        seen.add(unit_id)
-        ids.append(unit_id)
-    return ids
-
-
-def _reject_out_of_bounds(ids: List[int], valid_ids: Set[int], *, rater_id: str, stage: str) -> None:
-    invalid = [uid for uid in ids if uid not in valid_ids]
-    if invalid:
-        raise ValueError(
-            f"rater '{rater_id}' {stage}: unit_ids {invalid} 引用了未展示给模型的单元编号"
-            "（越界证据引用被拒绝）。"
-        )
-
-
 def select(
     package: DataPackage,
     dimension: Dict[str, Any],
@@ -123,7 +62,7 @@ def select(
     模型幻觉出的编号会被静默过滤——这一步只是缩小候选范围，不是证据主张。"""
     dimension_id = str(dimension.get("dimension_id", ""))
     prompt_text = build_rater_select_prompt(package, dimension, template, preview_bytes=preview_bytes)
-    data = _call_llm(
+    data = call_llm(
         provider,
         prompt_text,
         _SELECT_OUTPUT_SCHEMA,
@@ -133,7 +72,7 @@ def select(
         rater_id=rater_id,
         template=template,
     )
-    candidate_ids = _coerce_int_ids(data.get("selected_unit_ids"))
+    candidate_ids = coerce_int_ids(data.get("selected_unit_ids"))
     valid_ids = {unit.id for unit in package.units}
     return [uid for uid in candidate_ids if uid in valid_ids]
 
@@ -151,7 +90,7 @@ def extract(
     只有 select 阶段展示过的单元才在有效范围内；越界编号直接拒绝。"""
     dimension_id = str(dimension.get("dimension_id", ""))
     prompt_text = build_rater_extraction_prompt(package, selected_unit_ids, dimension, template)
-    data = _call_llm(
+    data = call_llm(
         provider,
         prompt_text,
         _EXTRACTION_OUTPUT_SCHEMA,
@@ -161,8 +100,8 @@ def extract(
         rater_id=rater_id,
         template=template,
     )
-    evidence_ids = _coerce_int_ids(data.get("evidence_unit_ids"))
-    _reject_out_of_bounds(evidence_ids, set(selected_unit_ids), rater_id=rater_id, stage="extract")
+    evidence_ids = coerce_int_ids(data.get("evidence_unit_ids"))
+    reject_out_of_bounds(evidence_ids, set(selected_unit_ids), rater_id=rater_id, stage="extract")
     return evidence_ids
 
 
@@ -180,7 +119,7 @@ def score(
     supporting_unit_ids 只能引用 extract 阶段已确认的证据编号；越界直接拒绝。"""
     dimension_id = dimension["dimension_id"]
     prompt_text = build_rater_scoring_prompt(package, evidence_unit_ids, dimension, template)
-    data = _call_llm(
+    data = call_llm(
         provider,
         prompt_text,
         _SCORING_OUTPUT_SCHEMA,
@@ -197,8 +136,8 @@ def score(
     score_val = max(scale_min, min(scale_max, raw_score))
     score_repr = create_score_representation(score_val, scale_ref)
 
-    supporting_unit_ids = _coerce_int_ids(data.get("supporting_unit_ids"))
-    _reject_out_of_bounds(supporting_unit_ids, set(evidence_unit_ids), rater_id=rater_id, stage="score")
+    supporting_unit_ids = coerce_int_ids(data.get("supporting_unit_ids"))
+    reject_out_of_bounds(supporting_unit_ids, set(evidence_unit_ids), rater_id=rater_id, stage="score")
 
     return DimensionScore(
         dimension_id=dimension_id,
