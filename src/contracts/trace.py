@@ -20,7 +20,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
 from typing import Any, Dict, List, Optional
@@ -291,7 +291,9 @@ class RunTraceSummary:
             total_ms: 全部阶段的耗时总和（毫秒）。
             adjudicated_dims: 触发了 Rater3 仲裁的二级指标标识符列表。
             stage_traces: 阶段级明细（stage/rater/llm_calls/tokens/ms），
-                total_tokens/total_ms 是其汇总。"""
+                total_tokens/total_ms 是其汇总。
+            failed_dims: 评价失败被隔离的二级指标，每条 {dimension_id, error}；
+                该维度未产出 FinalDecision，其余维度不受影响照常产出。"""
 
     run_id: str
     bundle_ref: str
@@ -300,6 +302,7 @@ class RunTraceSummary:
     total_ms: float
     adjudicated_dims: List[str]
     stage_traces: List[StageTrace]
+    failed_dims: List[Dict[str, str]] = field(default_factory=list)
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -310,4 +313,5 @@ class RunTraceSummary:
             "total_ms": self.total_ms,
             "adjudicated_dims": list(self.adjudicated_dims),
             "stage_traces": [st.to_dict() for st in self.stage_traces],
+            "failed_dims": [dict(fd) for fd in self.failed_dims],
         }

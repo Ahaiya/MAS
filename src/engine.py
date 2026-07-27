@@ -1,11 +1,14 @@
 """
 Engine 门面：`Engine.from_bundle(path).evaluate(package, dim)` 把 02-05 各段
-串成一条线性链，串行跑通一次完整评价。
+串成一条线性链，跑通一次完整评价。
 
 流水线：rate(r1) → rate(r2) → reconcile → [adjudicate] → feedback，对当前任务
-下每个一级指标（rubric.yaml）各自的全部二级指标各跑一遍。segment 阶段发生在
-Engine.evaluate() 之外——engine 只认「量规 + 已切分好的 DataPackage」，数据包
-的来源（read_text_file() 或未来的多源解析接入层）不是它的关心范围。
+下每个一级指标（rubric.yaml）各自的全部二级指标各跑一遍。同一 sample 下各二级
+指标的双链评价用 ThreadPoolExecutor 并发跑（provider IO 密集，GIL 不碍事），
+上限 `max_workers` 从 model_config.yaml 的 concurrency 段读取，默认 8。segment
+阶段发生在 Engine.evaluate() 之外——engine 只认「量规 + 已切分好的
+DataPackage」，数据包的来源（read_text_file() 或未来的多源解析接入层）不是它
+的关心范围。
 
 model_config.yaml 是模型/参数的唯一来源，缺失 raters.rater_1/rater_2 或
 stages.feedback 直接报错——不读 bundle 内嵌的 provider_config、不降级单
@@ -14,14 +17,22 @@ default provider。密钥值只从 .env 读（build_provider() 已经这样做�
 
 trace 用收集器模式：每次调用 select/extract/score/adjudicate/feedback 都在
 一层 provider 包装器上记录耗时与 token 用量，engine 在调用前后各拍一次快照
-做差，不侵入 rater.py/adjudicator.py/report.py 内部。
+做差，不侵入 rater.py/adjudicator.py/report.py 内部。并发下同一个 provider
+实例被多个线程共享，包装器按线程隔离计数（threading.local）而非加锁，快照
+差值天然只反映当前线程自己发起的调用。
 
-错误直接抛出：任何阶段失败都会中断当前一级指标的评价，没有状态机回退重入。"""
+失败隔离：一个二级指标的双链评价（select→extract→score ×2）失败（LLM 报错/
+超时/越界证据）只把该二级指标计入 run_trace 的 failed_dims，不参与 reconcile/
+feedback，也不中断其余二级指标；一级指标内其余维度照常产出。除此之外错误直接
+抛出：reconcile/feedback 等阶段失败仍会中断当前一级指标的评价，没有状态机回退
+重入。"""
 
 from __future__ import annotations
 
+import threading
 import time
 import uuid
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, TypeVar
@@ -48,6 +59,7 @@ _T = TypeVar("_T")
 
 _REQUIRED_PROVIDERS = frozenset({"rater_1", "rater_2", "feedback"})
 _REQUIRED_TEMPLATES = frozenset({"select", "extraction", "scoring", "feedback"})
+_DEFAULT_MAX_WORKERS = 8
 
 
 class EngineConfigError(Exception):
@@ -65,11 +77,23 @@ class _ProviderMetrics:
 
 class _InstrumentedProvider(BaseProvider):
     """包装一个 BaseProvider，旁路记录调用次数与 token 用量，供 engine 的收集器
-    模式使用；不改变被包装 provider 的行为。"""
+    模式使用；不改变被包装 provider 的行为。
+
+    二级指标级并发下，同一个 rater 的 provider 实例被多个 worker 线程并发调用。
+    _call_with_trace 靠"调用前后各拍一次快照做差"取得这次调用的用量——如果
+    metrics 是共享计数器，另一个线程在快照窗口之间插入的调用会污染这次差值。
+    按线程隔离 metrics（而非加锁）天然解决这个问题：同一时刻只有发起这次调用
+    的那个线程会读写自己的 metrics，快照差值只反映它自己的调用。"""
 
     def __init__(self, inner: BaseProvider) -> None:
         self._inner = inner
-        self.metrics = _ProviderMetrics()
+        self._local = threading.local()
+
+    @property
+    def metrics(self) -> _ProviderMetrics:
+        if not hasattr(self._local, "metrics"):
+            self._local.metrics = _ProviderMetrics()
+        return self._local.metrics
 
     @property
     def name(self) -> str:
@@ -81,8 +105,9 @@ class _InstrumentedProvider(BaseProvider):
 
     def complete(self, request: LLMRequest) -> LLMResponse:
         response = self._inner.complete(request)
-        self.metrics.llm_calls += 1
-        self.metrics.total_tokens += response.usage.total_tokens
+        metrics = self.metrics
+        metrics.llm_calls += 1
+        metrics.total_tokens += response.usage.total_tokens
         return response
 
 
@@ -154,6 +179,18 @@ def _load_providers_from_model_config(model_config_path: Path) -> Dict[str, Base
     return providers
 
 
+def _load_max_workers(model_config_path: Path) -> int:
+    """从 model_config.yaml 的 concurrency 段读取二级指标级并发上限，默认 8。
+
+    并发是性能优化、不是必需配置：文件缺失或没有 concurrency 段时直接用默认值，
+    不像 raters/feedback 那样报错。"""
+    if not model_config_path.exists():
+        return _DEFAULT_MAX_WORKERS
+    data = yaml.safe_load(model_config_path.read_text(encoding="utf-8")) or {}
+    concurrency = data.get("concurrency") or {}
+    return int(concurrency.get("max_workers", _DEFAULT_MAX_WORKERS))
+
+
 def _strip_configs_prefix(path: str) -> str:
     if path.startswith("configs/"):
         return path[len("configs/"):]
@@ -186,6 +223,7 @@ class Engine:
         templates: Dict[str, PromptTemplate],
         providers: Dict[str, BaseProvider],
         output_dir: Path = Path("artifacts"),
+        max_workers: int = _DEFAULT_MAX_WORKERS,
     ) -> None:
         missing_providers = _REQUIRED_PROVIDERS - providers.keys()
         if missing_providers:
@@ -203,6 +241,7 @@ class Engine:
             name: _InstrumentedProvider(p) for name, p in providers.items()
         }
         self._output_dir = Path(output_dir)
+        self._max_workers = max_workers
         self._rubric_cache: Dict[str, RubricSnapshot] = {}
 
     @classmethod
@@ -250,13 +289,13 @@ class Engine:
             for name, path in bundle_data["prompts"].items()
         }
 
-        resolved_providers = (
-            providers
-            if providers is not None
-            else _load_providers_from_model_config(
-                Path(model_config_path) if model_config_path is not None else configs_root / "model_config.yaml"
-            )
+        resolved_model_config_path = (
+            Path(model_config_path) if model_config_path is not None else configs_root / "model_config.yaml"
         )
+        resolved_providers = (
+            providers if providers is not None else _load_providers_from_model_config(resolved_model_config_path)
+        )
+        max_workers = _load_max_workers(resolved_model_config_path)
 
         return cls(
             bundle_ref=str(bundle_path),
@@ -266,6 +305,7 @@ class Engine:
             templates=templates,
             providers=resolved_providers,
             output_dir=Path(output_dir),
+            max_workers=max_workers,
         )
 
     # ── 内部：rubric 发现/加载 ───────────────────────────────────────────────
@@ -318,6 +358,22 @@ class Engine:
         )
         return chain, traces
 
+    def _run_dimension_chains(
+        self,
+        package: DataPackage,
+        dimension: Dict[str, Any],
+        rubric: RubricSnapshot,
+        rater_1: _InstrumentedProvider,
+        rater_2: _InstrumentedProvider,
+    ) -> "tuple[RaterChainResult, RaterChainResult, List[StageTrace]]":
+        """一个二级指标的双链评价（rater_1 + rater_2），跑在
+        ThreadPoolExecutor 的 worker 线程里。异常原样向上抛出，由
+        `_evaluate_one` 捕获并把这一个二级指标标记失败——不在这里吞。"""
+        dimension_id = str(dimension["dimension_id"])
+        chain_a, traces_a = self._run_rater_chain(package, dimension_id, dimension, rubric, rater_1, "rater_1")
+        chain_b, traces_b = self._run_rater_chain(package, dimension_id, dimension, rubric, rater_2, "rater_2")
+        return chain_a, chain_b, traces_a + traces_b
+
     # ── 内部：一个一级指标的完整评价 ─────────────────────────────────────────
 
     def _evaluate_one(self, package: DataPackage, dim_id: str) -> DimensionEvaluation:
@@ -329,20 +385,39 @@ class Engine:
         rater_3 = self._providers.get("rater_3")
         feedback_provider = self._providers["feedback"]
 
-        stage_traces: List[StageTrace] = []
-        chains_a: List[RaterChainResult] = []
-        chains_b: List[RaterChainResult] = []
+        dimensions: List[Dict[str, Any]] = []
         for secondary_dim_id in secondary_dim_ids:
             dimension = rubric.get_dimension(secondary_dim_id)
             if dimension is None:
                 raise ConfigCompileError(f"Dimension '{secondary_dim_id}' not found in rubric for '{dim_id}'")
+            dimensions.append(dimension)
 
-            chain_a, traces_a = self._run_rater_chain(package, secondary_dim_id, dimension, rubric, rater_1, "rater_1")
-            chain_b, traces_b = self._run_rater_chain(package, secondary_dim_id, dimension, rubric, rater_2, "rater_2")
-            chains_a.append(chain_a)
-            chains_b.append(chain_b)
-            stage_traces.extend(traces_a)
-            stage_traces.extend(traces_b)
+        # 二级指标级并发：每个二级指标的双链评价（select→extract→score ×2）
+        # 是一整个 provider IO 密集单元，互相独立、互不共享状态，天然适合
+        # ThreadPoolExecutor（GIL 不碍事）。失败隔离落在这一层——一个二级
+        # 指标抛错（LLM 报错/超时/越界证据）只把它计入 failed_dims，其余
+        # 二级指标不受影响照常产出；不在这里重试或降级。
+        stage_traces: List[StageTrace] = []
+        chains_a: List[RaterChainResult] = []
+        chains_b: List[RaterChainResult] = []
+        failed_dims: List[Dict[str, str]] = []
+        with ThreadPoolExecutor(max_workers=self._max_workers) as executor:
+            future_to_dim_id = {
+                executor.submit(self._run_dimension_chains, package, dimension, rubric, rater_1, rater_2): str(
+                    dimension["dimension_id"]
+                )
+                for dimension in dimensions
+            }
+            for future in as_completed(future_to_dim_id):
+                secondary_dim_id = future_to_dim_id[future]
+                try:
+                    chain_a, chain_b, traces = future.result()
+                except Exception as exc:
+                    failed_dims.append({"dimension_id": secondary_dim_id, "error": str(exc)})
+                    continue
+                chains_a.append(chain_a)
+                chains_b.append(chain_b)
+                stage_traces.extend(traces)
 
         # reconcile() 本身总会跑（纯比较，可能 0 次 LLM 调用）；只有触发仲裁时才
         # 会内部调用 Rater3。rater 标签因此是调用后才知道的——不用
@@ -383,6 +458,7 @@ class Engine:
             total_ms=sum(t.ms for t in stage_traces),
             adjudicated_dims=adjudicated_dims,
             stage_traces=stage_traces,
+            failed_dims=failed_dims,
         )
 
         return DimensionEvaluation(
@@ -395,7 +471,8 @@ class Engine:
     # ── 门面 ─────────────────────────────────────────────────────────────────
 
     def evaluate(self, package: DataPackage, dim: Optional[str] = None) -> Dict[str, DimensionEvaluation]:
-        """串行执行 rate(r1) → rate(r2) → reconcile → [adjudicate] → feedback。
+        """执行 rate(r1) → rate(r2) → reconcile → [adjudicate] → feedback；
+        同一一级指标下各二级指标的 rate 阶段并发执行，其余阶段串行。
 
         Args:
             package: 已切分好的 DataPackage（segment 阶段在此之外完成）。

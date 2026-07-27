@@ -1,4 +1,5 @@
 import shutil
+import time
 from pathlib import Path
 from typing import Dict, Optional
 
@@ -6,7 +7,14 @@ import pytest
 
 from src.contracts.package import DataPackage, Unit
 from src.engine import DimensionEvaluation, Engine, EngineConfigError
-from src.providers.base import BaseProvider, LLMResponse, TokenUsage
+from src.providers.base import (
+    BaseProvider,
+    LLMRequest,
+    LLMResponse,
+    ProviderCallError,
+    ProviderCapability,
+    TokenUsage,
+)
 from src.providers.fake import FakeProvider, fake_response
 
 _PROMPT_NAMES = ["select.yaml", "extraction.yaml", "rater_scoring.yaml", "adjudication.yaml", "feedback.yaml"]
@@ -73,6 +81,96 @@ prompts:
         encoding="utf-8",
     )
     return root
+
+
+@pytest.fixture
+def configs_root_multi(tmp_path: Path) -> Path:
+    """一个最小 configs_root：一个任务下一个一级指标 d1，含 3 个二级指标
+    （d1_1/d1_2/d1_3）——用于练到二级指标级并发（单个二级指标不足以触发并发）。"""
+    root = tmp_path / "configs"
+    (root / "tasks" / "testtask" / "dimension").mkdir(parents=True)
+    (root / "policies" / "adjudication").mkdir(parents=True)
+    (root / "prompts").mkdir(parents=True)
+
+    for name in _PROMPT_NAMES:
+        shutil.copy(f"configs/prompts/{name}", root / "prompts" / name)
+    shutil.copy(
+        "configs/policies/adjudication/engineering_eval_adjudication.yaml",
+        root / "policies" / "adjudication" / "adj.yaml",
+    )
+
+    dim_dir = root / "tasks" / "testtask" / "dimension"
+    _write_dim_yaml(dim_dir, "d1", ["D1-1", "D1-2", "D1-3"])
+
+    bundle_path = root / "bundle.yaml"
+    bundle_path.write_text(
+        """
+schema_version: "2.0"
+bundle_id: "default"
+active_task_id: "testtask"
+policies:
+  adjudication: "configs/policies/adjudication/adj.yaml"
+prompts:
+  select: "configs/prompts/select.yaml"
+  extraction: "configs/prompts/extraction.yaml"
+  scoring: "configs/prompts/rater_scoring.yaml"
+  adjudication: "configs/prompts/adjudication.yaml"
+  feedback: "configs/prompts/feedback.yaml"
+""",
+        encoding="utf-8",
+    )
+    return root
+
+
+def _model_config_with_max_workers(tmp_path: Path, max_workers: int) -> Path:
+    path = tmp_path / f"model_config_workers_{max_workers}.yaml"
+    path.write_text(f"concurrency:\n  max_workers: {max_workers}\n", encoding="utf-8")
+    return path
+
+
+class _StageAwareProvider(BaseProvider):
+    """按 request.metadata 里的 stage_name 返回固定响应，内容不依赖调用顺序——
+    多个二级指标并发调用同一个 provider 实例时，谁先谁后都产出同样的分数，
+    用来验证"并发结果与串行一致"而不必依赖 FakeProvider 的 FIFO 顺序（并发下
+    多个线程对同一个 FakeProvider 的调用顺序本就是不确定的）。
+
+    `fail_on_dimension_id` 指定时，命中该 dimension_id 的调用直接抛错，用来
+    验证单个二级指标失败被隔离、不拖垮其余二级指标。"""
+
+    _RESPONSES = {
+        "select": {"selected_unit_ids": [0, 1]},
+        "extract": {"evidence_unit_ids": [0]},
+    }
+
+    def __init__(self, *, score: int = 3, fail_on_dimension_id: Optional[str] = None, name: str = "stage_aware") -> None:
+        self._score = score
+        self._fail_on_dimension_id = fail_on_dimension_id
+        self._name = name
+        self.requests: list = []
+
+    @property
+    def name(self) -> str:
+        return self._name
+
+    @property
+    def capabilities(self) -> "frozenset[ProviderCapability]":
+        return frozenset({ProviderCapability.TEXT_COMPLETION, ProviderCapability.STRUCTURED_OUTPUT})
+
+    def complete(self, request: LLMRequest) -> LLMResponse:
+        self.requests.append(request)
+        if request.metadata.get("dimension_id") == self._fail_on_dimension_id:
+            raise ProviderCallError(f"boom on {self._fail_on_dimension_id}")
+        stage = request.metadata.get("stage_name")
+        if stage == "score":
+            data = {
+                "proposed_score": self._score,
+                "supporting_unit_ids": [0],
+                "confidence": 0.8,
+                "rationale": "ok",
+            }
+        else:
+            data = self._RESPONSES[stage]
+        return fake_response(data)
 
 
 def _package() -> DataPackage:
@@ -353,3 +451,118 @@ stages:
             configs_root=configs_root,
             model_config_path=model_config_path,
         )
+
+
+# ── 二级指标级并发 ────────────────────────────────────────────────────────────
+
+
+def test_concurrent_result_matches_sequential(configs_root_multi: Path, tmp_path: Path) -> None:
+    """max_workers=1（串行）与 max_workers=3（并发）跑同一份数据，产出必须一致。"""
+
+    def _run(max_workers: int) -> dict:
+        providers: Dict[str, BaseProvider] = {
+            "rater_1": _StageAwareProvider(score=3, name="r1"),
+            "rater_2": _StageAwareProvider(score=3, name="r2"),
+            "feedback": FakeProvider([_text_response("反馈")] * 3),
+        }
+        engine = Engine.from_bundle(
+            configs_root_multi / "bundle.yaml",
+            configs_root=configs_root_multi,
+            providers=providers,
+            model_config_path=_model_config_with_max_workers(tmp_path, max_workers),
+            output_dir=tmp_path / f"artifacts_{max_workers}",
+        )
+        results = engine.evaluate(_package(), dim="d1")
+        return results["d1"].feedback_report
+
+    sequential = _run(max_workers=1)
+    concurrent = _run(max_workers=3)
+
+    assert set(sequential["dimensions"]) == {"d1_1", "d1_2", "d1_3"}
+    assert sequential["dimensions"] == concurrent["dimensions"]
+    assert sequential["primary_score"] == concurrent["primary_score"]
+
+
+def test_concurrency_runs_secondary_dims_in_parallel_not_serially(configs_root_multi: Path, tmp_path: Path) -> None:
+    """3 个二级指标、单个 rater 调用耗时 ~50ms：串行至少 300ms（3 dim × 2 rater ×
+    50ms），并发（max_workers=3）应明显快于串行耗时之和——证明确实并发而非只是
+    接口上加了参数。"""
+
+    class _SlowProvider(BaseProvider):
+        def __init__(self, delay_seconds: float) -> None:
+            self._delay = delay_seconds
+
+        @property
+        def name(self) -> str:
+            return "slow"
+
+        @property
+        def capabilities(self) -> "frozenset[ProviderCapability]":
+            return frozenset({ProviderCapability.TEXT_COMPLETION, ProviderCapability.STRUCTURED_OUTPUT})
+
+        def complete(self, request: LLMRequest) -> LLMResponse:
+            time.sleep(self._delay)
+            stage = request.metadata.get("stage_name")
+            data = (
+                {"proposed_score": 3, "supporting_unit_ids": [0]}
+                if stage == "score"
+                else _StageAwareProvider._RESPONSES[stage]
+            )
+            return fake_response(data)
+
+    providers: Dict[str, BaseProvider] = {
+        "rater_1": _SlowProvider(0.05),
+        "rater_2": _SlowProvider(0.05),
+        "feedback": FakeProvider([_text_response("反馈")] * 3),
+    }
+    engine = Engine.from_bundle(
+        configs_root_multi / "bundle.yaml",
+        configs_root=configs_root_multi,
+        providers=providers,
+        model_config_path=_model_config_with_max_workers(tmp_path, 3),
+        output_dir=tmp_path / "artifacts",
+    )
+
+    started = time.perf_counter()
+    engine.evaluate(_package(), dim="d1")
+    elapsed = time.perf_counter() - started
+
+    assert elapsed < 0.9 * 3  # 远低于 3 个二级指标完全串行的下界
+
+
+# ── 失败隔离 ──────────────────────────────────────────────────────────────────
+
+
+def test_single_dimension_failure_is_isolated(configs_root_multi: Path, tmp_path: Path) -> None:
+    """d1_2 的 rater_1 调用抛错：只有 d1_2 被标记失败，d1_1/d1_3 照常产出并落盘。"""
+    providers: Dict[str, BaseProvider] = {
+        "rater_1": _StageAwareProvider(score=3, fail_on_dimension_id="d1_2", name="r1"),
+        "rater_2": _StageAwareProvider(score=3, name="r2"),
+        "feedback": FakeProvider([_text_response("反馈")] * 2),
+    }
+    output_dir = tmp_path / "artifacts"
+    engine = Engine.from_bundle(
+        configs_root_multi / "bundle.yaml",
+        configs_root=configs_root_multi,
+        providers=providers,
+        model_config_path=_model_config_with_max_workers(tmp_path, 3),
+        output_dir=output_dir,
+    )
+
+    results = engine.evaluate(_package(), dim="d1")
+
+    dimensions_out = results["d1"].feedback_report["dimensions"]
+    assert set(dimensions_out) == {"d1_1", "d1_3"}
+
+    failed = results["d1"].run_trace.failed_dims
+    assert len(failed) == 1
+    assert failed[0]["dimension_id"] == "d1_2"
+    assert "boom on d1_2" in failed[0]["error"]
+
+    import json
+
+    dim_dir = output_dir / "testtask" / "student1" / "d1"
+    feedback_data = json.loads((dim_dir / "feedback.json").read_text(encoding="utf-8"))
+    assert set(feedback_data["dimensions"]) == {"d1_1", "d1_3"}
+    run_trace_data = json.loads((dim_dir / "run_trace.json").read_text(encoding="utf-8"))
+    assert run_trace_data["failed_dims"] == [{"dimension_id": "d1_2", "error": failed[0]["error"]}]
