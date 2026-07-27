@@ -217,3 +217,90 @@ class RunTrace:
             "terminal_validation_passed": self.terminal_validation_passed,
             "replay_metadata": dict(self.replay_metadata),
         }
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# v2 契约 —— 轻量 trace（收集器模式，与上方 v1 RunTrace/NodeTrace 并存）
+#
+# 阶段函数（segment/rate/reconcile/adjudicate/feedback）返回结果时附带
+# StageTrace；engine 只收集，不手动插桩。只记成本/性能，不含决策数据、
+# 不含 checkpoint/replay 机制。
+# ═══════════════════════════════════════════════════════════════════════════
+
+
+# ── StageTrace ─────────────────────────────────────────────────────────────
+
+
+@dataclass(frozen=True)
+class StageTrace:
+    """单个流水线阶段的成本/性能记录。
+
+        属性：
+            stage: 阶段名称（例如 "select"、"extract"、"score"、"reconcile"、
+                   "adjudicate"、"feedback"）。
+            rater: 该阶段所属的评分代理（例如 "rater_1"）；非 rater 相关阶段为 None。
+            llm_calls: 该阶段发起的 LLM 调用次数。
+            tokens: 该阶段消耗的 token 总数。
+            ms: 该阶段耗时（毫秒）。"""
+
+    stage: str
+    rater: Optional[str]
+    llm_calls: int
+    tokens: int
+    ms: float
+
+    def __post_init__(self) -> None:
+        if self.llm_calls < 0:
+            raise ValueError(
+                f"StageTrace '{self.stage}': llm_calls must be >= 0, got {self.llm_calls}."
+            )
+        if self.tokens < 0:
+            raise ValueError(
+                f"StageTrace '{self.stage}': tokens must be >= 0, got {self.tokens}."
+            )
+        if self.ms < 0:
+            raise ValueError(
+                f"StageTrace '{self.stage}': ms must be >= 0, got {self.ms}."
+            )
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "stage": self.stage,
+            "rater": self.rater,
+            "llm_calls": self.llm_calls,
+            "tokens": self.tokens,
+            "ms": self.ms,
+        }
+
+
+# ── RunTraceSummary ────────────────────────────────────────────────────────
+
+
+@dataclass(frozen=True)
+class RunTraceSummary:
+    """一次一级指标评价运行的成本/性能汇总（run_trace.json 的内容）。
+
+        属性：
+            run_id: 此次评价运行的唯一标识符。
+            bundle_ref: 所用量规 bundle 的引用。
+            dim: 被评价的一级指标标识符。
+            total_tokens: 全部阶段的 token 总数。
+            total_ms: 全部阶段的耗时总和（毫秒）。
+            adjudicated_dims: 触发了 Rater3 仲裁的二级指标标识符列表。"""
+
+    run_id: str
+    bundle_ref: str
+    dim: str
+    total_tokens: int
+    total_ms: float
+    adjudicated_dims: List[str]
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "run_id": self.run_id,
+            "bundle_ref": self.bundle_ref,
+            "dim": self.dim,
+            "total_tokens": self.total_tokens,
+            "total_ms": self.total_ms,
+            "adjudicated_dims": list(self.adjudicated_dims),
+        }
