@@ -23,9 +23,11 @@ trace 用收集器模式：每次调用 select/extract/score/adjudicate/feedback
 
 失败隔离：一个二级指标的双链评价（select→extract→score ×2）失败（LLM 报错/
 超时/越界证据）只把该二级指标计入 run_trace 的 failed_dims，不参与 reconcile/
-feedback，也不中断其余二级指标；一级指标内其余维度照常产出。除此之外错误直接
-抛出：reconcile/feedback 等阶段失败仍会中断当前一级指标的评价，没有状态机回退
-重入。"""
+feedback，也不中断其余二级指标；一级指标内其余维度照常产出。全部二级指标都失败
+时短路掉 reconcile/feedback，产出 primary_score=None 的空评价（失败原因仍逐条在
+run_trace 里），同样不抛异常——抛了就会把同一 sample 下其余一级指标一起带走。
+除此之外错误直接抛出：reconcile/feedback 等阶段本身失败仍会中断当前一级指标的
+评价，没有状态机回退重入。"""
 
 from __future__ import annotations
 
@@ -46,7 +48,12 @@ from src.artifacts import (
     write_rater_chains_artifact,
     write_run_trace_artifact,
 )
-from src.config.compiler import ConfigCompileError, list_task_dimension_ids, load_dimension_rubric
+from src.config.compiler import (
+    ConfigCompileError,
+    list_task_dimension_ids,
+    load_dimension_rubric,
+    strip_configs_prefix,
+)
 from src.contracts.artifact_bundle import PolicySnapshot, ProviderEntryConfig, RubricSnapshot
 from src.contracts.package import DataPackage
 from src.contracts.scoring import RaterChainResult, ScoreSource
@@ -93,7 +100,8 @@ class _InstrumentedProvider(BaseProvider):
     def metrics(self) -> _ProviderMetrics:
         if not hasattr(self._local, "metrics"):
             self._local.metrics = _ProviderMetrics()
-        return self._local.metrics
+        metrics: _ProviderMetrics = self._local.metrics  # threading.local 的属性对类型检查是 Any
+        return metrics
 
     @property
     def name(self) -> str:
@@ -171,11 +179,16 @@ def _load_providers_from_model_config(model_config_path: Path) -> Dict[str, Base
     if "feedback" not in stages_raw:
         raise EngineConfigError("model_config 缺少 stages.feedback——feedback 阶段每次评价都需要 provider。")
 
-    providers: Dict[str, BaseProvider] = {
-        rater_id: build_provider(_entry_from_dict(cfg, label=f"raters.{rater_id}"))
-        for rater_id, cfg in raters_raw.items()
-    }
-    providers["feedback"] = build_provider(_entry_from_dict(stages_raw["feedback"], label="stages.feedback"))
+    # build_provider 在密钥值缺失时抛 ValueError——那同样是"配置没配好"，归到
+    # EngineConfigError，调用方（CLI）才能统一按配置错误印一行人话。
+    try:
+        providers: Dict[str, BaseProvider] = {
+            rater_id: build_provider(_entry_from_dict(cfg, label=f"raters.{rater_id}"))
+            for rater_id, cfg in raters_raw.items()
+        }
+        providers["feedback"] = build_provider(_entry_from_dict(stages_raw["feedback"], label="stages.feedback"))
+    except ValueError as exc:
+        raise EngineConfigError(str(exc)) from exc
     return providers
 
 
@@ -189,12 +202,6 @@ def _load_max_workers(model_config_path: Path) -> int:
     data = yaml.safe_load(model_config_path.read_text(encoding="utf-8")) or {}
     concurrency = data.get("concurrency") or {}
     return int(concurrency.get("max_workers", _DEFAULT_MAX_WORKERS))
-
-
-def _strip_configs_prefix(path: str) -> str:
-    if path.startswith("configs/"):
-        return path[len("configs/"):]
-    return path
 
 
 # ── Engine ───────────────────────────────────────────────────────────────────
@@ -273,7 +280,7 @@ class Engine:
 
         active_task_id = bundle_data["active_task_id"]
 
-        adjudication_policy_path = configs_root / _strip_configs_prefix(bundle_data["policies"]["adjudication"])
+        adjudication_policy_path = configs_root / strip_configs_prefix(bundle_data["policies"]["adjudication"])
         adjudication_data = yaml.safe_load(adjudication_policy_path.read_text(encoding="utf-8"))
         adjudication_policy = adjudication_data["adjudication_policy"]
         policy = PolicySnapshot(
@@ -285,7 +292,7 @@ class Engine:
 
         loader = PromptLoader()
         templates = {
-            name: loader.load(configs_root / _strip_configs_prefix(path))
+            name: loader.load(configs_root / strip_configs_prefix(path))
             for name, path in bundle_data["prompts"].items()
         }
 
@@ -374,6 +381,29 @@ class Engine:
         chain_b, traces_b = self._run_rater_chain(package, dimension_id, dimension, rubric, rater_2, "rater_2")
         return chain_a, chain_b, traces_a + traces_b
 
+    def _empty_evaluation(
+        self, dim_id: str, stage_traces: List[StageTrace], failed_dims: List[Dict[str, str]]
+    ) -> DimensionEvaluation:
+        """一个一级指标下全部二级指标都失败时的产物：没有分数，但失败原因逐条在案。
+
+        `primary_score` 为 None 而不是 0——0 是"评了，得零分"，None 是"没评出来"，
+        两者对前端和教师是完全不同的意思，不能混。"""
+        return DimensionEvaluation(
+            dim_id=dim_id,
+            feedback_report={"primary_score": None, "radar": [], "dimensions": {}},
+            rater_chains_report={"chains": [], "final_decisions": []},
+            run_trace=RunTraceSummary(
+                run_id=f"run-{uuid.uuid4().hex[:12]}",
+                bundle_ref=self._bundle_ref,
+                dim=dim_id,
+                total_tokens=sum(t.tokens for t in stage_traces),
+                total_ms=sum(t.ms for t in stage_traces),
+                adjudicated_dims=[],
+                stage_traces=stage_traces,
+                failed_dims=failed_dims,
+            ),
+        )
+
     # ── 内部：一个一级指标的完整评价 ─────────────────────────────────────────
 
     def _evaluate_one(self, package: DataPackage, dim_id: str) -> DimensionEvaluation:
@@ -418,6 +448,15 @@ class Engine:
                 chains_a.append(chain_a)
                 chains_b.append(chain_b)
                 stage_traces.extend(traces)
+
+        # 全都失败时没有任何 FinalDecision 可聚合，reconcile/feedback 都无从谈起：
+        # 硬把空 decisions 往下送，会在 aggregate_final_decisions 才炸出一条与根因
+        # 无关的"decisions 不能为空"，把每个维度真正的错误（鉴权失败/限流/超时）
+        # 全埋掉。这里直接短路——failed_dims 已经把真实错误逐条记下，照常落盘。
+        # 不抛异常：抛了就会顺着 evaluate() 的循环把同一 sample 下其余一级指标一起
+        # 带走，正是 US31「不崩整个 sample」要避免的。
+        if not chains_a:
+            return self._empty_evaluation(dim_id, stage_traces, failed_dims)
 
         # reconcile() 本身总会跑（纯比较，可能 0 次 LLM 调用）；只有触发仲裁时才
         # 会内部调用 Rater3。rater 标签因此是调用后才知道的——不用

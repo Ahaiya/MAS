@@ -1,11 +1,5 @@
-"""MAS CLI 统一包。"""
+"""MAS 脚本包。
 
-__all__ = ["app"]
-
-
-def __getattr__(name: str):
-    if name == "app":
-        from scripts.mas import app
-
-        return app
-    raise AttributeError(name)
+命令行入口是 `scripts/cli.py`，直接跑：`python scripts/cli.py eval <file> --dim a4`。
+本文件只是让 `scripts` 成为可导入的包（测试用），不再暴露 `app`——`python -m scripts`
+这条入口已随 `mas.py`/`__main__.py` 一起删除。"""

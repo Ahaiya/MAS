@@ -158,8 +158,9 @@ class _StageAwareProvider(BaseProvider):
 
     def complete(self, request: LLMRequest) -> LLMResponse:
         self.requests.append(request)
-        if request.metadata.get("dimension_id") == self._fail_on_dimension_id:
-            raise ProviderCallError(f"boom on {self._fail_on_dimension_id}")
+        dimension_id = request.metadata.get("dimension_id")
+        if self._fail_on_dimension_id in ("*", dimension_id):
+            raise ProviderCallError(f"boom on {dimension_id}")
         stage = request.metadata.get("stage_name")
         if stage == "score":
             data = {
@@ -453,6 +454,34 @@ stages:
         )
 
 
+def test_missing_api_key_value_raises_engine_config_error(
+    tmp_path: Path, configs_root: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """密钥没配是最常见的首次运行错误，要归到 EngineConfigError——调用方（CLI）
+    才能印一行人话，而不是甩一屏 traceback。"""
+    for var in ("LLM_API_KEY", "K1", "K2", "KF"):
+        monkeypatch.delenv(var, raising=False)
+
+    model_config_path = tmp_path / "model_config.yaml"
+    model_config_path.write_text(
+        """
+raters:
+  rater_1: {api_key_env: "K1"}
+  rater_2: {api_key_env: "K2"}
+stages:
+  feedback: {api_key_env: "KF"}
+""",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(EngineConfigError, match="K1"):
+        Engine.from_bundle(
+            configs_root / "bundle.yaml",
+            configs_root=configs_root,
+            model_config_path=model_config_path,
+        )
+
+
 # ── 二级指标级并发 ────────────────────────────────────────────────────────────
 
 
@@ -566,3 +595,67 @@ def test_single_dimension_failure_is_isolated(configs_root_multi: Path, tmp_path
     assert set(feedback_data["dimensions"]) == {"d1_1", "d1_3"}
     run_trace_data = json.loads((dim_dir / "run_trace.json").read_text(encoding="utf-8"))
     assert run_trace_data["failed_dims"] == [{"dimension_id": "d1_2", "error": failed[0]["error"]}]
+
+
+def test_all_dimensions_failing_records_errors_without_masking_them(
+    configs_root_multi: Path, tmp_path: Path
+) -> None:
+    """全部二级指标都失败时，各维度的真实错误必须原样记下来。
+
+    此时没有任何 FinalDecision 可聚合——硬把空 decisions 往下送会在
+    aggregate_final_decisions 炸出一条与根因无关的"decisions 不能为空"，把真正
+    的原因（鉴权失败/超时/限流）全埋掉。跳过 reconcile/feedback，照常落盘。"""
+    providers: Dict[str, BaseProvider] = {
+        "rater_1": _StageAwareProvider(score=3, fail_on_dimension_id="*", name="r1"),
+        "rater_2": _StageAwareProvider(score=3, name="r2"),
+        "feedback": FakeProvider([]),
+    }
+    output_dir = tmp_path / "artifacts"
+    engine = Engine.from_bundle(
+        configs_root_multi / "bundle.yaml",
+        configs_root=configs_root_multi,
+        providers=providers,
+        model_config_path=_model_config_with_max_workers(tmp_path, 3),
+        output_dir=output_dir,
+    )
+
+    results = engine.evaluate(_package(), dim="d1")
+
+    evaluation = results["d1"]
+    assert evaluation.feedback_report["dimensions"] == {}
+    assert evaluation.feedback_report["primary_score"] is None
+    failed_ids = {f["dimension_id"] for f in evaluation.run_trace.failed_dims}
+    assert failed_ids == {"d1_1", "d1_2", "d1_3"}
+    assert all("boom" in f["error"] for f in evaluation.run_trace.failed_dims)
+
+    import json
+
+    run_trace_data = json.loads(
+        (output_dir / "testtask" / "student1" / "d1" / "run_trace.json").read_text(encoding="utf-8")
+    )
+    assert {f["dimension_id"] for f in run_trace_data["failed_dims"]} == {"d1_1", "d1_2", "d1_3"}
+
+
+def test_one_primary_dimension_failing_does_not_kill_the_others(
+    configs_root: Path, tmp_path: Path
+) -> None:
+    """一个一级指标整体失败，不能拖垮同一 sample 下其余一级指标（US31：不崩整个
+    sample）。configs_root 里 d1/d2 各有一个二级指标，让 d1 的那个必失败。"""
+    providers: Dict[str, BaseProvider] = {
+        "rater_1": _StageAwareProvider(score=3, fail_on_dimension_id="d1_1", name="r1"),
+        "rater_2": _StageAwareProvider(score=3, name="r2"),
+        "feedback": FakeProvider([_text_response("反馈")] * 4),
+    }
+    engine = Engine.from_bundle(
+        configs_root / "bundle.yaml",
+        configs_root=configs_root,
+        providers=providers,
+        output_dir=tmp_path / "artifacts",
+    )
+
+    results = engine.evaluate(_package())
+
+    assert set(results) == {"d1", "d2"}
+    assert results["d1"].feedback_report["dimensions"] == {}
+    assert [f["dimension_id"] for f in results["d1"].run_trace.failed_dims] == ["d1_1"]
+    assert set(results["d2"].feedback_report["dimensions"]) == {"d2_1"}

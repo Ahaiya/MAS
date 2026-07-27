@@ -361,6 +361,17 @@ def _build_rubric_snapshot_task(rubric_file_data: dict[str, Any]) -> RubricSnaps
 # ═══════════════════════════════════════════════════════════════════════════
 
 
+def strip_configs_prefix(path: str) -> str:
+    """bundle 里的引用写成 `configs/prompts/select.yaml`，而它们都相对 configs_root
+    解析——去掉这个前缀。
+
+    Engine 与 `scripts/cli.py` 的 `config validate` 必须用完全相同的方式解析 bundle
+    引用，否则会出现"校验通过但引擎跑不起来"，所以放在这里共用，而不是各自实现。"""
+    if path.startswith("configs/"):
+        return path[len("configs/"):]
+    return path
+
+
 def list_task_dimension_ids(configs_root: Path | str, task_id: str) -> list[str]:
     """列出某任务下所有一级指标 dim_id（按文件名排序），用于"缺省评全部一级指标"。"""
     dimension_dir = Path(configs_root) / "tasks" / task_id / "dimension"

@@ -1,61 +1,72 @@
 # MAS Scripts
 
-当前统一入口：
+命令行入口是单文件 `scripts/cli.py`，直接跑即可——文件头自注入 `sys.path`，不用
+`python -m`，也不需要 `pip install` 装 console_scripts：
 
 ```bash
-python -m scripts ...
+python scripts/cli.py --help
 ```
 
-## 评估单个 Markdown 文件
+## 评价一份材料
 
 ```bash
-python -m scripts eval data/training/maker_hackathon/sample.md --dim a4
+# 评单个一级指标
+python scripts/cli.py eval data/training/maker_hackathon/sample.md --dim a4
+
+# 不传 --dim：评当前任务下全部一级指标
+python scripts/cli.py eval data/training/maker_hackathon/sample.md
 ```
 
-常用参数：
+全部参数只有四个：
 
-```bash
-python -m scripts eval \
-  --input data/training/maker_hackathon/sample.md \
-  --bundle configs/bundles/engineering_eval_baseline.bundle.yaml \
-  --dim a4 \
-  --model-config configs/model_config.yaml
+| 参数 | 默认值 | 说明 |
+| --- | --- | --- |
+| `INPUT_FILE`（位置） | 必填 | 待评价的 `.md` / `.txt` 材料 |
+| `--bundle` | `configs/bundle.yaml` | 量规 bundle |
+| `--dim` | 全部一级指标 | 一级指标（如 `a4`） |
+| `--output-dir` | `artifacts` | 产物落盘根目录 |
+
+模型与参数固定从 `configs/model_config.yaml` 读取，密钥值只从 `.env` 读——因此没有
+`--model-config` 开关。旧的 `--input/-i`、`--verbose`、`--debug-bundle` 也一并删除。
+
+执行流：切分（零 LLM，确定性）→ 双链独立评价（select → extract → score，两个 Rater
+各跑一遍）→ 分歧时 Rater3 仲裁 → 生成反馈。同一 sample 下各二级指标并发评价，上限
+由 `configs/model_config.yaml` 的 `concurrency.max_workers` 控制（默认 8）。
+
+产物按三层落盘：
+
+```text
+artifacts/{task}/{sample}/package.json        # 切分后的带编号单元
+artifacts/{task}/{sample}/{dim}/feedback.json      # 给前端/学生：分数 + 雷达 + 证据编号 + 文字反馈
+artifacts/{task}/{sample}/{dim}/rater_chains.json  # 审计：双链完整证据 + 仲裁记录
+artifacts/{task}/{sample}/{dim}/run_trace.json     # 成本/性能，含失败被隔离的维度
 ```
-
-`eval` 会读取 UTF-8 Markdown 文本，解析 bundle，加载模型配置，然后调用内环流水线完成证据提取、评分、裁决和反馈生成。运行前会自动检查 `experiments/pending_corrections.json`；如果教师修正队列中有待处理意见，会先由 `CorrectionAgent` 更新当前任务的 `task_context.yaml`，再重新加载 bundle 继续评分。
 
 ## 配置校验
 
 ```bash
-python -m scripts config validate \
-  --bundle configs/bundles/engineering_eval_baseline.bundle.yaml
+python scripts/cli.py config validate
+python scripts/cli.py config validate --bundle configs/bundle.yaml
 ```
 
-## 当前保留的外环能力
-
-系统只保留第一个人工反馈闭环：
-
-- 前端提交教师修正到 `POST /api/corrections`
-- 修正事件写入 `experiments/pending_corrections.json`
-- 下一次 `eval` 启动前调用 `src.outer_loop.correction_agent.check_and_apply_corrections`
-- `CorrectionAgent` 读取当前任务的 `task_context.yaml`，根据修正意见生成完整 YAML
-- `ConfigPatcher` 只允许写入白名单配置文件，并在写入前创建快照
-
-自动实验优化闭环已经移除，因此不再提供 `outer-loop run/status/rollback/probe`、`task draft/revise/confirm`、`metrics qwk/coverage` 等命令。
+走一遍 bundle 声明的全部引用：policies、prompts、以及当前任务下每个一级指标的量规
+都能加载。刻意不构建 provider——配置是否自洽与密钥是否就位是两件事，因此没有 `.env`
+也能在 CI 里跑。
 
 ## 前端审核台
 
-审核台需要使用仓库自带服务器启动，因为它同时负责静态文件和 `POST /api/corrections`：
+审核台需要用仓库自带服务器启动，因为它同时负责静态文件和 `POST /api/corrections`：
 
 ```bash
-cd /Users/ahai/Code/MAS
 python scripts/server.py
 ```
 
-然后访问：
+然后访问 `http://127.0.0.1:8000/frontend/index.html`。
 
-```text
-http://127.0.0.1:8000/frontend/index.html
-```
+不要用 `python3 -m http.server` 代替——它没有 `/api/corrections` POST 接口，点击
+`Release` 时会返回 501。
 
-不要用 `python3 -m http.server` 代替。它没有 `/api/corrections` POST 接口，点击 `Release` 时会返回 501。
+## 遗留文件
+
+`scripts/eval.py` 是被 `cli.py` 取代的 v1 入口，仍依赖 `src/evaluation/runner.py`、
+`src/outer_loop/`、`src/pipeline/` 等待删模块，将随重构 09 一并删除，不要在新代码里引用。
