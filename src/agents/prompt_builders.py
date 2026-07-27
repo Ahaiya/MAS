@@ -18,7 +18,7 @@ from src.contracts.artifact_bundle import RubricSnapshot
 from src.contracts.evidence import DimensionObservation, EvidenceSpan
 from src.contracts.package import DataPackage
 from src.contracts.request_models import CoveragePlan, NormalizedDocument
-from src.contracts.scoring import FinalDimensionDecision, RaterChainResult, ScoreHypothesis
+from src.contracts.scoring import FinalDecision, FinalDimensionDecision, RaterChainResult, ScoreHypothesis
 from src.policies.rubric_core import get_scale_range
 from src.providers.prompt_loader import PromptTemplate, render_template
 
@@ -443,5 +443,32 @@ def build_adjudication_prompt(
             {"rater_id": chain_a.rater_id, "evidence_unit_ids": list(chain_a.evidence_unit_ids)},
             {"rater_id": chain_b.rater_id, "evidence_unit_ids": list(chain_b.evidence_unit_ids)},
         ],
+    }
+    return render_template(template, context)
+
+
+def build_feedback_prompt(
+    package: DataPackage,
+    decision: FinalDecision,
+    dimension: Dict[str, Any],
+    template: PromptTemplate,
+) -> str:
+    """
+    为 feedback 阶段构建 prompt：给模型某二级指标的最终分 + 引用证据全文 + 量规
+    锚点，要求生成面向学生的文字反馈。
+
+    注入的上下文变量 (匹配 feedback.yaml)：
+        dimension_name    : 来自 rubric 的可读 dimension 名称。
+        dimension_anchors : 仅当前 dimension 的 anchors [{rank, text}]。
+        final_score       : 该二级指标的最终分（canonical_score）。
+        units             : final_score 引用的证据单元全文 [{id, kind, text}]。
+
+    Returns:
+        渲染好准备发送给 provider 的 prompt 字符串。"""
+    context = {
+        "dimension_name": dimension.get("name", dimension.get("dimension_id", "")),
+        "dimension_anchors": _dimension_anchor_entries(dimension),
+        "final_score": decision.final_score.canonical_score,
+        "units": _units_by_ids(package, decision.unit_ids),
     }
     return render_template(template, context)

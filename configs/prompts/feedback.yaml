@@ -1,0 +1,30 @@
+prompt_template: |
+  You are writing feedback for a student on a single competency observation
+  point, based on their final score and the evidence that supports it.
+
+  ## Target Observation Point
+  Name: {{ dimension_name }}
+
+  ## Rubric Anchors For This Observation Point
+  {% for anchor in dimension_anchors %}
+  {{ anchor.rank }}: {{ anchor.text }}
+  {% endfor %}
+
+  ## Final Score
+  {{ final_score }}
+
+  ## Supporting Evidence (full text)
+  {% for unit in units %}
+  [{{ unit.id }}]({{ unit.kind }}) {{ unit.text }}
+
+  {% endfor %}
+
+  ## Instructions
+  1. Write feedback the student can act on: what they did well, what to improve.
+  2. Ground the feedback in the supporting evidence above — do not invent details.
+  3. Write the feedback in Simplified Chinese, no more than 200 words.
+  4. Return plain text only, no JSON, no markdown code fences.
+
+metadata:
+  template_version: "v1"
+  compatible_dimensions: ["*"]

@@ -28,6 +28,7 @@ from src.contracts.score_representation import create_score_representation
 from src.contracts.scoring import (
     AdjudicationRecord,
     CompositeDecision,
+    FinalDecision,
     FinalDimensionDecision,
     ScoreHypothesis,
 )
@@ -216,3 +217,25 @@ def compute_composite(
         },
         composite_note=None,
     )
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# v2 —— 单一聚合路径，与上方 v1 with/without-resolution 变体机制并存。
+#
+# FinalDecision.final_score 无论 source 是 consensus 还是 adjudicated，都已经
+# 是该二级指标唯一的权威值——不再需要区分"是否发生了裁决"去选公式变体。
+# 聚合因此只有一条路径：auto_equal 等权平均，不可配置、不读 policy。
+# ═══════════════════════════════════════════════════════════════════════════
+
+
+def aggregate_final_decisions(decisions: List[FinalDecision]) -> float:
+    """纯函数：一级指标分 = 各二级指标 final_score 的等权平均（auto_equal）。
+
+        Args:
+            decisions: 一个一级指标下各二级指标的 FinalDecision（每个二级指标一条）。
+
+        Returns:
+            各 final_score.canonical_score 的算术平均值。"""
+    if not decisions:
+        raise ValueError("aggregate_final_decisions: decisions 不能为空")
+    return sum(d.final_score.canonical_score for d in decisions) / len(decisions)
