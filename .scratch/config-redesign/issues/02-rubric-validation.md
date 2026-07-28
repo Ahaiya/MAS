@@ -16,14 +16,30 @@
 
 **Blocked by:** 01
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] 顶层必填：`dim_id`、`dim_name`、`indicator_description`
-- [ ] `scale` 必填 `min`、`max`、`levels`，且 `levels` 覆盖 `min..max` 每一档
-- [ ] `dimensions[]` 必填 `code`、`name`、`weight`、`anchors`，且 `anchors` 覆盖 `min..max` 每一档
-- [ ] 同一份量规内所有观测点 `weight` 之和为 1.0（浮点比较留合理容差）
-- [ ] 任一项不满足即报错，不回落默认值；错误信息指出文件与字段
-- [ ] 加载路径与 `config validate` 调用同一个校验函数
-- [ ] 校验不读环境变量、不构造 provider
-- [ ] 现役 7 份量规全部通过校验
-- [ ] 测试覆盖各类缺字段与权重和不为 1 的报错
+- [x] 顶层必填：`dim_id`、`dim_name`、`indicator_description`
+- [x] `scale` 必填 `min`、`max`、`levels`，且 `levels` 覆盖 `min..max` 每一档
+- [x] `dimensions[]` 必填 `code`、`name`、`weight`、`anchors`，且 `anchors` 覆盖 `min..max` 每一档
+- [x] 同一份量规内所有观测点 `weight` 之和为 1.0（浮点比较留合理容差）
+- [x] 任一项不满足即报错，不回落默认值；错误信息指出文件与字段
+- [x] 加载路径与 `config validate` 调用同一个校验函数
+- [x] 校验不读环境变量、不构造 provider
+- [x] 现役 7 份量规全部通过校验
+- [x] 测试覆盖各类缺字段与权重和不为 1 的报错
+
+## Comments
+
+超出验收项的两点，记录备查：
+
+1. **新增重复 code 检查**。同一份量规里两个观测点 code 相同时，`dimension_by_id` 会
+   互相覆盖，静默丢掉一个观测点——和缺 anchors 同一类病，一并堵上。
+2. **空白锚点按缺失处理**。锚点写成 `"   "` 时渲染阶段同样会被过滤掉，只让校验看起来
+   通过没有意义。
+
+`ConfigCompileError` 移入新的 `src/config/errors.py`：compiler 要调校验、校验要抛这个
+异常，不拆开就是循环导入。`src/config/compiler.py` 仍再导出它，调用方无感。
+
+**测试 fixture 是靠静默降级才跑通的**：`test_engine.py` / `test_cli.py` 里的最小量规
+缺 `weight`、锚点只覆盖 1 和 5 两档（量表却是 1–5）。这不是校验过严，是这些 fixture
+一直在描述一份不合法的量规。已补全为合法量规。

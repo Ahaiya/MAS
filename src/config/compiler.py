@@ -15,14 +15,12 @@ from typing import Any
 
 import yaml
 
+from src.config.errors import ConfigCompileError
+from src.config.rubric_validation import validate_rubric
 from src.contracts.artifact_bundle import PolicySnapshot, RubricSnapshot
 
 # 提示词阶段名 = 文件名（`{configs_root}/prompts/{stage}.yaml`）。
 PROMPT_STAGES = ("select", "extraction", "scoring", "adjudication", "feedback")
-
-
-class ConfigCompileError(Exception):
-    """加载或校验配置失败时抛出。"""
 
 
 def _build_rubric_snapshot(rubric_file_data: dict[str, Any]) -> RubricSnapshot:
@@ -157,4 +155,6 @@ def load_dimension_rubric(configs_root: Path | str, task_id: str, dim_id: str) -
     if not path.exists():
         raise ConfigCompileError(f"Dimension rubric file not found: {path}")
     data = yaml.safe_load(path.read_text(encoding="utf-8"))
+    # 先校验后构建：缺字段在这里响，而不是烂到 prompt 里变成"没有量规也照样打分"。
+    validate_rubric(data, source=str(path))
     return _build_rubric_snapshot(data)

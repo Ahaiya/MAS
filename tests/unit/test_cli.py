@@ -34,9 +34,9 @@ indicator_description: "desc"
 scale:
   min: 1
   max: 5
-  levels: {{1: bad, 5: good}}
+  levels: {{1: 待改进, 2: 合格, 3: 良好, 4: 优秀, 5: 卓越}}
 dimensions:
-  - {{code: "{code}", name: "sub {code}", anchors: {{1: low, 5: high}}}}
+  - {{code: "{code}", name: "sub {code}", weight: 1.0, anchors: {{1: 一档, 2: 二档, 3: 三档, 4: 四档, 5: 五档}}}}
 """
 
 _ADJUDICATION_YAML = """

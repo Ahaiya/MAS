@@ -26,16 +26,20 @@ indicator_description: "desc"
 scale:
   min: 1
   max: 5
-  levels: {{1: bad, 5: good}}
+  levels: {{1: 待改进, 2: 合格, 3: 良好, 4: 优秀, 5: 卓越}}
 dimensions:
 {sub_dims}
 """
 
-_SUB_DIM_TEMPLATE = '  - {{code: "{code}", name: "sub {code}", anchors: {{1: low, 5: high}}}}'
+_SUB_DIM_TEMPLATE = '  - {{code: "{code}", name: "sub {code}", weight: {weight}, anchors: {{1: 一档, 2: 二档, 3: 三档, 4: 四档, 5: 五档}}}}'
 
 
 def _write_dim_yaml(dim_dir: Path, dim_id: str, sub_dim_codes: list) -> None:
-    sub_dims = "\n".join(_SUB_DIM_TEMPLATE.format(code=code) for code in sub_dim_codes)
+    # 权重必须和为 1.0（量规校验要求），按观测点数均分
+    weight = 1 / len(sub_dim_codes)
+    sub_dims = "\n".join(
+        _SUB_DIM_TEMPLATE.format(code=code, weight=weight) for code in sub_dim_codes
+    )
     (dim_dir / f"{dim_id}_rubric.yaml").write_text(
         _DIM_YAML_TEMPLATE.format(dim_id=dim_id, sub_dims=sub_dims), encoding="utf-8"
     )
