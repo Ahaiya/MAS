@@ -563,15 +563,11 @@ version = "0.0.1"
 source = { editable = "." }
 dependencies = [
     { name = "jinja2" },
+    { name = "openai" },
     { name = "pydantic" },
     { name = "python-dotenv" },
     { name = "pyyaml" },
     { name = "typer" },
-]
-
-[package.optional-dependencies]
-real-provider = [
-    { name = "openai" },
 ]
 
 [package.dev-dependencies]
@@ -587,13 +583,12 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "jinja2", specifier = ">=3.1.6" },
-    { name = "openai", marker = "extra == 'real-provider'", specifier = ">=2.49.0" },
+    { name = "openai", specifier = ">=2.49.0" },
     { name = "pydantic", specifier = ">=2.13.4" },
     { name = "python-dotenv", specifier = ">=1.2.2" },
     { name = "pyyaml", specifier = ">=6.0.3" },
     { name = "typer", specifier = ">=0.27.0" },
 ]
-provides-extras = ["real-provider"]
 
 [package.metadata.requires-dev]
 dev = [

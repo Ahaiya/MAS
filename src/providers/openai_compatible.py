@@ -6,8 +6,6 @@ OpenAI 兼容的 Provider 适配器。
 支持任何遵循 OpenAI Chat Completions 接口的 API endpoint，
 包括 OpenAI、DeepSeek、通过 LM Studio / Ollama 运行的本地模型等。
 
-延迟导入 `openai` 包，以便即使未安装 `real-provider` 可选依赖组，该模块仍可被导入。如果在未安装该包的情况下调用 `complete()`，将抛出带有可操作提示信息的 ImportError。
-
 配置（均为可选，从构造函数参数读取）：
   api_key       : Provider API key。
   api_base      : Base URL 覆盖（例如 "https://api.deepseek.com/v1"）。
@@ -18,6 +16,8 @@ OpenAI 兼容的 Provider 适配器。
 from __future__ import annotations
 
 from typing import Any, Dict, Optional
+
+import openai
 
 from src.providers.base import (
     BaseProvider,
@@ -36,7 +36,7 @@ class OpenAICompatibleProvider(BaseProvider):
     """
     适用于 OpenAI 及 OpenAI 兼容 REST APIs 的适配器。
     
-    封装 `openai` Python SDK（延迟导入）。必须从 `real-provider` 扩展依赖组安装该 SDK 才能实际调用 API。"""
+    封装 `openai` Python SDK。"""
 
     def __init__(
         self,
@@ -65,15 +65,7 @@ class OpenAICompatibleProvider(BaseProvider):
         })
 
     def complete(self, request: LLMRequest) -> LLMResponse:
-        try:
-            import openai as _openai
-        except ImportError as exc:
-            raise ImportError(
-                "The 'openai' package is required to use OpenAICompatibleProvider. "
-                "Install it with: pip install 'mas-rubric-evaluation[real-provider]'"
-            ) from exc
-
-        client = _openai.OpenAI(
+        client = openai.OpenAI(
             api_key=self._api_key,
             base_url=self._api_base,
             timeout=self._timeout,
@@ -98,14 +90,14 @@ class OpenAICompatibleProvider(BaseProvider):
         try:
             response = client.chat.completions.create(**call_kwargs)
             return self._parse_response(request, response)
-        except _openai.APIStatusError as exc:
+        except openai.APIStatusError as exc:
             raise ProviderCallError(
                 f"API error {exc.status_code}: {exc.message}",
                 status_code=exc.status_code,
             ) from exc
-        except _openai.APIConnectionError as exc:
+        except openai.APIConnectionError as exc:
             raise ProviderCallError(f"API connection error: {exc}") from exc
-        except _openai.APITimeoutError as exc:
+        except openai.APITimeoutError as exc:
             raise ProviderCallError(f"API timeout: {exc}") from exc
 
     def _parse_response(

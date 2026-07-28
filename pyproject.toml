@@ -36,16 +36,12 @@ classifiers = [
 
 dependencies = [
     "jinja2>=3.1.6",
+    "openai>=2.49.0",
     "pydantic>=2.13.4",
     # 运行时依赖而非 dev：CLI 靠它读 .env 里的密钥值（模型选择在 yaml，密钥只在 .env）。
     "python-dotenv>=1.2.2",
     "pyyaml>=6.0.3",
     "typer>=0.27.0",
-]
-
-[project.optional-dependencies]
-real-provider = [
-    "openai>=2.49.0",
 ]
 
 # 不装 console_scripts：CLI 是 `python scripts/cli.py`，文件头自注入 sys.path。
