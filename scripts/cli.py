@@ -2,9 +2,9 @@
 """MAS 命令行入口——单文件 CLI
 
 用法：
-  python scripts/cli.py eval <file> --dim a4      # 评单个一级指标
-  python scripts/cli.py eval <file>               # 缺省评当前任务下全部一级指标
-  python scripts/cli.py config validate           # 校验 bundle 的引用闭包
+  python scripts/cli.py eval <file> --task experiment --dim a4   # 评单个一级指标
+  python scripts/cli.py eval <file> --task experiment            # 评该任务下全部一级指标
+  python scripts/cli.py config validate --task experiment        # 校验配置能否加载
 
 
 命令体只做「建 Engine → evaluate → 打印」：
@@ -29,10 +29,12 @@ import yaml
 from dotenv import load_dotenv
 
 from src.config.compiler import (
+    PROMPT_STAGES,
     ConfigCompileError,
     list_task_dimension_ids,
+    load_adjudication_policy,
     load_dimension_rubric,
-    strip_configs_prefix,
+    prompt_path,
 )
 from src.contracts.package import DataPackage
 from src.engine import DimensionEvaluation, Engine
@@ -42,7 +44,7 @@ from src.segment import read_text_file
 
 load_dotenv()
 
-_DEFAULT_BUNDLE = _PROJECT_ROOT / "configs" / "bundle.yaml"
+_DEFAULT_CONFIGS_ROOT = _PROJECT_ROOT / "configs"
 _DEFAULT_OUTPUT_DIR = _PROJECT_ROOT / "artifacts"
 
 app = typer.Typer(name="mas", help="MAS 评价引擎命令行入口。", add_completion=False)
@@ -66,6 +68,32 @@ def _exit_with_error(message: str) -> typer.Exit:
     """打印错误到 stderr，返回给调用方 raise 的 Exit(1)。"""
     typer.echo(f"ERROR: {message}", err=True)
     return typer.Exit(code=1)
+
+
+def _available_tasks(configs_root: Path) -> List[str]:
+    """列出 `{configs_root}/tasks/` 下的任务 id（有 dimension 子目录的才算）。"""
+    tasks_dir = configs_root / "tasks"
+    if not tasks_dir.is_dir():
+        return []
+    return sorted(p.name for p in tasks_dir.iterdir() if (p / "dimension").is_dir())
+
+
+def _require_task(configs_root: Path, task: Optional[str]) -> str:
+    """任务必须显式指定——没有默认值，也不沿用任何配置文件里的值。
+
+    旧的 `active_task_id` 写在 bundle 里，切任务要改一个 tracked 文件；漏改就会
+    静默评错任务，而产物目录名和分数都"看起来正常"。宁可在这里报错。"""
+    if not configs_root.is_dir():
+        raise _exit_with_error(f"配置目录不存在：{configs_root}")
+
+    available = _available_tasks(configs_root)
+    if task is None:
+        hint = "、".join(available) if available else "（该目录下没有任何任务）"
+        raise _exit_with_error(f"必须用 --task 指定任务。可选：{hint}")
+    if task not in available:
+        hint = "、".join(available) if available else "（该目录下没有任何任务）"
+        raise _exit_with_error(f"任务 '{task}' 不存在于 {configs_root / 'tasks'}。可选：{hint}")
+    return task
 
 
 # ── eval ─────────────────────────────────────────────────────────────────────
@@ -122,10 +150,17 @@ def eval_command(
         Path,
         typer.Argument(metavar="INPUT_FILE", help="待评价的材料文件（.md / .txt）。"),
     ],
-    bundle: Annotated[Path, typer.Option("--bundle", help="量规 bundle 路径。")] = _DEFAULT_BUNDLE,
+    task: Annotated[
+        Optional[str],
+        typer.Option("--task", help="任务 id，对应 configs/tasks/<task>/。"),
+    ] = None,
+    configs: Annotated[
+        Path,
+        typer.Option("--configs", help="配置根目录。"),
+    ] = _DEFAULT_CONFIGS_ROOT,
     dim: Annotated[
         Optional[str],
-        typer.Option("--dim", help="一级指标（如 a4）；缺省评当前任务下全部一级指标。"),
+        typer.Option("--dim", help="一级指标（如 a4）；缺省评该任务下全部一级指标。"),
     ] = None,
     output_dir: Annotated[
         Path,
@@ -133,12 +168,11 @@ def eval_command(
     ] = _DEFAULT_OUTPUT_DIR,
 ) -> None:
     """评价一份材料：切分 → 双链评价 → 仲裁 → 反馈，产物按 {task}/{sample}/{dim}/ 落盘。"""
-    if not bundle.exists():
-        raise _exit_with_error(f"bundle 文件不存在：{bundle}")
+    task_id = _require_task(configs, task)
     package = _load_package(input_file)
 
     try:
-        engine = Engine.from_bundle(bundle, configs_root=bundle.parent, output_dir=output_dir)
+        engine = Engine.from_configs(configs, task_id, output_dir=output_dir)
         results = engine.evaluate(package, dim=dim)
     except _USER_FIXABLE_ERRORS as exc:
         raise _exit_with_error(f"{type(exc).__name__}: {exc}") from exc
@@ -154,38 +188,27 @@ def eval_command(
 # ── config validate ──────────────────────────────────────────────────────────
 
 
-def _validate_bundle(bundle: Path) -> List[str]:
-    """走一遍 bundle 声明的全部引用，返回给人看的 OK 行；任何一处解析不了就抛错。
+def _validate_configs(configs_root: Path, task_id: str) -> List[str]:
+    """按约定路径走一遍全部配置，返回给人看的 OK 行；任何一处解析不了就抛错。
 
     刻意不建 provider：配置是否自洽与密钥是否就位是两件事，`config validate` 只答
-    前一件（含 model_config 的结构），因此没有 .env 也能在 CI 里跑。引用路径的解析方式与 Engine 共用
-    `strip_configs_prefix()`，避免出现"校验通过但引擎跑不起来"。"""
-    configs_root = bundle.parent
-    data = yaml.safe_load(bundle.read_text(encoding="utf-8")) or {}
+    前一件（含 model_config 的结构），因此没有 .env 也能在 CI 里跑。路径解析与
+    仲裁策略加载都与 Engine 共用同一批函数，避免"校验通过但引擎跑不起来"。"""
+    lines = [f"OK  task           : {task_id}"]
 
-    task_id = data.get("active_task_id")
-    if not task_id:
-        raise ConfigCompileError(f"bundle 缺少 active_task_id：{bundle}")
-
-    lines = [
-        f"OK  bundle_id      : {data.get('bundle_id', '(未设置)')}",
-        f"OK  active_task_id : {task_id}",
-    ]
-
-    for name, ref in (data.get("policies") or {}).items():
-        path = configs_root / strip_configs_prefix(str(ref))
-        if not path.exists():
-            raise ConfigCompileError(f"policy '{name}' 引用的文件不存在：{path}")
-        yaml.safe_load(path.read_text(encoding="utf-8"))
-        lines.append(f"OK  policy         : {name} → {ref}")
+    policy = load_adjudication_policy(configs_root)
+    lines.append(
+        f"OK  adjudication   : score_gap>{policy.score_gap_threshold} "
+        f"drift>={policy.drift_min_dimensions}"
+    )
 
     loader = PromptLoader()
-    for name, ref in (data.get("prompts") or {}).items():
-        path = configs_root / strip_configs_prefix(str(ref))
+    for stage in PROMPT_STAGES:
+        path = prompt_path(configs_root, stage)
         if not path.exists():
-            raise ConfigCompileError(f"prompt '{name}' 引用的文件不存在：{path}")
-        loader.load(path)  # 顺带校验 prompt yaml 的 schema
-        lines.append(f"OK  prompt         : {name} → {ref}")
+            raise ConfigCompileError(f"提示词文件不存在：{path}")
+        loader.load(path)  # 顺带校验 prompt yaml 的结构
+        lines.append(f"OK  prompt         : {stage}")
 
     dim_ids = list_task_dimension_ids(configs_root, task_id)
     if not dim_ids:
@@ -215,23 +238,26 @@ def _validate_bundle(bundle: Path) -> List[str]:
 
 @config_app.command("validate")
 def config_validate(
-    bundle: Annotated[
+    task: Annotated[
+        Optional[str],
+        typer.Option("--task", help="任务 id，对应 configs/tasks/<task>/。"),
+    ] = None,
+    configs: Annotated[
         Path,
-        typer.Option("--bundle", help="要校验的 bundle 路径。"),
-    ] = _DEFAULT_BUNDLE,
+        typer.Option("--configs", help="配置根目录。"),
+    ] = _DEFAULT_CONFIGS_ROOT,
 ) -> None:
-    """校验 bundle 的引用闭包：policies / prompts / 任务下各一级指标量规都能加载。"""
-    if not bundle.exists():
-        raise _exit_with_error(f"bundle 文件不存在：{bundle}")
+    """校验配置：仲裁策略 / 提示词 / 任务下各一级指标量规 / model_config 都能加载。"""
+    task_id = _require_task(configs, task)
 
     try:
-        lines = _validate_bundle(bundle)
+        lines = _validate_configs(configs, task_id)
     except (ConfigCompileError, EngineConfigError, ValueError, FileNotFoundError, yaml.YAMLError) as exc:
         raise _exit_with_error(str(exc)) from exc
 
     for line in lines:
         typer.echo(line)
-    typer.echo("PASS: bundle 校验通过。")
+    typer.echo("PASS: 配置校验通过。")
 
 
 if __name__ == "__main__":

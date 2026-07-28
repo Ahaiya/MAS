@@ -25,6 +25,3 @@ prompt_template: |
   3. Write the feedback in Simplified Chinese, no more than 200 words.
   4. Return plain text only, no JSON, no markdown code fences.
 
-metadata:
-  template_version: "v1"
-  compatible_dimensions: ["*"]

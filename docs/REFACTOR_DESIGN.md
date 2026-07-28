@@ -339,33 +339,33 @@ MAS/
 
 ```
 configs/
-├── bundles/
-│   └── engineering_eval_baseline.bundle.yaml   # 入口 bundle
-├── model_config.yaml                            # LLM 分配（各阶段/各 rater/接入层）
+├── model_config.yaml                            # providers（各角色模型端点）+ runtime（并发/超时/重试）
+├── adjudication.yaml                            # 仲裁触发规则：两个整数
 ├── tasks/
 │   └── {task_name}/
-│       ├── task_context.yaml                    # 任务说明 + 各维度 calibration/hints
 │       └── dimension/
-│           └── {dim_id}_rubric.yaml             # 二级指标量规（1-5 级锚点）
-├── policies/
-│   ├── adjudication/…                           # 仲裁触发规则（全局）
-│   ├── aggregation/…                            # 聚合策略（auto_equal）
-│   └── chunking/…                               # 分块策略
+│           └── {dim_id}_rubric.yaml             # 二级指标量规（观测点 + 各档锚点）
 └── prompts/
-    ├── chunking.yaml
-    ├── rater_extraction.yaml      # 【v2】单 Rater 取证提示词
-    ├── rater_scoring.yaml         # 【v2】单 Rater 评分提示词
-    ├── adjudication.yaml          # 【v2新增】Rater3 仲裁提示词（双链对比）
-    └── explanation.yaml           # 反馈生成提示词
+    ├── select.yaml                # 选段提示词
+    ├── extraction.yaml            # 取证提示词
+    ├── scoring.yaml               # 评分提示词
+    ├── adjudication.yaml          # Rater3 仲裁提示词（双链对比）
+    └── feedback.yaml              # 反馈生成提示词
 ```
 
-> v2 prompt 变化：取证与评分仍分两个模板（一条链内先取证后评分），但**语义上归属同一 Rater**；新增 `adjudication.yaml` 承载双链对比的仲裁 prompt。
+> 取证与评分分两个模板（一条链内先取证后评分），但**语义上归属同一 Rater**；
+> `adjudication.yaml` 承载双链对比的仲裁 prompt。
 
-### 7.2 Bundle 解析
+### 7.2 配置路径约定
 
-- Bundle 是配置入口，`src/config/resolver.py` 解析路径模板。
-- `{active_task_id}` → bundle 字段；`{active_dim_id}` → 运行时 `--dim` 注入。
-- v2 bundle 需在 `prompts:` 下引用新的 `rater_extraction` / `rater_scoring` / `adjudication`。
+没有 bundle 文件——路径全部由约定固定，不存在引用解析：
+
+- 仲裁策略 → `{configs_root}/adjudication.yaml`
+- 提示词　 → `{configs_root}/prompts/{stage}.yaml`（文件名即阶段名）
+- 量规　　 → `{configs_root}/tasks/{task_id}/dimension/{dim_id}_rubric.yaml`
+
+任务由调用现场经 `--task` 传入，不写在任何配置文件里：改一个 tracked 文件来切任务，
+每次实验都会带一个脏 diff，多任务并行还会互相冲突。
 
 ### 7.3 model_config.yaml（v2）
 
@@ -387,21 +387,6 @@ parser:                    # 【v2新增】接入层解析服务
   endpoint_env: "PARSER_ENDPOINT"
 ```
 
-### 7.4 task_context.yaml 结构（不变）
-
-```yaml
-schema_version: "2.0"
-task_name: "maker_hackathon"
-material_context:
-  type: "conversation"
-  evidence_focus: "..."          # 约束评价对象（不可被人在回路修改）
-scoring_context:
-  - code: "A4-1"
-    extraction_hints: ""         # 注入取证阶段
-    calibration_notes: "..."     # 注入评分阶段
-    feedback_hints: ""           # 注入反馈阶段
-```
-
 ---
 
 ## 8. 脚本入口 ✅
@@ -419,25 +404,23 @@ scripts/
 ### 8.1 单包评估 CLI
 
 ```bash
-# v2：输入可为任意格式文件，接入层自动解析
-python -m scripts eval data/training/maker_hackathon/sample.pdf --dim a4
-# 等价完整写法
-python -m scripts eval --input <file> \
-    --bundle configs/bundles/engineering_eval_baseline.bundle.yaml \
-    --dim a4
+# 评该任务下全部一级指标
+python scripts/cli.py eval <file> --task experiment
+# 只评一个一级指标；--configs 缺省为 configs/
+python scripts/cli.py eval <file> --task experiment --dim a1
 ```
 
-内部执行流（`scripts/eval.py` → `run_single_eval()`）：
+`--task` 无默认值：漏传即报错并列出可选任务，不沿用任何配置文件里的值。
+
+内部执行流：
 
 ```python
-# 1. 接入层：任意文件 → DataPackage
-package = ingest.parse_file(input_path)          # 【v2新增】
-# 2. 编译 bundle
-resolved = ConfigCompiler().compile(bundle_path)
-# 3. 构建 providers（含 rater_3 与 parser）
-default_p, rater_ps, stage_ps = build_providers(model_config_path)
-# 4. 执行评估（线性流水线）
-result = run_single_eval(package=package, resolved=resolved, providers=..., output_dir=...)
+# 1. 读文件 → 切分 → DataPackage
+package, dropped = read_text_file(input_path, package_id=input_path.stem)
+# 2. 按约定路径读配置 + 建 providers
+engine = Engine.from_configs(configs_root, task_id, output_dir=output_dir)
+# 3. 执行评价（双链 → 仲裁 → 反馈），产物按 {task}/{sample}/{dim}/ 落盘
+results = engine.evaluate(package, dim=dim)
 ```
 
 ### 8.2 产物

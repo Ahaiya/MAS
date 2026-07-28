@@ -18,7 +18,7 @@ v1 的 debug bundle 埋点（debug_writer / set_debug_writer）已随 `src/debug
 
 用法：
     provider = LoggingProvider(real_provider, label="rater_1")
-    # 可直接顶替 Engine.from_bundle(providers=...) 里的真 provider"""
+    # 可直接顶替 Engine.from_configs(providers=...) 里的真 provider"""
 
 from __future__ import annotations
 

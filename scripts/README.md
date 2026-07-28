@@ -15,24 +15,25 @@ uv run scripts/cli.py --help
 
 ```bash
 # 评单个一级指标
-uv run scripts/cli.py eval data/experiment/2025213184.md --dim a1
+uv run scripts/cli.py eval data/experiment/2025213184.md --task experiment --dim a1
 
-# 不传 --dim：评当前任务下全部一级指标
-uv run scripts/cli.py eval data/experiment/2025213184.md
+# 不传 --dim：评该任务下全部一级指标
+uv run scripts/cli.py eval data/experiment/2025213184.md --task experiment
 ```
 
-全部参数只有四个：
+全部参数只有五个：
 
 | 参数 | 默认值 | 说明 |
 | --- | --- | --- |
 | `INPUT_FILE`（位置） | 必填 | 待评价的 `.md` / `.txt` 材料 |
-| `--bundle` | `configs/bundle.yaml` | 量规 bundle |
+| `--task` | 无，必填 | 任务 id，对应 `configs/tasks/<task>/`；漏传即报错并列出可选任务 |
+| `--configs` | `configs` | 配置根目录 |
 | `--dim` | 全部一级指标 | 一级指标（如 `a1`） |
 | `--output-dir` | `artifacts` | 产物落盘根目录 |
 
 模型与参数固定从 `configs/model_config.yaml` 读取（含超时/重试/并发），密钥值只从
 `.env` 读且按厂商命名——因此没有 `--model-config` 开关。旧的 `--input/-i`、
-`--verbose`、`--debug-bundle` 也一并删除。
+`--verbose`、`--debug-bundle`、`--bundle` 也一并删除。
 
 执行流：切分（零 LLM，确定性）→ 双链独立评价（select → extract → score，两个 Rater
 各跑一遍）→ 分歧时 Rater3 仲裁 → 生成反馈。同一 sample 下各二级指标并发评价，上限
@@ -50,15 +51,15 @@ artifacts/{task}/{sample}/{dim}/run_trace.json     # 成本/性能，含失败�
 ## 配置校验
 
 ```bash
-uv run scripts/cli.py config validate
-uv run scripts/cli.py config validate --bundle configs/bundle.yaml
+uv run scripts/cli.py config validate --task experiment
+uv run scripts/cli.py config validate --task experiment --configs configs
 ```
 
-走一遍 bundle 声明的全部引用：policies、prompts、以及当前任务下每个一级指标的量规
+走一遍配置：仲裁策略、五套 prompt、以及该任务下每个一级指标的量规
 都能加载。刻意不构建 provider——配置是否自洽与密钥是否就位是两件事，因此没有 `.env`
 也能在 CI 里跑。
 
-## 前端审核台
+## 前端审核台(TODO)
 
 审核台需要用仓库自带服务器启动，因为它同时负责静态文件和 `POST /api/corrections`：
 

@@ -4,7 +4,7 @@ Prompt 模板加载器，负责读取 YAML 模板并渲染各阶段 prompt。
 Prompt 模板加载器 — 加载 Jinja2 YAML 模板并渲染它们。
 
 职责:
-- 加载 YAML prompt 模板文件，并根据 PromptFileSchema 进行验证。
+- 加载 YAML prompt 模板文件，并校验其中的 prompt_template 字段。
 - 使用 Jinja2 和调用者提供的 context dict 渲染模板文本。
 - 对于文件缺失、无效 YAML、schema 违规以及未定义的模板变量（严格模式）抛出明确的错误。
 
@@ -19,8 +19,6 @@ from typing import Any, Dict, Union
 import yaml
 from jinja2 import Environment, StrictUndefined
 
-from src.config.schema import PromptFileSchema
-
 
 # ── 值对象 ──────────────────────────────────────────────────────────────
 
@@ -31,11 +29,9 @@ class PromptTemplate:
     
     Attributes:
         template_text : 原始 Jinja2 模板字符串（尚未渲染）。
-        metadata      : 来自 YAML 文件的元数据 dict（template_version 等）。
         source_path   : 加载此模板的文件路径或标识符。"""
 
     template_text: str
-    metadata: Dict[str, Any]
     source_path: str
 
 
@@ -45,13 +41,10 @@ class PromptLoader:
     """
     从 YAML 文件加载并渲染 Jinja2 prompt 模板。
     
-    模板 YAML 格式（由 PromptFileSchema 验证）::
+    模板 YAML 格式::
     
         prompt_template: |
-          Hello {{ name }}!
-        metadata:
-          template_version: "v1"
-          compatible_dimensions: ["*"]"""
+          Hello {{ name }}!"""
 
     def load(self, path: Union[str, Path]) -> PromptTemplate:
         """
@@ -61,12 +54,12 @@ class PromptLoader:
             path: YAML 模板文件的绝对或相对路径。
         
         Returns:
-            填充了 template_text 和 metadata 的 PromptTemplate。
+            填充了 template_text 的 PromptTemplate。
         
         Raises:
             FileNotFoundError: 如果文件不存在。
             yaml.YAMLError   : 如果文件包含无效的 YAML。
-            ValueError       : 如果 YAML 不匹配 PromptFileSchema。"""
+            ValueError       : 如果 YAML 缺少 prompt_template 或它不是字符串。"""
         file_path = Path(path)
         if not file_path.exists():
             raise FileNotFoundError(f"Prompt template file not found: {file_path}")
@@ -77,18 +70,13 @@ class PromptLoader:
         except yaml.YAMLError as exc:
             raise yaml.YAMLError(f"Invalid YAML in '{file_path}': {exc}") from exc
 
-        if not isinstance(data, dict) or "prompt_template" not in data:
+        if not isinstance(data, dict) or not isinstance(data.get("prompt_template"), str):
             raise ValueError(
-                f"'{file_path}' is missing required key 'prompt_template'. "
-                "Expected keys: prompt_template, metadata."
+                f"'{file_path}' is missing required string key 'prompt_template'."
             )
 
-        # 使用 schema 进行验证（不匹配时抛出 ValidationError）
-        validated = PromptFileSchema.model_validate(data)
-
         return PromptTemplate(
-            template_text=validated.prompt_template,
-            metadata=validated.metadata.model_dump(),
+            template_text=data["prompt_template"],
             source_path=str(file_path),
         )
 

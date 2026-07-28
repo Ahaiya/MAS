@@ -22,29 +22,10 @@ def _chain(rater_id: str, dimension_id: str, score_val: int) -> RaterChainResult
     )
 
 
-def _policy() -> PolicySnapshot:
+def _policy(score_gap_threshold: int = 1, drift_min_dimensions: int = 2) -> PolicySnapshot:
     return PolicySnapshot(
-        adjudication_policy={
-            "triggers": [
-                {
-                    "trigger_id": "score_distance",
-                    "type": "score_distance",
-                    "applies_to_dimensions": ["*"],
-                    "threshold": {"operator": ">", "value": 1},
-                },
-                {
-                    "trigger_id": "adjacent_drift",
-                    "type": "adjacent_drift",
-                    "applies_to_dimensions": ["*"],
-                    "pattern": {
-                        "score_gap": 1,
-                        "min_matching_dimensions": 2,
-                        "require_same_direction": True,
-                    },
-                },
-            ]
-        },
-        policy_version="test",
+        score_gap_threshold=score_gap_threshold,
+        drift_min_dimensions=drift_min_dimensions,
     )
 
 
@@ -91,3 +72,49 @@ def test_adjacent_drift_opposite_directions_does_not_trigger() -> None:
     chains_b = [_chain("rater_2", "a4_1", 4), _chain("rater_2", "a4_2", 3)]
 
     assert needs_adjudication(chains_a, chains_b, _policy()) == set()
+
+
+def test_gap_exactly_at_threshold_does_not_trigger() -> None:
+    """规则一是严格大于：分差恰等于阈值不触发。"""
+    chains_a = [_chain("rater_1", "a4_1", 2)]
+    chains_b = [_chain("rater_2", "a4_1", 4)]
+
+    assert needs_adjudication(chains_a, chains_b, _policy(score_gap_threshold=2)) == set()
+
+
+def test_gap_above_threshold_triggers() -> None:
+    chains_a = [_chain("rater_1", "a4_1", 1)]
+    chains_b = [_chain("rater_2", "a4_1", 4)]
+
+    assert needs_adjudication(chains_a, chains_b, _policy(score_gap_threshold=2)) == {"a4_1"}
+
+
+def test_drift_min_dimensions_zero_never_triggers() -> None:
+    """阈值为 0 时同向漂移规则整体关闭，不会把所有相邻分歧都拉进来。"""
+    chains_a = [_chain("rater_1", "a4_1", 3), _chain("rater_1", "a4_2", 3)]
+    chains_b = [_chain("rater_2", "a4_1", 4), _chain("rater_2", "a4_2", 4)]
+
+    assert needs_adjudication(chains_a, chains_b, _policy(drift_min_dimensions=0)) == set()
+
+
+def test_drift_min_dimensions_negative_never_triggers() -> None:
+    chains_a = [_chain("rater_1", "a4_1", 3), _chain("rater_1", "a4_2", 3)]
+    chains_b = [_chain("rater_2", "a4_1", 4), _chain("rater_2", "a4_2", 4)]
+
+    assert needs_adjudication(chains_a, chains_b, _policy(drift_min_dimensions=-1)) == set()
+
+
+def test_gap_and_drift_results_are_unioned() -> None:
+    """规则一命中的观测点与规则二命中的观测点取并集。"""
+    chains_a = [
+        _chain("rater_1", "a4_1", 1),
+        _chain("rater_1", "a4_2", 3),
+        _chain("rater_1", "a4_3", 3),
+    ]
+    chains_b = [
+        _chain("rater_2", "a4_1", 4),
+        _chain("rater_2", "a4_2", 4),
+        _chain("rater_2", "a4_3", 4),
+    ]
+
+    assert needs_adjudication(chains_a, chains_b, _policy()) == {"a4_1", "a4_2", "a4_3"}

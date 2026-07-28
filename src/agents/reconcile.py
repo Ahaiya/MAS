@@ -39,7 +39,7 @@ def reconcile(
         chains_a: 一条 Rater 链在各二级指标上的 RaterChainResult。
         chains_b: 另一条 Rater 链在各二级指标上的 RaterChainResult。
         rubric  : 用于 dimension/scale 查找的 RubricSnapshot。
-        policy  : 带 adjudication_policy 触发阈值的 PolicySnapshot。
+        policy  : 带两个仲裁触发阈值的 PolicySnapshot。
         rater_3_provider     : Rater3 用的 provider；有分歧时才需要。
         adjudication_template: 已加载的 adjudication PromptTemplate；有分歧时才需要。
 

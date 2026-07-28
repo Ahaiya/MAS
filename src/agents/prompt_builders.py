@@ -135,7 +135,7 @@ def build_rater_scoring_prompt(
     为 score 阶段构建 prompt：给模型 extract 阶段确认的证据单元全文 + rubric anchors，
     要求给出 DimensionScore。
 
-    注入的上下文变量 (匹配 rater_scoring.yaml)：
+    注入的上下文变量 (匹配 scoring.yaml)：
         dimension_name    : 来自 rubric 的可读 dimension 名称。
         dimension_anchors : 仅当前 dimension 的 anchors [{rank, text}]。
         units             : 证据单元的全文 [{id, kind, text}]。

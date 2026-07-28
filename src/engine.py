@@ -1,5 +1,5 @@
 """
-Engine Facade：`Engine.from_bundle(path).evaluate(package, dim)` 跑通一次完整评价。
+Engine Facade：`Engine.from_configs(root, task_id).evaluate(package, dim)` 跑通一次完整评价。
 
 流水线：rate(r1) → rate(r2) → reconcile → [adjudicate] → feedback.
 同一 sample 下各二级指标的双链评价用 ThreadPoolExecutor 并发跑（provider IO 密集，GIL 不碍事）
@@ -35,8 +35,6 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-import yaml
-
 from src.agents import feedback, rater, reconcile
 from src.artifacts import (
     write_feedback_artifact,
@@ -45,10 +43,12 @@ from src.artifacts import (
     write_run_trace_artifact,
 )
 from src.config.compiler import (
+    PROMPT_STAGES,
     ConfigCompileError,
     list_task_dimension_ids,
+    load_adjudication_policy,
     load_dimension_rubric,
-    strip_configs_prefix,
+    prompt_path,
 )
 from src.contracts.artifact_bundle import PolicySnapshot, RubricSnapshot
 from src.contracts.package import DataPackage
@@ -83,12 +83,12 @@ class DimensionEvaluation:
 
 
 class Engine:
-    """`量规 + 数据包 → 评价` Facade。用 `Engine.from_bundle(path)` 构造。"""
+    """`量规 + 数据包 → 评价` Facade。用 `Engine.from_configs(root, task_id)` 构造。"""
 
     def __init__(
         self,
         *,
-        bundle_ref: str,
+        configs_ref: str,
         active_task_id: str,
         configs_root: Path,
         policy: PolicySnapshot,
@@ -104,7 +104,7 @@ class Engine:
         if missing_templates:
             raise EngineConfigError(f"Engine 缺少必需 prompt 模板：{sorted(missing_templates)}")
 
-        self._bundle_ref = bundle_ref
+        self._configs_ref = configs_ref
         self._active_task_id = active_task_id
         self._configs_root = Path(configs_root)
         self._policy = policy
@@ -117,20 +117,24 @@ class Engine:
         self._rubric_cache: Dict[str, RubricSnapshot] = {}
 
     @classmethod
-    def from_bundle(
+    def from_configs(
         cls,
-        bundle_path: "Path | str",
+        configs_root: "Path | str",
+        task_id: str,
         *,
-        configs_root: "Path | str" = "configs",
         model_config_path: "Optional[Path | str]" = None,
         providers: Optional[Dict[str, BaseProvider]] = None,
         output_dir: "Path | str" = "artifacts",
     ) -> "Engine":
-        """编译 bundle、从 model_config 建 providers、加载 prompts。
+        """按约定路径读配置：仲裁策略 + prompts + model_config，建出 Engine。
+
+        没有 bundle 文件——路径全部由约定固定，见模块顶部。任务选择是调用现场的
+        参数而不是配置文件里的字段：改一个 tracked 文件来切任务，每次实验都会
+        带一个脏 diff，多任务并行还会互相冲突。
 
         Args:
-            bundle_path: `configs/bundle.yaml` 路径。
-            configs_root: 配置根目录，默认 "configs"。
+            configs_root: 配置根目录（如 `configs`）。
+            task_id: 要评价的任务，对应 `{configs_root}/tasks/{task_id}/`。
             model_config_path: 覆盖默认的 `{configs_root}/model_config.yaml`。
             providers: 测试注入用（如 FakeProvider）；提供时完全替代从
                 model_config 构建的真实 provider，键为 "rater_1"/"rater_2"/
@@ -140,23 +144,11 @@ class Engine:
         Returns:
             构造完成的 Engine。"""
         configs_root = Path(configs_root)
-        bundle_path = Path(bundle_path)
-        bundle_data = yaml.safe_load(bundle_path.read_text(encoding="utf-8")) or {}
-
-        active_task_id = bundle_data["active_task_id"]
-
-        adjudication_policy_path = configs_root / strip_configs_prefix(bundle_data["policies"]["adjudication"])
-        adjudication_data = yaml.safe_load(adjudication_policy_path.read_text(encoding="utf-8"))
-        adjudication_policy = adjudication_data["adjudication_policy"]
-        policy = PolicySnapshot(
-            adjudication_policy=adjudication_policy,
-            policy_version=str(adjudication_policy.get("policy_id", "unknown")),
-        )
+        policy = load_adjudication_policy(configs_root)
 
         loader = PromptLoader()
         templates = {
-            name: loader.load(configs_root / strip_configs_prefix(path))
-            for name, path in bundle_data["prompts"].items()
+            name: loader.load(prompt_path(configs_root, name)) for name in PROMPT_STAGES
         }
 
         resolved_model_config_path = (
@@ -172,8 +164,8 @@ class Engine:
         )
 
         return cls(
-            bundle_ref=str(bundle_path),
-            active_task_id=active_task_id,
+            configs_ref=str(configs_root),
+            active_task_id=task_id,
             configs_root=configs_root,
             policy=policy,
             templates=templates,
@@ -261,7 +253,7 @@ class Engine:
             rater_chains_report={"chains": [], "final_decisions": []},
             run_trace=RunTraceSummary(
                 run_id=f"run-{uuid.uuid4().hex[:12]}",
-                bundle_ref=self._bundle_ref,
+                configs_ref=self._configs_ref,
                 dim=dim_id,
                 total_tokens=sum(t.tokens for t in stage_traces),
                 total_ms=sum(t.ms for t in stage_traces),
@@ -358,7 +350,7 @@ class Engine:
         adjudicated_dims = [d.dimension_id for d in decisions if d.source == ScoreSource.ADJUDICATED]
         run_trace = RunTraceSummary(
             run_id=f"run-{uuid.uuid4().hex[:12]}",
-            bundle_ref=self._bundle_ref,
+            configs_ref=self._configs_ref,
             dim=dim_id,
             total_tokens=sum(t.tokens for t in stage_traces),
             total_ms=sum(t.ms for t in stage_traces),

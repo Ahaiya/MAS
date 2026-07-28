@@ -1,18 +1,22 @@
-"""配置子系统入口：加载 bundle 声明的任务量规。
+"""配置子系统入口：按约定路径加载 configs/ 下的量规、提示词与仲裁策略。
 
 v1 的 bundle 工件引用解析 + 冻结哈希（ConfigCompiler / ConfigResolver / freeze）
-已随旧流程删除，现在只保留「按 task_id + dim_id 读量规」这条路径。"""
+已随旧流程删除；bundle.yaml 本身也已删除，路径改由约定固定。"""
 
 from .compiler import (
+    PROMPT_STAGES,
     ConfigCompileError,
     list_task_dimension_ids,
+    load_adjudication_policy,
     load_dimension_rubric,
-    strip_configs_prefix,
+    prompt_path,
 )
 
 __all__ = [
+    "PROMPT_STAGES",
     "ConfigCompileError",
     "list_task_dimension_ids",
+    "load_adjudication_policy",
     "load_dimension_rubric",
-    "strip_configs_prefix",
+    "prompt_path",
 ]

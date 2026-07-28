@@ -75,10 +75,14 @@ class RubricSnapshot:
 
 @dataclass(frozen=True)
 class PolicySnapshot:
-    """从 policy 配置提取出的、运行期只读的策略快照。
+    """从 configs/adjudication.yaml 读出的、运行期只读的仲裁策略快照。
+
+        两条触发规则各由一个数决定，没有通用规则引擎——加规则一定要改代码，
+        配置里摆 type 分派 / 比较运算符 / 维度白名单的架子换不来任何东西。
 
         Attributes:
-            adjudication_policy: 已解析的仲裁触发规则（needs_adjudication 读它）
-            policy_version: 策略快照的版本字符串"""
-    adjudication_policy: Dict[str, Any]
-    policy_version: str
+            score_gap_threshold : 任意观测点上两位评委分差 > 此值即触发仲裁。
+            drift_min_dimensions: 分差恰为 1 且同向的观测点数 ≥ 此值时，
+                                  这些观测点全部触发仲裁。"""
+    score_gap_threshold: int
+    drift_min_dimensions: int

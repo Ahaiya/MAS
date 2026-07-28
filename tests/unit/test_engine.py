@@ -17,14 +17,13 @@ from src.providers.base import (
 )
 from src.providers.fake import FakeProvider, fake_response
 
-_PROMPT_NAMES = ["select.yaml", "extraction.yaml", "rater_scoring.yaml", "adjudication.yaml", "feedback.yaml"]
+_PROMPT_NAMES = ["select.yaml", "extraction.yaml", "scoring.yaml", "adjudication.yaml", "feedback.yaml"]
 
 _DIM_YAML_TEMPLATE = """
 dim_id: "{dim_id}"
 dim_name: "test {dim_id}"
 indicator_description: "desc"
 scale:
-  type: ordinal
   min: 1
   max: 5
   levels: {{1: bad, 5: good}}
@@ -48,36 +47,16 @@ def configs_root(tmp_path: Path) -> Path:
     d2 有 1 个二级指标），复用仓库真实的 v2 prompt yaml + adjudication policy。"""
     root = tmp_path / "configs"
     (root / "tasks" / "testtask" / "dimension").mkdir(parents=True)
-    (root / "policies" / "adjudication").mkdir(parents=True)
     (root / "prompts").mkdir(parents=True)
 
     for name in _PROMPT_NAMES:
         shutil.copy(f"configs/prompts/{name}", root / "prompts" / name)
-    shutil.copy(
-        "configs/policies/adjudication/engineering_eval_adjudication.yaml",
-        root / "policies" / "adjudication" / "adj.yaml",
-    )
+    shutil.copy("configs/adjudication.yaml", root / "adjudication.yaml")
 
     dim_dir = root / "tasks" / "testtask" / "dimension"
     _write_dim_yaml(dim_dir, "d1", ["D1-1"])
     _write_dim_yaml(dim_dir, "d2", ["D2-1"])
 
-    bundle_path = root / "bundle.yaml"
-    bundle_path.write_text(
-        """
-bundle_id: "default"
-active_task_id: "testtask"
-policies:
-  adjudication: "configs/policies/adjudication/adj.yaml"
-prompts:
-  select: "configs/prompts/select.yaml"
-  extraction: "configs/prompts/extraction.yaml"
-  scoring: "configs/prompts/rater_scoring.yaml"
-  adjudication: "configs/prompts/adjudication.yaml"
-  feedback: "configs/prompts/feedback.yaml"
-""",
-        encoding="utf-8",
-    )
     return root
 
 
@@ -87,35 +66,15 @@ def configs_root_multi(tmp_path: Path) -> Path:
     （d1_1/d1_2/d1_3）——用于练到二级指标级并发（单个二级指标不足以触发并发）。"""
     root = tmp_path / "configs"
     (root / "tasks" / "testtask" / "dimension").mkdir(parents=True)
-    (root / "policies" / "adjudication").mkdir(parents=True)
     (root / "prompts").mkdir(parents=True)
 
     for name in _PROMPT_NAMES:
         shutil.copy(f"configs/prompts/{name}", root / "prompts" / name)
-    shutil.copy(
-        "configs/policies/adjudication/engineering_eval_adjudication.yaml",
-        root / "policies" / "adjudication" / "adj.yaml",
-    )
+    shutil.copy("configs/adjudication.yaml", root / "adjudication.yaml")
 
     dim_dir = root / "tasks" / "testtask" / "dimension"
     _write_dim_yaml(dim_dir, "d1", ["D1-1", "D1-2", "D1-3"])
 
-    bundle_path = root / "bundle.yaml"
-    bundle_path.write_text(
-        """
-bundle_id: "default"
-active_task_id: "testtask"
-policies:
-  adjudication: "configs/policies/adjudication/adj.yaml"
-prompts:
-  select: "configs/prompts/select.yaml"
-  extraction: "configs/prompts/extraction.yaml"
-  scoring: "configs/prompts/rater_scoring.yaml"
-  adjudication: "configs/prompts/adjudication.yaml"
-  feedback: "configs/prompts/feedback.yaml"
-""",
-        encoding="utf-8",
-    )
     return root
 
 
@@ -206,9 +165,8 @@ def _engine(
     providers: Dict[str, BaseProvider] = dict(rater_providers or _consensus_rater_providers())
     providers["feedback"] = FakeProvider([_text_response("反馈")] * 4)
     providers.update(extra_providers or {})
-    return Engine.from_bundle(
-        configs_root / "bundle.yaml",
-        configs_root=configs_root,
+    return Engine.from_configs(
+        configs_root, "testtask",
         providers=providers,
         output_dir=output_dir or (configs_root.parent / "artifacts"),
     )
@@ -314,9 +272,8 @@ def test_disagreement_scenario_triggers_adjudication_end_to_end(configs_root: Pa
 
 def test_missing_required_provider_raises_at_construction(configs_root: Path) -> None:
     with pytest.raises(EngineConfigError, match="rater_2"):
-        Engine.from_bundle(
-            configs_root / "bundle.yaml",
-            configs_root=configs_root,
+        Engine.from_configs(
+            configs_root, "testtask",
             providers={"rater_1": FakeProvider([]), "feedback": FakeProvider([])},
         )
 
@@ -443,9 +400,8 @@ providers:
     )
 
     with pytest.raises(EngineConfigError, match="api_key_env"):
-        Engine.from_bundle(
-            configs_root / "bundle.yaml",
-            configs_root=configs_root,
+        Engine.from_configs(
+            configs_root, "testtask",
             model_config_path=model_config_path,
         )
 
@@ -470,9 +426,8 @@ providers:
     )
 
     with pytest.raises(EngineConfigError, match="K1"):
-        Engine.from_bundle(
-            configs_root / "bundle.yaml",
-            configs_root=configs_root,
+        Engine.from_configs(
+            configs_root, "testtask",
             model_config_path=model_config_path,
         )
 
@@ -489,9 +444,8 @@ def test_concurrent_result_matches_sequential(configs_root_multi: Path, tmp_path
             "rater_2": _StageAwareProvider(score=3, name="r2"),
             "feedback": FakeProvider([_text_response("反馈")] * 3),
         }
-        engine = Engine.from_bundle(
-            configs_root_multi / "bundle.yaml",
-            configs_root=configs_root_multi,
+        engine = Engine.from_configs(
+            configs_root_multi, "testtask",
             providers=providers,
             model_config_path=_model_config_with_max_workers(tmp_path, max_workers),
             output_dir=tmp_path / f"artifacts_{max_workers}",
@@ -539,9 +493,8 @@ def test_concurrency_runs_secondary_dims_in_parallel_not_serially(configs_root_m
         "rater_2": _SlowProvider(0.05),
         "feedback": FakeProvider([_text_response("反馈")] * 3),
     }
-    engine = Engine.from_bundle(
-        configs_root_multi / "bundle.yaml",
-        configs_root=configs_root_multi,
+    engine = Engine.from_configs(
+        configs_root_multi, "testtask",
         providers=providers,
         model_config_path=_model_config_with_max_workers(tmp_path, 3),
         output_dir=tmp_path / "artifacts",
@@ -565,9 +518,8 @@ def test_single_dimension_failure_is_isolated(configs_root_multi: Path, tmp_path
         "feedback": FakeProvider([_text_response("反馈")] * 2),
     }
     output_dir = tmp_path / "artifacts"
-    engine = Engine.from_bundle(
-        configs_root_multi / "bundle.yaml",
-        configs_root=configs_root_multi,
+    engine = Engine.from_configs(
+        configs_root_multi, "testtask",
         providers=providers,
         model_config_path=_model_config_with_max_workers(tmp_path, 3),
         output_dir=output_dir,
@@ -606,9 +558,8 @@ def test_all_dimensions_failing_records_errors_without_masking_them(
         "feedback": FakeProvider([]),
     }
     output_dir = tmp_path / "artifacts"
-    engine = Engine.from_bundle(
-        configs_root_multi / "bundle.yaml",
-        configs_root=configs_root_multi,
+    engine = Engine.from_configs(
+        configs_root_multi, "testtask",
         providers=providers,
         model_config_path=_model_config_with_max_workers(tmp_path, 3),
         output_dir=output_dir,
@@ -641,9 +592,8 @@ def test_one_primary_dimension_failing_does_not_kill_the_others(
         "rater_2": _StageAwareProvider(score=3, name="r2"),
         "feedback": FakeProvider([_text_response("反馈")] * 4),
     }
-    engine = Engine.from_bundle(
-        configs_root / "bundle.yaml",
-        configs_root=configs_root,
+    engine = Engine.from_configs(
+        configs_root, "testtask",
         providers=providers,
         output_dir=tmp_path / "artifacts",
     )

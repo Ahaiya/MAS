@@ -43,7 +43,7 @@ def _templates():
     return (
         loader.load("configs/prompts/select.yaml"),
         loader.load("configs/prompts/extraction.yaml"),
-        loader.load("configs/prompts/rater_scoring.yaml"),
+        loader.load("configs/prompts/scoring.yaml"),
     )
 
 

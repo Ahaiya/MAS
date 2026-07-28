@@ -1,100 +1,47 @@
 """
 裁决触发判断：双链分数比较，纯计算无 LLM。
 
-只有两类规则：score_distance（任一二级指标分差超阈值）与 adjacent_drift（多个
-二级指标同向相邻漂移）。阈值、维度列表、分数值全部从 adjudication policy 配置读，
-此处不硬编码业务值。
+两条规则，阈值全部来自 configs/adjudication.yaml：
 
-"""
+  1. 分差过大  —— 任意观测点上两位评委分差 > score_gap_threshold；
+  2. 同向漂移  —— 分差恰为 1 且方向一致的观测点数 ≥ drift_min_dimensions。
+
+"相邻"（差 1）与"同向"都是规则定义的一部分，写死在这里而不是配置里：差 ≥2 早被
+规则 1 单独触发，把"相邻"做成旋钮转到 2 以上永远无效；而"方向一致"正是"系统性
+漂移"区别于"零散分歧"的地方，改成 false 它就退化成规则 1 的重复。"""
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Tuple
+from typing import Dict, List
 
 from src.contracts.artifact_bundle import PolicySnapshot
 from src.contracts.scoring import RaterChainResult
 
-
-def _compare(operator: str, threshold: int, actual: int) -> bool:
-    """评估来自 config 的比较运算符。"""
-    if operator == ">":
-        return actual > threshold
-    if operator == ">=":
-        return actual >= threshold
-    if operator == "<":
-        return actual < threshold
-    if operator == "<=":
-        return actual <= threshold
-    if operator == "==":
-        return actual == threshold
-    if operator == "!=":
-        return actual != threshold
-    raise ValueError(f"Unknown operator: {operator}")
+# 规则 2 只看"相邻"分歧：分差恰为此值的观测点才计入同向漂移的统计。
+_ADJACENT_GAP = 1
 
 
-def _dimension_matches(dim_id: str, applies_to: List[str], exclusions: List[str]) -> bool:
-    """检查某个维度是否适用于触发器。"""
-    if dim_id in exclusions:
-        return False
-    if "*" in applies_to:
-        return True
-    return dim_id in applies_to
-
-
-def _score_distance_triggered_dims(
-    scores_a: Dict[str, int], scores_b: Dict[str, int], trigger: Dict[str, Any]
+def _drift_triggered_dims(
+    scores_a: Dict[str, int], scores_b: Dict[str, int], min_dimensions: int
 ) -> set[str]:
-    """任一二级指标分差满足 trigger 阈值条件时触发。"""
-    operator = trigger.get("threshold", {}).get("operator", ">")
-    threshold_value = int(trigger.get("threshold", {}).get("value", 1))
-    applies_to = trigger.get("applies_to_dimensions", ["*"])
-    exclusions = trigger.get("exclusions", [])
+    """分差恰为 1 且同向的观测点数达标时，返回这些观测点；否则空集。
 
-    triggered: set[str] = set()
-    for dim_id in sorted(set(scores_a) & set(scores_b)):
-        if not _dimension_matches(dim_id, applies_to, exclusions):
-            continue
-        diff = abs(scores_a[dim_id] - scores_b[dim_id])
-        if _compare(operator, threshold_value, diff):
-            triggered.add(dim_id)
-    return triggered
-
-
-def _adjacent_drift_triggered_dims(
-    scores_a: Dict[str, int], scores_b: Dict[str, int], trigger: Dict[str, Any]
-) -> set[str]:
-    """≥min_matching_dimensions 个二级指标同向相邻漂移时触发。"""
-    pattern = trigger.get("pattern", {})
-    score_gap = int(pattern.get("score_gap", 1))
-    min_matching_dimensions = int(pattern.get("min_matching_dimensions", 2))
-    require_same_direction = bool(pattern.get("require_same_direction", False))
-    applies_to = trigger.get("applies_to_dimensions", ["*"])
-    exclusions = trigger.get("exclusions", [])
-
-    if min_matching_dimensions <= 0 or score_gap <= 0:
+    两个方向分别统计——一边偏高 2 个、另一边偏低 2 个，不构成"整体错位"。"""
+    if min_dimensions <= 0:
         return set()
 
-    matches: List[Tuple[str, int]] = []
+    by_direction: Dict[int, set[str]] = {-1: set(), 1: set()}
     for dim_id in sorted(set(scores_a) & set(scores_b)):
-        if not _dimension_matches(dim_id, applies_to, exclusions):
-            continue
         signed_diff = scores_b[dim_id] - scores_a[dim_id]
-        if abs(signed_diff) == score_gap:
-            matches.append((dim_id, signed_diff))
+        if abs(signed_diff) == _ADJACENT_GAP:
+            by_direction[1 if signed_diff > 0 else -1].add(dim_id)
 
-    if require_same_direction:
-        by_sign: Dict[int, List[str]] = {-1: [], 1: []}
-        for dim_id, signed_diff in matches:
-            by_sign[1 if signed_diff > 0 else -1].append(dim_id)
-        triggered: set[str] = set()
-        for dims in by_sign.values():
-            if len(dims) >= min_matching_dimensions:
-                triggered.update(dims)
-        return triggered
-
-    if len(matches) >= min_matching_dimensions:
-        return {dim_id for dim_id, _ in matches}
-    return set()
+    return {
+        dim_id
+        for dims in by_direction.values()
+        if len(dims) >= min_dimensions
+        for dim_id in dims
+    }
 
 
 def needs_adjudication(
@@ -102,26 +49,21 @@ def needs_adjudication(
     chains_b: List[RaterChainResult],
     policy: PolicySnapshot,
 ) -> set[str]:
-    """纯函数：比较两条 Rater 链的分数，返回需要 Rater3 仲裁的 dimension_id 集合。
-
-        阈值来自 ``policy.adjudication_policy["triggers"]`` 里的 score_distance
-        与 adjacent_drift 两类触发器，此处不硬编码。
+    """纯函数：比较两条 Rater 链的分数，返回需要 Rater3 仲裁的观测点集合。
 
         Args:
-            chains_a: rater_1（或任一方）在各二级指标上的 RaterChainResult。
-            chains_b: rater_2（另一方）在各二级指标上的 RaterChainResult。
-            policy  : 带有 adjudication_policy 的 PolicySnapshot。
+            chains_a: rater_1（或任一方）在各观测点上的 RaterChainResult。
+            chains_b: rater_2（另一方）在各观测点上的 RaterChainResult。
+            policy  : 带两个触发阈值的 PolicySnapshot。
 
         Returns:
-            触发仲裁的 dimension_id 集合；未触发的维度视为一致（consensus）。"""
+            触发仲裁的观测点标识符集合；未触发的视为一致（consensus）。"""
     scores_a = {c.dimension_id: c.score.score.canonical_score for c in chains_a}
     scores_b = {c.dimension_id: c.score.score.canonical_score for c in chains_b}
 
-    triggered: set[str] = set()
-    for trigger in policy.adjudication_policy.get("triggers", []):
-        trigger_type = trigger.get("type", "")
-        if trigger_type == "score_distance":
-            triggered |= _score_distance_triggered_dims(scores_a, scores_b, trigger)
-        elif trigger_type == "adjacent_drift":
-            triggered |= _adjacent_drift_triggered_dims(scores_a, scores_b, trigger)
-    return triggered
+    gap_triggered = {
+        dim_id
+        for dim_id in set(scores_a) & set(scores_b)
+        if abs(scores_a[dim_id] - scores_b[dim_id]) > policy.score_gap_threshold
+    }
+    return gap_triggered | _drift_triggered_dims(scores_a, scores_b, policy.drift_min_dimensions)

@@ -1,7 +1,7 @@
 """`scripts/cli.py` 的行为测试。
 
 CLI 的职责只有两件：把命令行参数正确翻译成 Engine 调用，把结果打印出来。测试
-因此只断言这两件事——参数怎么传进去（monkeypatch `Engine.from_bundle`，不碰真
+因此只断言这两件事——参数怎么传进去（monkeypatch `Engine.from_configs`，不碰真
 provider/真 LLM），以及结果怎么印出来（`_render_summary` 纯函数直测）。
 
 `config validate` 不需要任何 provider/密钥，直接对真实的最小 configs 树端到端跑。
@@ -25,20 +25,13 @@ _PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 runner = CliRunner()
 
-_PROMPT_NAMES = [
-    "select.yaml",
-    "extraction.yaml",
-    "rater_scoring.yaml",
-    "adjudication.yaml",
-    "feedback.yaml",
-]
+_PROMPT_NAMES = [f"{stage}.yaml" for stage in cli.PROMPT_STAGES]
 
 _DIM_YAML = """
 dim_id: "{dim_id}"
 dim_name: "test {dim_id}"
 indicator_description: "desc"
 scale:
-  type: ordinal
   min: 1
   max: 5
   levels: {{1: bad, 5: good}}
@@ -46,17 +39,9 @@ dimensions:
   - {{code: "{code}", name: "sub {code}", anchors: {{1: low, 5: high}}}}
 """
 
-_BUNDLE_YAML = """
-bundle_id: "default"
-active_task_id: "testtask"
-policies:
-  adjudication: "configs/policies/adjudication/adj.yaml"
-prompts:
-  select: "configs/prompts/select.yaml"
-  extraction: "configs/prompts/extraction.yaml"
-  scoring: "configs/prompts/rater_scoring.yaml"
-  adjudication: "configs/prompts/adjudication.yaml"
-  feedback: "configs/prompts/feedback.yaml"
+_ADJUDICATION_YAML = """
+score_gap_threshold: 1
+drift_min_dimensions: 2
 """
 
 
@@ -72,20 +57,15 @@ runtime:
 
 @pytest.fixture
 def configs_root(tmp_path: Path) -> Path:
-    """最小 v2 configs 树：一个任务 testtask，两个一级指标 d1/d2，复用仓库真实
-    的 prompt yaml 与 adjudication policy。"""
+    """最小 configs 树：一个任务 testtask，两个一级指标 d1/d2，复用仓库真实的
+    prompt yaml；路径全部按约定固定，没有 bundle 文件。"""
     root = tmp_path / "configs"
     (root / "tasks" / "testtask" / "dimension").mkdir(parents=True)
-    (root / "policies" / "adjudication").mkdir(parents=True)
     (root / "prompts").mkdir(parents=True)
 
     for name in _PROMPT_NAMES:
         shutil.copy(_PROJECT_ROOT / "configs" / "prompts" / name, root / "prompts" / name)
-    shutil.copy(
-        _PROJECT_ROOT / "configs" / "policies" / "adjudication"
-        / "engineering_eval_adjudication.yaml",
-        root / "policies" / "adjudication" / "adj.yaml",
-    )
+    (root / "adjudication.yaml").write_text(_ADJUDICATION_YAML, encoding="utf-8")
 
     dim_dir = root / "tasks" / "testtask" / "dimension"
     for dim_id, code in (("d1", "D1-1"), ("d2", "D2-1")):
@@ -93,7 +73,6 @@ def configs_root(tmp_path: Path) -> Path:
             _DIM_YAML.format(dim_id=dim_id, code=code), encoding="utf-8"
         )
 
-    (root / "bundle.yaml").write_text(_BUNDLE_YAML, encoding="utf-8")
     (root / "model_config.yaml").write_text(_MODEL_CONFIG_OK, encoding="utf-8")
     return root
 
@@ -105,12 +84,15 @@ def sample_file(tmp_path: Path) -> Path:
     return path
 
 
-def _run_eval(input_file: Path, bundle: Path, *extra: str) -> Any:
-    return runner.invoke(cli.app, ["eval", str(input_file), "--bundle", str(bundle), *extra])
+def _run_eval(input_file: Path, configs: Path, *extra: str, task: str = "testtask") -> Any:
+    return runner.invoke(
+        cli.app,
+        ["eval", str(input_file), "--configs", str(configs), "--task", task, *extra],
+    )
 
 
-def _run_validate(bundle: Path) -> Any:
-    return runner.invoke(cli.app, ["config", "validate", "--bundle", str(bundle)])
+def _run_validate(configs: Path, task: str = "testtask") -> Any:
+    return runner.invoke(cli.app, ["config", "validate", "--configs", str(configs), "--task", task])
 
 
 # ── eval：参数如何翻译成 Engine 调用 ──────────────────────────────────────────
@@ -151,7 +133,7 @@ def _evaluation(
         rater_chains_report={},
         run_trace=RunTraceSummary(
             run_id="run-1",
-            bundle_ref="configs/bundle.yaml",
+            configs_ref="configs",
             dim=dim_id,
             total_tokens=1234,
             total_ms=5678.0,
@@ -170,7 +152,7 @@ def _evaluation_all_failed(dim_id: str) -> DimensionEvaluation:
         rater_chains_report={"chains": [], "final_decisions": []},
         run_trace=RunTraceSummary(
             run_id="run-2",
-            bundle_ref="configs/bundle.yaml",
+            configs_ref="configs",
             dim=dim_id,
             total_tokens=0,
             total_ms=0.0,
@@ -183,15 +165,15 @@ def _evaluation_all_failed(dim_id: str) -> DimensionEvaluation:
 
 @pytest.fixture
 def recorded(monkeypatch: pytest.MonkeyPatch) -> Dict[str, Any]:
-    """把 Engine.from_bundle 换成记录器，返回 {"kwargs": ..., "engine": ...}。"""
-    box: Dict[str, Any] = {"kwargs": None, "bundle_path": None, "engine": _RecordingEngine()}
+    """把 Engine.from_configs 换成记录器，返回 {"args": ..., "kwargs": ..., "engine": ...}。"""
+    box: Dict[str, Any] = {"kwargs": None, "args": None, "engine": _RecordingEngine()}
 
-    def _fake_from_bundle(bundle_path: Any, **kwargs: Any) -> _RecordingEngine:
-        box["bundle_path"] = bundle_path
+    def _fake_from_configs(*args: Any, **kwargs: Any) -> _RecordingEngine:
+        box["args"] = args
         box["kwargs"] = kwargs
         return box["engine"]
 
-    monkeypatch.setattr(cli.Engine, "from_bundle", _fake_from_bundle)
+    monkeypatch.setattr(cli.Engine, "from_configs", _fake_from_configs)
     return box
 
 
@@ -199,7 +181,7 @@ def test_eval_builds_package_from_input_file(
     configs_root: Path, sample_file: Path, tmp_path: Path, recorded: Dict[str, Any]
 ) -> None:
     """位置参数 INPUT_FILE 被切分成 DataPackage，sample 名取文件名（不含后缀）。"""
-    result = _run_eval(sample_file, configs_root / "bundle.yaml", "--dim", "d1")
+    result = _run_eval(sample_file, configs_root, "--dim", "d1")
 
     assert result.exit_code == 0, result.output
     package, dim = recorded["engine"].evaluate_calls[0]
@@ -212,35 +194,66 @@ def test_eval_without_dim_evaluates_all_primary_dimensions(
     configs_root: Path, sample_file: Path, recorded: Dict[str, Any]
 ) -> None:
     """不传 --dim 时传 None 给 engine——由 engine 自己发现当前任务全部一级指标。"""
-    result = _run_eval(sample_file, configs_root / "bundle.yaml")
+    result = _run_eval(sample_file, configs_root)
 
     assert result.exit_code == 0, result.output
     _package, dim = recorded["engine"].evaluate_calls[0]
     assert dim is None
 
 
-def test_eval_passes_bundle_configs_root_and_output_dir(
+def test_eval_passes_configs_root_task_and_output_dir(
     configs_root: Path, sample_file: Path, tmp_path: Path, recorded: Dict[str, Any]
 ) -> None:
-    """configs_root 由 bundle 路径的父目录推出；output_dir 原样透传；不传
-    model_config_path——固定读 configs_root/model_config.yaml 是 Engine 的默认行为。"""
+    """configs_root 与 task_id 是 from_configs 的两个位置参数；output_dir 原样透传；
+    不传 model_config_path——固定读 configs_root/model_config.yaml 是 Engine 的默认行为。"""
     out = tmp_path / "out"
-    result = _run_eval(sample_file, configs_root / "bundle.yaml", "--output-dir", str(out))
+    result = _run_eval(sample_file, configs_root, "--output-dir", str(out))
 
     assert result.exit_code == 0, result.output
-    assert Path(recorded["bundle_path"]) == configs_root / "bundle.yaml"
-    assert Path(recorded["kwargs"]["configs_root"]) == configs_root
+    configs_arg, task_arg = recorded["args"]
+    assert Path(configs_arg) == configs_root
+    assert task_arg == "testtask"
     assert Path(recorded["kwargs"]["output_dir"]) == out
     assert "model_config_path" not in recorded["kwargs"]
 
 
-def test_eval_uses_default_bundle_when_not_given(
+def test_eval_uses_default_configs_root_when_not_given(
     sample_file: Path, recorded: Dict[str, Any]
 ) -> None:
-    result = runner.invoke(cli.app, ["eval", str(sample_file)])  # 不给 --bundle
+    """不给 --configs 时用仓库默认的 configs/；--task 仍必须显式给。"""
+    result = runner.invoke(cli.app, ["eval", str(sample_file), "--task", "experiment"])
 
     assert result.exit_code == 0, result.output
-    assert Path(recorded["bundle_path"]) == _PROJECT_ROOT / "configs" / "bundle.yaml"
+    configs_arg, task_arg = recorded["args"]
+    assert Path(configs_arg) == _PROJECT_ROOT / "configs"
+    assert task_arg == "experiment"
+
+
+# ── eval：--task 必须显式指定 ─────────────────────────────────────────────────
+
+
+def test_eval_requires_task_and_lists_available_ones(
+    configs_root: Path, sample_file: Path, recorded: Dict[str, Any]
+) -> None:
+    """漏传 --task 时报错退出，并把可选任务列出来——不许有默认任务静默评错。"""
+    result = runner.invoke(cli.app, ["eval", str(sample_file), "--configs", str(configs_root)])
+
+    assert result.exit_code == 1
+    assert "--task" in result.output
+    assert "testtask" in result.output
+    assert recorded["engine"].evaluate_calls == []
+
+
+def test_eval_rejects_unknown_task(
+    configs_root: Path, sample_file: Path, recorded: Dict[str, Any]
+) -> None:
+    """指定了不存在的任务同样报错退出，并列出可选任务。"""
+    result = _run_eval(sample_file, configs_root, task="nosuchtask")
+
+    assert result.exit_code == 1
+    assert "nosuchtask" in result.output
+    assert "testtask" in result.output
+    assert recorded["engine"].evaluate_calls == []
 
 
 # ── eval：输入校验（系统边界） ────────────────────────────────────────────────
@@ -249,7 +262,7 @@ def test_eval_uses_default_bundle_when_not_given(
 def test_eval_rejects_missing_input_file(
     configs_root: Path, tmp_path: Path, recorded: Dict[str, Any]
 ) -> None:
-    result = _run_eval(tmp_path / "nope.md", configs_root / "bundle.yaml")
+    result = _run_eval(tmp_path / "nope.md", configs_root)
 
     assert result.exit_code == 1
     assert "nope.md" in result.output
@@ -262,7 +275,7 @@ def test_eval_rejects_unsupported_extension(
     bad = tmp_path / "sample.pdf"
     bad.write_text("x", encoding="utf-8")
 
-    result = _run_eval(bad, configs_root / "bundle.yaml")
+    result = _run_eval(bad, configs_root)
 
     assert result.exit_code == 1
     assert ".pdf" in result.output
@@ -276,7 +289,7 @@ def test_eval_reports_dropped_units_instead_of_dropping_them_silently(
     big = tmp_path / "big.md"
     big.write_text("这是一个很长的句子用来撑满上下文预算。" * 4000, encoding="utf-8")
 
-    result = _run_eval(big, configs_root / "bundle.yaml")
+    result = _run_eval(big, configs_root)
 
     assert result.exit_code == 0, result.output
     assert "丢弃" in result.output
@@ -288,34 +301,34 @@ def test_eval_reports_dropped_units_instead_of_dropping_them_silently(
         cli.EngineConfigError("model_config 缺少 raters.rater_2"),
         cli.ConfigCompileError("Dimension rubric file not found: .../zz9_rubric.yaml"),
         FileNotFoundError("configs/nope.yaml"),
-        KeyError("active_task_id"),
+        KeyError("providers"),
     ],
 )
 def test_eval_reports_user_fixable_errors_as_one_line(
     configs_root: Path, sample_file: Path, monkeypatch: pytest.MonkeyPatch, exc: Exception
 ) -> None:
-    """配置写错（bundle 少字段、--dim 拼错、引用文件缺失）都是用户能自己修的，
+    """配置写错（yaml 少字段、--dim 拼错、引用文件缺失）都是用户能自己修的，
     印一行人话即可，不甩一屏 traceback。"""
 
     def _boom(*_args: Any, **_kwargs: Any) -> None:
         raise exc
 
-    monkeypatch.setattr(cli.Engine, "from_bundle", _boom)
+    monkeypatch.setattr(cli.Engine, "from_configs", _boom)
 
-    result = _run_eval(sample_file, configs_root / "bundle.yaml")
+    result = _run_eval(sample_file, configs_root)
 
     assert result.exit_code == 1
     assert type(exc).__name__ in result.output
     assert "Traceback" not in result.output
 
 
-def test_eval_rejects_missing_bundle(
+def test_eval_rejects_missing_configs_root(
     sample_file: Path, tmp_path: Path, recorded: Dict[str, Any]
 ) -> None:
-    result = _run_eval(sample_file, tmp_path / "nope.yaml")
+    result = _run_eval(sample_file, tmp_path / "nope")
 
     assert result.exit_code == 1
-    assert "nope.yaml" in result.output
+    assert "nope" in result.output
     assert recorded["engine"].evaluate_calls == []
 
 
@@ -329,9 +342,9 @@ def test_eval_exits_nonzero_when_nothing_scored(
         def evaluate(self, _package: Any, dim: Optional[str] = None) -> Dict[str, Any]:
             return {"d1": _evaluation_all_failed("d1")}
 
-    monkeypatch.setattr(cli.Engine, "from_bundle", lambda *a, **k: _AllFailedEngine())
+    monkeypatch.setattr(cli.Engine, "from_configs", lambda *a, **k: _AllFailedEngine())
 
-    result = _run_eval(sample_file, configs_root / "bundle.yaml")
+    result = _run_eval(sample_file, configs_root)
 
     assert result.exit_code == 1
     assert "全部二级指标评价失败" in result.output
@@ -364,25 +377,36 @@ def test_render_summary_surfaces_failed_dimensions() -> None:
 # ── config validate ───────────────────────────────────────────────────────────
 
 
-def test_config_validate_passes_on_valid_bundle(configs_root: Path) -> None:
-    result = _run_validate(configs_root / "bundle.yaml")
+def test_config_validate_passes_on_valid_configs(configs_root: Path) -> None:
+    result = _run_validate(configs_root)
 
     assert result.exit_code == 0, result.output
     assert "testtask" in result.output
     assert "d1" in result.output and "d2" in result.output
+    assert "PASS: 配置校验通过。" in result.output
 
 
-def test_config_validate_fails_when_bundle_missing(tmp_path: Path) -> None:
-    result = _run_validate(tmp_path / "nope.yaml")
+def test_config_validate_fails_when_configs_root_missing(tmp_path: Path) -> None:
+    result = _run_validate(tmp_path / "nope")
 
     assert result.exit_code == 1
-    assert "nope.yaml" in result.output
+    assert "nope" in result.output
+
+
+def test_config_validate_fails_when_adjudication_policy_missing(configs_root: Path) -> None:
+    """仲裁策略按约定固定在 {configs}/adjudication.yaml，缺了要报出来。"""
+    (configs_root / "adjudication.yaml").unlink()
+
+    result = _run_validate(configs_root)
+
+    assert result.exit_code == 1
+    assert "adjudication.yaml" in result.output
 
 
 def test_config_validate_fails_when_prompt_reference_is_broken(configs_root: Path) -> None:
     (configs_root / "prompts" / "select.yaml").unlink()
 
-    result = _run_validate(configs_root / "bundle.yaml")
+    result = _run_validate(configs_root)
 
     assert result.exit_code == 1
     assert "select.yaml" in result.output
@@ -392,7 +416,7 @@ def test_config_validate_fails_when_task_has_no_rubrics(configs_root: Path) -> N
     for path in (configs_root / "tasks" / "testtask" / "dimension").glob("*_rubric.yaml"):
         path.unlink()
 
-    result = _run_validate(configs_root / "bundle.yaml")
+    result = _run_validate(configs_root)
 
     assert result.exit_code == 1
     assert "testtask" in result.output
@@ -407,7 +431,7 @@ def test_config_validate_also_checks_model_config(configs_root: Path) -> None:
     一并校验它——否则漏填 model 要等到真跑评价才炸。"""
     (configs_root / "model_config.yaml").write_text(_MODEL_CONFIG_OK, encoding="utf-8")
 
-    result = _run_validate(configs_root / "bundle.yaml")
+    result = _run_validate(configs_root)
 
     assert result.exit_code == 0, result.output
     assert "rater_1" in result.output and "feedback" in result.output
@@ -418,7 +442,7 @@ def test_config_validate_fails_when_model_config_missing_required_field(configs_
         _MODEL_CONFIG_OK.replace('rater_2: {model: "m", ', "rater_2: {"), encoding="utf-8"
     )
 
-    result = _run_validate(configs_root / "bundle.yaml")
+    result = _run_validate(configs_root)
 
     assert result.exit_code == 1
     assert "model" in result.output and "rater_2" in result.output
@@ -428,7 +452,7 @@ def test_config_validate_fails_when_model_config_missing_required_provider(confi
     lines = [ln for ln in _MODEL_CONFIG_OK.splitlines() if "rater_2:" not in ln]
     (configs_root / "model_config.yaml").write_text("\n".join(lines), encoding="utf-8")
 
-    result = _run_validate(configs_root / "bundle.yaml")
+    result = _run_validate(configs_root)
 
     assert result.exit_code == 1
     assert "rater_2" in result.output
@@ -442,16 +466,16 @@ def test_config_validate_does_not_need_any_api_key(
         monkeypatch.delenv(var, raising=False)
     (configs_root / "model_config.yaml").write_text(_MODEL_CONFIG_OK, encoding="utf-8")
 
-    result = _run_validate(configs_root / "bundle.yaml")
+    result = _run_validate(configs_root)
 
     assert result.exit_code == 0, result.output
 
 
 def test_config_validate_reports_missing_model_config(configs_root: Path) -> None:
-    """bundle 目录下没有 model_config.yaml 时要报出来，而不是默默跳过。"""
+    """configs 根目录下没有 model_config.yaml 时要报出来，而不是默默跳过。"""
     (configs_root / "model_config.yaml").unlink()
 
-    result = _run_validate(configs_root / "bundle.yaml")
+    result = _run_validate(configs_root)
 
     assert result.exit_code == 1
     assert "model_config" in result.output

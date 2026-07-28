@@ -30,19 +30,7 @@ def _rubric() -> RubricSnapshot:
 
 
 def _policy() -> PolicySnapshot:
-    return PolicySnapshot(
-        adjudication_policy={
-            "triggers": [
-                {"type": "score_distance", "applies_to_dimensions": ["*"], "threshold": {"operator": ">", "value": 1}},
-                {
-                    "type": "adjacent_drift",
-                    "applies_to_dimensions": ["*"],
-                    "pattern": {"score_gap": 1, "min_matching_dimensions": 2, "require_same_direction": True},
-                },
-            ]
-        },
-        policy_version="test",
-    )
+    return PolicySnapshot(score_gap_threshold=1, drift_min_dimensions=2)
 
 
 def _package() -> DataPackage:

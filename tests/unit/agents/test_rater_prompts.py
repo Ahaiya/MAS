@@ -63,7 +63,7 @@ def test_extraction_prompt_shows_full_text_of_selected_units_only() -> None:
 
 
 def test_scoring_prompt_shows_full_text_of_evidence_units_and_anchors() -> None:
-    template = PromptLoader().load("configs/prompts/rater_scoring.yaml")
+    template = PromptLoader().load("configs/prompts/scoring.yaml")
     prompt = build_rater_scoring_prompt(_package(), [1], _DIMENSION, template)
 
     assert _UNITS[1].text in prompt

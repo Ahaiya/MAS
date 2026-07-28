@@ -30,6 +30,3 @@ prompt_template: |
     "rationale": "简体中文评分理由"
   }
 
-metadata:
-  template_version: "v1"
-  compatible_dimensions: ["*"]

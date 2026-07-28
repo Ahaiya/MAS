@@ -1,8 +1,9 @@
 """
-配置加载：给定 task_id + dim_id，直接读那份 rubric yaml 建出 RubricSnapshot。
+配置加载：按约定路径读 configs/ 下的量规、提示词与仲裁策略。
 
-v2 的 `configs/bundle.yaml` 只声明 active_task_id + policies + prompts，engine 需要
-的也只是「列出某任务下所有一级指标」与「加载某个一级指标的量规」两件事，两者都直接读文件即可。
+没有 bundle 文件——路径全部由约定固定：仲裁策略在 `{root}/adjudication.yaml`，
+提示词在 `{root}/prompts/{stage}.yaml`，量规在
+`{root}/tasks/{task_id}/dimension/{dim_id}_rubric.yaml`。任务由调用现场传入。
 
 不包含 rubric 语义：trait 名称、分数值、adjudication 阈值、prompt 文本全部只经由
 加载的配置文件流入。"""
@@ -14,7 +15,10 @@ from typing import Any
 
 import yaml
 
-from src.contracts.artifact_bundle import RubricSnapshot
+from src.contracts.artifact_bundle import PolicySnapshot, RubricSnapshot
+
+# 提示词阶段名 = 文件名（`{configs_root}/prompts/{stage}.yaml`）。
+PROMPT_STAGES = ("select", "extraction", "scoring", "adjudication", "feedback")
 
 
 class ConfigCompileError(Exception):
@@ -43,7 +47,6 @@ def _build_rubric_snapshot(rubric_file_data: dict[str, Any]) -> RubricSnapshot:
 
     scale_min: int = int(scale_data.get("min", 1))
     scale_max: int = int(scale_data.get("max", 5))
-    scale_type: str = str(scale_data.get("type", "ordinal"))
     # YAML 可能将整数键解析为 int；归一化为 int
     scale_level_labels: dict[int, str] = {
         int(k): str(v) for k, v in (scale_data.get("levels") or {}).items()
@@ -52,7 +55,6 @@ def _build_rubric_snapshot(rubric_file_data: dict[str, Any]) -> RubricSnapshot:
     scale_id = f"ordinal_{scale_min}_{scale_max}"
     scale_entry: dict[str, Any] = {
         "scale_id": scale_id,
-        "type": scale_type,
         "min": scale_min,
         "max": scale_max,
     }
@@ -111,15 +113,32 @@ def _build_rubric_snapshot(rubric_file_data: dict[str, Any]) -> RubricSnapshot:
     )
 
 
-def strip_configs_prefix(path: str) -> str:
-    """bundle 里的引用写成 `configs/prompts/select.yaml`，而它们都相对 configs_root
-    解析——去掉这个前缀。
+def prompt_path(configs_root: Path | str, stage: str) -> Path:
+    """提示词按约定固定在 `{configs_root}/prompts/{stage}.yaml`——文件名即阶段名。"""
+    return Path(configs_root) / "prompts" / f"{stage}.yaml"
 
-    Engine 与 `scripts/cli.py` 的 `config validate` 必须用完全相同的方式解析 bundle
-    引用，否则会出现"校验通过但引擎跑不起来"，所以放在这里共用，而不是各自实现。"""
-    if path.startswith("configs/"):
-        return path[len("configs/"):]
-    return path
+
+def load_adjudication_policy(configs_root: Path | str) -> PolicySnapshot:
+    """读 `{configs_root}/adjudication.yaml` 建 PolicySnapshot。
+
+    两个阈值都必填、都必须是整数——缺失时静默用默认值，等于「以为按配置跑了、实际
+    没有」，而这在产物上完全看不出来。
+
+    Engine 与 `scripts/cli.py` 的 `config validate` 共用此函数，避免出现
+    "校验通过但引擎跑不起来"。"""
+    path = Path(configs_root) / "adjudication.yaml"
+    if not path.exists():
+        raise ConfigCompileError(f"仲裁策略文件不存在：{path}")
+    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+
+    values: dict[str, int] = {}
+    for key in ("score_gap_threshold", "drift_min_dimensions"):
+        raw = data.get(key)
+        if not isinstance(raw, int) or isinstance(raw, bool):
+            raise ConfigCompileError(f"{path} 的 '{key}' 缺失或不是整数：{raw!r}")
+        values[key] = raw
+
+    return PolicySnapshot(**values)
 
 
 def list_task_dimension_ids(configs_root: Path | str, task_id: str) -> list[str]:

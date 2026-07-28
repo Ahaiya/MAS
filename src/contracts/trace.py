@@ -73,7 +73,7 @@ class RunTraceSummary:
 
         属性：
             run_id: 此次评价运行的唯一标识符。
-            bundle_ref: 所用量规 bundle 的引用。
+            configs_ref: 所用配置根目录的引用。
             dim: 被评价的一级指标标识符。
             total_tokens: 全部阶段的 token 总数。
             total_ms: 全部阶段的耗时总和（毫秒）。
@@ -84,7 +84,7 @@ class RunTraceSummary:
                 该维度未产出 FinalDecision，其余维度不受影响照常产出。"""
 
     run_id: str
-    bundle_ref: str
+    configs_ref: str
     dim: str
     total_tokens: int
     total_ms: float
@@ -95,7 +95,7 @@ class RunTraceSummary:
     def to_dict(self) -> Dict[str, Any]:
         return {
             "run_id": self.run_id,
-            "bundle_ref": self.bundle_ref,
+            "configs_ref": self.configs_ref,
             "dim": self.dim,
             "total_tokens": self.total_tokens,
             "total_ms": self.total_ms,

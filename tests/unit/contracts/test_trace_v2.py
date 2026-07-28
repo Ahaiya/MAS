@@ -36,7 +36,7 @@ def test_stage_trace_allows_none_rater_for_non_rater_stages() -> None:
 def test_run_trace_summary_constructs_with_valid_fields() -> None:
     summary = RunTraceSummary(
         run_id="run-1",
-        bundle_ref="configs/bundle.yaml",
+        configs_ref="configs",
         dim="a4",
         total_tokens=4000,
         total_ms=8000.0,
@@ -52,7 +52,7 @@ def test_run_trace_summary_constructs_with_valid_fields() -> None:
 def test_run_trace_summary_is_immutable() -> None:
     summary = RunTraceSummary(
         run_id="run-1",
-        bundle_ref="configs/bundle.yaml",
+        configs_ref="configs",
         dim="a4",
         total_tokens=0,
         total_ms=0.0,

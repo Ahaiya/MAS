@@ -28,6 +28,3 @@ prompt_template: |
     "selected_unit_ids": [12, 13, 45]
   }
 
-metadata:
-  template_version: "v1"
-  compatible_dimensions: ["*"]
