@@ -3,25 +3,35 @@ requires = ["setuptools>=68.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "mas-rubric-evaluation"
+name = "mas"
 version = "0.0.1"
-description = "Multi-Agent System for rubric-based automated text evaluation and feedback"
+description = "MAS：双评委独立评分 + 分歧仲裁的量规化评价引擎，证据以单元编号锚定"
 readme = "README.md"
 requires-python = ">=3.11"
 license = {text = "MIT"}
 authors = [
-    {name = "Project Team"}
+    {name = "Wu Haitao"}
 ]
-keywords = ["multi-agent", "rubric", "evaluation", "LLM", "education"]
+keywords = [
+    "rubric",
+    "assessment",
+    "llm-as-a-judge",
+    "multi-agent",
+    "education",
+    "chinese",
+]
 classifiers = [
     "Development Status :: 3 - Alpha",
-    "Intended Audience :: Developers",
     "Intended Audience :: Education",
+    "Topic :: Education :: Testing",
+    "Topic :: Text Processing :: Linguistic",
     "License :: OSI Approved :: MIT License",
+    "Natural Language :: Chinese (Simplified)",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Private :: Do Not Upload",
 ]
 
 dependencies = [
@@ -53,6 +63,8 @@ target-version = ["py311", "py312", "py313"]
 [tool.ruff]
 line-length = 100
 target-version = "py311"
+
+[tool.ruff.lint]
 select = [
     "E",   # pycodestyle errors
     "W",   # pycodestyle warnings
@@ -64,7 +76,7 @@ select = [
 ]
 ignore = []
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]
 # CLI 文件头必须先自注入 sys.path 才能 import src.*——这是 `python scripts/cli.py`
 # 免安装直接跑的代价，E402 在这里是有意为之。

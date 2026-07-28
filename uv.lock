@@ -558,7 +558,7 @@ wheels = [
 ]
 
 [[package]]
-name = "mas-rubric-evaluation"
+name = "mas"
 version = "0.0.1"
 source = { editable = "." }
 dependencies = [
