@@ -54,8 +54,8 @@ def select(
     provider: BaseProvider,
     template: PromptTemplate,
     rater_id: str,
+    indicator_description: str,
     preview_bytes: int = DEFAULT_SELECT_PREVIEW_BYTES,
-    indicator_description: str = "",
 ) -> List[int]:
     """看「unit_id + 每段前若干字节」选出与该观测点相关的unit_id（粗筛）。
 
@@ -88,7 +88,7 @@ def extract(
     provider: BaseProvider,
     template: PromptTemplate,
     rater_id: str,
-    indicator_description: str = "",
+    indicator_description: str,
 ) -> List[int]:
     """选中unit 全文 → 证据，返回其中真正构成证据的unit_id。
 

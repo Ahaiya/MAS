@@ -200,12 +200,14 @@ class Engine:
         selected, t1 = call_with_trace(
             "select", rater_id, provider,
             rater.select, package, dimension, provider, self._templates["select"], rater_id,
+            rubric.indicator_description,
         )
         traces.append(t1)
 
         evidence, t2 = call_with_trace(
             "extract", rater_id, provider,
             rater.extract, package, selected, dimension, provider, self._templates["extraction"], rater_id,
+            rubric.indicator_description,
         )
         traces.append(t2)
 

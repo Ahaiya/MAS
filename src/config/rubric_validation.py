@@ -13,7 +13,7 @@
 from __future__ import annotations
 
 import math
-from typing import Any, Dict, List
+from typing import Any, Dict, List, NoReturn
 
 from src.config.errors import ConfigCompileError
 
@@ -24,7 +24,7 @@ _REQUIRED_TOP_LEVEL = ("dim_id", "dim_name", "indicator_description")
 _REQUIRED_OBSERVATION_POINT = ("code", "name", "weight", "anchors")
 
 
-def _fail(source: str, message: str) -> None:
+def _fail(source: str, message: str) -> NoReturn:
     raise ConfigCompileError(f"{source}: {message}")
 
 

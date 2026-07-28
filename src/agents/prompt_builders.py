@@ -18,15 +18,16 @@ from src.providers.prompt_loader import PromptTemplate, render_template
 
 
 def _level_anchor_text(level: Dict[str, Any]) -> str:
-    """优先使用完整的 descriptor 文本，而非粗略的 scale 标签。"""
+    """锚点正文。
+
+    不回落到 summary：档位标签已由 `_level_label` 单独拼在档位号后面，再回落一次会
+    渲染出 `4（优秀）：优秀` 这种废话。锚点全档非空由量规校验保证，这里不重复兜底。"""
     descriptors = [
         str(item).strip()
         for item in (level.get("descriptors") or [])
         if str(item).strip()
     ]
-    if descriptors:
-        return "\n".join(descriptors)
-    return str(level.get("summary", "")).strip()
+    return "\n".join(descriptors)
 
 
 def _level_label(level: Dict[str, Any]) -> str:
@@ -81,8 +82,8 @@ def build_rater_select_prompt(
     package: DataPackage,
     dimension: Dict[str, Any],
     template: PromptTemplate,
+    indicator_description: str,
     preview_bytes: int = 200,
-    indicator_description: str = "",
 ) -> str:
     """
     为 select 阶段构建 prompt：给模型「单元号 + 每段前若干字节」做首轮相关性扫描。
@@ -119,7 +120,7 @@ def build_rater_extraction_prompt(
     selected_unit_ids: Sequence[int],
     dimension: Dict[str, Any],
     template: PromptTemplate,
-    indicator_description: str = "",
+    indicator_description: str,
 ) -> str:
     """
     为 extract 阶段构建 prompt：给模型 select 阶段选中单元的全文，要求返回其中

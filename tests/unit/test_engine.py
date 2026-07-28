@@ -677,3 +677,18 @@ def test_one_primary_dimension_failing_does_not_kill_the_others(
     assert results["d1"].feedback_report["dimensions"] == {}
     assert [f["dimension_id"] for f in results["d1"].run_trace.failed_dims] == ["d1_1"]
     assert set(results["d2"].feedback_report["dimensions"]) == {"d2_1"}
+
+
+def test_indicator_description_reaches_select_and_extract_but_not_score(configs_root: Path) -> None:
+    """守一个真实 bug：Engine 不走 rater.run_chain，而是直接调 select/extract，
+    曾经漏传 indicator_description——单测 run_chain 抓不到，只有端到端能抓。
+
+    同时守住隔离方向：判档阶段绝不能拿到这段泛论，否则两位评委各自发挥它会放大分歧。"""
+    rater_1 = _StageAwareProvider(score=3)
+    engine = _engine(configs_root, rater_providers={"rater_1": rater_1, "rater_2": _StageAwareProvider(score=3)})
+    engine.evaluate(_package(), dim="d1")
+
+    by_stage = {r.metadata.get("stage_name"): r.prompt for r in rater_1.requests}
+    assert "desc" in by_stage["select"]
+    assert "desc" in by_stage["extract"]
+    assert "desc" not in by_stage["score"]

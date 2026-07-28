@@ -7,6 +7,8 @@ from src.providers.fake import FakeProvider, fake_response
 from src.providers.prompt_loader import PromptLoader
 
 _SCALE = {"scale_id": "ordinal_1_5", "type": "ordinal", "min": 1, "max": 5}
+_INDICATOR = "二级指标的完整解释（供选段/取证判断相关性）"
+
 _DIMENSION = {
     "dimension_id": "a4_1",
     "code": "A4-1",
@@ -54,7 +56,7 @@ def test_select_returns_ids_from_scripted_response() -> None:
     select_t, _, _ = _templates()
     provider = FakeProvider([fake_response({"selected_unit_ids": [0, 1]})])
 
-    selected = rater.select(_package(), _DIMENSION, provider, select_t, "rater_1")
+    selected = rater.select(_package(), _DIMENSION, provider, select_t, "rater_1", _INDICATOR)
 
     assert selected == [0, 1]
 
@@ -63,7 +65,7 @@ def test_select_silently_filters_hallucinated_ids() -> None:
     select_t, _, _ = _templates()
     provider = FakeProvider([fake_response({"selected_unit_ids": [0, 999]})])
 
-    selected = rater.select(_package(), _DIMENSION, provider, select_t, "rater_1")
+    selected = rater.select(_package(), _DIMENSION, provider, select_t, "rater_1", _INDICATOR)
 
     assert selected == [0]
 
@@ -75,7 +77,7 @@ def test_extract_returns_evidence_ids_from_scripted_response() -> None:
     _, extract_t, _ = _templates()
     provider = FakeProvider([fake_response({"evidence_unit_ids": [0]})])
 
-    evidence = rater.extract(_package(), [0, 1], _DIMENSION, provider, extract_t, "rater_1")
+    evidence = rater.extract(_package(), [0, 1], _DIMENSION, provider, extract_t, "rater_1", _INDICATOR)
 
     assert evidence == [0]
 
@@ -85,7 +87,7 @@ def test_extract_rejects_out_of_bounds_unit_id() -> None:
     provider = FakeProvider([fake_response({"evidence_unit_ids": [2]})])
 
     with pytest.raises(ValueError, match="越界"):
-        rater.extract(_package(), [0, 1], _DIMENSION, provider, extract_t, "rater_1")
+        rater.extract(_package(), [0, 1], _DIMENSION, provider, extract_t, "rater_1", _INDICATOR)
 
 
 # ── score ────────────────────────────────────────────────────────────────────

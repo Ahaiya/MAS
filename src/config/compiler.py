@@ -30,24 +30,19 @@ def _build_rubric_snapshot(rubric_file_data: dict[str, Any]) -> RubricSnapshot:
         - ``dimensions[].code``（例如 ``"A4-1"``） → ``dimension_id = "a4_1"``
         - ``dimensions[].anchors`` → 包含 rank/summary/descriptors 的 ``levels`` 列表
         - ``scale`` → 合成 ScaleEntry，其中 ``scale_id = "ordinal_{min}_{max}"``"""
-    rubric_key = (
-        rubric_file_data.get("dim_id")
-        or rubric_file_data.get("task_id")
-        or "unknown"
-    )
-    rubric_name = (
-        rubric_file_data.get("dim_name")
-        or rubric_file_data.get("task_name")
-        or ""
-    )
-    indicator_description = str(rubric_file_data.get("indicator_description", "") or "")
-    scale_data: dict[str, Any] = rubric_file_data.get("scale", {})
+    # 全部必填项由 rubric_validation 在 load_dimension_rubric 里先行保证，这里一律
+    # 直取不兜底——留一个 .get(默认值) 就是给下一个绕过校验的调用方留门，而那正是
+    # 「模型在没有量规的情况下打分」的来路。
+    rubric_key: str = rubric_file_data["dim_id"]
+    rubric_name: str = rubric_file_data["dim_name"]
+    indicator_description: str = rubric_file_data["indicator_description"]
+    scale_data: dict[str, Any] = rubric_file_data["scale"]
 
-    scale_min: int = int(scale_data.get("min", 1))
-    scale_max: int = int(scale_data.get("max", 5))
+    scale_min: int = int(scale_data["min"])
+    scale_max: int = int(scale_data["max"])
     # YAML 可能将整数键解析为 int；归一化为 int
     scale_level_labels: dict[int, str] = {
-        int(k): str(v) for k, v in (scale_data.get("levels") or {}).items()
+        int(k): str(v) for k, v in scale_data["levels"].items()
     }
 
     scale_id = f"ordinal_{scale_min}_{scale_max}"
@@ -58,23 +53,23 @@ def _build_rubric_snapshot(rubric_file_data: dict[str, Any]) -> RubricSnapshot:
     }
 
     dimensions: list[dict[str, Any]] = []
-    for dim_raw in rubric_file_data.get("dimensions", []):
+    for dim_raw in rubric_file_data["dimensions"]:
         code: str = dim_raw["code"]                          # 例如 "A4-1"
         dimension_id: str = code.lower().replace("-", "_")   # 例如 "a4_1"
-        name: str = dim_raw.get("name", "")
+        name: str = dim_raw["name"]
         # YAML 可能将整数键解析为 int
         anchors: dict[int, str] = {
-            int(k): str(v) for k, v in (dim_raw.get("anchors") or {}).items()
+            int(k): str(v) for k, v in dim_raw["anchors"].items()
         }
 
         levels: list[dict[str, Any]] = []
         for rank in range(scale_min, scale_max + 1):
-            summary = scale_level_labels.get(rank, str(rank))
-            anchor_text = anchors.get(rank, "")
+            summary = scale_level_labels[rank]
+            anchor_text = anchors[rank]
             levels.append({
                 "rank": rank,
                 "summary": summary,
-                "descriptors": [anchor_text] if anchor_text else [],
+                "descriptors": [anchor_text],
             })
 
         dimensions.append({

@@ -35,7 +35,7 @@ def _package() -> DataPackage:
 
 def test_select_prompt_shows_unit_id_and_truncated_preview() -> None:
     template = PromptLoader().load("configs/prompts/select.yaml")
-    prompt = build_rater_select_prompt(_package(), _DIMENSION, template, preview_bytes=15)
+    prompt = build_rater_select_prompt(_package(), _DIMENSION, template, "", preview_bytes=15)
 
     assert "用户群体识别的全面性" in prompt
     assert "[0](prose)" in prompt
@@ -47,7 +47,7 @@ def test_select_prompt_shows_unit_id_and_truncated_preview() -> None:
 def test_select_prompt_preview_truncates_by_utf8_bytes_not_chars() -> None:
     template = PromptLoader().load("configs/prompts/select.yaml")
     # 每个中文字符在 UTF-8 下占 3 字节；6 字节应恰好截到前 2 个字符
-    prompt = build_rater_select_prompt(_package(), _DIMENSION, template, preview_bytes=6)
+    prompt = build_rater_select_prompt(_package(), _DIMENSION, template, "", preview_bytes=6)
 
     assert "老年" in prompt
     assert "老年用" not in prompt
@@ -55,14 +55,14 @@ def test_select_prompt_preview_truncates_by_utf8_bytes_not_chars() -> None:
 
 def test_select_prompt_includes_dimension_anchors() -> None:
     template = PromptLoader().load("configs/prompts/select.yaml")
-    prompt = build_rater_select_prompt(_package(), _DIMENSION, template)
+    prompt = build_rater_select_prompt(_package(), _DIMENSION, template, "")
 
     assert "能识别多类用户" in prompt
 
 
 def test_extraction_prompt_shows_full_text_of_selected_units_only() -> None:
     template = PromptLoader().load("configs/prompts/extraction.yaml")
-    prompt = build_rater_extraction_prompt(_package(), [0], _DIMENSION, template)
+    prompt = build_rater_extraction_prompt(_package(), [0], _DIMENSION, template, "")
 
     assert _UNITS[0].text in prompt
     assert _UNITS[1].text not in prompt
@@ -160,10 +160,10 @@ def _render_all_stages() -> dict:
     package = _package()
     return {
         "select": build_rater_select_prompt(
-            package, _DIMENSION, loader.load("configs/prompts/select.yaml")
+            package, _DIMENSION, loader.load("configs/prompts/select.yaml"), ""
         ),
         "extraction": build_rater_extraction_prompt(
-            package, [0], _DIMENSION, loader.load("configs/prompts/extraction.yaml")
+            package, [0], _DIMENSION, loader.load("configs/prompts/extraction.yaml"), ""
         ),
         "scoring": build_rater_scoring_prompt(
             package, [1], _DIMENSION, loader.load("configs/prompts/scoring.yaml")
