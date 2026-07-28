@@ -16,18 +16,13 @@ providers:
     api_key_env: "DEEPSEEK_API_KEY"
     params:
       temperature: 0.0
-      max_tokens: 1536
 
   rater_2:
-    model: "qwen3.6-plus"
-    api_base: "https://dashscope.aliyuncs.com/compatible-mode/v1"
-    api_key_env: "DASHSCOPE_API_KEY"
+    model: "deepseek-chat"
+    api_base: "https://api.deepseek.com/v1"
+    api_key_env: "DEEPSEEK_API_KEY"
     params:
       temperature: 0.0
-      max_tokens: 2048
-      extra_body:
-        enable_thinking: true
-        thinking_budget: 768
 
   # 仲裁评委：只在双链分歧时被调用。缺省整个条目也能启动，
   # 但真触发仲裁时会报错——不静默兜底。
@@ -37,7 +32,6 @@ providers:
     api_key_env: "DEEPSEEK_API_KEY"
     params:
       temperature: 0.0
-      max_tokens: 1536
 
   # 生成给学生看的文字反馈，温度略高以免措辞呆板。
   feedback:
@@ -46,7 +40,6 @@ providers:
     api_key_env: "DEEPSEEK_API_KEY"
     params:
       temperature: 0.1
-      max_tokens: 1536
 
 # 运行期旋钮，整段可省略，逐字段回落到默认值。
 runtime:

@@ -2,12 +2,7 @@
 配置加载：给定 task_id + dim_id，直接读那份 rubric yaml 建出 RubricSnapshot。
 
 v2 的 `configs/bundle.yaml` 只声明 active_task_id + policies + prompts，engine 需要
-的也只是「列出某任务下所有一级指标」与「加载某个一级指标的量规」两件事，两者都
-直接读文件即可。
-
-v1 那套 ArtifactBundle/ConfigResolver 的工件引用解析 + 冻结哈希机制（ConfigCompiler、
-resolver.py、freeze.py、schema.py）是为面向单一 active_dim_id 的编译流程设计的，
-读不了 v2 的 bundle 形状，已随旧流程一并删除。
+的也只是「列出某任务下所有一级指标」与「加载某个一级指标的量规」两件事，两者都直接读文件即可。
 
 不包含 rubric 语义：trait 名称、分数值、adjudication 阈值、prompt 文本全部只经由
 加载的配置文件流入。"""

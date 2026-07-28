@@ -1,5 +1,5 @@
 """
-确定性单元切分，替代旧的 chunker.py（LLM 语义分块）+ quote_matcher.py（模糊匹配回溯）。
+确定性单元切分
 
 按内容类型把文本切成全局连续编号的 Unit：散文按句（。？！；+换行）、代码块（```
 围栏）整块、表格（`|`）每行、标题（`#`）1 单元、图片（`![alt](src)`）1 单元。
@@ -19,11 +19,10 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
 from src.contracts.package import DataPackage, Unit
 from src.utils.dialogue_sources import extract_dialogue_source_spans, source_for_range
 
-# 上下文安全余量：语义替代旧 chunker.py 的 4000 token 阈值（真实样本中位数约
-# 21700 token，旧阈值在生产数据上几乎从未命中语义分块路径）。
+# 上下文安全余量
 DEFAULT_CONTEXT_BUDGET_TOKENS = 48000
 
-_CHINESE_CHAR_RE = re.compile(r"[一-鿿]")
+_CHINESE_CHAR_RE = re.compile(r"[一-鿿]") #表示"匹配这个区间内的任意一个字符"，即"匹配一个汉字"
 _NON_WS_RE = re.compile(r"\S")
 _SENTENCE_END_RE = re.compile(r"[。？！；]")
 _HEADING_RE = re.compile(r"^#{1,6}(\s|$)")

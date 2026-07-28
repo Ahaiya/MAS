@@ -1,5 +1,5 @@
 bundle_id: "default"
-active_task_id: "maker_hackathon"
+active_task_id: "experiment"
 
 policies:
   adjudication: "configs/policies/adjudication/engineering_eval_adjudication.yaml"

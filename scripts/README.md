@@ -4,17 +4,21 @@
 `python -m`，也不需要 `pip install` 装 console_scripts：
 
 ```bash
-python scripts/cli.py --help
+uv run scripts/cli.py --help
 ```
+
+`uv run` 会先同步项目环境再执行。注意不是 `uv python`——那是管理解释器版本的
+（`install` / `list` / `pin` / `find`），传脚本路径会报 unrecognized subcommand。
+不用 uv 的话就走 venv 里的解释器：`.venv/bin/python scripts/cli.py --help`。
 
 ## 评价一份材料
 
 ```bash
 # 评单个一级指标
-python scripts/cli.py eval data/training/maker_hackathon/sample.md --dim a4
+uv run scripts/cli.py eval data/experiment/2025213184.md --dim a1
 
 # 不传 --dim：评当前任务下全部一级指标
-python scripts/cli.py eval data/training/maker_hackathon/sample.md
+uv run scripts/cli.py eval data/experiment/2025213184.md
 ```
 
 全部参数只有四个：
@@ -23,7 +27,7 @@ python scripts/cli.py eval data/training/maker_hackathon/sample.md
 | --- | --- | --- |
 | `INPUT_FILE`（位置） | 必填 | 待评价的 `.md` / `.txt` 材料 |
 | `--bundle` | `configs/bundle.yaml` | 量规 bundle |
-| `--dim` | 全部一级指标 | 一级指标（如 `a4`） |
+| `--dim` | 全部一级指标 | 一级指标（如 `a1`） |
 | `--output-dir` | `artifacts` | 产物落盘根目录 |
 
 模型与参数固定从 `configs/model_config.yaml` 读取（含超时/重试/并发），密钥值只从
@@ -46,8 +50,8 @@ artifacts/{task}/{sample}/{dim}/run_trace.json     # 成本/性能，含失败�
 ## 配置校验
 
 ```bash
-python scripts/cli.py config validate
-python scripts/cli.py config validate --bundle configs/bundle.yaml
+uv run scripts/cli.py config validate
+uv run scripts/cli.py config validate --bundle configs/bundle.yaml
 ```
 
 走一遍 bundle 声明的全部引用：policies、prompts、以及当前任务下每个一级指标的量规
@@ -59,7 +63,7 @@ python scripts/cli.py config validate --bundle configs/bundle.yaml
 审核台需要用仓库自带服务器启动，因为它同时负责静态文件和 `POST /api/corrections`：
 
 ```bash
-python scripts/server.py
+uv run scripts/server.py
 ```
 
 然后访问 `http://127.0.0.1:8000/frontend/index.html`。

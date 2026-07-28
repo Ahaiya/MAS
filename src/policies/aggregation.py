@@ -3,8 +3,7 @@
 
 单一路径，纯计算无 LLM。`FinalDecision.final_score` 无论 source 是 consensus 还是
 adjudicated，都已经是该二级指标唯一的权威值——不需要再区分"是否发生了裁决"去选
-公式变体，因此 v1 的 with/without-resolution 变体机制（compute_composite +
-composite_formula 配置）整套删除，聚合不可配置、不读 policy。"""
+公式变体，"""
 
 from __future__ import annotations
 

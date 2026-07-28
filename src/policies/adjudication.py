@@ -5,8 +5,7 @@
 二级指标同向相邻漂移）。阈值、维度列表、分数值全部从 adjudication policy 配置读，
 此处不硬编码业务值。
 
-v1 那套面向通用 N-rater 的通用触发器调度已随旧流程删除——v2 恒定两条 Rater 链，
-用不到它的通用性。"""
+"""
 
 from __future__ import annotations
 

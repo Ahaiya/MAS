@@ -1,54 +1,49 @@
-# macOS / Finder
+# macOS
 .DS_Store
 
-# Python bytecode / caches
+# Python 字节码
 __pycache__/
 *.py[cod]
-*.pyo
-*.pyd
 *.egg-info/
-*.egg-info
 
-# Virtual environments
+# uv / 虚拟环境
+# 注意：uv.lock 与 .python-version 是有意入库的，不要加到这里。
 .venv/
 venv/
-env/
 
-# Test / coverage artifacts
-.coverage
+# 工具缓存
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# 测试覆盖率
+.coverage
+.coverage.*
+coverage.xml
 htmlcov/
 
-# IDE configs
-.idea/
-.vscode/
-
-# Secrets — never commit actual keys
-# .env.example is intentionally tracked (template only)
-.env
-
-# Evaluation artifacts (runtime output)
-artifacts/**
-!artifacts/.gitkeep
-
-# Training / sample data (privacy-sensitive student materials)
-# Keep: data/training/maker_hackathon/sample.md  (demo)
-# Keep: data/training/{任务名称}/学生 ID.md        (placeholder template)
-data/training/physics_experiment/
-data/training/anchors/
-
-# Outer-loop dynamic artifacts
-experiments/snapshots/**
-!experiments/snapshots/.gitkeep
-experiments/probes/**
-!experiments/probes/.gitkeep
-experiments/processed_corrections/
-experiments/pending_corrections.json
-
-# Playwright CLI session files
-.playwright-cli/
-
-# Build / dist
+# 构建产物
 dist/
 build/
 *.whl
+
+# IDE
+.idea/
+.vscode/
+
+# 密钥：只入库 .env.example 模板
+.env
+.env.*
+!.env.example
+
+# Claude Code：本地个人配置与 worktree 不入库
+# .claude/settings.json 是否共享给协作者由你决定，这里不预先忽略。
+.claude/settings.local.json
+.claude/worktrees/
+
+# 学生材料：以学号命名的原始文本，隐私敏感，一律不入库
+# 必须锚定：不带斜杠的 data/ 会连 frontend/src/data/ 的源码一起吃掉。
+/data/
+
+# 评测运行产物
+/artifacts/

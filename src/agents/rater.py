@@ -1,7 +1,6 @@
 """
 单 Rater 完整链：select → extract → score，产出 RaterChainResult。
 
-合并了 v1 的 extractor.py + observer.py + scorer.py（三者已删除）。
 一个 Rater 三趟共用同一个 provider（raters.rater_N），不拆分；取证与评分是两次
 独立 LLM 调用，保证证据先于分数生成。模型引用证据只能返回已存在的单元编号——
 select 阶段越界编号静默过滤（只是候选范围，不是证据主张），extract/score 阶段
@@ -57,7 +56,7 @@ def select(
     rater_id: str,
     preview_bytes: int = DEFAULT_SELECT_PREVIEW_BYTES,
 ) -> List[int]:
-    """看「单元号 + 每段前若干字节」选出与该二级指标相关的单元号。
+    """看「unit_id + 每段前若干字节」选出与该二级指标相关的unit_id（粗筛）。
 
     模型幻觉出的编号会被静默过滤——这一步只是缩小候选范围，不是证据主张。"""
     dimension_id = str(dimension.get("dimension_id", ""))
@@ -85,9 +84,9 @@ def extract(
     template: PromptTemplate,
     rater_id: str,
 ) -> List[int]:
-    """选中单元全文 → 证据，返回其中真正构成证据的单元编号。
+    """选中unit 全文 → 证据，返回其中真正构成证据的unit_id。
 
-    只有 select 阶段展示过的单元才在有效范围内；越界编号直接拒绝。"""
+    只有 select 阶段展示过的unit 才在有效范围内；越界编号直接拒绝。"""
     dimension_id = str(dimension.get("dimension_id", ""))
     prompt_text = build_rater_extraction_prompt(package, selected_unit_ids, dimension, template)
     data = call_llm(

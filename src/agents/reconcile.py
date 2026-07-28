@@ -1,8 +1,7 @@
 """
 双链比较：一致直接决策（source=consensus），分歧触发 Rater3 仲裁（source=adjudicated）。
 
-删除 v1 的 average/highest 无 LLM 兜底——分歧一律走 Rater3；rater_3 provider/模板
-缺失时直接报错，不静默降级到某个确定性回退分。"""
+"""
 
 from __future__ import annotations
 
