@@ -29,28 +29,28 @@ def reconcile(
     rater_3_provider: Optional[BaseProvider] = None,
     adjudication_template: Optional[PromptTemplate] = None,
 ) -> List[FinalDecision]:
-    """比较两条 Rater 链，逐二级指标产出唯一 FinalDecision。
+    """比较两条 Rater 链，逐观测点产出唯一 FinalDecision。
 
     未触发仲裁规则的维度 → source=consensus，取 chains_a 的分数为一致值。
     触发的维度 → source=adjudicated，调用 Rater3；缺 provider/模板直接报错。
 
     Args:
         package: 两条链共同引用的 DataPackage（Rater3 仲裁时需要看完整原文）。
-        chains_a: 一条 Rater 链在各二级指标上的 RaterChainResult。
-        chains_b: 另一条 Rater 链在各二级指标上的 RaterChainResult。
+        chains_a: 一条 Rater 链在各观测点上的 RaterChainResult。
+        chains_b: 另一条 Rater 链在各观测点上的 RaterChainResult。
         rubric  : 用于 dimension/scale 查找的 RubricSnapshot。
         policy  : 带两个仲裁触发阈值的 PolicySnapshot。
         rater_3_provider     : Rater3 用的 provider；有分歧时才需要。
         adjudication_template: 已加载的 adjudication PromptTemplate；有分歧时才需要。
 
     Returns:
-        按 dimension_id 排序的 FinalDecision 列表，每个二级指标恰好一条。"""
+        按 dimension_id 排序的 FinalDecision 列表，每个观测点恰好一条。"""
     by_a = _by_dimension(chains_a)
     by_b = _by_dimension(chains_b)
     dims_a, dims_b = set(by_a), set(by_b)
     if dims_a != dims_b:
         raise ValueError(
-            "两条 Rater 链覆盖的二级指标不一致："
+            "两条 Rater 链覆盖的观测点不一致："
             f"only_in_a={sorted(dims_a - dims_b)}, only_in_b={sorted(dims_b - dims_a)}"
         )
 

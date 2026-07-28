@@ -2,7 +2,7 @@
 Engine Facade：`Engine.from_configs(root, task_id).evaluate(package, dim)` 跑通一次完整评价。
 
 流水线：rate(r1) → rate(r2) → reconcile → [adjudicate] → feedback.
-同一 sample 下各二级指标的双链评价用 ThreadPoolExecutor 并发跑（provider IO 密集，GIL 不碍事）
+同一 sample 下各观测点的双链评价用 ThreadPoolExecutor 并发跑（provider IO 密集，GIL 不碍事）
 上限 `max_workers` 从 model_config.yaml 的 runtime 段读取，默认 8。
 segment阶段发生在 Engine.evaluate() 之外——engine 只认「量规 + 已切分好的DataPackage」，
 数据包的来源（read_text_file() 或未来的多源解析接入层）不是它的关心范围。
@@ -18,12 +18,12 @@ trace 用收集器模式：每次调用 select/extract/score/adjudicate/feedback
 实例被多个线程共享，包装器按线程隔离计数（threading.local）而非加锁，快照
 差值天然只反映当前线程自己发起的调用。
 
-失败隔离：一个二级指标的双链评价（select→extract→score ×2）失败（LLM 报错/
-超时/越界证据）只把该二级指标计入 run_trace 的 failed_dims，不参与 reconcile/
-feedback，也不中断其余二级指标；一级指标内其余维度照常产出。全部二级指标都失败
+失败隔离：一个观测点的双链评价（select→extract→score ×2）失败（LLM 报错/
+超时/越界证据）只把该观测点计入 run_trace 的 failed_dims，不参与 reconcile/
+feedback，也不中断其余观测点；二级指标内其余维度照常产出。全部观测点都失败
 时短路掉 reconcile/feedback，产出 primary_score=None 的空评价（失败原因仍逐条在
-run_trace 里），同样不抛异常——抛了就会把同一 sample 下其余一级指标一起带走。
-除此之外错误直接抛出：reconcile/feedback 等阶段本身失败仍会中断当前一级指标的
+run_trace 里），同样不抛异常——抛了就会把同一 sample 下其余二级指标一起带走。
+除此之外错误直接抛出：reconcile/feedback 等阶段本身失败仍会中断当前二级指标的
 评价，没有状态机回退重入。"""
 
 from __future__ import annotations
@@ -74,7 +74,7 @@ _REQUIRED_TEMPLATES = frozenset({"select", "extraction", "scoring", "feedback"})
 
 @dataclass(frozen=True)
 class DimensionEvaluation:
-    """一次一级指标评价的完整产物（同时也是落盘到 dim 层的三份 JSON 的内容）。"""
+    """一次二级指标评价的完整产物（同时也是落盘到 dim 层的三份 JSON 的内容）。"""
 
     dim_id: str
     feedback_report: Dict[str, Any]
@@ -232,9 +232,9 @@ class Engine:
         rater_1: InstrumentedProvider,
         rater_2: InstrumentedProvider,
     ) -> "tuple[RaterChainResult, RaterChainResult, List[StageTrace]]":
-        """一个二级指标的双链评价（rater_1 + rater_2），跑在
+        """一个观测点的双链评价（rater_1 + rater_2），跑在
         ThreadPoolExecutor 的 worker 线程里。异常原样向上抛出，由
-        `_evaluate_one` 捕获并把这一个二级指标标记失败——不在这里吞。"""
+        `_evaluate_one` 捕获并把这一个观测点标记失败——不在这里吞。"""
         dimension_id = str(dimension["dimension_id"])
         chain_a, traces_a = self._run_rater_chain(package, dimension_id, dimension, rubric, rater_1, "rater_1")
         chain_b, traces_b = self._run_rater_chain(package, dimension_id, dimension, rubric, rater_2, "rater_2")
@@ -243,7 +243,7 @@ class Engine:
     def _empty_evaluation(
         self, dim_id: str, stage_traces: List[StageTrace], failed_dims: List[Dict[str, str]]
     ) -> DimensionEvaluation:
-        """一个一级指标下全部二级指标都失败时的产物：没有分数，但失败原因逐条在案。
+        """一个二级指标下全部观测点都失败时的产物：没有分数，但失败原因逐条在案。
 
         `primary_score` 为 None 而不是 0——0 是"评了，得零分"，None 是"没评出来"，
         两者对前端和教师是完全不同的意思，不能混。"""
@@ -263,7 +263,7 @@ class Engine:
             ),
         )
 
-    # ── 内部：一个一级指标的完整评价 ─────────────────────────────────────────
+    # ── 内部：一个二级指标的完整评价 ─────────────────────────────────────────
 
     def _evaluate_one(self, package: DataPackage, dim_id: str) -> DimensionEvaluation:
         rubric = self._rubric_for(dim_id)
@@ -281,11 +281,11 @@ class Engine:
                 raise ConfigCompileError(f"Dimension '{secondary_dim_id}' not found in rubric for '{dim_id}'")
             dimensions.append(dimension)
 
-        # 二级指标级并发：每个二级指标的双链评价（select→extract→score ×2）
+        # 观测点级并发：每个观测点的双链评价（select→extract→score ×2）
         # 是一整个 provider IO 密集单元，互相独立、互不共享状态，天然适合
-        # ThreadPoolExecutor（GIL 不碍事）。失败隔离落在这一层——一个二级
-        # 指标抛错（LLM 报错/超时/越界证据）只把它计入 failed_dims，其余
-        # 二级指标不受影响照常产出；不在这里重试或降级。
+        # ThreadPoolExecutor（GIL 不碍事）。失败隔离落在这一层——一个观测点
+        # 抛错（LLM 报错/超时/越界证据）只把它计入 failed_dims，其余
+        # 观测点不受影响照常产出；不在这里重试或降级。
         stage_traces: List[StageTrace] = []
         chains_a: List[RaterChainResult] = []
         chains_b: List[RaterChainResult] = []
@@ -312,7 +312,7 @@ class Engine:
         # 硬把空 decisions 往下送，会在 aggregate_final_decisions 才炸出一条与根因
         # 无关的"decisions 不能为空"，把每个维度真正的错误（鉴权失败/限流/超时）
         # 全埋掉。这里直接短路——failed_dims 已经把真实错误逐条记下，照常落盘。
-        # 不抛异常：抛了就会顺着 evaluate() 的循环把同一 sample 下其余一级指标一起
+        # 不抛异常：抛了就会顺着 evaluate() 的循环把同一 sample 下其余二级指标一起
         # 带走，正是 US31「不崩整个 sample」要避免的。
         if not chains_a:
             return self._empty_evaluation(dim_id, stage_traces, failed_dims)
@@ -370,18 +370,18 @@ class Engine:
 
     def evaluate(self, package: DataPackage, dim: Optional[str] = None) -> Dict[str, DimensionEvaluation]:
         """执行 rate(r1) → rate(r2) → reconcile → [adjudicate] → feedback；
-        同一一级指标下各二级指标的 rate 阶段并发执行，其余阶段串行。
+        同一二级指标下各观测点的 rate 阶段并发执行，其余阶段串行。
 
         Args:
             package: 已切分好的 DataPackage（segment 阶段在此之外完成）。
-            dim: 指定单个一级指标；缺省评当前任务下全部一级指标。
+            dim: 指定单个二级指标；缺省评当前任务下全部二级指标。
 
         写盘：package.json 到 sample 层（一次，`package.package_id` 作为
         sample 名）；feedback.json/rater_chains.json/run_trace.json 到每个
         评价过的 dim 层。
 
         Returns:
-            {dim_id: DimensionEvaluation}，每个被评价的一级指标一条。"""
+            {dim_id: DimensionEvaluation}，每个被评价的二级指标一条。"""
         dim_ids = [dim] if dim is not None else self._discover_dim_ids()
         task = self._active_task_id
         sample = package.package_id

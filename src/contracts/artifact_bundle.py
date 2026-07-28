@@ -1,7 +1,7 @@
 """
 配置快照契约：编译期确定、运行期只读的量规 / 策略 / provider 配置。
 
-  RubricSnapshot      —— 一个一级指标的完整量规（二级指标 + 量表 + 锚点）
+  RubricSnapshot      —— 一个二级指标的完整量规（观测点 + 量表 + 锚点）
   PolicySnapshot      —— 仲裁触发阈值等策略配置
   ProviderEntryConfig —— 单个 provider 的 model / api_base / api_key_env / params
 

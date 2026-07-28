@@ -142,7 +142,7 @@ def load_adjudication_policy(configs_root: Path | str) -> PolicySnapshot:
 
 
 def list_task_dimension_ids(configs_root: Path | str, task_id: str) -> list[str]:
-    """列出某任务下所有一级指标 dim_id（按文件名排序），用于"缺省评全部一级指标"。"""
+    """列出某任务下所有二级指标 dim_id（按文件名排序），用于"缺省评全部二级指标"。"""
     dimension_dir = Path(configs_root) / "tasks" / task_id / "dimension"
     if not dimension_dir.exists():
         raise ConfigCompileError(f"Task dimension directory not found: {dimension_dir}")

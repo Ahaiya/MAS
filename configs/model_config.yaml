@@ -45,7 +45,7 @@ providers:
 
 # 运行期旋钮，整段可省略，逐字段回落到默认值。
 runtime:
-  max_workers: 8            # 二级指标级并发上限；按 LLM 服务档位调，避免 429
+  max_workers: 8            # 观测点级并发上限；按 LLM 服务档位调，避免 429
   timeout_seconds: 60       # 单次 LLM 调用的挂钟超时
   max_retries: 3            # 首次失败后的额外重试次数
   retry_delay_seconds: 1    # 重试间隔

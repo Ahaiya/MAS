@@ -91,7 +91,7 @@ def build_rater_select_prompt(
         dimension_name    : 来自 rubric 的可读 dimension 名称。
         dimension_anchors : 仅当前 dimension 的 anchors [{rank, label, text}]。
         units             : 全部候选单元的预览 [{id, kind, preview}]。
-        indicator_description : 一级指标的完整解释（只给选段/取证看，见下）。
+        indicator_description : 二级指标的完整解释（只给选段/取证看，见下）。
 
     Args:
         package      : 待选段的 DataPackage。
@@ -129,7 +129,7 @@ def build_rater_extraction_prompt(
         dimension_name    : 来自 rubric 的可读 dimension 名称。
         dimension_anchors : 仅当前 dimension 的 anchors [{rank, label, text}]。
         units             : 被选中单元的全文 [{id, kind, text}]。
-        indicator_description : 一级指标的完整解释（只给选段/取证看，见下）。
+        indicator_description : 二级指标的完整解释（只给选段/取证看，见下）。
 
     Returns:
         渲染好准备发送给 provider 的 prompt 字符串。"""
@@ -207,13 +207,13 @@ def build_feedback_prompt(
     template: PromptTemplate,
 ) -> str:
     """
-    为 feedback 阶段构建 prompt：给模型某二级指标的最终分 + 引用证据全文 + 量规
+    为 feedback 阶段构建 prompt：给模型某观测点的最终分 + 引用证据全文 + 量规
     锚点，要求生成面向学生的文字反馈。
 
     注入的上下文变量 (匹配 feedback.yaml)：
         dimension_name    : 来自 rubric 的可读 dimension 名称。
         dimension_anchors : 仅当前 dimension 的 anchors [{rank, label, text}]。
-        final_score       : 该二级指标的最终分（canonical_score）。
+        final_score       : 该观测点的最终分（canonical_score）。
         units             : final_score 引用的证据单元全文 [{id, kind, text}]。
 
     Returns:

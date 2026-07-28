@@ -2,7 +2,7 @@
 追踪契约：轻量 trace，只记成本与性能。
 
   阶段执行 -> StageTrace      （stage/rater/llm_calls/tokens/ms）
-  StageTrace[] -> RunTraceSummary （一次一级指标评价的汇总，run_trace.json 的内容）
+  StageTrace[] -> RunTraceSummary （一次二级指标评价的汇总，run_trace.json 的内容）
 
 收集用收集器模式：rater.py/reconcile.py/feedback.py 各阶段函数本身不产出 StageTrace、
 不感知 trace——engine 把每个阶段用到的 provider 包一层旁路计数器，调用前后各拍一次
@@ -69,18 +69,18 @@ class StageTrace:
 
 @dataclass(frozen=True)
 class RunTraceSummary:
-    """一次一级指标评价运行的成本/性能汇总（run_trace.json 的内容）。
+    """一次二级指标评价运行的成本/性能汇总（run_trace.json 的内容）。
 
         属性：
             run_id: 此次评价运行的唯一标识符。
             configs_ref: 所用配置根目录的引用。
-            dim: 被评价的一级指标标识符。
+            dim: 被评价的二级指标标识符。
             total_tokens: 全部阶段的 token 总数。
             total_ms: 全部阶段的耗时总和（毫秒）。
-            adjudicated_dims: 触发了 Rater3 仲裁的二级指标标识符列表。
+            adjudicated_dims: 触发了 Rater3 仲裁的观测点标识符列表。
             stage_traces: 阶段级明细（stage/rater/llm_calls/tokens/ms），
                 total_tokens/total_ms 是其汇总。
-            failed_dims: 评价失败被隔离的二级指标，每条 {dimension_id, error}；
+            failed_dims: 评价失败被隔离的观测点，每条 {dimension_id, error}；
                 该维度未产出 FinalDecision，其余维度不受影响照常产出。"""
 
     run_id: str

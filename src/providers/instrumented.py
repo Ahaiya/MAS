@@ -27,7 +27,7 @@ class InstrumentedProvider(BaseProvider):
     """包装一个 BaseProvider，旁路记录调用次数与 token 用量，供 engine 的收集器
     模式使用；不改变被包装 provider 的行为。
 
-    二级指标级并发下，同一个 rater 的 provider 实例被多个 worker 线程并发调用。
+    观测点级并发下，同一个 rater 的 provider 实例被多个 worker 线程并发调用。
     call_with_trace 靠"调用前后各拍一次快照做差"取得这次调用的用量——如果
     metrics 是共享计数器，另一个线程在快照窗口之间插入的调用会污染这次差值。
     按线程隔离 metrics（而非加锁）天然解决这个问题：同一时刻只有发起这次调用

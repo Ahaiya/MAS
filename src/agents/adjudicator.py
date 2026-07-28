@@ -44,7 +44,7 @@ def adjudicate(
     template: PromptTemplate,
     rater_id: str = DEFAULT_ADJUDICATOR_RATER_ID,
 ) -> DimensionScore:
-    """Rater3 独立仲裁一个二级指标：看双链各自引用的证据 unit_ids + 完整原文 +
+    """Rater3 独立仲裁一个观测点：看双链各自引用的证据 unit_ids + 完整原文 +
     量规锚点，不看 chain_a/chain_b 的分数，产出自己的 DimensionScore。
 
     引用范围是整个 package（不是 chain_a/chain_b 各自的证据子集）；越界拒绝。"""

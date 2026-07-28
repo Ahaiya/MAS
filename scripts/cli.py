@@ -2,8 +2,8 @@
 """MAS 命令行入口——单文件 CLI
 
 用法：
-  python scripts/cli.py eval <file> --task experiment --dim a4   # 评单个一级指标
-  python scripts/cli.py eval <file> --task experiment            # 评该任务下全部一级指标
+  python scripts/cli.py eval <file> --task experiment --dim a4   # 评单个二级指标
+  python scripts/cli.py eval <file> --task experiment            # 评该任务下全部二级指标
   python scripts/cli.py config validate --task experiment        # 校验配置能否加载
 
 
@@ -38,7 +38,12 @@ from src.config.compiler import (
 )
 from src.contracts.package import DataPackage
 from src.engine import DimensionEvaluation, Engine
-from src.engine_config import EngineConfigError, load_runtime_config, validate_model_config
+from src.engine_config import (
+    EngineConfigError,
+    load_context_budget_tokens,
+    load_runtime_config,
+    validate_model_config,
+)
 from src.providers.prompt_loader import PromptLoader
 from src.segment import read_text_file
 
@@ -102,19 +107,19 @@ def _require_task(configs_root: Path, task: Optional[str]) -> str:
 def _render_summary(results: Dict[str, DimensionEvaluation]) -> str:
     """把 evaluate() 的返回渲染成给人看的摘要。
 
-    失败隔离（07）下被跳过的二级指标必须一并打印——否则用户会以为所有维度都评过，
-    而实际上 feedback.json 里少了几个维度。"""
+    失败隔离（07）下被跳过的观测点必须一并打印——否则用户会以为所有观测点都评过，
+    而实际上 feedback.json 里少了几个观测点。"""
     lines: List[str] = []
     for dim_id in sorted(results):
         evaluation = results[dim_id]
         report = evaluation.feedback_report
         trace = evaluation.run_trace
 
-        # primary_score 为 None = 该一级指标下全部二级指标都失败，没评出分；
+        # primary_score 为 None = 该二级指标下全部观测点都失败，没评出分；
         # 与"评了、得低分"是两回事，不能印成 0.00。
         primary_score = report["primary_score"]
-        headline = "全部二级指标评价失败" if primary_score is None else f"{primary_score:.2f}"
-        lines.append(f"[{dim_id}] 一级指标分：{headline}")
+        headline = "全部观测点评价失败" if primary_score is None else f"{primary_score:.2f}"
+        lines.append(f"[{dim_id}] 二级指标分：{headline}")
         for sub_dim_id, entry in sorted(report["dimensions"].items()):
             lines.append(f"  {sub_dim_id}: {entry['final_score']}  ({entry['source']})")
         for failed in trace.failed_dims:
@@ -123,7 +128,7 @@ def _render_summary(results: Dict[str, DimensionEvaluation]) -> str:
     return "\n".join(lines)
 
 
-def _load_package(input_file: Path) -> DataPackage:
+def _load_package(input_file: Path, budget_tokens: int) -> DataPackage:
     """IO 边界：读文件 → 切分 → DataPackage。sample 名取文件名（不含后缀）。
 
     不存在/后缀不支持在这里就报错退出，不让它烂到 engine 里才炸。"""
@@ -131,7 +136,9 @@ def _load_package(input_file: Path) -> DataPackage:
         raise _exit_with_error(f"输入文件不存在：{input_file}")
 
     try:
-        package, dropped_unit_ids = read_text_file(input_file, package_id=input_file.stem)
+        package, dropped_unit_ids = read_text_file(
+            input_file, package_id=input_file.stem, budget_tokens=budget_tokens
+        )
     except ValueError as exc:  # read_text_file 对不支持的后缀抛 ValueError
         raise _exit_with_error(str(exc)) from exc
 
@@ -160,7 +167,7 @@ def eval_command(
     ] = _DEFAULT_CONFIGS_ROOT,
     dim: Annotated[
         Optional[str],
-        typer.Option("--dim", help="一级指标（如 a4）；缺省评该任务下全部一级指标。"),
+        typer.Option("--dim", help="二级指标（如 a4）；缺省评该任务下全部二级指标。"),
     ] = None,
     output_dir: Annotated[
         Path,
@@ -169,7 +176,11 @@ def eval_command(
 ) -> None:
     """评价一份材料：切分 → 双链评价 → 仲裁 → 反馈，产物按 {task}/{sample}/{dim}/ 落盘。"""
     task_id = _require_task(configs, task)
-    package = _load_package(input_file)
+    try:
+        budget_tokens = load_context_budget_tokens(configs / "model_config.yaml")
+    except EngineConfigError as exc:
+        raise _exit_with_error(str(exc)) from exc
+    package = _load_package(input_file, budget_tokens)
 
     try:
         engine = Engine.from_configs(configs, task_id, output_dir=output_dir)
@@ -182,7 +193,7 @@ def eval_command(
 
     # 一个分都没评出来时退非零：脚本/CI 才能发现这次"跑完了"其实什么都没产出。
     if all(not r.feedback_report["dimensions"] for r in results.values()):
-        raise _exit_with_error("本次评价没有产出任何二级指标分数——见上方各维度失败原因。")
+        raise _exit_with_error("本次评价没有产出任何观测点分数——见上方各观测点失败原因。")
 
 
 # ── config validate ──────────────────────────────────────────────────────────
@@ -212,13 +223,13 @@ def _validate_configs(configs_root: Path, task_id: str) -> List[str]:
 
     dim_ids = list_task_dimension_ids(configs_root, task_id)
     if not dim_ids:
-        raise ConfigCompileError(f"任务 '{task_id}' 下没有任何 *_rubric.yaml——无可评的一级指标。")
+        raise ConfigCompileError(f"任务 '{task_id}' 下没有任何 *_rubric.yaml——无可评的二级指标。")
     for dim_id in dim_ids:
         rubric = load_dimension_rubric(configs_root, task_id, dim_id)
         sub_dim_ids = [d["dimension_id"] for d in rubric.dimensions]
         lines.append(
-            f"OK  一级指标       : {dim_id}"
-            f"（{len(sub_dim_ids)} 个二级指标：{', '.join(sub_dim_ids)}）"
+            f"OK  二级指标       : {dim_id}"
+            f"（{len(sub_dim_ids)} 个观测点：{', '.join(sub_dim_ids)}）"
         )
 
     # model_config 是模型/参数的唯一来源且必填项不少，一并校验结构——否则漏填
@@ -228,9 +239,10 @@ def _validate_configs(configs_root: Path, task_id: str) -> List[str]:
     for name, entry in sorted(entries.items()):
         lines.append(f"OK  provider       : {name} → {entry.model} @ {entry.api_base}")
     max_workers, retry = load_runtime_config(configs_root / "model_config.yaml")
+    budget_tokens = load_context_budget_tokens(configs_root / "model_config.yaml")
     lines.append(
         f"OK  runtime        : max_workers={max_workers} timeout={retry.timeout_seconds:g}s "
-        f"retries={retry.max_retries}"
+        f"retries={retry.max_retries} context_budget={budget_tokens}"
     )
 
     return lines
@@ -247,7 +259,7 @@ def config_validate(
         typer.Option("--configs", help="配置根目录。"),
     ] = _DEFAULT_CONFIGS_ROOT,
 ) -> None:
-    """校验配置：仲裁策略 / 提示词 / 任务下各一级指标量规 / model_config 都能加载。"""
+    """校验配置：仲裁策略 / 提示词 / 任务下各二级指标量规 / model_config 都能加载。"""
     task_id = _require_task(configs, task)
 
     try:

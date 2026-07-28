@@ -1,5 +1,5 @@
 """
-一级指标反馈生成：聚合 + 雷达数据 + 每二级指标文字反馈，产出 feedback.json 的
+二级指标反馈生成：聚合 + 雷达数据 + 每观测点文字反馈，产出 feedback.json 的
 内容；并把双链完整证据 + 最终决策整理成 rater_chains.json 的内容（审计用）。
 
 对应流水线 `reconcile →[adjudicate]→ feedback` 中的 feedback 阶段，与 prompt
@@ -20,7 +20,7 @@ from src.providers.prompt_loader import PromptTemplate
 
 
 def build_radar_data(decisions: Sequence[FinalDecision]) -> List[Dict[str, Any]]:
-    """雷达图数据：各二级指标分数数组，按 dimension_id 排序，供前端渲染。"""
+    """雷达图数据：各观测点分数数组，按 dimension_id 排序，供前端渲染。"""
     return [
         {"dimension_id": d.dimension_id, "score": d.final_score.canonical_score}
         for d in sorted(decisions, key=lambda d: d.dimension_id)
@@ -34,7 +34,7 @@ def generate_feedback_text(
     provider: BaseProvider,
     template: PromptTemplate,
 ) -> str:
-    """调用 LLM，基于最终分 + 引用证据全文，为一个二级指标生成学生可读的文字反馈。"""
+    """调用 LLM，基于最终分 + 引用证据全文，为一个观测点生成学生可读的文字反馈。"""
     prompt_text = build_feedback_prompt(package, decision, dimension, template)
     response = provider.complete(
         LLMRequest(
@@ -57,7 +57,7 @@ def build_feedback_report(
     provider: BaseProvider,
     template: PromptTemplate,
 ) -> Dict[str, Any]:
-    """产出 feedback.json 的完整内容：一级指标分 + 雷达 + 各二级指标
+    """产出 feedback.json 的完整内容：二级指标分 + 雷达 + 各观测点
     final_score/source/证据 unit_ids/文字反馈（证据存 unit_ids，不存复述原文）。"""
     dimensions_out: Dict[str, Any] = {}
     for decision in sorted(decisions, key=lambda d: d.dimension_id):

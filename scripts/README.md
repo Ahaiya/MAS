@@ -14,10 +14,10 @@ uv run scripts/cli.py --help
 ## 评价一份材料
 
 ```bash
-# 评单个一级指标
+# 评单个二级指标
 uv run scripts/cli.py eval data/experiment/2025213184.md --task experiment --dim a1
 
-# 不传 --dim：评该任务下全部一级指标
+# 不传 --dim：评该任务下全部二级指标
 uv run scripts/cli.py eval data/experiment/2025213184.md --task experiment
 ```
 
@@ -28,7 +28,7 @@ uv run scripts/cli.py eval data/experiment/2025213184.md --task experiment
 | `INPUT_FILE`（位置） | 必填 | 待评价的 `.md` / `.txt` 材料 |
 | `--task` | 无，必填 | 任务 id，对应 `configs/tasks/<task>/`；漏传即报错并列出可选任务 |
 | `--configs` | `configs` | 配置根目录 |
-| `--dim` | 全部一级指标 | 一级指标（如 `a1`） |
+| `--dim` | 全部二级指标 | 二级指标（如 `a1`） |
 | `--output-dir` | `artifacts` | 产物落盘根目录 |
 
 模型与参数固定从 `configs/model_config.yaml` 读取（含超时/重试/并发），密钥值只从
@@ -36,7 +36,7 @@ uv run scripts/cli.py eval data/experiment/2025213184.md --task experiment
 `--verbose`、`--debug-bundle`、`--bundle` 也一并删除。
 
 执行流：切分（零 LLM，确定性）→ 双链独立评价（select → extract → score，两个 Rater
-各跑一遍）→ 分歧时 Rater3 仲裁 → 生成反馈。同一 sample 下各二级指标并发评价，上限
+各跑一遍）→ 分歧时 Rater3 仲裁 → 生成反馈。同一 sample 下各观测点并发评价，上限
 由 `configs/model_config.yaml` 的 `runtime.max_workers` 控制（默认 8）。
 
 产物按三层落盘：
@@ -55,7 +55,7 @@ uv run scripts/cli.py config validate --task experiment
 uv run scripts/cli.py config validate --task experiment --configs configs
 ```
 
-走一遍配置：仲裁策略、五套 prompt、以及该任务下每个一级指标的量规
+走一遍配置：仲裁策略、五套 prompt、以及该任务下每个二级指标的量规
 都能加载。刻意不构建 provider——配置是否自洽与密钥是否就位是两件事，因此没有 `.env`
 也能在 CI 里跑。
 

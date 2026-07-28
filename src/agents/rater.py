@@ -57,7 +57,7 @@ def select(
     preview_bytes: int = DEFAULT_SELECT_PREVIEW_BYTES,
     indicator_description: str = "",
 ) -> List[int]:
-    """看「unit_id + 每段前若干字节」选出与该二级指标相关的unit_id（粗筛）。
+    """看「unit_id + 每段前若干字节」选出与该观测点相关的unit_id（粗筛）。
 
     模型幻觉出的编号会被静默过滤——这一步只是缩小候选范围，不是证据主张。"""
     dimension_id = str(dimension.get("dimension_id", ""))
@@ -167,7 +167,7 @@ def run_chain(
     rater_id: str,
     preview_bytes: int = DEFAULT_SELECT_PREVIEW_BYTES,
 ) -> RaterChainResult:
-    """跑完一个 Rater 对一个二级指标的完整链：select → extract → score。"""
+    """跑完一个 Rater 对一个观测点的完整链：select → extract → score。"""
     dimension = rubric.get_dimension(dimension_id)
     if dimension is None:
         raise ValueError(f"Dimension '{dimension_id}' not found in rubric")

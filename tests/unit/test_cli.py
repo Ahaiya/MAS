@@ -57,7 +57,7 @@ runtime:
 
 @pytest.fixture
 def configs_root(tmp_path: Path) -> Path:
-    """最小 configs 树：一个任务 testtask，两个一级指标 d1/d2，复用仓库真实的
+    """最小 configs 树：一个任务 testtask，两个二级指标 d1/d2，复用仓库真实的
     prompt yaml；路径全部按约定固定，没有 bundle 文件。"""
     root = tmp_path / "configs"
     (root / "tasks" / "testtask" / "dimension").mkdir(parents=True)
@@ -145,7 +145,7 @@ def _evaluation(
 
 
 def _evaluation_all_failed(dim_id: str) -> DimensionEvaluation:
-    """一级指标下全部二级指标都失败时 engine 产出的空评价。"""
+    """二级指标下全部观测点都失败时 engine 产出的空评价。"""
     return DimensionEvaluation(
         dim_id=dim_id,
         feedback_report={"primary_score": None, "radar": [], "dimensions": {}},
@@ -193,7 +193,7 @@ def test_eval_builds_package_from_input_file(
 def test_eval_without_dim_evaluates_all_primary_dimensions(
     configs_root: Path, sample_file: Path, recorded: Dict[str, Any]
 ) -> None:
-    """不传 --dim 时传 None 给 engine——由 engine 自己发现当前任务全部一级指标。"""
+    """不传 --dim 时传 None 给 engine——由 engine 自己发现当前任务全部二级指标。"""
     result = _run_eval(sample_file, configs_root)
 
     assert result.exit_code == 0, result.output
@@ -335,7 +335,7 @@ def test_eval_rejects_missing_configs_root(
 def test_eval_exits_nonzero_when_nothing_scored(
     configs_root: Path, sample_file: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """全维度失败时 engine 不再抛异常（否则会拖垮同 sample 其余一级指标），
+    """全维度失败时 engine 不再抛异常（否则会拖垮同 sample 其余二级指标），
     但 CLI 必须退非零——否则脚本会把"什么都没评出来"当成功。"""
 
     class _AllFailedEngine:
@@ -347,7 +347,7 @@ def test_eval_exits_nonzero_when_nothing_scored(
     result = _run_eval(sample_file, configs_root)
 
     assert result.exit_code == 1
-    assert "全部二级指标评价失败" in result.output
+    assert "全部观测点评价失败" in result.output
     assert "401 unauthorized" in result.output
 
 
@@ -365,7 +365,7 @@ def test_render_summary_shows_scores_sources_and_totals() -> None:
 
 
 def test_render_summary_surfaces_failed_dimensions() -> None:
-    """失败隔离下被跳过的二级指标必须打印出来，否则用户以为评了全部维度。"""
+    """失败隔离下被跳过的观测点必须打印出来，否则用户以为评了全部维度。"""
     evaluation = _evaluation("d1", failed_dims=[{"dimension_id": "d1_3", "error": "boom"}])
 
     text = cli._render_summary({"d1": evaluation})

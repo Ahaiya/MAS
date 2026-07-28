@@ -11,13 +11,13 @@ cp .env.example .env          # 填入厂商密钥
 uv run python scripts/cli.py config validate --task experiment
 ```
 
-`config validate` 走一遍配置：仲裁策略、五套 prompt、该任务下每个一级指标的量规是否都存在且能解析。跑通了再评。
+`config validate` 走一遍配置：仲裁策略、五套 prompt、该任务下每个二级指标的量规是否都存在且能解析。跑通了再评。
 
 ```bash
-# 评单个一级指标
+# 评单个二级指标
 uv run python scripts/cli.py eval <file> --task experiment --dim a1
 
-# 不传 --dim：评该任务下全部一级指标
+# 不传 --dim：评该任务下全部二级指标
 uv run python scripts/cli.py eval <file> --task experiment
 ```
 

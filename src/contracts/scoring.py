@@ -1,7 +1,7 @@
 """
 评分契约：独立双链路评价的数据结构。
 
-  Unit[]             -> DimensionScore    （单 Rater / Rater3 对一个二级指标的评分）
+  Unit[]             -> DimensionScore    （单 Rater / Rater3 对一个观测点的评分）
   DimensionScore     -> RaterChainResult  （单 Rater 完整链：选段 + 证据 + 分数）
   RaterChainResult[] -> FinalDecision     （两链比较：一致 or Rater3 仲裁后）
 
@@ -38,11 +38,11 @@ class ScoreSource(str, Enum):
 
 @dataclass(frozen=True)
 class DimensionScore:
-    """单次评分（Rater 的 score 阶段，或 Rater3 仲裁）对一个二级指标的评分结果。
+    """单次评分（Rater 的 score 阶段，或 Rater3 仲裁）对一个观测点的评分结果。
 
         属性：
-            dimension_id: 来自评分量规配置的不透明二级指标标识符。
-            score: 该二级指标的 ScoreRepresentation。
+            dimension_id: 来自评分量规配置的不透明观测点标识符。
+            score: 该观测点的 ScoreRepresentation。
             supporting_unit_ids: 支持该评分的 Unit 编号引用。
             rationale: 评分理由（自由文本，用于审计追踪）。
             confidence: 评分者的置信度，范围 [0.0, 1.0]。"""
@@ -75,13 +75,13 @@ class DimensionScore:
 
 @dataclass(frozen=True)
 class RaterChainResult:
-    """单个 Rater 对一个二级指标的完整链：选段 → 取证 → 评分。
+    """单个 Rater 对一个观测点的完整链：选段 → 取证 → 评分。
 
         选段、证据引用与最终分数/rationale 绑定在同一结构里，构成可独立审计的一条链。
 
         属性：
             rater_id: 标识生成该链的评分代理（例如 "rater_1"）。
-            dimension_id: 来自评分量规配置的不透明二级指标标识符。
+            dimension_id: 来自评分量规配置的不透明观测点标识符。
             selected_unit_ids: select 阶段选出的相关 Unit 编号。
             evidence_unit_ids: extract 阶段引用为证据的 Unit 编号。
             score: score 阶段产出的 DimensionScore（含最终 rationale/confidence）。"""
@@ -115,11 +115,11 @@ class RaterChainResult:
 
 @dataclass(frozen=True)
 class FinalDecision:
-    """一个二级指标的最终权威评分决定（双链一致，或经 Rater3 仲裁）。
+    """一个观测点的最终权威评分决定（双链一致，或经 Rater3 仲裁）。
 
         属性：
-            dimension_id: 来自评分量规配置的不透明二级指标标识符。
-            final_score: 该二级指标的权威 ScoreRepresentation。
+            dimension_id: 来自评分量规配置的不透明观测点标识符。
+            final_score: 该观测点的权威 ScoreRepresentation。
             source: 该分数的来源 —— consensus（双链一致）或 adjudicated（Rater3 仲裁）。
             unit_ids: 支持最终决定的 Unit 编号引用。"""
 

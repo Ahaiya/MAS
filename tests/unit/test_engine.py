@@ -47,8 +47,8 @@ def _write_dim_yaml(dim_dir: Path, dim_id: str, sub_dim_codes: list, weights: Op
 
 @pytest.fixture
 def configs_root(tmp_path: Path) -> Path:
-    """一个最小 configs_root：一个任务下两个一级指标（d1 有 1 个二级指标，
-    d2 有 1 个二级指标），复用仓库真实的 v2 prompt yaml + adjudication policy。"""
+    """一个最小 configs_root：一个任务下两个二级指标（d1 有 1 个观测点，
+    d2 有 1 个观测点），复用仓库真实的 v2 prompt yaml + adjudication policy。"""
     root = tmp_path / "configs"
     (root / "tasks" / "testtask" / "dimension").mkdir(parents=True)
     (root / "prompts").mkdir(parents=True)
@@ -66,8 +66,8 @@ def configs_root(tmp_path: Path) -> Path:
 
 @pytest.fixture
 def configs_root_multi(tmp_path: Path) -> Path:
-    """一个最小 configs_root：一个任务下一个一级指标 d1，含 3 个二级指标
-    （d1_1/d1_2/d1_3）——用于练到二级指标级并发（单个二级指标不足以触发并发）。"""
+    """一个最小 configs_root：一个任务下一个二级指标 d1，含 3 个观测点
+    （d1_1/d1_2/d1_3）——用于练到观测点级并发（单个观测点不足以触发并发）。"""
     root = tmp_path / "configs"
     (root / "tasks" / "testtask" / "dimension").mkdir(parents=True)
     (root / "prompts").mkdir(parents=True)
@@ -84,7 +84,7 @@ def configs_root_multi(tmp_path: Path) -> Path:
 
 @pytest.fixture
 def configs_root_weighted(tmp_path: Path) -> Path:
-    """一个最小 configs_root：一级指标 d1 含 3 个观测点，权重 0.2/0.3/0.5（非均分）——
+    """一个最小 configs_root：二级指标 d1 含 3 个观测点，权重 0.2/0.3/0.5（非均分）——
     用于验证量规里的 weight 真的影响 dim 汇总分。"""
     root = tmp_path / "configs"
     (root / "tasks" / "testtask" / "dimension").mkdir(parents=True)
@@ -108,12 +108,12 @@ def _model_config_with_max_workers(tmp_path: Path, max_workers: int) -> Path:
 
 class _StageAwareProvider(BaseProvider):
     """按 request.metadata 里的 stage_name 返回固定响应，内容不依赖调用顺序——
-    多个二级指标并发调用同一个 provider 实例时，谁先谁后都产出同样的分数，
+    多个观测点并发调用同一个 provider 实例时，谁先谁后都产出同样的分数，
     用来验证"并发结果与串行一致"而不必依赖 FakeProvider 的 FIFO 顺序（并发下
     多个线程对同一个 FakeProvider 的调用顺序本就是不确定的）。
 
     `fail_on_dimension_id` 指定时，命中该 dimension_id 的调用直接抛错，用来
-    验证单个二级指标失败被隔离、不拖垮其余二级指标。"""
+    验证单个观测点失败被隔离、不拖垮其余观测点。"""
 
     _RESPONSES = {
         "select": {"selected_unit_ids": [0, 1]},
@@ -176,7 +176,7 @@ def _text_response(text: str, tokens: int = 10) -> LLMResponse:
 
 
 def _consensus_rater_providers(score: int = 3) -> Dict[str, BaseProvider]:
-    """两个 rater 对每个二级指标都打相同分——一致，不触发仲裁。"""
+    """两个 rater 对每个观测点都打相同分——一致，不触发仲裁。"""
     script = [
         fake_response({"selected_unit_ids": [0, 1]}),
         fake_response({"evidence_unit_ids": [0]}),
@@ -462,7 +462,7 @@ providers:
         )
 
 
-# ── 二级指标级并发 ────────────────────────────────────────────────────────────
+# ── 观测点级并发 ────────────────────────────────────────────────────────────
 
 
 def test_concurrent_result_matches_sequential(configs_root_multi: Path, tmp_path: Path) -> None:
@@ -492,7 +492,7 @@ def test_concurrent_result_matches_sequential(configs_root_multi: Path, tmp_path
 
 
 def test_concurrency_runs_secondary_dims_in_parallel_not_serially(configs_root_multi: Path, tmp_path: Path) -> None:
-    """3 个二级指标、单个 rater 调用耗时 ~50ms：串行至少 300ms（3 dim × 2 rater ×
+    """3 个观测点、单个 rater 调用耗时 ~50ms：串行至少 300ms（3 dim × 2 rater ×
     50ms），并发（max_workers=3）应明显快于串行耗时之和——证明确实并发而非只是
     接口上加了参数。"""
 
@@ -534,7 +534,7 @@ def test_concurrency_runs_secondary_dims_in_parallel_not_serially(configs_root_m
     engine.evaluate(_package(), dim="d1")
     elapsed = time.perf_counter() - started
 
-    assert elapsed < 0.9 * 3  # 远低于 3 个二级指标完全串行的下界
+    assert elapsed < 0.9 * 3  # 远低于 3 个观测点完全串行的下界
 
 
 # ── 观测点权重 ────────────────────────────────────────────────────────────────
@@ -620,7 +620,7 @@ def test_single_dimension_failure_is_isolated(configs_root_multi: Path, tmp_path
 def test_all_dimensions_failing_records_errors_without_masking_them(
     configs_root_multi: Path, tmp_path: Path
 ) -> None:
-    """全部二级指标都失败时，各维度的真实错误必须原样记下来。
+    """全部观测点都失败时，各维度的真实错误必须原样记下来。
 
     此时没有任何 FinalDecision 可聚合——硬把空 decisions 往下送会在
     aggregate_final_decisions 炸出一条与根因无关的"decisions 不能为空"，把真正
@@ -658,8 +658,8 @@ def test_all_dimensions_failing_records_errors_without_masking_them(
 def test_one_primary_dimension_failing_does_not_kill_the_others(
     configs_root: Path, tmp_path: Path
 ) -> None:
-    """一个一级指标整体失败，不能拖垮同一 sample 下其余一级指标（US31：不崩整个
-    sample）。configs_root 里 d1/d2 各有一个二级指标，让 d1 的那个必失败。"""
+    """一个二级指标整体失败，不能拖垮同一 sample 下其余二级指标（US31：不崩整个
+    sample）。configs_root 里 d1/d2 各有一个观测点，让 d1 的那个必失败。"""
     providers: Dict[str, BaseProvider] = {
         "rater_1": _StageAwareProvider(score=3, fail_on_dimension_id="d1_1", name="r1"),
         "rater_2": _StageAwareProvider(score=3, name="r2"),

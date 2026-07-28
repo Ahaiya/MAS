@@ -25,11 +25,26 @@
 
 **Blocked by:** 01、02、03、04
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] 约 133 处 `一级指标` / `二级指标` 逐处改正——**含义平移了一级，不可全局替换**，每一处都要判断当前指的是哪一层
-- [ ] `CONTEXT.md` 词汇表整节按新层级重写
-- [ ] `CONTEXT.md` 新增规则："`configs/` 只放引擎会读的文件"
-- [ ] `README.md`、`scripts/README.md`、`docs/REFACTOR_DESIGN.md` 术语同步
-- [ ] 测试代码与 docstring 中的术语同步
-- [ ] 全仓搜索确认无残留的旧用法
+- [x] 约 133 处 `一级指标` / `二级指标` 逐处改正——**含义平移了一级，不可全局替换**，每一处都要判断当前指的是哪一层
+- [x] `CONTEXT.md` 词汇表整节按新层级重写
+- [x] `CONTEXT.md` 新增规则："`configs/` 只放引擎会读的文件"
+- [x] `README.md`、`scripts/README.md`、`docs/REFACTOR_DESIGN.md` 术语同步
+- [x] 测试代码与 docstring 中的术语同步
+- [x] 全仓搜索确认无残留的旧用法
+
+## Comments
+
+实际改动 101 处（src 65 / tests 17 / scripts+docs+configs 19），按目录切三份并行执行。
+
+**一处跨边界冲突，已正确收敛**：`scripts/cli.py` 打印的 `全部二级指标评价失败` 与
+`tests/unit/test_cli.py` 对该文案的断言由两个不同执行者分别修改，两边独立得出
+`全部观测点评价失败`，映射一致，无需人工协调。
+
+**判断为原用法正确因而未改**：`scripts/README.md` 里 run_trace 说明中的"维度"是中性词，
+不属三层术语；`docs/REFACTOR_DESIGN.md:347` 的"二级指标量规"本来就是对的。`src/` 里
+55 处 grep 命中**全部**是错位用法——该目录下不存在任何指 A–F 能力域的正确用法。
+
+全仓复查：`一级指标` 现在只剩 `CONTEXT.md` 词汇表里的 domain 定义，以及量规原文
+`docs/rubric.md`（原文用法本就正确，未动）。

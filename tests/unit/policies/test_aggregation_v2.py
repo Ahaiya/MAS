@@ -52,7 +52,7 @@ def test_aggregate_single_surviving_observation_point_equals_its_score() -> None
 
 
 def test_aggregate_treats_consensus_and_adjudicated_the_same() -> None:
-    """一级指标分只看 final_score，不区分 source——两种 source 都已是权威值。"""
+    """二级指标分只看 final_score，不区分 source——两种 source 都已是权威值。"""
     decisions = [
         _decision("a4_1", 2, ScoreSource.CONSENSUS),
         _decision("a4_2", 4, ScoreSource.ADJUDICATED),

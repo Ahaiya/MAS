@@ -404,9 +404,9 @@ scripts/
 ### 8.1 单包评估 CLI
 
 ```bash
-# 评该任务下全部一级指标
+# 评该任务下全部二级指标
 python scripts/cli.py eval <file> --task experiment
-# 只评一个一级指标；--configs 缺省为 configs/
+# 只评一个二级指标；--configs 缺省为 configs/
 python scripts/cli.py eval <file> --task experiment --dim a1
 ```
 
