@@ -1,25 +1,24 @@
-"""日志 Provider 包装器，负责把每次 LLM 调用的关键信息输出到终端和调试包。
+"""日志 Provider 包装器，把每次 LLM 调用的关键信息打到终端。
 
-LoggingProvider — 透明包装器，将 LLM 调用详情打印到终端。
+LoggingProvider 透明包装任何 BaseProvider，逐调用打印，且不改动被包装 provider
+或任何流水线代码。每次调用打印：
 
-包装任何 BaseProvider，并记录每次 complete() 调用，且不修改
-底层 provider 或任何 pipeline 代码。每次调用打印的字段：
+  调用前： label  call#  model  prompt-char-count  [json] flag
+  调用后： elapsed  prompt_tokens+completion_tokens=total  响应预览
 
-  调用前：   label  call#  model  prompt-char-count  [json] flag
-  调用后：  elapsed  prompt_tokens+completion_tokens=total  响应预览
+累计统计（call_count / total_tokens / total_elapsed）作为属性可用，便于调用者
+计算每篇材料的增量：
 
-累计统计（call_count, total_tokens, total_elapsed）作为属性可用，
-以便调用者可以计算每篇文章的增量（delta）：
+    before = p.call_count
+    engine.evaluate(package)
+    delta = p.call_count - before
 
-    before_calls = p.call_count
-    runner.run(request)
-    delta = p.call_count - before_calls
+v1 的 debug bundle 埋点（debug_writer / set_debug_writer）已随 `src/debug/` 一并
+删除——成本与性能改由 engine 的 trace 收集器记录，不再需要第二套旁路写盘机制。
 
 用法：
-    from src.providers.logging_provider import LoggingProvider
-
     provider = LoggingProvider(real_provider, label="rater_1")
-    # provider 是 PipelineRunner 中 real_provider 的直接替代品"""
+    # 可直接顶替 Engine.from_bundle(providers=...) 里的真 provider"""
 
 from __future__ import annotations
 
@@ -27,12 +26,9 @@ import json
 import sys
 import threading
 import time
-from typing import TYPE_CHECKING, TextIO
+from typing import TextIO
 
 from src.providers.base import BaseProvider, LLMRequest, LLMResponse, ProviderCapability
-
-if TYPE_CHECKING:
-    from src.debug.bundle import DebugBundleWriter
 
 
 def _smart_preview(content: str) -> str:
@@ -43,25 +39,18 @@ def _smart_preview(content: str) -> str:
         snippet = content[:60].replace("\n", " ").replace("\r", " ")
         return f'"{snippet}"'
 
-    # 评分假设：显示建议分数
+    # 评分：显示建议分数
     if "proposed_score" in data:
         return f"score={data['proposed_score']}"
 
-    # 证据提取：显示 span 数量 + 来自不同 span 的前几个词
-    if "evidence_spans" in data:
-        spans = data["evidence_spans"]
-        n = len(spans)
-        if not spans:
-            return "0 spans"
-        snippets = []
-        for span in spans[:3]:
-            q = str(span.get("quote", "")).strip()
-            words = q.split()[:5]
-            if words:
-                snippets.append('"' + " ".join(words) + '…"')
-        return f"{n} spans: {', '.join(snippets)}"
+    # 选段/取证：显示引用到的单元编号（v2 证据一律是 unit_ids，不复述原文）
+    for key in ("selected_unit_ids", "evidence_unit_ids", "supporting_unit_ids"):
+        if key in data:
+            ids = data[key] or []
+            head = ", ".join(str(i) for i in ids[:8])
+            suffix = "…" if len(ids) > 8 else ""
+            return f"{key}={len(ids)} [{head}{suffix}]"
 
-    # 回退
     snippet = content[:60].replace("\n", " ").replace("\r", " ")
     return f'"{snippet}"'
 
@@ -74,19 +63,15 @@ class LoggingProvider(BaseProvider):
         inner: BaseProvider,
         label: str = "",
         file: TextIO | None = None,
-        debug_writer: "DebugBundleWriter | None" = None,
     ) -> None:
         """
         Args:
             inner: 要委托的真实 provider。
-            label: 每行日志中显示的易于阅读的阶段/评分者名称，
-                   例如 "rater_1", "evidence_extraction", "feedback"。
-            file:  输出流。默认为 sys.stdout，以便输出与
-                   typer.echo() 交错且无缓冲问题。"""
+            label: 每行日志中显示的易读阶段/评委名称，例如 "rater_1"、"feedback"。
+            file:  输出流。默认 sys.stdout，以便与 typer.echo() 交错且无缓冲问题。"""
         self._inner = inner
         self._label = label
         self._file = file if file is not None else sys.stdout
-        self._debug_writer = debug_writer
         self._call_count: int = 0
         self._total_tokens: int = 0
         self._total_elapsed: float = 0.0
@@ -123,42 +108,8 @@ class LoggingProvider(BaseProvider):
             flush=True,
         )
 
-        debug_call_id = None
-        if self._debug_writer is not None:
-            try:
-                debug_call_id = self._debug_writer.record_llm_call_started(
-                    label=self._label or "llm",
-                    provider_name=self.name,
-                    model_id=model,
-                    request=request,
-                )
-            except Exception as exc:
-                print(
-                    f"[debug-warning] failed to record llm_call_started: {exc}",
-                    file=sys.stderr,
-                    flush=True,
-                )
-
         t0 = time.time()
-        try:
-            response = self._inner.complete(request)
-        except Exception as exc:
-            elapsed = time.time() - t0
-            if self._debug_writer is not None and debug_call_id is not None:
-                try:
-                    self._debug_writer.record_llm_call_error(
-                        call_id=debug_call_id,
-                        error=exc,
-                        elapsed_ms=elapsed * 1000.0,
-                    )
-                except Exception as debug_exc:
-                    print(
-                        f"[debug-warning] failed to record llm_call_error: {debug_exc}",
-                        file=sys.stderr,
-                        flush=True,
-                    )
-            raise
-
+        response = self._inner.complete(request)
         elapsed = time.time() - t0
 
         with self._lock:
@@ -175,20 +126,6 @@ class LoggingProvider(BaseProvider):
             file=self._file,
             flush=True,
         )
-
-        if self._debug_writer is not None and debug_call_id is not None:
-            try:
-                self._debug_writer.record_llm_call_finished(
-                    call_id=debug_call_id,
-                    response=response,
-                    elapsed_ms=elapsed * 1000.0,
-                )
-            except Exception as exc:
-                print(
-                    f"[debug-warning] failed to record llm_call_finished: {exc}",
-                    file=sys.stderr,
-                    flush=True,
-                )
 
         return response
 
@@ -224,7 +161,3 @@ class LoggingProvider(BaseProvider):
     def total_elapsed(self) -> float:
         """花在 complete() 调用内部的累计挂钟秒数。"""
         return self._total_elapsed
-
-    def set_debug_writer(self, debug_writer: "DebugBundleWriter | None") -> None:
-        """附加或分离每次运行的调试包写入器。"""
-        self._debug_writer = debug_writer

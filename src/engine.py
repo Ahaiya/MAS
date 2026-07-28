@@ -17,7 +17,7 @@ default provider。密钥值只从 .env 读（build_provider() 已经这样做�
 
 trace 用收集器模式：每次调用 select/extract/score/adjudicate/feedback 都在
 一层 provider 包装器上记录耗时与 token 用量，engine 在调用前后各拍一次快照
-做差，不侵入 rater.py/adjudicator.py/report.py 内部。并发下同一个 provider
+做差，不侵入 rater.py/adjudicator.py/feedback.py 内部。并发下同一个 provider
 实例被多个线程共享，包装器按线程隔离计数（threading.local）而非加锁，快照
 差值天然只反映当前线程自己发起的调用。
 
@@ -31,17 +31,16 @@ run_trace 里），同样不抛异常——抛了就会把同一 sample 下其�
 
 from __future__ import annotations
 
-import threading
 import time
 import uuid
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, TypeVar
+from typing import Any, Dict, List, Optional
 
 import yaml
 
-from src.agents import rater, reconcile, report
+from src.agents import feedback, rater, reconcile
 from src.artifacts import (
     write_feedback_artifact,
     write_package_artifact,
@@ -54,154 +53,23 @@ from src.config.compiler import (
     load_dimension_rubric,
     strip_configs_prefix,
 )
-from src.contracts.artifact_bundle import PolicySnapshot, ProviderEntryConfig, RubricSnapshot
+from src.contracts.artifact_bundle import PolicySnapshot, RubricSnapshot
 from src.contracts.package import DataPackage
 from src.contracts.scoring import RaterChainResult, ScoreSource
 from src.contracts.trace import RunTraceSummary, StageTrace
-from src.providers.base import BaseProvider, LLMRequest, LLMResponse, ProviderCapability
-from src.providers.factory import build_provider
+from src.engine_config import (
+    DEFAULT_MAX_WORKERS,
+    EngineConfigError,
+    load_max_workers,
+    load_providers_from_model_config,
+)
+from src.providers.base import BaseProvider
+from src.providers.instrumented import InstrumentedProvider, call_with_trace
 from src.providers.prompt_loader import PromptLoader, PromptTemplate
-
-_T = TypeVar("_T")
 
 _REQUIRED_PROVIDERS = frozenset({"rater_1", "rater_2", "feedback"})
 _REQUIRED_TEMPLATES = frozenset({"select", "extraction", "scoring", "feedback"})
-_DEFAULT_MAX_WORKERS = 8
-
-
-class EngineConfigError(Exception):
-    """bundle/model_config 缺失必需配置时抛出——不静默降级。"""
-
-
 # ── trace 收集：provider 包装器 + 调用计时 ─────────────────────────────────────
-
-
-@dataclass
-class _ProviderMetrics:
-    llm_calls: int = 0
-    total_tokens: int = 0
-
-
-class _InstrumentedProvider(BaseProvider):
-    """包装一个 BaseProvider，旁路记录调用次数与 token 用量，供 engine 的收集器
-    模式使用；不改变被包装 provider 的行为。
-
-    二级指标级并发下，同一个 rater 的 provider 实例被多个 worker 线程并发调用。
-    _call_with_trace 靠"调用前后各拍一次快照做差"取得这次调用的用量——如果
-    metrics 是共享计数器，另一个线程在快照窗口之间插入的调用会污染这次差值。
-    按线程隔离 metrics（而非加锁）天然解决这个问题：同一时刻只有发起这次调用
-    的那个线程会读写自己的 metrics，快照差值只反映它自己的调用。"""
-
-    def __init__(self, inner: BaseProvider) -> None:
-        self._inner = inner
-        self._local = threading.local()
-
-    @property
-    def metrics(self) -> _ProviderMetrics:
-        if not hasattr(self._local, "metrics"):
-            self._local.metrics = _ProviderMetrics()
-        metrics: _ProviderMetrics = self._local.metrics  # threading.local 的属性对类型检查是 Any
-        return metrics
-
-    @property
-    def name(self) -> str:
-        return self._inner.name
-
-    @property
-    def capabilities(self) -> "frozenset[ProviderCapability]":
-        return self._inner.capabilities
-
-    def complete(self, request: LLMRequest) -> LLMResponse:
-        response = self._inner.complete(request)
-        metrics = self.metrics
-        metrics.llm_calls += 1
-        metrics.total_tokens += response.usage.total_tokens
-        return response
-
-
-def _call_with_trace(
-    stage: str,
-    rater_id: Optional[str],
-    provider: Optional[_InstrumentedProvider],
-    fn: Callable[..., _T],
-    *args: Any,
-    **kwargs: Any,
-) -> "tuple[_T, StageTrace]":
-    """调用 fn，用 provider 累计的调用数/token 数在前后各拍一次快照做差，产出
-    这次调用的 StageTrace。provider 为 None 时（如 rater_3 未配置且未触发
-    仲裁）llm_calls/tokens 记为 0，只记耗时。"""
-    before = (provider.metrics.llm_calls, provider.metrics.total_tokens) if provider is not None else (0, 0)
-    started = time.perf_counter()
-    result = fn(*args, **kwargs)
-    elapsed_ms = (time.perf_counter() - started) * 1000
-    after = (provider.metrics.llm_calls, provider.metrics.total_tokens) if provider is not None else (0, 0)
-    trace = StageTrace(
-        stage=stage,
-        rater=rater_id,
-        llm_calls=after[0] - before[0],
-        tokens=after[1] - before[1],
-        ms=elapsed_ms,
-    )
-    return result, trace
-
-
-# ── model_config.yaml → providers ───────────────────────────────────────────
-
-
-def _entry_from_dict(raw: Dict[str, Any], *, label: str) -> ProviderEntryConfig:
-    if "api_key_env" not in raw:
-        raise EngineConfigError(f"model_config 中 {label} 缺少必填字段 api_key_env。")
-    return ProviderEntryConfig(
-        api_key_env=raw["api_key_env"],
-        model=raw.get("model", "") or "",
-        api_base=raw.get("api_base", "") or "",
-        params=dict(raw.get("params") or {}),
-    )
-
-
-def _load_providers_from_model_config(model_config_path: Path) -> Dict[str, BaseProvider]:
-    """从 model_config.yaml 读取 raters.{rater_1,rater_2,rater_3} + stages.feedback。
-
-    model_config 是模型/参数唯一来源，缺失该文件或缺 rater_1/rater_2/feedback
-    直接报错——不读 bundle 内嵌 provider_config、不降级单 default provider。
-    rater_3 允许缺失，缺失时的报错时机在 reconcile.py 里（只在真正触发仲裁时）。"""
-    if not model_config_path.exists():
-        raise EngineConfigError(f"model_config not found: {model_config_path}")
-    data = yaml.safe_load(model_config_path.read_text(encoding="utf-8")) or {}
-
-    raters_raw = data.get("raters") or {}
-    stages_raw = data.get("stages") or {}
-    for required in ("rater_1", "rater_2"):
-        if required not in raters_raw:
-            raise EngineConfigError(
-                f"model_config 缺少 raters.{required}——每次评价都需要独立双链路的两个 rater。"
-            )
-    if "feedback" not in stages_raw:
-        raise EngineConfigError("model_config 缺少 stages.feedback——feedback 阶段每次评价都需要 provider。")
-
-    # build_provider 在密钥值缺失时抛 ValueError——那同样是"配置没配好"，归到
-    # EngineConfigError，调用方（CLI）才能统一按配置错误印一行人话。
-    try:
-        providers: Dict[str, BaseProvider] = {
-            rater_id: build_provider(_entry_from_dict(cfg, label=f"raters.{rater_id}"))
-            for rater_id, cfg in raters_raw.items()
-        }
-        providers["feedback"] = build_provider(_entry_from_dict(stages_raw["feedback"], label="stages.feedback"))
-    except ValueError as exc:
-        raise EngineConfigError(str(exc)) from exc
-    return providers
-
-
-def _load_max_workers(model_config_path: Path) -> int:
-    """从 model_config.yaml 的 concurrency 段读取二级指标级并发上限，默认 8。
-
-    并发是性能优化、不是必需配置：文件缺失或没有 concurrency 段时直接用默认值，
-    不像 raters/feedback 那样报错。"""
-    if not model_config_path.exists():
-        return _DEFAULT_MAX_WORKERS
-    data = yaml.safe_load(model_config_path.read_text(encoding="utf-8")) or {}
-    concurrency = data.get("concurrency") or {}
-    return int(concurrency.get("max_workers", _DEFAULT_MAX_WORKERS))
 
 
 # ── Engine ───────────────────────────────────────────────────────────────────
@@ -230,7 +98,7 @@ class Engine:
         templates: Dict[str, PromptTemplate],
         providers: Dict[str, BaseProvider],
         output_dir: Path = Path("artifacts"),
-        max_workers: int = _DEFAULT_MAX_WORKERS,
+        max_workers: int = DEFAULT_MAX_WORKERS,
     ) -> None:
         missing_providers = _REQUIRED_PROVIDERS - providers.keys()
         if missing_providers:
@@ -244,8 +112,8 @@ class Engine:
         self._configs_root = Path(configs_root)
         self._policy = policy
         self._templates = templates
-        self._providers: Dict[str, _InstrumentedProvider] = {
-            name: _InstrumentedProvider(p) for name, p in providers.items()
+        self._providers: Dict[str, InstrumentedProvider] = {
+            name: InstrumentedProvider(p) for name, p in providers.items()
         }
         self._output_dir = Path(output_dir)
         self._max_workers = max_workers
@@ -285,8 +153,6 @@ class Engine:
         adjudication_policy = adjudication_data["adjudication_policy"]
         policy = PolicySnapshot(
             adjudication_policy=adjudication_policy,
-            aggregation_policy={},
-            explanation_policy={},
             policy_version=str(adjudication_policy.get("policy_id", "unknown")),
         )
 
@@ -300,9 +166,9 @@ class Engine:
             Path(model_config_path) if model_config_path is not None else configs_root / "model_config.yaml"
         )
         resolved_providers = (
-            providers if providers is not None else _load_providers_from_model_config(resolved_model_config_path)
+            providers if providers is not None else load_providers_from_model_config(resolved_model_config_path)
         )
-        max_workers = _load_max_workers(resolved_model_config_path)
+        max_workers = load_max_workers(resolved_model_config_path)
 
         return cls(
             bundle_ref=str(bundle_path),
@@ -333,24 +199,24 @@ class Engine:
         dimension_id: str,
         dimension: Dict[str, Any],
         rubric: RubricSnapshot,
-        provider: _InstrumentedProvider,
+        provider: InstrumentedProvider,
         rater_id: str,
     ) -> "tuple[RaterChainResult, List[StageTrace]]":
         traces: List[StageTrace] = []
 
-        selected, t1 = _call_with_trace(
+        selected, t1 = call_with_trace(
             "select", rater_id, provider,
             rater.select, package, dimension, provider, self._templates["select"], rater_id,
         )
         traces.append(t1)
 
-        evidence, t2 = _call_with_trace(
+        evidence, t2 = call_with_trace(
             "extract", rater_id, provider,
             rater.extract, package, selected, dimension, provider, self._templates["extraction"], rater_id,
         )
         traces.append(t2)
 
-        dimension_score, t3 = _call_with_trace(
+        dimension_score, t3 = call_with_trace(
             "score", rater_id, provider,
             rater.score, package, evidence, dimension, rubric, provider, self._templates["scoring"], rater_id,
         )
@@ -370,8 +236,8 @@ class Engine:
         package: DataPackage,
         dimension: Dict[str, Any],
         rubric: RubricSnapshot,
-        rater_1: _InstrumentedProvider,
-        rater_2: _InstrumentedProvider,
+        rater_1: InstrumentedProvider,
+        rater_2: InstrumentedProvider,
     ) -> "tuple[RaterChainResult, RaterChainResult, List[StageTrace]]":
         """一个二级指标的双链评价（rater_1 + rater_2），跑在
         ThreadPoolExecutor 的 worker 线程里。异常原样向上抛出，由
@@ -460,7 +326,7 @@ class Engine:
 
         # reconcile() 本身总会跑（纯比较，可能 0 次 LLM 调用）；只有触发仲裁时才
         # 会内部调用 Rater3。rater 标签因此是调用后才知道的——不用
-        # _call_with_trace 的固定标签，跑完再按结果决定 rater 是 "rater_3" 还是
+        # call_with_trace 的固定标签，跑完再按结果决定 rater 是 "rater_3" 还是
         # None（非 rater 相关阶段），呼应 StageTrace 自身文档里两者都是合法值。
         before = (rater_3.metrics.llm_calls, rater_3.metrics.total_tokens) if rater_3 is not None else (0, 0)
         started = time.perf_counter()
@@ -480,13 +346,13 @@ class Engine:
             )
         )
 
-        feedback_report_dict, feedback_trace = _call_with_trace(
+        feedback_report_dict, feedback_trace = call_with_trace(
             "feedback", None, feedback_provider,
-            report.build_feedback_report, package, decisions, rubric, feedback_provider, self._templates["feedback"],
+            feedback.build_feedback_report, package, decisions, rubric, feedback_provider, self._templates["feedback"],
         )
         stage_traces.append(feedback_trace)
 
-        rater_chains_report = report.build_rater_chains_report(chains_a, chains_b, decisions)
+        rater_chains_report = feedback.build_rater_chains_report(chains_a, chains_b, decisions)
 
         adjudicated_dims = [d.dimension_id for d in decisions if d.source == ScoreSource.ADJUDICATED]
         run_trace = RunTraceSummary(

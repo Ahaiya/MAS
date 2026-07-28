@@ -4,7 +4,7 @@
 `package.json`（切分后带编号单元）落在 sample 层，该 sample 下所有 dim 共享，
 供把 feedback.json/rater_chains.json 里的 unit_ids 解读回原文。`feedback.json`、
 `rater_chains.json` 与 `run_trace.json` 落在 dim 层，每个一级指标一份。纯 IO，
-无 LLM、无业务逻辑——内容组装在 agents/report.py 与 engine.py，本模块只管写盘。"""
+无 LLM、无业务逻辑——内容组装在 agents/feedback.py 与 engine.py，本模块只管写盘。"""
 
 from __future__ import annotations
 

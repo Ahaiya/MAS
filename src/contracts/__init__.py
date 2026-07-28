@@ -1,37 +1,21 @@
 """契约层入口，集中定义流水线阶段之间传递的 typed contract。
 
-MAS 评估引擎 - 契约包
+阶段之间传递的所有数据都必须用此处定义的类型。
 
-本包包含多智能体系统使用的所有数据契约。
-在 agents/nodes 之间传递的所有数据必须使用此处定义的类型。
-
-核心契约：
-- artifact_bundle: 用于配置解析的 ArtifactBundle 和 ResolvedArtifactBundle
-- score_representation: 规范化分数与显示注解分离
-- request_models: 请求规范化与文本分段
-- evidence: 证据跨度与维度观测
-- scoring: 分数假设、冲突、裁决与最终决策
-- trace: 运行追踪与重放元数据"""
+各模块（一律从具体模块导入，本包只再导出配置快照三件套）：
+- `package`: DataPackage 与带全局连续编号的 Unit（证据引用的锚点）
+- `artifact_bundle`: RubricSnapshot / PolicySnapshot / ProviderEntryConfig
+- `score_representation`: 规范化分数与显示注解分离
+- `scoring`: DimensionScore / RaterChainResult / FinalDecision
+- `trace`: StageTrace / RunTraceSummary（只记成本与性能）"""
 
 __version__ = "0.1.0"
 
-from .artifact_bundle import (
-    SchemaVersion,
-    ArtifactRef,
-    ArtifactBundle,
-    RubricSnapshot,
-    PolicySnapshot,
-    ResolvedArtifactBundle,
-    create_artifact_ref,
-)
+from .artifact_bundle import PolicySnapshot, ProviderEntryConfig, RubricSnapshot
 
 __all__ = [
-    "SchemaVersion",
-    "ArtifactRef",
-    "ArtifactBundle",
     "RubricSnapshot",
     "PolicySnapshot",
-    "ResolvedArtifactBundle",
-    "create_artifact_ref",
+    "ProviderEntryConfig",
     "__version__",
 ]

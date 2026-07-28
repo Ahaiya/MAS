@@ -66,7 +66,6 @@ python scripts/server.py
 不要用 `python3 -m http.server` 代替——它没有 `/api/corrections` POST 接口，点击
 `Release` 时会返回 501。
 
-## 遗留文件
-
-`scripts/eval.py` 是被 `cli.py` 取代的 v1 入口，仍依赖 `src/evaluation/runner.py`、
-`src/outer_loop/`、`src/pipeline/` 等待删模块，将随重构 09 一并删除，不要在新代码里引用。
+`server.py` 目前只做静态文件 + `POST /api/corrections`（把教师修正写进
+`experiments/pending_corrections.json`）。消费这个队列的 `CorrectionAgent` 已随 v1
+外环一并删除——人在回路是三期的事，届时重新接线。

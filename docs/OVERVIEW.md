@@ -37,42 +37,45 @@
 
 ---
 
-## 三、内环流水线详解
+## 三、评价流水线详解
 
-流水线由 `src/pipeline/runner.py` 的 `PipelineRunner` 编排，阶段状态机定义在 `src/orchestrator/`。
+流水线由 `src/engine.py` 的 `Engine` 编排，是一条线性函数链，没有状态机与回退重入。
 
 | 阶段 | 模块 | 说明 |
 |------|------|------|
-| **Chunking** | `src/agents/chunker.py` | 将长对话按轮次/主题分块；文本 < 4000 token 时跳过 |
-| **Evidence Extraction** | `src/agents/extractor.py` | 从分块中抽取与各维度相关的证据 span（带 span_id 和 quote） |
-| **Observation** | `src/agents/observer.py` | 将 span 聚合为维度级观测结构 |
-| **Scoring × 2** | `src/agents/scorer.py` | 两个独立 Rater（rater_1 / rater_2）各自打分，产出 ScoreHypothesis |
-| **Consistency Check** | `src/agents/reconciliation.py` | 检测评分冲突；分差 > 1 或 ≥2 维度同向偏移时触发 rater_3 裁决 |
-| **Feedback** | `src/agents/feedback.py` | 基于最终决策生成每维度的中文反馈文本 |
-| **Aggregation** | `src/policies/aggregation.py` | 等权均值聚合各观测点得分，产出综合指标分 |
+| **Segmentation** | `src/segment.py` | 零 LLM 的确定性切分：散文按句、代码块整块、表格按行、标题/图片各成单元；全局连续编号，多文件共享编号空间 |
+| **Select ×2** | `src/agents/rater.py` | 每个 Rater 独立看「单元号 + 每段前若干字节」选出相关单元（先全局扫描） |
+| **Extract ×2** | `src/agents/rater.py` | 只把选中单元全文喂入取证，返回 `unit_ids`（再细节精读） |
+| **Score ×2** | `src/agents/rater.py` | 证据 + 锚点 → `DimensionScore`；与取证是两次独立调用，证据先于分数生成 |
+| **Reconcile** | `src/agents/reconcile.py` | 双链比较；分差 > 1 或 ≥2 维度同向漂移时触发 Rater3 |
+| **Adjudicate** | `src/agents/adjudicator.py` | Rater3 看双链完整证据 + 量规 + 原文，但**看不到双方分数**（防锚定） |
+| **Feedback** | `src/agents/report.py` | 基于最终决策生成每个二级指标的中文反馈；聚合走 `src/policies/aggregation.py` 等权均值 |
 
-### 状态机
+### 链路形状
 
 ```
-INIT → CHUNKING → COVERAGE_PLANNING → EXTRACTING → OBSERVING
-     → SCORING → CONSISTENCY_CHECK → [ADJUDICATION →] FEEDBACK → DONE
+segment → rate(r1) → rate(r2) → reconcile →[adjudicate]→ feedback
 ```
 
-回退路径：`RE_EXTRACT`、`RE_SCORE`（最多重试 2 次，超限进入 `FAILED`）
+两个 Rater 各自独立完成「选段 → 取证 → 评分」完整链路，互不共享证据——独立性落在
+"看哪里"这个最关键的分歧点上。同一 sample 下各二级指标并发评价（`ThreadPoolExecutor`，
+上限 `model_config.yaml` 的 `concurrency.max_workers`，默认 8）。
+
+单个二级指标失败只标记该维度失败并记入 `run_trace.json` 的 `failed_dims`，其余维度
+照常产出；一个一级指标整体失败也不拖垮同 sample 的其余一级指标。
 
 ---
 
-## 四、人工反馈外环
+## 四、人工反馈外环（三期，当前未接线）
 
-教师在前端修改评分结果后，触发外环：
+前端 POST `/api/corrections` 仍会把教师修正写进 `experiments/pending_corrections.json`
+（见 `scripts/server.py`），但消费这个队列的 `CorrectionAgent` / `ConfigPatcher` 已随 v1
+外环一并删除。人在回路是三期的事，届时重新接线。
 
-1. **修正队列**：前端 POST `/api/corrections` → 写入 `experiments/pending_corrections.json`
-2. **触发时机**：每次运行 `scripts/eval.py` 前，`check_and_apply_corrections()` 自动检查队列
-3. **CorrectionAgent**（`src/outer_loop/correction_agent.py`）：读取当前 bundle 指向的 `task_context.yaml` + 修正事件 → 调用 LLM → 生成更新后的 YAML → 通过 `ConfigPatcher` 写入并快照
-4. **修正信号映射**：
+当前唯一相关的钩子是 `feedback.json` 里每个二级指标的 `source` 字段
+（`consensus` / `adjudicated`），供教师识别哪些分经过仲裁、需要重点复核。
 
-| 教师操作 | 写入字段 | 位置 |
-|---------|---------|------|
+---------|---------|------|
 | 改最终分数 | `calibration_notes` | `task_context.yaml → scoring_context[i]` |
 | 改反馈文本 | `feedback_hints` | `task_context.yaml → scoring_context[i]` |
 | 新增证据引用 | `extraction_hints` | `task_context.yaml → scoring_context[i]` |
@@ -87,33 +90,47 @@ INIT → CHUNKING → COVERAGE_PLANNING → EXTRACTING → OBSERVING
 
 ```
 configs/
-├── bundles/
-│   └── engineering_eval_baseline.bundle.yaml   # 入口 bundle，定义所有引用
-├── model_config.yaml                            # LLM 分配（各阶段/各 rater）
+├── bundle.yaml                                  # 入口 bundle：active_task_id + policies + prompts
+├── model_config.yaml                            # LLM 分配（各 rater / feedback 阶段）+ concurrency
 ├── tasks/
 │   └── {task_name}/
-│       ├── task_context.yaml                   # 任务说明 + 各维度 calibration/hints（外环唯一修改目标）
+│       ├── task_context.yaml                   # 任务说明 + 各维度 calibration/hints
 │       └── dimension/
-│           └── {dim_id}_rubric.yaml            # 二级指标量规（1-5 级锚点）
+│           └── {dim_id}_rubric.yaml            # 一级指标量规，内含多个二级指标（1-5 级锚点）
 ├── policies/
-│   ├── adjudication/engineering_eval_adjudication.yaml  # 裁决触发规则（全局）
-│   ├── aggregation/engineering_eval_aggregation.yaml    # 聚合策略（auto_equal，全局）
-│   └── chunking/engineering_eval_chunking.yaml          # 分块策略（全局）
+│   └── adjudication/engineering_eval_adjudication.yaml  # 仲裁触发规则（全局）
 ├── prompts/
-│   ├── chunking.yaml          # 分块提示词模板（Jinja2，支持 chunking_hints）
-│   ├── evidence_extraction.yaml  # 证据提取提示词（支持 extraction_hints）
-│   ├── scoring.yaml           # 评分提示词
-│   └── explanation.yaml       # 反馈生成提示词（支持 feedback_hints）
+│   ├── select.yaml             # 选段提示词（单元号 + 前若干字节预览）
+│   ├── extraction.yaml         # 取证提示词（返回 unit_ids）
+│   ├── rater_scoring.yaml      # 评分提示词
+│   ├── adjudication.yaml       # Rater3 仲裁提示词
+│   └── feedback.yaml           # 反馈生成提示词
 └── rubrics/
     └── source/rubric.md       # 量规原始来源（参考文档）
 ```
 
-### Bundle 解析
+聚合不再读 policy——一级指标分固定是各二级指标的 `auto_equal` 等权平均；分块 policy
+随 LLM 分块一并删除，切分改为零 LLM 的确定性过程。
 
-Bundle 是配置入口，`src/config/resolver.py` 的 `ConfigResolver` 负责解析路径模板：
+### Bundle 结构
 
-- `{active_task_id}` → bundle 中的 `active_task_id` 字段（如 `maker_hackathon`）
-- `{active_dim_id}` → 运行时 `--dim` 参数注入（如 `a4`）
+`configs/bundle.yaml` 直接列出引用，没有路径模板与冻结哈希：
+
+```yaml
+schema_version: "2.0"
+bundle_id: "default"
+active_task_id: "maker_hackathon"     # 切任务改这里
+policies:
+  adjudication: "configs/policies/adjudication/engineering_eval_adjudication.yaml"
+prompts:
+  select: "configs/prompts/select.yaml"
+  extraction: "configs/prompts/extraction.yaml"
+  scoring: "configs/prompts/rater_scoring.yaml"
+  adjudication: "configs/prompts/adjudication.yaml"
+  feedback: "configs/prompts/feedback.yaml"
+```
+
+用 `python scripts/cli.py config validate` 校验引用闭包是否完整。
 
 ### task_context.yaml 结构
 
@@ -146,18 +163,22 @@ pip install -e ".[real-provider]"
 ### 单篇评估
 
 ```bash
-python -m scripts eval data/training/maker_hackathon/sample.md --dim a4
-# 等价写法
-python -m scripts eval --input data/training/maker_hackathon/sample.md \
-    --bundle configs/bundles/engineering_eval_baseline.bundle.yaml \
-    --dim a4
+# 评单个一级指标
+python scripts/cli.py eval data/training/maker_hackathon/sample.md --dim a4
+# 不传 --dim：评当前任务下全部一级指标
+python scripts/cli.py eval data/training/maker_hackathon/sample.md
+# 校验配置引用闭包（不需要密钥）
+python scripts/cli.py config validate
 ```
 
-产物写入 `artifacts/{task}/{sample_name}/{dim}/`：
-- `feedback.json`：各维度分数 + 反馈文本 + 证据引用
-- `hypotheses.json`：各 rater 原始假设
-- `adjudication_records.json`：裁决记录
-- `conflicts.json`：分歧记录
+参数只有位置 `INPUT_FILE` + `--bundle`（默认 `configs/bundle.yaml`）+ `--dim` + `--output-dir`。
+模型/参数固定从 `configs/model_config.yaml` 读，密钥值只从 `.env` 读。
+
+产物写入 `artifacts/{task}/{sample}/`：
+- `package.json`（sample 层，各 dim 共享）：切分后带编号的单元，用于把 `unit_ids` 解读回原文
+- `{dim}/feedback.json`：一级指标分 + 雷达数据 + 各二级指标 final_score/source/证据 `unit_ids`/文字反馈
+- `{dim}/rater_chains.json`：双链完整证据 + 仲裁记录（审计用）
+- `{dim}/run_trace.json`：成本与性能（token / 耗时 / 被仲裁的维度 / 失败的维度）
 
 ### 启动前端审核台
 
@@ -179,16 +200,19 @@ python scripts/server.py          # 默认 8000 端口，包含静态文件服�
 
 | 文件 | 职责 |
 |------|------|
-| `scripts/eval.py` | 主评估入口（含修正前检查） |
+| `scripts/cli.py` | 唯一命令行入口（`eval` + `config validate`） |
 | `scripts/server.py` | 前端开发服务器 + `/api/corrections` 接口 |
-| `src/evaluation/runner.py` | 单篇材料评估执行器（被 `scripts/eval.py` 调用） |
-| `src/pipeline/runner.py` | 内环流水线状态机编排 |
-| `src/config/resolver.py` | Bundle 解析 + Artifact 加载 + Schema 校验 |
-| `src/outer_loop/correction_agent.py` | 教师修正 → 配置更新的 LLM Agent |
-| `src/outer_loop/correction_models.py` | 修正事件数据模型 + JSON 序列化 |
-| `src/outer_loop/config_patcher.py` | ConfigPatcher（白名单 + 快照 + patch） |
-| `src/policies/aggregation.py` | 聚合逻辑（支持 `auto_equal` 等权） |
-| `src/agents/feedback.py` | 反馈生成，支持 per-dimension `feedback_hints` |
+| `src/engine.py` | 门面与线性编排：`Engine.from_bundle(path).evaluate(package, dim)` |
+| `src/segment.py` | 零 LLM 确定性单元切分 + 上下文预算裁剪 |
+| `src/agents/rater.py` | 单 Rater 完整链 select → extract → score |
+| `src/agents/reconcile.py` | 双链比较，分歧时调 Rater3 |
+| `src/agents/adjudicator.py` | Rater3 仲裁（不看双方分数） |
+| `src/agents/report.py` | feedback.json / rater_chains.json 内容组装 |
+| `src/artifacts.py` | 三层产物落盘 `{task}/{sample}/{dim}/` |
+| `src/config/compiler.py` | 按 task_id + dim_id 加载量规 → `RubricSnapshot` |
+| `src/policies/adjudication.py` | 仲裁触发判断（纯计算） |
+| `src/policies/aggregation.py` | 聚合逻辑（`auto_equal` 等权） |
+| `src/providers/fake.py` | `FakeProvider` —— 测试主接缝 |
 | `frontend/src/app.js` | 前端主逻辑（含 Release 提交修正） |
 | `frontend/src/data/loadReviewData.js` | 从 artifacts/ 加载评估产物 |
 
@@ -200,9 +224,9 @@ python scripts/server.py          # 默认 8000 端口，包含静态文件服�
 
 1. 在 `configs/tasks/{task_name}/dimension/` 下按 `a4_rubric.yaml` 格式创建量规文件
 2. 在 `configs/tasks/{task_name}/task_context.yaml` 中填写任务说明
-3. 修改 bundle 中的 `active_task_id` 为新任务名（或新建一个 bundle 文件）
+3. 修改 `configs/bundle.yaml` 中的 `active_task_id` 为新任务名
 4. 在 `data/training/{task_name}/` 下放入待评估的 `.md` 文件
-5. 运行 `python -m scripts eval {file.md} --dim {dim_id}`
+5. 运行 `python scripts/cli.py eval {file.md} --dim {dim_id}`
 
 无需修改任何代码或策略文件（聚合策略已改为 `auto_equal`，自动适配任意维度数量）。
 

@@ -1,4 +1,4 @@
-from src.agents import report
+from src.agents import feedback
 from src.contracts.artifact_bundle import RubricSnapshot
 from src.contracts.package import DataPackage, Unit
 from src.contracts.score_representation import create_score_representation
@@ -75,7 +75,7 @@ def test_build_radar_data_returns_score_per_dimension_sorted() -> None:
         _decision("a4_1", 3, ScoreSource.CONSENSUS, [0]),
     ]
 
-    radar = report.build_radar_data(decisions)
+    radar = feedback.build_radar_data(decisions)
 
     assert radar == [{"dimension_id": "a4_1", "score": 3}, {"dimension_id": "a4_2", "score": 4}]
 
@@ -87,7 +87,7 @@ def test_generate_feedback_text_returns_llm_content() -> None:
     decision = _decision("a4_1", 3, ScoreSource.CONSENSUS, [0])
     provider = FakeProvider([_text_response("做得不错，继续加油。")])
 
-    text = report.generate_feedback_text(_package(), decision, _DIMENSIONS[0], provider, _feedback_template())
+    text = feedback.generate_feedback_text(_package(), decision, _DIMENSIONS[0], provider, _feedback_template())
 
     assert text == "做得不错，继续加油。"
 
@@ -102,7 +102,7 @@ def test_build_feedback_report_has_primary_score_radar_and_per_dim_fields() -> N
     ]
     provider = FakeProvider([_text_response("反馈1"), _text_response("反馈2")])
 
-    result = report.build_feedback_report(_package(), decisions, _rubric(), provider, _feedback_template())
+    result = feedback.build_feedback_report(_package(), decisions, _rubric(), provider, _feedback_template())
 
     assert result["primary_score"] == 4.0
     assert result["radar"] == [{"dimension_id": "a4_1", "score": 3}, {"dimension_id": "a4_2", "score": 5}]
@@ -125,7 +125,7 @@ def test_feedback_report_unit_ids_resolve_back_to_package_text() -> None:
     provider = FakeProvider([_text_response("反馈")])
     package = _package()
 
-    result = report.build_feedback_report(package, decisions, _rubric(), provider, _feedback_template())
+    result = feedback.build_feedback_report(package, decisions, _rubric(), provider, _feedback_template())
 
     cited_texts = [package.get_unit(uid).text for uid in result["dimensions"]["a4_1"]["unit_ids"]]
     assert cited_texts == ["text 3", "text 4"]
@@ -142,7 +142,7 @@ def test_build_rater_chains_report_includes_both_full_chains_and_final_decisions
         _decision("a4_2", 4, ScoreSource.ADJUDICATED, [2]),
     ]
 
-    result = report.build_rater_chains_report(chains_a, chains_b, decisions)
+    result = feedback.build_rater_chains_report(chains_a, chains_b, decisions)
 
     assert set(result.keys()) == {"chains", "final_decisions"}
     assert len(result["chains"]) == 4
@@ -156,6 +156,6 @@ def test_build_rater_chains_report_does_not_collide_when_rater_ids_match() -> No
     chains_a = [_chain("rater_x", "a4_1", 3)]
     chains_b = [_chain("rater_x", "a4_2", 4)]
 
-    result = report.build_rater_chains_report(chains_a, chains_b, [])
+    result = feedback.build_rater_chains_report(chains_a, chains_b, [])
 
     assert len(result["chains"]) == 2

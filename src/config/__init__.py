@@ -1,17 +1,18 @@
-"""配置子系统入口，负责加载、校验并解析驱动流水线运行的 bundle 配置。
+"""配置子系统入口：加载 bundle 声明的任务量规。
 
-配置加载与解析模块。
+v1 的 bundle 工件引用解析 + 冻结哈希（ConfigCompiler / ConfigResolver / freeze）
+已随旧流程删除，现在只保留「按 task_id + dim_id 读量规」这条路径。"""
 
-本模块提供用于加载、校验并解析驱动 MAS 评估系统运行的配置 bundle 的基础设施。"""
-from .compiler import ConfigCompiler, ConfigCompileError
-from .resolver import ConfigResolver, ResolverError
-from .freeze import compute_content_hash, compute_bundle_hash
+from .compiler import (
+    ConfigCompileError,
+    list_task_dimension_ids,
+    load_dimension_rubric,
+    strip_configs_prefix,
+)
 
 __all__ = [
-    "ConfigCompiler",
     "ConfigCompileError",
-    "ConfigResolver",
-    "ResolverError",
-    "compute_content_hash",
-    "compute_bundle_hash",
+    "list_task_dimension_ids",
+    "load_dimension_rubric",
+    "strip_configs_prefix",
 ]

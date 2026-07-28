@@ -1,22 +1,17 @@
 """
-Provider 工厂，负责按配置装配真实 provider 及其包装层。
+Provider 工厂：按 ProviderEntryConfig 装配真实 provider 及其重试/超时包装层。
 
-Provider Factory — 根据 ProviderEntryConfig 构建 BaseProvider 实例。
+model / api_base 从配置条目读，读不到则退到全局环境变量，再退到安全默认值。
+密钥值只从 env 读——配置里存的永远只是环境变量的**名字**（api_key_env）。
 
-从配置条目及环境变量中读取 model、api_base 和 API key。所有密钥值保留在 env 中；bundle 仅存储环境变量的 *名称* (api_key_env)。
-
-model / api_base 的回退解析顺序：
-  1. 直接在 ProviderEntryConfig 中设置的值（非空字符串）
-  2. 对应的全局环境变量 (LLM_MODEL / LLM_API_BASE)
-  3. 硬编码的安全默认值 ("gpt-4o-mini" / None)
-
-BOUNDARY RULE：此模块不得导入 rubric、policy 或 orchestrator 模块。它仅桥接 ProviderEntryConfig → BaseProvider。"""
+BOUNDARY RULE：本模块只做 ProviderEntryConfig → BaseProvider 的桥接，不得导入
+rubric 或 policy。"""
 
 from __future__ import annotations
 
 import os
 
-from src.contracts.artifact_bundle import ProviderConfig, ProviderEntryConfig
+from src.contracts.artifact_bundle import ProviderEntryConfig
 from src.providers.base import BaseProvider
 from src.providers.guards import GuardedProvider, RetryConfig
 from src.providers.openai_compatible import OpenAICompatibleProvider
@@ -56,26 +51,3 @@ def build_provider(entry: ProviderEntryConfig) -> BaseProvider:
         timeout=timeout,
     )
     return GuardedProvider(inner, RetryConfig(max_retries=max_retries, retry_delay_seconds=retry_delay))
-
-
-def build_provider_map(provider_config: ProviderConfig) -> tuple[
-    BaseProvider,
-    dict[str, BaseProvider],
-    dict[str, BaseProvider],
-]:
-    """构建在 ProviderConfig 中声明的所有 providers。
-    
-        Returns:
-            (default_provider, rater_providers, stage_providers)
-            其中 rater_providers 映射 rater_id → BaseProvider
-            而 stage_providers 映射 stage_name → BaseProvider。"""
-    default = build_provider(provider_config.default)
-    rater_providers = {
-        rater_id: build_provider(entry)
-        for rater_id, entry in provider_config.rater_providers.items()
-    }
-    stage_providers = {
-        stage: build_provider(entry)
-        for stage, entry in provider_config.stage_providers.items()
-    }
-    return default, rater_providers, stage_providers

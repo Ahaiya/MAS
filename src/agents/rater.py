@@ -1,7 +1,7 @@
 """
 单 Rater 完整链：select → extract → score，产出 RaterChainResult。
 
-合并旧 extractor.py + observer.py + scorer.py（旧文件本票不删，留到 09）。
+合并了 v1 的 extractor.py + observer.py + scorer.py（三者已删除）。
 一个 Rater 三趟共用同一个 provider（raters.rater_N），不拆分；取证与评分是两次
 独立 LLM 调用，保证证据先于分数生成。模型引用证据只能返回已存在的单元编号——
 select 阶段越界编号静默过滤（只是候选范围，不是证据主张），extract/score 阶段

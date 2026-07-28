@@ -41,8 +41,6 @@ def _policy() -> PolicySnapshot:
                 },
             ]
         },
-        aggregation_policy={},
-        explanation_policy={},
         policy_version="test",
     )
 

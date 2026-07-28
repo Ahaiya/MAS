@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from src.agents import report
+from src.agents import feedback
 from src.artifacts import (
     dim_dir,
     sample_dir,
@@ -117,7 +117,7 @@ def test_feedback_and_package_round_trip_through_disk(tmp_path: Path) -> None:
     )
     template = PromptLoader().load("configs/prompts/feedback.yaml")
 
-    feedback_report = report.build_feedback_report(package, decisions, rubric, provider, template)
+    feedback_report = feedback.build_feedback_report(package, decisions, rubric, provider, template)
     write_package_artifact(tmp_path, "maker_hackathon", "s1", package)
     write_feedback_artifact(tmp_path, "maker_hackathon", "s1", "a4", feedback_report)
 

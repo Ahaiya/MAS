@@ -2,6 +2,18 @@
 
 > 面向后续接入 Web 网站的开发者，全面描述 MAS（Multi-Agent System）评价引擎的架构、数据流与集成接口。
 
+> [!WARNING]
+> **本文描述的是引擎 v1，已随 v2 重构大面积过期，暂勿据此接入。**
+>
+> v2 把流水线换成了「确定性切分 + 独立双链路 + 编号锚点证据」，本文提到的
+> `chunker.py` / `extractor.py` / `observer.py` / `scorer.py` / `orchestrator/` /
+> `pipeline/` / `outer_loop/` / `ConfigCompiler` / `configs/bundles/` 均已删除；
+> 产物里的 `hypotheses.json` / `conflicts.json` 也已被 `rater_chains.json` 取代，
+> 证据引用从复述原文改为 `unit_ids` 编号。
+>
+> 当前准确的入口与架构见 [`OVERVIEW.md`](./OVERVIEW.md) 与 [`../scripts/README.md`](../scripts/README.md)；
+> 契约细节以 `src/contracts/` 为准。本文的重写是独立待办，需与前端负责人对齐后进行。
+
 ---
 
 ## 目录
