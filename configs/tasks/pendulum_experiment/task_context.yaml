@@ -1,0 +1,128 @@
+schema_version: "2.0"
+
+task_name: "pendulum_experiment"
+
+material_context:
+  type: "document"
+  description: "用AI算法挖掘单摆运动的动力学规律 — 课后实验报告"
+  evidence_focus: ""
+
+# 全局评分指引（注入评分阶段）
+human_instructions: ""
+
+# 分块阶段指引（注入 chunking 阶段）
+chunking_hints: ""
+
+score_anchors: []
+
+# 各维度配置（每项注入对应阶段）
+scoring_context:
+  - code: "A1-1"
+    extraction_hints: ""
+    calibration_notes: ""
+    feedback_hints: ""
+
+  - code: "A1-2"
+    extraction_hints: ""
+    calibration_notes: ""
+    feedback_hints: ""
+
+  - code: "A1-3"
+    extraction_hints: ""
+    calibration_notes: ""
+    feedback_hints: ""
+
+  - code: "A3-1"
+    extraction_hints: ""
+    calibration_notes: ""
+    feedback_hints: ""
+
+  - code: "A3-2"
+    extraction_hints: ""
+    calibration_notes: ""
+    feedback_hints: ""
+
+  - code: "A3-3"
+    extraction_hints: ""
+    calibration_notes: ""
+    feedback_hints: ""
+
+  - code: "B1-1"
+    extraction_hints: ""
+    calibration_notes: ""
+    feedback_hints: ""
+
+  - code: "B1-2"
+    extraction_hints: ""
+    calibration_notes: ""
+    feedback_hints: ""
+
+  - code: "B1-3"
+    extraction_hints: ""
+    calibration_notes: ""
+    feedback_hints: ""
+
+  - code: "B1-4"
+    extraction_hints: ""
+    calibration_notes: ""
+    feedback_hints: ""
+
+  - code: "C3-1"
+    extraction_hints: ""
+    calibration_notes: ""
+    feedback_hints: ""
+
+  - code: "C3-2"
+    extraction_hints: ""
+    calibration_notes: ""
+    feedback_hints: ""
+
+  - code: "C3-3"
+    extraction_hints: ""
+    calibration_notes: ""
+    feedback_hints: ""
+
+  - code: "D1-1"
+    extraction_hints: ""
+    calibration_notes: ""
+    feedback_hints: ""
+
+  - code: "D1-2"
+    extraction_hints: ""
+    calibration_notes: ""
+    feedback_hints: ""
+
+  - code: "D1-3"
+    extraction_hints: ""
+    calibration_notes: ""
+    feedback_hints: ""
+
+  - code: "D3-1"
+    extraction_hints: ""
+    calibration_notes: ""
+    feedback_hints: ""
+
+  - code: "D3-2"
+    extraction_hints: ""
+    calibration_notes: ""
+    feedback_hints: ""
+
+  - code: "D3-3"
+    extraction_hints: ""
+    calibration_notes: ""
+    feedback_hints: ""
+
+  - code: "D3-4"
+    extraction_hints: ""
+    calibration_notes: ""
+    feedback_hints: ""
+
+  - code: "F2-1"
+    extraction_hints: ""
+    calibration_notes: ""
+    feedback_hints: ""
+
+  - code: "F2-2"
+    extraction_hints: ""
+    calibration_notes: ""
+    feedback_hints: ""
