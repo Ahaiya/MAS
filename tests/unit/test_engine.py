@@ -20,7 +20,6 @@ from src.providers.fake import FakeProvider, fake_response
 _PROMPT_NAMES = ["select.yaml", "extraction.yaml", "rater_scoring.yaml", "adjudication.yaml", "feedback.yaml"]
 
 _DIM_YAML_TEMPLATE = """
-schema_version: "2.0"
 dim_id: "{dim_id}"
 dim_name: "test {dim_id}"
 indicator_description: "desc"
@@ -66,7 +65,6 @@ def configs_root(tmp_path: Path) -> Path:
     bundle_path = root / "bundle.yaml"
     bundle_path.write_text(
         """
-schema_version: "2.0"
 bundle_id: "default"
 active_task_id: "testtask"
 policies:
@@ -105,7 +103,6 @@ def configs_root_multi(tmp_path: Path) -> Path:
     bundle_path = root / "bundle.yaml"
     bundle_path.write_text(
         """
-schema_version: "2.0"
 bundle_id: "default"
 active_task_id: "testtask"
 policies:
@@ -124,7 +121,7 @@ prompts:
 
 def _model_config_with_max_workers(tmp_path: Path, max_workers: int) -> Path:
     path = tmp_path / f"model_config_workers_{max_workers}.yaml"
-    path.write_text(f"concurrency:\n  max_workers: {max_workers}\n", encoding="utf-8")
+    path.write_text(f"runtime:\n  max_workers: {max_workers}\n", encoding="utf-8")
     return path
 
 
@@ -437,11 +434,10 @@ def test_missing_api_key_env_raises_clear_config_error(tmp_path: Path, configs_r
     model_config_path = tmp_path / "model_config.yaml"
     model_config_path.write_text(
         """
-raters:
-  rater_1: {model: "m"}
-  rater_2: {api_key_env: "K2"}
-stages:
-  feedback: {api_key_env: "KF"}
+providers:
+  rater_1: {model: "m", api_base: "https://x/v1"}
+  rater_2: {model: "m", api_base: "https://x/v1", api_key_env: "K2"}
+  feedback: {model: "m", api_base: "https://x/v1", api_key_env: "KF"}
 """,
         encoding="utf-8",
     )
@@ -465,11 +461,10 @@ def test_missing_api_key_value_raises_engine_config_error(
     model_config_path = tmp_path / "model_config.yaml"
     model_config_path.write_text(
         """
-raters:
-  rater_1: {api_key_env: "K1"}
-  rater_2: {api_key_env: "K2"}
-stages:
-  feedback: {api_key_env: "KF"}
+providers:
+  rater_1: {model: "m", api_base: "https://x/v1", api_key_env: "K1"}
+  rater_2: {model: "m", api_base: "https://x/v1", api_key_env: "K2"}
+  feedback: {model: "m", api_base: "https://x/v1", api_key_env: "KF"}
 """,
         encoding="utf-8",
     )

@@ -1,5 +1,3 @@
-schema_version: "2.0"
-
 dim_id: "a1"
 dim_name: "A1 复杂问题的识别和界定"
 indicator_description: >

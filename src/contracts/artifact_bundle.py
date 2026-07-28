@@ -21,12 +21,16 @@ from typing import Any, Dict, List, Optional
 @dataclass(frozen=True)
 class ProviderEntryConfig:
     """单个 LLM provider 端点的配置。
-    
+
+        model / api_base 都是必填：它们只能来自 model_config.yaml，没有环境变量
+        兜底——漏填时静默跑成别的模型或别的厂商，从产物上根本看不出来。密钥则相反，
+        这里只存**环境变量的名字**，值永远只在 .env 里。
+
         Attributes:
-            api_key_env: 存放 API key 的环境变量名称。
-            model:       模型标识符（例如 "deepseek-chat"）。空字符串表示
-                         在构建时从环境变量读取 LLM_MODEL。
-            api_base:    API 基础 URL。空字符串表示从环境变量读取 LLM_API_BASE。
+            api_key_env: 存放 API key 的环境变量名称（按厂商取名，如
+                         "DEEPSEEK_API_KEY"；凭证属于厂商账号，不属于评委角色）。
+            model:       模型标识符（例如 "deepseek-chat"）。
+            api_base:    API BASE URL。
             params:      可选的 provider 默认请求参数，会合并到每次调用中
                          （例如 temperature、max_tokens，或 provider 特定的
                          extra_body 设置，如 reasoning controls）。"""

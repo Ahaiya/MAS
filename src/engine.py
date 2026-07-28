@@ -1,19 +1,16 @@
 """
-Engine 门面：`Engine.from_bundle(path).evaluate(package, dim)` 把 02-05 各段
-串成一条线性链，跑通一次完整评价。
+Engine Facade：`Engine.from_bundle(path).evaluate(package, dim)` 跑通一次完整评价。
 
-流水线：rate(r1) → rate(r2) → reconcile → [adjudicate] → feedback，对当前任务
-下每个一级指标（rubric.yaml）各自的全部二级指标各跑一遍。同一 sample 下各二级
-指标的双链评价用 ThreadPoolExecutor 并发跑（provider IO 密集，GIL 不碍事），
-上限 `max_workers` 从 model_config.yaml 的 concurrency 段读取，默认 8。segment
-阶段发生在 Engine.evaluate() 之外——engine 只认「量规 + 已切分好的
-DataPackage」，数据包的来源（read_text_file() 或未来的多源解析接入层）不是它
-的关心范围。
+流水线：rate(r1) → rate(r2) → reconcile → [adjudicate] → feedback.
+同一 sample 下各二级指标的双链评价用 ThreadPoolExecutor 并发跑（provider IO 密集，GIL 不碍事）
+上限 `max_workers` 从 model_config.yaml 的 runtime 段读取，默认 8。
+segment阶段发生在 Engine.evaluate() 之外——engine 只认「量规 + 已切分好的DataPackage」，
+数据包的来源（read_text_file() 或未来的多源解析接入层）不是它的关心范围。
 
-model_config.yaml 是模型/参数的唯一来源，缺失 raters.rater_1/rater_2 或
-stages.feedback 直接报错——不读 bundle 内嵌的 provider_config、不降级单
-default provider。密钥值只从 .env 读（build_provider() 已经这样做）。rater_3
-允许缺失：只在真正触发仲裁时才需要，报错逻辑在 reconcile.py 里已经实现。
+model_config.yaml 是模型/参数的唯一来源：`providers` 缺 rater_1/rater_2/feedback
+直接报错，条目缺 model/api_base/api_key_env 也直接报错，没有任何环境变量兜底。
+密钥值只从 .env 读，配置里只存环境变量的名字。rater_3 允许缺失：只在真正触发
+仲裁时才需要，报错逻辑在 reconcile.py 里。
 
 trace 用收集器模式：每次调用 select/extract/score/adjudicate/feedback 都在
 一层 provider 包装器上记录耗时与 token 用量，engine 在调用前后各拍一次快照
@@ -60,8 +57,8 @@ from src.contracts.trace import RunTraceSummary, StageTrace
 from src.engine_config import (
     DEFAULT_MAX_WORKERS,
     EngineConfigError,
-    load_max_workers,
     load_providers_from_model_config,
+    load_runtime_config,
 )
 from src.providers.base import BaseProvider
 from src.providers.instrumented import InstrumentedProvider, call_with_trace
@@ -86,7 +83,7 @@ class DimensionEvaluation:
 
 
 class Engine:
-    """`量规 + 数据包 → 评价` 门面。用 `Engine.from_bundle(path)` 构造。"""
+    """`量规 + 数据包 → 评价` Facade。用 `Engine.from_bundle(path)` 构造。"""
 
     def __init__(
         self,
@@ -165,10 +162,14 @@ class Engine:
         resolved_model_config_path = (
             Path(model_config_path) if model_config_path is not None else configs_root / "model_config.yaml"
         )
+        # runtime 段先读：超时/重试要传给 build_provider，并发上限归 Engine 自己用。
+        # 注入 providers（测试用）时也照读，好让并发上限在两条路径上保持一致。
+        max_workers, retry_config = load_runtime_config(resolved_model_config_path)
         resolved_providers = (
-            providers if providers is not None else load_providers_from_model_config(resolved_model_config_path)
+            providers
+            if providers is not None
+            else load_providers_from_model_config(resolved_model_config_path, retry_config)
         )
-        max_workers = load_max_workers(resolved_model_config_path)
 
         return cls(
             bundle_ref=str(bundle_path),
@@ -373,7 +374,7 @@ class Engine:
             run_trace=run_trace,
         )
 
-    # ── 门面 ─────────────────────────────────────────────────────────────────
+    # ── Facade ─────────────────────────────────────────────────────────────────
 
     def evaluate(self, package: DataPackage, dim: Optional[str] = None) -> Dict[str, DimensionEvaluation]:
         """执行 rate(r1) → rate(r2) → reconcile → [adjudicate] → feedback；

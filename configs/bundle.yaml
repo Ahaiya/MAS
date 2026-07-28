@@ -1,5 +1,3 @@
-schema_version: "2.0"
-
 bundle_id: "default"
 active_task_id: "maker_hackathon"
 

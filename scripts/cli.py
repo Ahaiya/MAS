@@ -1,18 +1,17 @@
 #!/usr/bin/env python3
-"""MAS 命令行入口——单文件 CLI，取代旧的 `mas.py` + `__main__.py` + `eval.py` 三件套。
+"""MAS 命令行入口——单文件 CLI
 
 用法：
   python scripts/cli.py eval <file> --dim a4      # 评单个一级指标
   python scripts/cli.py eval <file>               # 缺省评当前任务下全部一级指标
   python scripts/cli.py config validate           # 校验 bundle 的引用闭包
 
-文件头自注入 `sys.path`，因此直接 `python scripts/cli.py` 就能跑——不用 `python -m`、
-不装 console_scripts。
 
-命令体只做「建 Engine → evaluate → 打印」：模型/参数固定从 `configs/model_config.yaml`
-读（不给 `--model-config` 开关），密钥值只从 `.env` 读，评价逻辑全在 `src/engine.py`。
-旧 CLI 的 `--input/-i`、`--verbose`、`--debug-bundle`、`--model-config` 一并删除——
-它们要么是重复入口，要么开关的是已经不存在的机制。"""
+命令体只做「建 Engine → evaluate → 打印」：
+模型/参数固定从 `configs/model_config.yaml`读，
+密钥值只从 `.env` 读，
+评价逻辑全在 `src/engine.py`。
+"""
 
 from __future__ import annotations
 
@@ -36,7 +35,8 @@ from src.config.compiler import (
     strip_configs_prefix,
 )
 from src.contracts.package import DataPackage
-from src.engine import DimensionEvaluation, Engine, EngineConfigError
+from src.engine import DimensionEvaluation, Engine
+from src.engine_config import EngineConfigError, load_runtime_config, validate_model_config
 from src.providers.prompt_loader import PromptLoader
 from src.segment import read_text_file
 
@@ -52,6 +52,7 @@ app.add_typer(config_app, name="config")
 
 # 用户能自己修的配置类错误（改 yaml、补 .env、纠正 --dim 拼写）统一按"印一行人话"
 # 处理，不甩 traceback；不在这张网里的异常照常向上抛，别把 bug 藏起来。
+# 注意：新增的校验必须抛这些类型之一，否则一个 yaml 笔误就会变成一屏 traceback。
 _USER_FIXABLE_ERRORS = (
     EngineConfigError,
     ConfigCompileError,
@@ -157,7 +158,7 @@ def _validate_bundle(bundle: Path) -> List[str]:
     """走一遍 bundle 声明的全部引用，返回给人看的 OK 行；任何一处解析不了就抛错。
 
     刻意不建 provider：配置是否自洽与密钥是否就位是两件事，`config validate` 只答
-    前一件，因此没有 .env 也能在 CI 里跑。引用路径的解析方式与 Engine 共用
+    前一件（含 model_config 的结构），因此没有 .env 也能在 CI 里跑。引用路径的解析方式与 Engine 共用
     `strip_configs_prefix()`，避免出现"校验通过但引擎跑不起来"。"""
     configs_root = bundle.parent
     data = yaml.safe_load(bundle.read_text(encoding="utf-8")) or {}
@@ -197,6 +198,18 @@ def _validate_bundle(bundle: Path) -> List[str]:
             f"（{len(sub_dim_ids)} 个二级指标：{', '.join(sub_dim_ids)}）"
         )
 
+    # model_config 是模型/参数的唯一来源且必填项不少，一并校验结构——否则漏填
+    # model 要等到真跑评价、建 provider 时才炸。只看字段在不在，不读密钥、不建
+    # provider，因此 CI 里没有 .env 也能跑。
+    entries = validate_model_config(configs_root / "model_config.yaml")
+    for name, entry in sorted(entries.items()):
+        lines.append(f"OK  provider       : {name} → {entry.model} @ {entry.api_base}")
+    max_workers, retry = load_runtime_config(configs_root / "model_config.yaml")
+    lines.append(
+        f"OK  runtime        : max_workers={max_workers} timeout={retry.timeout_seconds:g}s "
+        f"retries={retry.max_retries}"
+    )
+
     return lines
 
 
@@ -213,7 +226,7 @@ def config_validate(
 
     try:
         lines = _validate_bundle(bundle)
-    except (ConfigCompileError, ValueError, FileNotFoundError, yaml.YAMLError) as exc:
+    except (ConfigCompileError, EngineConfigError, ValueError, FileNotFoundError, yaml.YAMLError) as exc:
         raise _exit_with_error(str(exc)) from exc
 
     for line in lines:

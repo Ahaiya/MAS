@@ -1,5 +1,3 @@
-schema_version: "2.0"
-
 dim_id: "a3"
 dim_name: "A3 批判性思维与自我反思"
 indicator_description: >

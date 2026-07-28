@@ -26,12 +26,13 @@ python scripts/cli.py eval data/training/maker_hackathon/sample.md
 | `--dim` | 全部一级指标 | 一级指标（如 `a4`） |
 | `--output-dir` | `artifacts` | 产物落盘根目录 |
 
-模型与参数固定从 `configs/model_config.yaml` 读取，密钥值只从 `.env` 读——因此没有
-`--model-config` 开关。旧的 `--input/-i`、`--verbose`、`--debug-bundle` 也一并删除。
+模型与参数固定从 `configs/model_config.yaml` 读取（含超时/重试/并发），密钥值只从
+`.env` 读且按厂商命名——因此没有 `--model-config` 开关。旧的 `--input/-i`、
+`--verbose`、`--debug-bundle` 也一并删除。
 
 执行流：切分（零 LLM，确定性）→ 双链独立评价（select → extract → score，两个 Rater
 各跑一遍）→ 分歧时 Rater3 仲裁 → 生成反馈。同一 sample 下各二级指标并发评价，上限
-由 `configs/model_config.yaml` 的 `concurrency.max_workers` 控制（默认 8）。
+由 `configs/model_config.yaml` 的 `runtime.max_workers` 控制（默认 8）。
 
 产物按三层落盘：
 

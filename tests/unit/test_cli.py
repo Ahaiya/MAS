@@ -34,7 +34,6 @@ _PROMPT_NAMES = [
 ]
 
 _DIM_YAML = """
-schema_version: "2.0"
 dim_id: "{dim_id}"
 dim_name: "test {dim_id}"
 indicator_description: "desc"
@@ -48,7 +47,6 @@ dimensions:
 """
 
 _BUNDLE_YAML = """
-schema_version: "2.0"
 bundle_id: "default"
 active_task_id: "testtask"
 policies:
@@ -59,6 +57,16 @@ prompts:
   scoring: "configs/prompts/rater_scoring.yaml"
   adjudication: "configs/prompts/adjudication.yaml"
   feedback: "configs/prompts/feedback.yaml"
+"""
+
+
+_MODEL_CONFIG_OK = """
+providers:
+  rater_1: {model: "m", api_base: "https://x/v1", api_key_env: "DEEPSEEK_API_KEY"}
+  rater_2: {model: "m", api_base: "https://y/v1", api_key_env: "DASHSCOPE_API_KEY"}
+  feedback: {model: "m", api_base: "https://x/v1", api_key_env: "DEEPSEEK_API_KEY"}
+runtime:
+  max_workers: 4
 """
 
 
@@ -86,6 +94,7 @@ def configs_root(tmp_path: Path) -> Path:
         )
 
     (root / "bundle.yaml").write_text(_BUNDLE_YAML, encoding="utf-8")
+    (root / "model_config.yaml").write_text(_MODEL_CONFIG_OK, encoding="utf-8")
     return root
 
 
@@ -387,3 +396,62 @@ def test_config_validate_fails_when_task_has_no_rubrics(configs_root: Path) -> N
 
     assert result.exit_code == 1
     assert "testtask" in result.output
+
+
+# ── config validate 覆盖 model_config ─────────────────────────────────────────
+
+
+
+def test_config_validate_also_checks_model_config(configs_root: Path) -> None:
+    """model_config 现在是模型/参数的唯一来源且必填项变多，config validate 必须
+    一并校验它——否则漏填 model 要等到真跑评价才炸。"""
+    (configs_root / "model_config.yaml").write_text(_MODEL_CONFIG_OK, encoding="utf-8")
+
+    result = _run_validate(configs_root / "bundle.yaml")
+
+    assert result.exit_code == 0, result.output
+    assert "rater_1" in result.output and "feedback" in result.output
+
+
+def test_config_validate_fails_when_model_config_missing_required_field(configs_root: Path) -> None:
+    (configs_root / "model_config.yaml").write_text(
+        _MODEL_CONFIG_OK.replace('rater_2: {model: "m", ', "rater_2: {"), encoding="utf-8"
+    )
+
+    result = _run_validate(configs_root / "bundle.yaml")
+
+    assert result.exit_code == 1
+    assert "model" in result.output and "rater_2" in result.output
+
+
+def test_config_validate_fails_when_model_config_missing_required_provider(configs_root: Path) -> None:
+    lines = [ln for ln in _MODEL_CONFIG_OK.splitlines() if "rater_2:" not in ln]
+    (configs_root / "model_config.yaml").write_text("\n".join(lines), encoding="utf-8")
+
+    result = _run_validate(configs_root / "bundle.yaml")
+
+    assert result.exit_code == 1
+    assert "rater_2" in result.output
+
+
+def test_config_validate_does_not_need_any_api_key(
+    configs_root: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """校验只看结构、不建 provider——CI 里没有 .env 也必须能跑通。"""
+    for var in ("DEEPSEEK_API_KEY", "DASHSCOPE_API_KEY", "LLM_API_KEY"):
+        monkeypatch.delenv(var, raising=False)
+    (configs_root / "model_config.yaml").write_text(_MODEL_CONFIG_OK, encoding="utf-8")
+
+    result = _run_validate(configs_root / "bundle.yaml")
+
+    assert result.exit_code == 0, result.output
+
+
+def test_config_validate_reports_missing_model_config(configs_root: Path) -> None:
+    """bundle 目录下没有 model_config.yaml 时要报出来，而不是默默跳过。"""
+    (configs_root / "model_config.yaml").unlink()
+
+    result = _run_validate(configs_root / "bundle.yaml")
+
+    assert result.exit_code == 1
+    assert "model_config" in result.output

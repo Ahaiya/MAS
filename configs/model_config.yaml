@@ -1,68 +1,56 @@
-schema_version: "2.0"
+# 模型与运行参数的唯一来源。
+#
+# 密钥**值**不在这里——这里只写环境变量的名字（api_key_env），值放 .env。
+# 变量名按厂商取而非按角色：凭证属于厂商账号，多个角色共用同一账号时
+# 不必在 .env 里把同一个值抄好几遍。
+#
+# 每个条目的 model / api_base / api_key_env 都是必填，缺一即报错——没有任何
+# 环境变量兜底，避免"漏填却静默跑了别的模型/别的厂商"。
 
-default:
-  model: "deepseek-chat"
-  api_base: "https://api.deepseek.com/v1"
-  api_key_env: "LLM_API_KEY"
-  params:
-    temperature: 0.0
-    max_tokens: 1536
-
-raters:
+providers:
+  # 双链路评价的两个独立评委。两者刻意用不同厂商的模型，
+  # 以免同源模型带来伪独立。
   rater_1:
     model: "deepseek-chat"
     api_base: "https://api.deepseek.com/v1"
-    api_key_env: "RATER_1_API_KEY"
+    api_key_env: "DEEPSEEK_API_KEY"
     params:
       temperature: 0.0
       max_tokens: 1536
+
   rater_2:
     model: "qwen3.6-plus"
     api_base: "https://dashscope.aliyuncs.com/compatible-mode/v1"
-    api_key_env: "RATER_2_API_KEY"
+    api_key_env: "DASHSCOPE_API_KEY"
     params:
       temperature: 0.0
       max_tokens: 2048
       extra_body:
         enable_thinking: true
         thinking_budget: 768
+
+  # 仲裁评委：只在双链分歧时被调用。缺省整个条目也能启动，
+  # 但真触发仲裁时会报错——不静默兜底。
   rater_3:
     model: "deepseek-chat"
     api_base: "https://api.deepseek.com/v1"
-    api_key_env: "RATER_3_API_KEY"
+    api_key_env: "DEEPSEEK_API_KEY"
     params:
       temperature: 0.0
       max_tokens: 1536
 
-stages:
-  chunking:
-    model: "deepseek-chat"
-    api_base: "https://api.deepseek.com/v1"
-    api_key_env: "CHUNKING_API_KEY"
-    params:
-      temperature: 0.0
-      max_tokens: 3072
-  evidence_extraction:
-    model: "deepseek-chat"
-    api_base: "https://api.deepseek.com/v1"
-    api_key_env: "EXTRACTOR_API_KEY"
-    params:
-      temperature: 0.0
-      max_tokens: 3072
-  scoring:
-    model: "deepseek-chat"
-    api_base: "https://api.deepseek.com/v1"
-    api_key_env: "SCORING_API_KEY"
-    params:
-      temperature: 0.0
-      max_tokens: 1536
+  # 生成给学生看的文字反馈，温度略高以免措辞呆板。
   feedback:
     model: "deepseek-chat"
     api_base: "https://api.deepseek.com/v1"
-    api_key_env: "FEEDBACK_API_KEY"
+    api_key_env: "DEEPSEEK_API_KEY"
     params:
       temperature: 0.1
       max_tokens: 1536
 
-concurrency:
-  max_workers: 8
+# 运行期旋钮，整段可省略，逐字段回落到默认值。
+runtime:
+  max_workers: 8            # 二级指标级并发上限；按 LLM 服务档位调，避免 429
+  timeout_seconds: 60       # 单次 LLM 调用的挂钟超时
+  max_retries: 3            # 首次失败后的额外重试次数
+  retry_delay_seconds: 1    # 重试间隔

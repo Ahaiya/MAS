@@ -1,5 +1,3 @@
-schema_version: "2.0"
-
 adjudication_policy:
   policy_id: "engineering_eval_adjudication"
 

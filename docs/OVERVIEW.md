@@ -59,7 +59,7 @@ segment → rate(r1) → rate(r2) → reconcile →[adjudicate]→ feedback
 
 两个 Rater 各自独立完成「选段 → 取证 → 评分」完整链路，互不共享证据——独立性落在
 "看哪里"这个最关键的分歧点上。同一 sample 下各二级指标并发评价（`ThreadPoolExecutor`，
-上限 `model_config.yaml` 的 `concurrency.max_workers`，默认 8）。
+上限 `model_config.yaml` 的 `runtime.max_workers`，默认 8）。
 
 单个二级指标失败只标记该维度失败并记入 `run_trace.json` 的 `failed_dims`，其余维度
 照常产出；一个一级指标整体失败也不拖垮同 sample 的其余一级指标。
@@ -91,7 +91,7 @@ segment → rate(r1) → rate(r2) → reconcile →[adjudicate]→ feedback
 ```
 configs/
 ├── bundle.yaml                                  # 入口 bundle：active_task_id + policies + prompts
-├── model_config.yaml                            # LLM 分配（各 rater / feedback 阶段）+ concurrency
+├── model_config.yaml                            # providers（各角色模型端点）+ runtime（并发/超时/重试）
 ├── tasks/
 │   └── {task_name}/
 │       ├── task_context.yaml                   # 任务说明 + 各维度 calibration/hints
@@ -117,7 +117,6 @@ configs/
 `configs/bundle.yaml` 直接列出引用，没有路径模板与冻结哈希：
 
 ```yaml
-schema_version: "2.0"
 bundle_id: "default"
 active_task_id: "maker_hackathon"     # 切任务改这里
 policies:
@@ -156,7 +155,7 @@ scoring_context:
 ### 环境准备
 
 ```bash
-cp .env.example .env   # 填写 LLM_API_KEY 等
+cp .env.example .env   # 填写 DEEPSEEK_API_KEY / DASHSCOPE_API_KEY
 pip install -e ".[real-provider]"
 ```
 
@@ -232,16 +231,22 @@ python scripts/server.py          # 默认 8000 端口，包含静态文件服�
 
 ---
 
-## 九、.env 关键变量
+## 九、.env 与配置职责边界
+
+职责边界是硬的：**`.env` 只装凭证值，其余一切都在 `configs/model_config.yaml`**。
+两侧都没有兜底——缺什么就报什么，绝不互相顶替。
 
 | 变量 | 说明 |
 |------|------|
-| `LLM_API_KEY` | 主模型 API Key（默认 deepseek-chat） |
-| `LLM_MODEL` | 主模型名 |
-| `LLM_API_BASE` | 主模型 API Base URL |
-| `RATER_2_API_KEY` | 第二个 rater 的 API Key（可与主模型不同） |
-| `OUTER_LOOP_API_KEY` | 外环 Agent 使用的 API Key |
-| `OUTER_LOOP_MODEL` | 外环 Agent 模型名 |
-| `OUTER_LOOP_API_BASE` | 外环 Agent API Base URL |
+| `DEEPSEEK_API_KEY` | DeepSeek 账号密钥，默认由 rater_1 / rater_3 / feedback 共用 |
+| `DASHSCOPE_API_KEY` | 阿里云百炼账号密钥，默认由 rater_2 使用 |
 
-未填写的 `RATER_*` / `OUTER_LOOP_*` 变量自动回落至 `LLM_API_KEY`。
+变量名按**厂商**取而非按角色：凭证属于厂商账号，多个角色共用同一账号时不必把同一个
+值抄好几遍。要接新厂商，在 `model_config.yaml` 给对应 provider 写上新的 `api_key_env`
+名字，再到 `.env` 加一行即可。
+
+模板见仓库根目录的 `.env.example`。**没有任何回落**：某个 `api_key_env` 指向的变量
+没有值，引擎启动即报错——回落只会把 A 厂商的 key 发给 B 厂商，换来一句难以归因的 401。
+
+模型名、接口地址、温度、max_tokens、超时、重试、并发一律不在 `.env` 里，全部在
+`model_config.yaml`。
