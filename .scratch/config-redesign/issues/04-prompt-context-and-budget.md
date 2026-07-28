@@ -25,12 +25,26 @@ provider 定义就在同一个文件里。
 
 **Blocked by:** 02
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] 选段与取证的 prompt 上下文包含 `indicator_description`
-- [ ] 评分、仲裁、反馈的 prompt 上下文**不包含** `indicator_description`
-- [ ] 所有阶段的锚点文本带上档位标签
-- [ ] `runtime.context_budget_tokens` 决定超预算丢弃行为，缺省回落 48000
-- [ ] 选段预览字节数仍为代码常量，未进配置
-- [ ] prompt 渲染测试断言各阶段"出现 / 不出现"指标解释，以及锚点行含档位标签
-- [ ] 配置测试覆盖预算的读取与缺省
+- [x] 选段与取证的 prompt 上下文包含 `indicator_description`
+- [x] 评分、仲裁、反馈的 prompt 上下文**不包含** `indicator_description`
+- [x] 所有阶段的锚点文本带上档位标签
+- [x] `runtime.context_budget_tokens` 决定超预算丢弃行为，缺省回落 48000
+- [x] 选段预览字节数仍为代码常量，未进配置
+- [x] prompt 渲染测试断言各阶段"出现 / 不出现"指标解释，以及锚点行含档位标签
+- [x] 配置测试覆盖预算的读取与缺省
+
+## Comments
+
+`indicator_description` 的隔离做得比工单要求更硬：scoring / adjudication / feedback 三个
+prompt 构造器**根本没有这个形参**，调用方没有任何路径能把它送进判档阶段——比"传了但
+模板不引用"更难被后来人误接。已用真实 f2 量规验证：select/extraction 含指标解释文本，
+scoring 不含。
+
+`segment.build_package` / `read_text_file` 的 `budget_tokens` 改为**必填**（原为模块级
+默认值 48000）。既然预算已经进配置，再留一个静默的模块级默认就是给下一次"以为按配置
+跑了、其实没有"留后门。
+
+`load_runtime_config` 的返回形状未变，预算另开 `load_context_budget_tokens`——比给三处
+调用点改解包更短。

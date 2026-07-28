@@ -15,9 +15,23 @@ D3 是 0.25/0.25/0.3/0.2），而聚合写死等权平均，把量规作者对�
 
 **Blocked by:** 02（校验保证 `weight` 必填且和为 1.0）
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] dim 汇总分改为按观测点 `weight` 加权平均
-- [ ] 聚合模块中"等权 / auto_equal"的表述随实现一并更正
-- [ ] 纯函数测试覆盖：加权结果正确、单观测点退化为该观测点分数、权重和不为 1 时的行为
-- [ ] 端到端测试断言加权后的 dim 汇总分
+- [x] dim 汇总分改为按观测点 `weight` 加权平均
+- [x] 聚合模块中"等权 / auto_equal"的表述随实现一并更正
+- [x] 纯函数测试覆盖：加权结果正确、单观测点退化为该观测点分数、权重和不为 1 时的行为
+- [x] 端到端测试断言加权后的 dim 汇总分
+
+## Comments
+
+签名定为 `aggregate_final_decisions(decisions, weights: Mapping[str, float])`——传纯映射
+而不是 RubricSnapshot，函数保持可单测。权重经 `_build_rubric_snapshot` 搬进
+`dimensions[]`，由 `feedback.build_feedback_report` 就地建映射，`engine.py` 签名零改动。
+
+**失败隔离**：实现是 `sum(w·s) / sum(w)`，除以**存活**权重和而非除以 1.0。某观测点评价
+失败时没有 FinalDecision，剩余权重和不再是 1.0，不归一化会让 dim 分数凭空变低
+（F2 里 F2-1 挂掉、F2-2 得 4 分会算成 0.6×4=2.4）。归一化顺带让单观测点自然退化为
+该观测点分数，不需要特判。
+
+顺带在 02 的校验里补了 **weight 必须 > 0**：0 权重的观测点毫无贡献（写它就是配置错误），
+且它若恰好是唯一存活的观测点，上面的归一化会除以 0。在校验侧堵根因，不在聚合侧加守卫。

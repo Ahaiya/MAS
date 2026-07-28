@@ -129,6 +129,10 @@ def _validate_observation_points(
         weight = point["weight"]
         if isinstance(weight, bool) or not isinstance(weight, (int, float)):
             _fail(source, f"{where}的 'weight' 必须是数字，实际为 {weight!r}")
+        # 必须为正：0 权重的观测点对分数毫无贡献（写它就是配置错误），且当它恰好是
+        # 唯一评价成功的观测点时，聚合的按存活权重归一化会除以 0。
+        if weight <= 0:
+            _fail(source, f"{where}的 'weight' 必须大于 0，实际为 {weight!r}")
         weights.append(float(weight))
 
         _require_covers_every_rank(point["anchors"], "anchors", scale_min, scale_max, source, where=where)

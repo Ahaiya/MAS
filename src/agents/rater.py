@@ -55,12 +55,17 @@ def select(
     template: PromptTemplate,
     rater_id: str,
     preview_bytes: int = DEFAULT_SELECT_PREVIEW_BYTES,
+    indicator_description: str = "",
 ) -> List[int]:
     """看「unit_id + 每段前若干字节」选出与该二级指标相关的unit_id（粗筛）。
 
     模型幻觉出的编号会被静默过滤——这一步只是缩小候选范围，不是证据主张。"""
     dimension_id = str(dimension.get("dimension_id", ""))
-    prompt_text = build_rater_select_prompt(package, dimension, template, preview_bytes=preview_bytes)
+    prompt_text = build_rater_select_prompt(
+        package, dimension, template,
+        preview_bytes=preview_bytes,
+        indicator_description=indicator_description,
+    )
     data = call_llm(
         provider,
         prompt_text,
@@ -83,12 +88,16 @@ def extract(
     provider: BaseProvider,
     template: PromptTemplate,
     rater_id: str,
+    indicator_description: str = "",
 ) -> List[int]:
     """选中unit 全文 → 证据，返回其中真正构成证据的unit_id。
 
     只有 select 阶段展示过的unit 才在有效范围内；越界编号直接拒绝。"""
     dimension_id = str(dimension.get("dimension_id", ""))
-    prompt_text = build_rater_extraction_prompt(package, selected_unit_ids, dimension, template)
+    prompt_text = build_rater_extraction_prompt(
+        package, selected_unit_ids, dimension, template,
+        indicator_description=indicator_description,
+    )
     data = call_llm(
         provider,
         prompt_text,
@@ -163,8 +172,17 @@ def run_chain(
     if dimension is None:
         raise ValueError(f"Dimension '{dimension_id}' not found in rubric")
 
-    selected_unit_ids = select(package, dimension, provider, select_template, rater_id, preview_bytes=preview_bytes)
-    evidence_unit_ids = extract(package, selected_unit_ids, dimension, provider, extraction_template, rater_id)
+    # 指标解释只进选段与取证：这两步判的是「相关不相关」，多给背景是净收益；
+    # 判档阶段它会和锚点抢判档依据，放大两位评委的分歧，故不注入。
+    selected_unit_ids = select(
+        package, dimension, provider, select_template, rater_id,
+        preview_bytes=preview_bytes,
+        indicator_description=rubric.indicator_description,
+    )
+    evidence_unit_ids = extract(
+        package, selected_unit_ids, dimension, provider, extraction_template, rater_id,
+        indicator_description=rubric.indicator_description,
+    )
     dimension_score = score(package, evidence_unit_ids, dimension, rubric, provider, scoring_template, rater_id)
 
     return RaterChainResult(

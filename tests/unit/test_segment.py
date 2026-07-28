@@ -116,6 +116,7 @@ def test_build_package_shares_numbering_across_files() -> None:
     package, dropped = build_package(
         [("a.md", "甲的第一句。甲的第二句。"), ("b.md", "乙的第一句。")],
         package_id="pkg-1",
+        budget_tokens=48000,
     )
     assert dropped == []
     ids = [u.id for u in package.units]
@@ -211,7 +212,7 @@ def test_estimate_tokens_scales_with_length() -> None:
 def test_read_text_file_reads_md_file(tmp_path: Path) -> None:
     file_path = tmp_path / "sample.md"
     file_path.write_text("第一句。第二句。", encoding="utf-8")
-    package, dropped = read_text_file(str(file_path), package_id="pkg-1")
+    package, dropped = read_text_file(str(file_path), package_id="pkg-1", budget_tokens=48000)
     assert dropped == []
     assert len(package.units) == 2
     assert package.units[0].source_file == str(file_path)
@@ -221,7 +222,7 @@ def test_read_text_file_rejects_unsupported_extension(tmp_path: Path) -> None:
     file_path = tmp_path / "sample.pdf"
     file_path.write_text("irrelevant", encoding="utf-8")
     with pytest.raises(ValueError):
-        read_text_file(str(file_path), package_id="pkg-1")
+        read_text_file(str(file_path), package_id="pkg-1", budget_tokens=48000)
 
 
 def test_read_text_file_accepts_multiple_paths_sharing_numbering(tmp_path: Path) -> None:
@@ -229,7 +230,18 @@ def test_read_text_file_accepts_multiple_paths_sharing_numbering(tmp_path: Path)
     file_b = tmp_path / "b.md"
     file_a.write_text("甲的句子。", encoding="utf-8")
     file_b.write_text("乙的句子。", encoding="utf-8")
-    package, dropped = read_text_file([str(file_a), str(file_b)], package_id="pkg-1")
+    package, dropped = read_text_file([str(file_a), str(file_b)], package_id="pkg-1", budget_tokens=48000)
     assert dropped == []
     assert [u.id for u in package.units] == [0, 1]
     assert [u.source_file for u in package.units] == [str(file_a), str(file_b)]
+
+
+def test_read_text_file_honours_the_budget_it_is_given(tmp_path: Path) -> None:
+    """预算不再是模块常量——调用方（CLI）从 model_config 的 runtime 段取值传进来。"""
+    file_path = tmp_path / "a.md"
+    file_path.write_text("".join(f"句子{i}。" for i in range(50)), encoding="utf-8")
+
+    package, dropped = read_text_file(str(file_path), package_id="pkg-1", budget_tokens=10)
+
+    assert dropped
+    assert len(package.units) < 50

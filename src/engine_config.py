@@ -35,10 +35,17 @@ DEFAULT_MAX_WORKERS = 8
 DEFAULT_TIMEOUT_SECONDS = 60.0
 DEFAULT_MAX_RETRIES = 3
 DEFAULT_RETRY_DELAY_SECONDS = 1.0
+DEFAULT_CONTEXT_BUDGET_TOKENS = 48000
 
 REQUIRED_PROVIDERS = ("rater_1", "rater_2", "feedback")
 _REQUIRED_ENTRY_FIELDS = ("model", "api_base", "api_key_env")
-_RUNTIME_FIELDS = ("max_workers", "timeout_seconds", "max_retries", "retry_delay_seconds")
+_RUNTIME_FIELDS = (
+    "max_workers",
+    "timeout_seconds",
+    "max_retries",
+    "retry_delay_seconds",
+    "context_budget_tokens",
+)
 
 
 def _coerce(runtime: Dict[str, Any], field: str, default: Any, caster: Callable[[Any], Any]) -> Any:
@@ -127,6 +134,37 @@ def load_providers_from_model_config(
         raise EngineConfigError(str(exc)) from exc
 
 
+def _runtime_section(model_config_path: Path) -> Dict[str, Any]:
+    """读出 runtime 段并校验形状与字段名（值的转换由各调用方按字段做）。"""
+    runtime = _load(model_config_path).get("runtime") or {}
+    if not isinstance(runtime, dict):
+        raise EngineConfigError(
+            f"model_config 的 runtime 段应是一组键值对，当前是 {type(runtime).__name__}。"
+        )
+    unknown = sorted(set(runtime) - set(_RUNTIME_FIELDS))
+    if unknown:
+        raise EngineConfigError(
+            f"model_config 的 runtime 段有无法识别的字段：{unknown}。"
+            f"可用字段：{sorted(_RUNTIME_FIELDS)}。"
+        )
+    return runtime
+
+
+def load_context_budget_tokens(model_config_path: Path) -> int:
+    """读 runtime.context_budget_tokens，缺省回落 DEFAULT_CONTEXT_BUDGET_TOKENS。
+
+        它决定超预算时从尾部丢弃哪些单元，与模型上下文窗口硬耦合——所以住在
+        providers 旁边：换一个窗口更小的模型时，改模型的人一眼能看到它。"""
+    if not model_config_path.exists():
+        return DEFAULT_CONTEXT_BUDGET_TOKENS
+
+    runtime = _runtime_section(model_config_path)
+    budget = _coerce(runtime, "context_budget_tokens", DEFAULT_CONTEXT_BUDGET_TOKENS, int)
+    if budget < 1:
+        raise EngineConfigError(f"runtime.context_budget_tokens 必须 >= 1，当前为 {budget}。")
+    return budget
+
+
 def load_runtime_config(model_config_path: Path) -> Tuple[int, RetryConfig]:
     """读 runtime 段，返回 (max_workers, RetryConfig)。
 
@@ -140,17 +178,7 @@ def load_runtime_config(model_config_path: Path) -> Tuple[int, RetryConfig]:
     if not model_config_path.exists():
         return DEFAULT_MAX_WORKERS, _default_retry_config()
 
-    runtime = _load(model_config_path).get("runtime") or {}
-    if not isinstance(runtime, dict):
-        raise EngineConfigError(
-            f"model_config 的 runtime 段应是一组键值对，当前是 {type(runtime).__name__}。"
-        )
-    unknown = sorted(set(runtime) - set(_RUNTIME_FIELDS))
-    if unknown:
-        raise EngineConfigError(
-            f"model_config 的 runtime 段有无法识别的字段：{unknown}。"
-            f"可用字段：{sorted(_RUNTIME_FIELDS)}。"
-        )
+    runtime = _runtime_section(model_config_path)
 
     max_workers = _coerce(runtime, "max_workers", DEFAULT_MAX_WORKERS, int)
     timeout_seconds = _coerce(runtime, "timeout_seconds", DEFAULT_TIMEOUT_SECONDS, float)

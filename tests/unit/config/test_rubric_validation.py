@@ -202,3 +202,14 @@ def test_non_numeric_weight_raises() -> None:
     dims[0]["weight"] = "0.4"
     with pytest.raises(ConfigCompileError):
         validate_rubric(_rubric(dimensions=dims), source="bad.yaml")
+
+
+@pytest.mark.parametrize("bad_weight", [0, 0.0, -0.1])
+def test_non_positive_weight_raises(bad_weight: float) -> None:
+    """0 权重的观测点毫无贡献；且它若是唯一评价成功的观测点，聚合会除以 0。"""
+    dims = copy.deepcopy(_VALID["dimensions"])
+    dims[0]["weight"] = bad_weight
+    dims[1]["weight"] = 1.0
+    with pytest.raises(ConfigCompileError) as exc:
+        validate_rubric(_rubric(dimensions=dims), source="bad.yaml")
+    assert "weight" in str(exc.value)

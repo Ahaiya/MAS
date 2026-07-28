@@ -18,11 +18,13 @@ providers:
       temperature: 0.0
 
   rater_2:
-    model: "deepseek-chat"
-    api_base: "https://api.deepseek.com/v1"
-    api_key_env: "DEEPSEEK_API_KEY"
+    model: "glm-5.2"
+    api_base: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+    api_key_env: "DASHSCOPE_API_KEY"
     params:
       temperature: 0.0
+      extra_body:
+          enable_thinking: false
 
   # 仲裁评委：只在双链分歧时被调用。缺省整个条目也能启动，
   # 但真触发仲裁时会报错——不静默兜底。
@@ -47,3 +49,5 @@ runtime:
   timeout_seconds: 60       # 单次 LLM 调用的挂钟超时
   max_retries: 3            # 首次失败后的额外重试次数
   retry_delay_seconds: 1    # 重试间隔
+  context_budget_tokens: 48000  # 材料切分后的 token 上限；超出部分从尾部丢弃。
+                                # 与上方 providers 的模型上下文窗口耦合——换窗口更小的模型要一起调小

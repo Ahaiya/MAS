@@ -13,8 +13,10 @@ import pytest
 import yaml
 
 from src.engine_config import (
+    DEFAULT_CONTEXT_BUDGET_TOKENS,
     DEFAULT_MAX_WORKERS,
     EngineConfigError,
+    load_context_budget_tokens,
     load_providers_from_model_config,
     load_runtime_config,
 )
@@ -288,3 +290,41 @@ def test_wrong_typed_runtime_value_is_a_config_error(tmp_path: Path, bad_runtime
 def test_runtime_that_is_not_a_mapping_is_rejected(tmp_path: Path) -> None:
     with pytest.raises(EngineConfigError, match="键值对"):
         load_runtime_config(_write(tmp_path, _minimal_config(runtime="nope")))
+
+
+# ── runtime.context_budget_tokens ────────────────────────────────────────────
+#
+# 它决定超预算时丢弃哪些单元，与模型的上下文窗口硬耦合——放在 providers 旁边，
+# 换模型的人才会顺手看到它。
+
+
+def test_context_budget_is_read_from_runtime(tmp_path: Path) -> None:
+    path = _write(tmp_path, _minimal_config(runtime={"context_budget_tokens": 12000}))
+
+    assert load_context_budget_tokens(path) == 12000
+
+
+def test_context_budget_falls_back_to_default(tmp_path: Path) -> None:
+    assert load_context_budget_tokens(_write(tmp_path, _minimal_config())) == DEFAULT_CONTEXT_BUDGET_TOKENS
+    assert DEFAULT_CONTEXT_BUDGET_TOKENS == 48000
+
+
+def test_context_budget_falls_back_when_file_missing(tmp_path: Path) -> None:
+    assert load_context_budget_tokens(tmp_path / "nope.yaml") == DEFAULT_CONTEXT_BUDGET_TOKENS
+
+
+@pytest.mark.parametrize("bad", [0, -1, "many"])
+def test_invalid_context_budget_is_rejected(tmp_path: Path, bad: Any) -> None:
+    path = _write(tmp_path, _minimal_config(runtime={"context_budget_tokens": bad}))
+
+    with pytest.raises(EngineConfigError, match="context_budget_tokens"):
+        load_context_budget_tokens(path)
+
+
+def test_context_budget_key_is_accepted_by_load_runtime_config(tmp_path: Path) -> None:
+    """两个读取入口共用同一份字段白名单——否则写了预算反而让 runtime 段报未知字段。"""
+    path = _write(tmp_path, _minimal_config(runtime={"context_budget_tokens": 12000}))
+
+    max_workers, _retry = load_runtime_config(path)
+
+    assert max_workers == DEFAULT_MAX_WORKERS

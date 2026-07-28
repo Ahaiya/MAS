@@ -81,6 +81,8 @@ def _build_rubric_snapshot(rubric_file_data: dict[str, Any]) -> RubricSnapshot:
             "dimension_id": dimension_id,
             "code": code,
             "name": name,
+            # 观测点权重，聚合 dim 分时用（rubric_validation 保证必填且和为 1.0）
+            "weight": float(dim_raw["weight"]),
             "scale_ref": scale_id,
             "description": name,
             "observation_schema": {

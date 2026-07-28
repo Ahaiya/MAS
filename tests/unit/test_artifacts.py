@@ -84,9 +84,9 @@ def test_feedback_and_package_round_trip_through_disk(tmp_path: Path) -> None:
     package = DataPackage(package_id="pkg-1", units=units, metadata={})
 
     dimensions = [
-        {"dimension_id": "a4_1", "name": "dim1", "scale_ref": "ordinal_1_5",
+        {"dimension_id": "a4_1", "name": "dim1", "scale_ref": "ordinal_1_5", "weight": 0.5,
          "levels": [{"rank": r, "summary": str(r), "descriptors": [f"level {r}"]} for r in range(1, 6)]},
-        {"dimension_id": "a4_2", "name": "dim2", "scale_ref": "ordinal_1_5",
+        {"dimension_id": "a4_2", "name": "dim2", "scale_ref": "ordinal_1_5", "weight": 0.5,
          "levels": [{"rank": r, "summary": str(r), "descriptors": [f"level {r}"]} for r in range(1, 6)]},
     ]
     scale = {"scale_id": "ordinal_1_5", "type": "ordinal", "min": 1, "max": 5}

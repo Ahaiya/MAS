@@ -9,7 +9,7 @@ from src.providers.prompt_loader import PromptLoader
 
 _SCALE = {"scale_id": "ordinal_1_5", "type": "ordinal", "min": 1, "max": 5}
 _DIMENSIONS = [
-    {"dimension_id": f"a4_{i}", "name": f"dim{i}", "scale_ref": "ordinal_1_5",
+    {"dimension_id": f"a4_{i}", "name": f"dim{i}", "scale_ref": "ordinal_1_5", "weight": 0.5,
      "levels": [{"rank": r, "summary": str(r), "descriptors": [f"level {r}"]} for r in range(1, 6)]}
     for i in (1, 2)
 ]

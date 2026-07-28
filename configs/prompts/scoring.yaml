@@ -6,7 +6,7 @@ prompt_template: |
 
   ## Rubric Anchors For This Observation Point
   {% for anchor in dimension_anchors %}
-  {{ anchor.rank }}: {{ anchor.text }}
+  {{ anchor.rank }}{{ anchor.label }}：{{ anchor.text }}
   {% endfor %}
 
   ## Evidence Units (full text)

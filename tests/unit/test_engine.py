@@ -1,7 +1,7 @@
 import shutil
 import time
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Any, Dict, Optional
 
 import pytest
 
@@ -34,11 +34,11 @@ dimensions:
 _SUB_DIM_TEMPLATE = '  - {{code: "{code}", name: "sub {code}", weight: {weight}, anchors: {{1: 一档, 2: 二档, 3: 三档, 4: 四档, 5: 五档}}}}'
 
 
-def _write_dim_yaml(dim_dir: Path, dim_id: str, sub_dim_codes: list) -> None:
-    # 权重必须和为 1.0（量规校验要求），按观测点数均分
-    weight = 1 / len(sub_dim_codes)
+def _write_dim_yaml(dim_dir: Path, dim_id: str, sub_dim_codes: list, weights: Optional[list] = None) -> None:
+    # 权重必须和为 1.0（量规校验要求）；缺省按观测点数均分
+    weights = weights or [1 / len(sub_dim_codes)] * len(sub_dim_codes)
     sub_dims = "\n".join(
-        _SUB_DIM_TEMPLATE.format(code=code, weight=weight) for code in sub_dim_codes
+        _SUB_DIM_TEMPLATE.format(code=code, weight=w) for code, w in zip(sub_dim_codes, weights)
     )
     (dim_dir / f"{dim_id}_rubric.yaml").write_text(
         _DIM_YAML_TEMPLATE.format(dim_id=dim_id, sub_dims=sub_dims), encoding="utf-8"
@@ -82,6 +82,24 @@ def configs_root_multi(tmp_path: Path) -> Path:
     return root
 
 
+@pytest.fixture
+def configs_root_weighted(tmp_path: Path) -> Path:
+    """一个最小 configs_root：一级指标 d1 含 3 个观测点，权重 0.2/0.3/0.5（非均分）——
+    用于验证量规里的 weight 真的影响 dim 汇总分。"""
+    root = tmp_path / "configs"
+    (root / "tasks" / "testtask" / "dimension").mkdir(parents=True)
+    (root / "prompts").mkdir(parents=True)
+
+    for name in _PROMPT_NAMES:
+        shutil.copy(f"configs/prompts/{name}", root / "prompts" / name)
+    shutil.copy("configs/adjudication.yaml", root / "adjudication.yaml")
+
+    _write_dim_yaml(
+        root / "tasks" / "testtask" / "dimension", "d1", ["D1-1", "D1-2", "D1-3"], [0.2, 0.3, 0.5]
+    )
+    return root
+
+
 def _model_config_with_max_workers(tmp_path: Path, max_workers: int) -> Path:
     path = tmp_path / f"model_config_workers_{max_workers}.yaml"
     path.write_text(f"runtime:\n  max_workers: {max_workers}\n", encoding="utf-8")
@@ -102,8 +120,16 @@ class _StageAwareProvider(BaseProvider):
         "extract": {"evidence_unit_ids": [0]},
     }
 
-    def __init__(self, *, score: int = 3, fail_on_dimension_id: Optional[str] = None, name: str = "stage_aware") -> None:
+    def __init__(
+        self,
+        *,
+        score: int = 3,
+        scores: Optional[Dict[str, int]] = None,
+        fail_on_dimension_id: Optional[str] = None,
+        name: str = "stage_aware",
+    ) -> None:
         self._score = score
+        self._scores = scores or {}
         self._fail_on_dimension_id = fail_on_dimension_id
         self._name = name
         self.requests: list = []
@@ -124,7 +150,7 @@ class _StageAwareProvider(BaseProvider):
         stage = request.metadata.get("stage_name")
         if stage == "score":
             data = {
-                "proposed_score": self._score,
+                "proposed_score": self._scores.get(str(dimension_id), self._score),
                 "supporting_unit_ids": [0],
                 "confidence": 0.8,
                 "rationale": "ok",
@@ -509,6 +535,49 @@ def test_concurrency_runs_secondary_dims_in_parallel_not_serially(configs_root_m
     elapsed = time.perf_counter() - started
 
     assert elapsed < 0.9 * 3  # 远低于 3 个二级指标完全串行的下界
+
+
+# ── 观测点权重 ────────────────────────────────────────────────────────────────
+
+
+def _weighted_providers(scores: Dict[str, int], **kwargs: Any) -> Dict[str, BaseProvider]:
+    return {
+        "rater_1": _StageAwareProvider(scores=scores, name="r1", **kwargs),
+        "rater_2": _StageAwareProvider(scores=scores, name="r2", **kwargs),
+        "feedback": FakeProvider([_text_response("反馈")] * 3),
+    }
+
+
+def test_primary_score_uses_observation_point_weights(configs_root_weighted: Path, tmp_path: Path) -> None:
+    """权重 0.2/0.3/0.5、得分 1/3/5：加权 3.6，等权会算成 3.0。"""
+    engine = Engine.from_configs(
+        configs_root_weighted, "testtask",
+        providers=_weighted_providers({"d1_1": 1, "d1_2": 3, "d1_3": 5}),
+        model_config_path=_model_config_with_max_workers(tmp_path, 3),
+        output_dir=tmp_path / "artifacts",
+    )
+
+    results = engine.evaluate(_package(), dim="d1")
+
+    assert results["d1"].feedback_report["primary_score"] == pytest.approx(3.6)
+
+
+def test_primary_score_renormalizes_weights_when_a_point_fails(
+    configs_root_weighted: Path, tmp_path: Path
+) -> None:
+    """d1_3（权重 0.5）评价失败：剩下 0.2/0.3 要重新归一化成 0.4/0.6，
+    得分 1/3 → 2.2；不归一化会算成 1.1，一个观测点失败就让 dim 分凭空腰斩。"""
+    engine = Engine.from_configs(
+        configs_root_weighted, "testtask",
+        providers=_weighted_providers({"d1_1": 1, "d1_2": 3}, fail_on_dimension_id="d1_3"),
+        model_config_path=_model_config_with_max_workers(tmp_path, 3),
+        output_dir=tmp_path / "artifacts",
+    )
+
+    results = engine.evaluate(_package(), dim="d1")
+
+    assert [f["dimension_id"] for f in results["d1"].run_trace.failed_dims] == ["d1_3"]
+    assert results["d1"].feedback_report["primary_score"] == pytest.approx(2.2)
 
 
 # ── 失败隔离 ──────────────────────────────────────────────────────────────────

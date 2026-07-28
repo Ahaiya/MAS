@@ -7,7 +7,10 @@
 
 切分本身不受文档长度影响（证据编号锚点需要细粒度引用，不论文档长短）；只有
 当多文件合并后的总 token 数超过"上下文安全余量"时，才会从尾部丢弃单元以适配
-预算，且被丢弃的单元编号会显式返回，绝不静默丢弃。"""
+预算，且被丢弃的单元编号会显式返回，绝不静默丢弃。
+
+预算值本身不住在这里：它与模型上下文窗口耦合，来自 model_config.yaml 的
+runtime.context_budget_tokens，由调用方显式传入。"""
 
 from __future__ import annotations
 
@@ -18,9 +21,6 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
 
 from src.contracts.package import DataPackage, Unit
 from src.utils.dialogue_sources import extract_dialogue_source_spans, source_for_range
-
-# 上下文安全余量
-DEFAULT_CONTEXT_BUDGET_TOKENS = 48000
 
 _CHINESE_CHAR_RE = re.compile(r"[一-鿿]") #表示"匹配这个区间内的任意一个字符"，即"匹配一个汉字"
 _NON_WS_RE = re.compile(r"\S")
@@ -270,8 +270,8 @@ def _apply_budget(units: List[Unit], budget_tokens: int) -> Tuple[List[Unit], Li
 def build_package(
     files: Sequence[Tuple[str, str]],
     package_id: str,
+    budget_tokens: int,
     metadata: Optional[Dict[str, Any]] = None,
-    budget_tokens: int = DEFAULT_CONTEXT_BUDGET_TOKENS,
 ) -> Tuple[DataPackage, List[int]]:
     """纯函数：多个 (source_file, text) 合并进一个 DataPackage，共享同一全局编号空间。
 
@@ -292,8 +292,8 @@ def build_package(
 def read_text_file(
     paths: Union[str, Path, Sequence[Union[str, Path]]],
     package_id: str,
+    budget_tokens: int,
     metadata: Optional[Dict[str, Any]] = None,
-    budget_tokens: int = DEFAULT_CONTEXT_BUDGET_TOKENS,
 ) -> Tuple[DataPackage, List[int]]:
     """IO 边界：从一个或多个 .md/.txt 文件读取文本并构造 DataPackage。"""
     path_list = [paths] if isinstance(paths, (str, Path)) else list(paths)

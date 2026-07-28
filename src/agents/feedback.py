@@ -72,7 +72,9 @@ def build_feedback_report(
         }
 
     return {
-        "primary_score": aggregate_final_decisions(list(decisions)),
+        "primary_score": aggregate_final_decisions(
+            list(decisions), {d["dimension_id"]: d["weight"] for d in rubric.dimensions}
+        ),
         "radar": build_radar_data(decisions),
         "dimensions": dimensions_out,
     }
