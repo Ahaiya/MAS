@@ -37,7 +37,6 @@ build/
 !.env.example
 
 # Claude Code：本地个人配置与 worktree 不入库
-# .claude/settings.json 是否共享给协作者由你决定，这里不预先忽略。
 .claude/settings.local.json
 .claude/worktrees/
 
