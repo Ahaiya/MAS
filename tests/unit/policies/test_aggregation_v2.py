@@ -1,6 +1,5 @@
 import pytest
 
-from src.contracts.score_representation import create_score_representation
 from src.contracts.scoring import FinalDecision, ScoreSource
 from src.policies.aggregation import aggregate_final_decisions
 
@@ -10,7 +9,7 @@ _SCALE_REF = "ordinal_1_5"
 def _decision(dimension_id: str, score_val: int, source: ScoreSource = ScoreSource.CONSENSUS) -> FinalDecision:
     return FinalDecision(
         dimension_id=dimension_id,
-        final_score=create_score_representation(score_val, _SCALE_REF),
+        final_score=score_val,
         source=source,
         unit_ids=[0],
     )

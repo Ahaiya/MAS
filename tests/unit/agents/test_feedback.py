@@ -1,7 +1,6 @@
 from src.agents import feedback
 from src.contracts.artifact_bundle import RubricSnapshot
 from src.contracts.package import DataPackage, Unit
-from src.contracts.score_representation import create_score_representation
 from src.contracts.scoring import DimensionScore, FinalDecision, RaterChainResult, ScoreSource
 from src.providers.base import LLMResponse, TokenUsage
 from src.providers.fake import FakeProvider
@@ -36,7 +35,7 @@ def _package() -> DataPackage:
 def _decision(dimension_id: str, score_val: int, source: ScoreSource, unit_ids) -> FinalDecision:
     return FinalDecision(
         dimension_id=dimension_id,
-        final_score=create_score_representation(score_val, "ordinal_1_5"),
+        final_score=score_val,
         source=source,
         unit_ids=list(unit_ids),
     )
@@ -49,8 +48,7 @@ def _chain(rater_id: str, dimension_id: str, score_val: int) -> RaterChainResult
         selected_unit_ids=[0, 1],
         evidence_unit_ids=[0],
         score=DimensionScore(
-            dimension_id=dimension_id,
-            score=create_score_representation(score_val, "ordinal_1_5"),
+            score=score_val,
             supporting_unit_ids=[0],
             rationale="r",
             confidence=0.8,

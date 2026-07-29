@@ -5,7 +5,6 @@
 各模块（一律从具体模块导入，本包只再导出配置快照三件套）：
 - `package`: DataPackage 与带全局连续编号的 Unit（证据引用的锚点）
 - `artifact_bundle`: RubricSnapshot / PolicySnapshot / ProviderEntryConfig
-- `score_representation`: 规范化分数与显示注解分离
 - `scoring`: DimensionScore / RaterChainResult / FinalDecision
 - `trace`: StageTrace / RunTraceSummary（只记成本与性能）"""
 

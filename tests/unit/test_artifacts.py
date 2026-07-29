@@ -11,7 +11,6 @@ from src.artifacts import (
 )
 from src.contracts.artifact_bundle import RubricSnapshot
 from src.contracts.package import DataPackage, Unit
-from src.contracts.score_representation import create_score_representation
 from src.contracts.scoring import FinalDecision, ScoreSource
 from src.providers.base import LLMResponse, TokenUsage
 from src.providers.fake import FakeProvider
@@ -98,13 +97,13 @@ def test_feedback_and_package_round_trip_through_disk(tmp_path: Path) -> None:
     decisions = [
         FinalDecision(
             dimension_id="a4_1",
-            final_score=create_score_representation(3, "ordinal_1_5"),
+            final_score=3,
             source=ScoreSource.CONSENSUS,
             unit_ids=[0, 1],
         ),
         FinalDecision(
             dimension_id="a4_2",
-            final_score=create_score_representation(4, "ordinal_1_5"),
+            final_score=4,
             source=ScoreSource.ADJUDICATED,
             unit_ids=[3],
         ),

@@ -101,8 +101,7 @@ def test_score_produces_dimension_score_from_scripted_response() -> None:
 
     dim_score = rater.score(_package(), [0], _DIMENSION, _rubric(), provider, score_t, "rater_1")
 
-    assert dim_score.dimension_id == "a4_1"
-    assert dim_score.score.canonical_score == 4
+    assert dim_score.score == 4
     assert dim_score.supporting_unit_ids == [0]
     assert dim_score.confidence == 0.9
     assert dim_score.rationale == "理由"
@@ -114,7 +113,7 @@ def test_score_clamps_out_of_range_score_to_scale() -> None:
 
     dim_score = rater.score(_package(), [0], _DIMENSION, _rubric(), provider, score_t, "rater_1")
 
-    assert dim_score.score.canonical_score == 5
+    assert dim_score.score == 5
 
 
 def test_score_rejects_out_of_bounds_supporting_unit_id() -> None:
@@ -158,7 +157,7 @@ def test_run_chain_produces_rater_chain_result_end_to_end() -> None:
     assert result.dimension_id == "a4_1"
     assert result.selected_unit_ids == [0, 1]
     assert result.evidence_unit_ids == [0]
-    assert result.score.score.canonical_score == 4
+    assert result.score.score == 4
     assert result.score.supporting_unit_ids == [0]
     # 三趟共用同一个 provider 实例，且按 select→extract→score 顺序各调用一次
     assert len(provider.requests) == 3

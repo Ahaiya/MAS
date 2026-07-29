@@ -22,7 +22,7 @@ from src.providers.prompt_loader import PromptTemplate
 def build_radar_data(decisions: Sequence[FinalDecision]) -> List[Dict[str, Any]]:
     """雷达图数据：各观测点分数数组，按 dimension_id 排序，供前端渲染。"""
     return [
-        {"dimension_id": d.dimension_id, "score": d.final_score.canonical_score}
+        {"dimension_id": d.dimension_id, "score": d.final_score}
         for d in sorted(decisions, key=lambda d: d.dimension_id)
     ]
 
@@ -65,7 +65,7 @@ def build_feedback_report(
         if dimension is None:
             raise ValueError(f"Dimension '{decision.dimension_id}' not found in rubric")
         dimensions_out[decision.dimension_id] = {
-            "final_score": decision.final_score.canonical_score,
+            "final_score": decision.final_score,
             "source": decision.source.value,
             "unit_ids": list(decision.unit_ids),
             "feedback": generate_feedback_text(package, decision, dimension, provider, template),

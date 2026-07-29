@@ -1,5 +1,5 @@
 """
-追踪契约：轻量 trace，只记成本与性能。
+trace schema：轻量 trace，只记成本与性能。
 
   阶段执行 -> StageTrace      （stage/rater/llm_calls/tokens/ms）
   StageTrace[] -> RunTraceSummary （一次二级指标评价的汇总，run_trace.json 的内容）
@@ -8,8 +8,7 @@
 不感知 trace——engine 把每个阶段用到的 provider 包一层旁路计数器，调用前后各拍一次
 调用数/token 快照做差，配合耗时拼出 StageTrace，业务逻辑不被插桩代码侵入。
 
-只记成本/性能，不含决策数据；v1 的 NodeTrace/RunTrace/CheckpointRef 那套
-input_ref/output_ref/checkpoint 回放机制已随 orchestrator 一并删除。
+只记成本/性能，不含决策数据。
 
 设计不变式：所有模型均为冻结（不可变）的 dataclass。"""
 

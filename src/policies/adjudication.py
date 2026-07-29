@@ -58,8 +58,8 @@ def needs_adjudication(
 
         Returns:
             触发仲裁的观测点标识符集合；未触发的视为一致（consensus）。"""
-    scores_a = {c.dimension_id: c.score.score.canonical_score for c in chains_a}
-    scores_b = {c.dimension_id: c.score.score.canonical_score for c in chains_b}
+    scores_a = {c.dimension_id: c.score.score for c in chains_a}
+    scores_b = {c.dimension_id: c.score.score for c in chains_b}
 
     gap_triggered = {
         dim_id

@@ -3,7 +3,6 @@ import pytest
 from src.agents import adjudicator
 from src.contracts.artifact_bundle import RubricSnapshot
 from src.contracts.package import DataPackage, Unit
-from src.contracts.score_representation import create_score_representation
 from src.contracts.scoring import DimensionScore, RaterChainResult
 from src.providers.fake import FakeProvider, fake_response
 from src.providers.prompt_loader import PromptLoader
@@ -46,8 +45,7 @@ def _chain(rater_id: str, score_val: int, evidence_unit_ids) -> RaterChainResult
         selected_unit_ids=list(evidence_unit_ids),
         evidence_unit_ids=list(evidence_unit_ids),
         score=DimensionScore(
-            dimension_id="a4_1",
-            score=create_score_representation(score_val, "ordinal_1_5"),
+            score=score_val,
             supporting_unit_ids=list(evidence_unit_ids),
             rationale="r",
             confidence=0.8,
@@ -68,8 +66,7 @@ def test_adjudicate_produces_dimension_score_from_scripted_response() -> None:
 
     result = adjudicator.adjudicate(_package(), _DIMENSION, _rubric(), chain_a, chain_b, provider, _template())
 
-    assert result.dimension_id == "a4_1"
-    assert result.score.canonical_score == 4
+    assert result.score == 4
     assert result.supporting_unit_ids == [2]
     assert result.rationale == "仲裁理由"
 

@@ -214,7 +214,7 @@ def build_feedback_prompt(
     注入的上下文变量 (匹配 feedback.yaml)：
         dimension_name    : 来自 rubric 的可读 dimension 名称。
         dimension_anchors : 仅当前 dimension 的 anchors [{rank, label, text}]。
-        final_score       : 该观测点的最终分（canonical_score）。
+        final_score       : 该观测点的最终分（整数）。
         units             : final_score 引用的证据单元全文 [{id, kind, text}]。
 
     Returns:
@@ -222,7 +222,7 @@ def build_feedback_prompt(
     context = {
         "dimension_name": dimension.get("name", dimension.get("dimension_id", "")),
         "dimension_anchors": _dimension_anchor_entries(dimension),
-        "final_score": decision.final_score.canonical_score,
+        "final_score": decision.final_score,
         "units": _units_by_ids(package, decision.unit_ids),
     }
     return render_template(template, context)

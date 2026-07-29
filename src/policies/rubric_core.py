@@ -56,19 +56,6 @@ def get_scale_range(rubric: RubricSnapshot, dimension_id: str) -> Tuple[int, int
     return int(scale["min"]), int(scale["max"])
 
 
-def get_scale_ref(rubric: RubricSnapshot, dimension_id: str) -> str:
-    """返回维度的 scale_ref 字符串。
-    
-        如果找不到 dimension_id 或其没有 scale_ref，则引发 ValueError。"""
-    dim = rubric.dimension_by_id.get(dimension_id)
-    if dim is None:
-        raise ValueError(f"Dimension '{dimension_id}' not found in rubric")
-    scale_ref = dim.get("scale_ref")
-    if not scale_ref:
-        raise ValueError(f"Dimension '{dimension_id}' has no scale_ref")
-    return scale_ref
-
-
 def get_required_facets(rubric: RubricSnapshot, dimension_id: str) -> List[str]:
     """返回维度所需的 observation facet。
     

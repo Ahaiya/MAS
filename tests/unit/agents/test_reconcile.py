@@ -3,7 +3,6 @@ import pytest
 from src.agents import reconcile
 from src.contracts.artifact_bundle import PolicySnapshot, RubricSnapshot
 from src.contracts.package import DataPackage, Unit
-from src.contracts.score_representation import create_score_representation
 from src.contracts.scoring import DimensionScore, RaterChainResult, ScoreSource
 from src.providers.fake import FakeProvider, fake_response
 from src.providers.prompt_loader import PromptLoader
@@ -45,8 +44,7 @@ def _chain(rater_id: str, dimension_id: str, score_val: int) -> RaterChainResult
         selected_unit_ids=[0, 1],
         evidence_unit_ids=[0],
         score=DimensionScore(
-            dimension_id=dimension_id,
-            score=create_score_representation(score_val, "ordinal_1_5"),
+            score=score_val,
             supporting_unit_ids=[0],
             rationale="r",
             confidence=0.8,
@@ -70,7 +68,7 @@ def test_all_consensus_does_not_call_rater_3() -> None:
 
     assert {d.source for d in decisions} == {ScoreSource.CONSENSUS}
     assert len(rater_3_provider.requests) == 0
-    assert {d.dimension_id: d.final_score.canonical_score for d in decisions} == {"a4_1": 3, "a4_2": 4, "a4_3": 5}
+    assert {d.dimension_id: d.final_score for d in decisions} == {"a4_1": 3, "a4_2": 4, "a4_3": 5}
 
 
 def test_isolated_diff_of_one_is_consensus_and_picks_first_chain_deterministically() -> None:
@@ -83,7 +81,7 @@ def test_isolated_diff_of_one_is_consensus_and_picks_first_chain_deterministical
     by_dim = {d.dimension_id: d for d in decisions}
 
     assert by_dim["a4_1"].source == ScoreSource.CONSENSUS
-    assert by_dim["a4_1"].final_score.canonical_score == 3  # chains_a 的值，不是平均 3.5 或取高分 4
+    assert by_dim["a4_1"].final_score == 3  # chains_a 的值，不是平均 3.5 或取高分 4
 
 
 # ── 分差 > 1：触发 Rater3 → adjudicated ──────────────────────────────────────
@@ -100,7 +98,7 @@ def test_score_distance_over_one_triggers_adjudication() -> None:
     by_dim = {d.dimension_id: d for d in decisions}
 
     assert by_dim["a4_1"].source == ScoreSource.ADJUDICATED
-    assert by_dim["a4_1"].final_score.canonical_score == 3
+    assert by_dim["a4_1"].final_score == 3
     assert by_dim["a4_2"].source == ScoreSource.CONSENSUS
     assert by_dim["a4_3"].source == ScoreSource.CONSENSUS
     assert len(rater_3_provider.requests) == 1

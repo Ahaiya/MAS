@@ -14,9 +14,8 @@ from src.agents.llm_json import call_llm, coerce_int_ids, reject_out_of_bounds
 from src.agents.prompt_builders import build_adjudication_prompt
 from src.contracts.artifact_bundle import RubricSnapshot
 from src.contracts.package import DataPackage
-from src.contracts.score_representation import create_score_representation
 from src.contracts.scoring import DimensionScore, RaterChainResult
-from src.policies.rubric_core import get_scale_range, get_scale_ref
+from src.policies.rubric_core import get_scale_range
 from src.providers.base import BaseProvider
 from src.providers.prompt_loader import PromptTemplate
 
@@ -62,10 +61,8 @@ def adjudicate(
     )
 
     scale_min, scale_max = get_scale_range(rubric, dimension_id)
-    scale_ref = get_scale_ref(rubric, dimension_id)
     raw_score = int(data.get("proposed_score", scale_min))
     score_val = max(scale_min, min(scale_max, raw_score))
-    score_repr = create_score_representation(score_val, scale_ref)
 
     valid_ids = {unit.id for unit in package.units}
     supporting_unit_ids = coerce_int_ids(data.get("supporting_unit_ids"))
@@ -75,8 +72,7 @@ def adjudicate(
         raise ValueError(f"rater '{rater_id}' adjudicate: 未引用任何证据 unit_ids，仲裁输出被拒绝。")
 
     return DimensionScore(
-        dimension_id=dimension_id,
-        score=score_repr,
+        score=score_val,
         supporting_unit_ids=supporting_unit_ids,
         rationale=str(data.get("rationale", "")),
         confidence=float(data.get("confidence", 0.7)),

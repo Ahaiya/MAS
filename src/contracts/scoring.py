@@ -1,13 +1,11 @@
 """
-评分契约：独立双链路评价的数据结构。
+scoring schema：独立双链路评价的数据结构。
 
   Unit[]             -> DimensionScore    （单 Rater / Rater3 对一个观测点的评分）
   DimensionScore     -> RaterChainResult  （单 Rater 完整链：选段 + 证据 + 分数）
   RaterChainResult[] -> FinalDecision     （两链比较：一致 or Rater3 仲裁后）
 
-证据引用一律为 unit_ids（对 DataPackage.units 的编号引用），不复述原文——v1 的
-EvidenceSpan 让模型自由复述再用编辑距离回溯定位，历史产物里 14.7% 静默定位失败，
-编号锚点从根上消除了这个漏洞。
+证据引用一律为 unit_ids（对 DataPackage.units 的编号引用），不复述原文。
 
 设计不变式：所有模型均为冻结（不可变）的 dataclass。"""
 
@@ -16,8 +14,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, List
-
-from src.contracts.score_representation import ScoreRepresentation
 
 
 # ── ScoreSource ──────────────────────────────────────────────────────────────
@@ -40,30 +36,26 @@ class ScoreSource(str, Enum):
 class DimensionScore:
     """单次评分（Rater 的 score 阶段，或 Rater3 仲裁）对一个观测点的评分结果。
 
+        分值就是量规尺度上的整数，尺度定义留在量规配置里，不随每个分数复制一份。
+
         属性：
-            dimension_id: 来自评分量规配置的不透明观测点标识符。
-            score: 该观测点的 ScoreRepresentation。
+            score: 该观测点的整数分。
             supporting_unit_ids: 支持该评分的 Unit 编号引用。
             rationale: 评分理由（自由文本，用于审计追踪）。
             confidence: 评分者的置信度，范围 [0.0, 1.0]。"""
 
-    dimension_id: str
-    score: ScoreRepresentation
+    score: int
     supporting_unit_ids: List[int]
     rationale: str
     confidence: float
 
     def __post_init__(self) -> None:
         if not (0.0 <= self.confidence <= 1.0):
-            raise ValueError(
-                f"DimensionScore '{self.dimension_id}': confidence must be in "
-                f"[0.0, 1.0], got {self.confidence}."
-            )
+            raise ValueError(f"confidence must be in [0.0, 1.0], got {self.confidence}.")
 
     def to_dict(self) -> Dict[str, Any]:
         return {
-            "dimension_id": self.dimension_id,
-            "score": self.score.to_dict(),
+            "score": self.score,
             "supporting_unit_ids": list(self.supporting_unit_ids),
             "rationale": self.rationale,
             "confidence": self.confidence,
@@ -92,21 +84,14 @@ class RaterChainResult:
     evidence_unit_ids: List[int]
     score: DimensionScore
 
-    def __post_init__(self) -> None:
-        if self.score.dimension_id != self.dimension_id:
-            raise ValueError(
-                f"RaterChainResult for rater '{self.rater_id}': dimension_id "
-                f"'{self.dimension_id}' does not match score.dimension_id "
-                f"'{self.score.dimension_id}'."
-            )
-
     def to_dict(self) -> Dict[str, Any]:
+        """产物里把 DimensionScore 摊平进这条链，不再多一层嵌套。"""
         return {
             "rater_id": self.rater_id,
             "dimension_id": self.dimension_id,
             "selected_unit_ids": list(self.selected_unit_ids),
             "evidence_unit_ids": list(self.evidence_unit_ids),
-            "score": self.score.to_dict(),
+            **self.score.to_dict(),
         }
 
 
@@ -119,19 +104,19 @@ class FinalDecision:
 
         属性：
             dimension_id: 来自评分量规配置的不透明观测点标识符。
-            final_score: 该观测点的权威 ScoreRepresentation。
+            final_score: 该观测点的权威整数分。
             source: 该分数的来源 —— consensus（双链一致）或 adjudicated（Rater3 仲裁）。
             unit_ids: 支持最终决定的 Unit 编号引用。"""
 
     dimension_id: str
-    final_score: ScoreRepresentation
+    final_score: int
     source: ScoreSource
     unit_ids: List[int]
 
     def to_dict(self) -> Dict[str, Any]:
         return {
             "dimension_id": self.dimension_id,
-            "final_score": self.final_score.to_dict(),
+            "final_score": self.final_score,
             "source": self.source.value,
             "unit_ids": list(self.unit_ids),
         }

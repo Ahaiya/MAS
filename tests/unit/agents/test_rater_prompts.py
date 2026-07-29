@@ -6,7 +6,6 @@ from src.agents.prompt_builders import (
     build_rater_select_prompt,
 )
 from src.contracts.package import DataPackage, Unit
-from src.contracts.score_representation import create_score_representation
 from src.contracts.scoring import DimensionScore, FinalDecision, RaterChainResult, ScoreSource
 from src.providers.prompt_loader import PromptLoader
 
@@ -137,8 +136,7 @@ def _chain(rater_id: str) -> RaterChainResult:
         selected_unit_ids=[0, 1],
         evidence_unit_ids=[0],
         score=DimensionScore(
-            dimension_id="a4_1",
-            score=create_score_representation(4, "ordinal_1_5"),
+            score=4,
             supporting_unit_ids=[0],
             rationale="r",
             confidence=0.8,
@@ -149,7 +147,7 @@ def _chain(rater_id: str) -> RaterChainResult:
 def _decision() -> FinalDecision:
     return FinalDecision(
         dimension_id="a4_1",
-        final_score=create_score_representation(4, "ordinal_1_5"),
+        final_score=4,
         source=ScoreSource.CONSENSUS,
         unit_ids=[1],
     )

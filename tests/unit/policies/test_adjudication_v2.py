@@ -1,5 +1,4 @@
 from src.contracts.artifact_bundle import PolicySnapshot
-from src.contracts.score_representation import create_score_representation
 from src.contracts.scoring import DimensionScore, RaterChainResult
 from src.policies.adjudication import needs_adjudication
 
@@ -13,8 +12,7 @@ def _chain(rater_id: str, dimension_id: str, score_val: int) -> RaterChainResult
         selected_unit_ids=[0],
         evidence_unit_ids=[0],
         score=DimensionScore(
-            dimension_id=dimension_id,
-            score=create_score_representation(score_val, _SCALE_REF),
+            score=score_val,
             supporting_unit_ids=[0],
             rationale="r",
             confidence=0.8,

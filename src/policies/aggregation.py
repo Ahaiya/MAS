@@ -27,7 +27,7 @@ def aggregate_final_decisions(
             weights:   {dimension_id: weight}，须覆盖 decisions 里的全部观测点。
 
         Returns:
-            各 final_score.canonical_score 的加权平均值。
+            各 final_score 的加权平均值。
 
         Raises:
             ValueError: decisions 为空。
@@ -35,5 +35,5 @@ def aggregate_final_decisions(
     if not decisions:
         raise ValueError("aggregate_final_decisions: decisions 不能为空")
     total_weight = sum(weights[d.dimension_id] for d in decisions)
-    weighted = sum(weights[d.dimension_id] * d.final_score.canonical_score for d in decisions)
+    weighted = sum(weights[d.dimension_id] * d.final_score for d in decisions)
     return weighted / total_weight
