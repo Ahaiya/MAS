@@ -10,15 +10,12 @@ from src.contracts.scoring import DimensionScore, FinalDecision, RaterChainResul
 from src.providers.prompt_loader import PromptLoader
 
 _DIMENSION = {
-    "dimension_id": "a4_1",
     "code": "A4-1",
     "name": "用户群体识别的全面性",
-    "scale_ref": "ordinal_1_5",
-    "levels": [
-        {"rank": 5, "summary": "优秀", "descriptors": ["能识别多类用户"]},
-        {"rank": 1, "summary": "待改进", "descriptors": ["只提到笼统群体"]},
-    ],
+    "anchors": {5: "能识别多类用户", 1: "只提到笼统群体"},
 }
+
+_SCALE_LEVELS = {5: "优秀", 1: "待改进"}
 
 _INDICATOR_DESCRIPTION = "本指标考察学生是否能识别产品所面向的不同用户群体及其差异化需求。"
 
@@ -34,7 +31,7 @@ def _package() -> DataPackage:
 
 def test_select_prompt_shows_unit_id_and_truncated_preview() -> None:
     template = PromptLoader().load("configs/prompts/select.yaml")
-    prompt = build_rater_select_prompt(_package(), _DIMENSION, template, "", preview_bytes=15)
+    prompt = build_rater_select_prompt(_package(), _DIMENSION, _SCALE_LEVELS, template, "", preview_bytes=15)
 
     assert "用户群体识别的全面性" in prompt
     assert "[0](prose)" in prompt
@@ -46,7 +43,7 @@ def test_select_prompt_shows_unit_id_and_truncated_preview() -> None:
 def test_select_prompt_preview_truncates_by_utf8_bytes_not_chars() -> None:
     template = PromptLoader().load("configs/prompts/select.yaml")
     # 每个中文字符在 UTF-8 下占 3 字节；6 字节应恰好截到前 2 个字符
-    prompt = build_rater_select_prompt(_package(), _DIMENSION, template, "", preview_bytes=6)
+    prompt = build_rater_select_prompt(_package(), _DIMENSION, _SCALE_LEVELS, template, "", preview_bytes=6)
 
     assert "老年" in prompt
     assert "老年用" not in prompt
@@ -54,14 +51,14 @@ def test_select_prompt_preview_truncates_by_utf8_bytes_not_chars() -> None:
 
 def test_select_prompt_includes_dimension_anchors() -> None:
     template = PromptLoader().load("configs/prompts/select.yaml")
-    prompt = build_rater_select_prompt(_package(), _DIMENSION, template, "")
+    prompt = build_rater_select_prompt(_package(), _DIMENSION, _SCALE_LEVELS, template, "")
 
     assert "能识别多类用户" in prompt
 
 
 def test_extraction_prompt_shows_full_text_of_selected_units_only() -> None:
     template = PromptLoader().load("configs/prompts/extraction.yaml")
-    prompt = build_rater_extraction_prompt(_package(), [0], _DIMENSION, template, "")
+    prompt = build_rater_extraction_prompt(_package(), [0], _DIMENSION, _SCALE_LEVELS, template, "")
 
     assert _UNITS[0].text in prompt
     assert _UNITS[1].text not in prompt
@@ -69,7 +66,7 @@ def test_extraction_prompt_shows_full_text_of_selected_units_only() -> None:
 
 def test_scoring_prompt_shows_full_text_of_evidence_units_and_anchors() -> None:
     template = PromptLoader().load("configs/prompts/scoring.yaml")
-    prompt = build_rater_scoring_prompt(_package(), [1], _DIMENSION, template)
+    prompt = build_rater_scoring_prompt(_package(), [1], _DIMENSION, _SCALE_LEVELS, template)
 
     assert _UNITS[1].text in prompt
     assert _UNITS[0].text not in prompt
@@ -85,7 +82,7 @@ def test_scoring_prompt_shows_full_text_of_evidence_units_and_anchors() -> None:
 def test_select_prompt_includes_indicator_description() -> None:
     template = PromptLoader().load("configs/prompts/select.yaml")
     prompt = build_rater_select_prompt(
-        _package(), _DIMENSION, template, indicator_description=_INDICATOR_DESCRIPTION
+        _package(), _DIMENSION, _SCALE_LEVELS, template, indicator_description=_INDICATOR_DESCRIPTION
     )
 
     assert _INDICATOR_DESCRIPTION in prompt
@@ -94,7 +91,7 @@ def test_select_prompt_includes_indicator_description() -> None:
 def test_extraction_prompt_includes_indicator_description() -> None:
     template = PromptLoader().load("configs/prompts/extraction.yaml")
     prompt = build_rater_extraction_prompt(
-        _package(), [0], _DIMENSION, template, indicator_description=_INDICATOR_DESCRIPTION
+        _package(), [0], _DIMENSION, _SCALE_LEVELS, template, indicator_description=_INDICATOR_DESCRIPTION
     )
 
     assert _INDICATOR_DESCRIPTION in prompt
@@ -102,7 +99,7 @@ def test_extraction_prompt_includes_indicator_description() -> None:
 
 def test_scoring_prompt_excludes_indicator_description() -> None:
     template = PromptLoader().load("configs/prompts/scoring.yaml")
-    prompt = build_rater_scoring_prompt(_package(), [1], _DIMENSION, template)
+    prompt = build_rater_scoring_prompt(_package(), [1], _DIMENSION, _SCALE_LEVELS, template)
 
     assert _INDICATOR_DESCRIPTION not in prompt
 
@@ -110,7 +107,7 @@ def test_scoring_prompt_excludes_indicator_description() -> None:
 def test_adjudication_prompt_excludes_indicator_description() -> None:
     template = PromptLoader().load("configs/prompts/adjudication.yaml")
     prompt = build_adjudication_prompt(
-        _package(), _DIMENSION, _chain("rater_1"), _chain("rater_2"), template
+        _package(), _DIMENSION, _SCALE_LEVELS, _chain("rater_1"), _chain("rater_2"), template
     )
 
     assert _INDICATOR_DESCRIPTION not in prompt
@@ -118,9 +115,19 @@ def test_adjudication_prompt_excludes_indicator_description() -> None:
 
 def test_feedback_prompt_excludes_indicator_description() -> None:
     template = PromptLoader().load("configs/prompts/feedback.yaml")
-    prompt = build_feedback_prompt(_package(), _decision(), _DIMENSION, template)
+    prompt = build_feedback_prompt(_package(), _decision(), _DIMENSION, _SCALE_LEVELS, template)
 
     assert _INDICATOR_DESCRIPTION not in prompt
+
+
+def test_feedback_prompt_includes_the_rationale_behind_the_score() -> None:
+    """反馈必须建立在定分理由上，而不是从证据二次臆测——否则反馈会和
+    rater_chains.json 里记下的理由互相矛盾。"""
+    template = PromptLoader().load("configs/prompts/feedback.yaml")
+
+    prompt = build_feedback_prompt(_package(), _decision(), _DIMENSION, _SCALE_LEVELS, template)
+
+    assert "定分理由" in prompt
 
 
 # ── 档位标签进锚点文本 ───────────────────────────────────────────────────────
@@ -132,7 +139,7 @@ def test_feedback_prompt_excludes_indicator_description() -> None:
 def _chain(rater_id: str) -> RaterChainResult:
     return RaterChainResult(
         rater_id=rater_id,
-        dimension_id="a4_1",
+        code="A4-1",
         selected_unit_ids=[0, 1],
         evidence_unit_ids=[0],
         score=DimensionScore(
@@ -146,10 +153,11 @@ def _chain(rater_id: str) -> RaterChainResult:
 
 def _decision() -> FinalDecision:
     return FinalDecision(
-        dimension_id="a4_1",
+        code="A4-1",
         final_score=4,
         source=ScoreSource.CONSENSUS,
         unit_ids=[1],
+        rationale="定分理由",
     )
 
 
@@ -158,20 +166,20 @@ def _render_all_stages() -> dict:
     package = _package()
     return {
         "select": build_rater_select_prompt(
-            package, _DIMENSION, loader.load("configs/prompts/select.yaml"), ""
+            package, _DIMENSION, _SCALE_LEVELS, loader.load("configs/prompts/select.yaml"), ""
         ),
         "extraction": build_rater_extraction_prompt(
-            package, [0], _DIMENSION, loader.load("configs/prompts/extraction.yaml"), ""
+            package, [0], _DIMENSION, _SCALE_LEVELS, loader.load("configs/prompts/extraction.yaml"), ""
         ),
         "scoring": build_rater_scoring_prompt(
-            package, [1], _DIMENSION, loader.load("configs/prompts/scoring.yaml")
+            package, [1], _DIMENSION, _SCALE_LEVELS, loader.load("configs/prompts/scoring.yaml")
         ),
         "adjudication": build_adjudication_prompt(
-            package, _DIMENSION, _chain("rater_1"), _chain("rater_2"),
+            package, _DIMENSION, _SCALE_LEVELS, _chain("rater_1"), _chain("rater_2"),
             loader.load("configs/prompts/adjudication.yaml"),
         ),
         "feedback": build_feedback_prompt(
-            package, _decision(), _DIMENSION, loader.load("configs/prompts/feedback.yaml")
+            package, _decision(), _DIMENSION, _SCALE_LEVELS, loader.load("configs/prompts/feedback.yaml")
         ),
     }
 
@@ -183,9 +191,9 @@ def test_every_stage_anchor_line_carries_the_level_label() -> None:
 
 
 def test_anchor_line_without_a_label_falls_back_to_bare_rank() -> None:
-    dimension = {**_DIMENSION, "levels": [{"rank": 5, "summary": "", "descriptors": ["能识别多类用户"]}]}
+    dimension = {**_DIMENSION, "anchors": {5: "能识别多类用户"}}
     template = PromptLoader().load("configs/prompts/scoring.yaml")
 
-    prompt = build_rater_scoring_prompt(_package(), [1], dimension, template)
+    prompt = build_rater_scoring_prompt(_package(), [1], dimension, {}, template)
 
     assert "5：能识别多类用户" in prompt

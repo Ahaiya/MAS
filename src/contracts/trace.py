@@ -1,12 +1,14 @@
 """
 trace schema：轻量 trace，只记成本与性能。
 
-  阶段执行 -> StageTrace      （stage/rater/llm_calls/tokens/ms）
+  LLM 调用 -> StageTrace      （stage/rater/code/llm_calls/tokens/ms）
   StageTrace[] -> RunTraceSummary （一次二级指标评价的汇总，run_trace.json 的内容）
 
-收集用收集器模式：rater.py/reconcile.py/feedback.py 各阶段函数本身不产出 StageTrace、
-不感知 trace——engine 把每个阶段用到的 provider 包一层旁路计数器，调用前后各拍一次
-调用数/token 快照做差，配合耗时拼出 StageTrace，业务逻辑不被插桩代码侵入。
+收集用收集器模式：rater.py/reconcile.py/feedback.py 各阶段函数本身不产出 StageTrace、不感知 trace
+engine 把 provider 包一层旁路记录器（InstrumentedProvider），每次LLM 调用
+按请求 metadata（stage_name/rater_id/code）自动记一条，业务逻辑
+不被插桩代码侵入。仲裁调用同样走 provider，因此天然被记成 stage="adjudicate"、
+rater="rater_3" 的条目。
 
 只记成本/性能，不含决策数据。
 
@@ -25,16 +27,19 @@ from typing import Any, Dict, List, Optional
 class StageTrace:
     """单个流水线阶段的成本/性能记录。
 
-        属性：
-            stage: 阶段名称（例如 "select"、"extract"、"score"、"reconcile"、
+        Attributes：
+            stage: 阶段名称（例如 "select"、"extract"、"score"、
                    "adjudicate"、"feedback"）。
-            rater: 该阶段所属的评分代理（例如 "rater_1"）；非 rater 相关阶段为 None。
+            rater: 该阶段所属的评分代理（例如 "rater_1"、仲裁的 "rater_3"）；
+                   非 rater 相关阶段为 None。
+            code: 该次调用针对的观测点 code（如 "A1-1"）；跨观测点的阶段为 None。
             llm_calls: 该阶段发起的 LLM 调用次数。
             tokens: 该阶段消耗的 token 总数。
             ms: 该阶段耗时（毫秒）。"""
 
     stage: str
     rater: Optional[str]
+    code: Optional[str]
     llm_calls: int
     tokens: int
     ms: float
@@ -57,6 +62,7 @@ class StageTrace:
         return {
             "stage": self.stage,
             "rater": self.rater,
+            "code": self.code,
             "llm_calls": self.llm_calls,
             "tokens": self.tokens,
             "ms": self.ms,
@@ -70,16 +76,16 @@ class StageTrace:
 class RunTraceSummary:
     """一次二级指标评价运行的成本/性能汇总（run_trace.json 的内容）。
 
-        属性：
+        Attributes：
             run_id: 此次评价运行的唯一标识符。
             configs_ref: 所用配置根目录的引用。
             dim: 被评价的二级指标标识符。
             total_tokens: 全部阶段的 token 总数。
             total_ms: 全部阶段的耗时总和（毫秒）。
-            adjudicated_dims: 触发了 Rater3 仲裁的观测点标识符列表。
-            stage_traces: 阶段级明细（stage/rater/llm_calls/tokens/ms），
+            adjudicated_codes: 触发了 Rater3 仲裁的观测点 code 列表。
+            stage_traces: 每次 LLM 调用一条（stage/rater/code/llm_calls/tokens/ms），
                 total_tokens/total_ms 是其汇总。
-            failed_dims: 评价失败被隔离的观测点，每条 {dimension_id, error}；
+            failed_codes: 评价失败被隔离的观测点，每条 {code, error}；
                 该维度未产出 FinalDecision，其余维度不受影响照常产出。"""
 
     run_id: str
@@ -87,9 +93,9 @@ class RunTraceSummary:
     dim: str
     total_tokens: int
     total_ms: float
-    adjudicated_dims: List[str]
+    adjudicated_codes: List[str]
     stage_traces: List[StageTrace]
-    failed_dims: List[Dict[str, str]] = field(default_factory=list)
+    failed_codes: List[Dict[str, str]] = field(default_factory=list)
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -98,7 +104,7 @@ class RunTraceSummary:
             "dim": self.dim,
             "total_tokens": self.total_tokens,
             "total_ms": self.total_ms,
-            "adjudicated_dims": list(self.adjudicated_dims),
+            "adjudicated_codes": list(self.adjudicated_codes),
             "stage_traces": [st.to_dict() for st in self.stage_traces],
-            "failed_dims": [dict(fd) for fd in self.failed_dims],
+            "failed_codes": [dict(fc) for fc in self.failed_codes],
         }

@@ -35,7 +35,7 @@ def test_dimension_score_rejects_out_of_range_confidence() -> None:
 def test_rater_chain_result_constructs_with_valid_fields() -> None:
     chain = RaterChainResult(
         rater_id="rater_1",
-        dimension_id="a4_1",
+        code="A4-1",
         selected_unit_ids=[1, 2, 3],
         evidence_unit_ids=[1, 2],
         score=_dimension_score(),
@@ -48,7 +48,7 @@ def test_rater_chain_result_constructs_with_valid_fields() -> None:
 def test_rater_chain_result_is_immutable() -> None:
     chain = RaterChainResult(
         rater_id="rater_1",
-        dimension_id="a4_1",
+        code="A4-1",
         selected_unit_ids=[1],
         evidence_unit_ids=[1],
         score=_dimension_score(),
@@ -59,10 +59,11 @@ def test_rater_chain_result_is_immutable() -> None:
 
 def test_final_decision_constructs_with_valid_fields() -> None:
     decision = FinalDecision(
-        dimension_id="a4_1",
+        code="A4-1",
         final_score=3,
         source=ScoreSource.CONSENSUS,
         unit_ids=[1, 2],
+        rationale="定分理由",
     )
     assert decision.source is ScoreSource.CONSENSUS
     assert decision.unit_ids == [1, 2]
@@ -71,10 +72,11 @@ def test_final_decision_constructs_with_valid_fields() -> None:
 
 def test_final_decision_is_immutable() -> None:
     decision = FinalDecision(
-        dimension_id="a4_1",
+        code="A4-1",
         final_score=3,
         source=ScoreSource.ADJUDICATED,
         unit_ids=[1],
+        rationale="定分理由",
     )
     with pytest.raises(dataclasses.FrozenInstanceError):
         decision.source = ScoreSource.CONSENSUS  # type: ignore[misc]

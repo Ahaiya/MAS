@@ -5,6 +5,7 @@
   python scripts/cli.py eval <file> --task experiment --dim a4   # 评单个二级指标
   python scripts/cli.py eval <file> --task experiment            # 评该任务下全部二级指标
   python scripts/cli.py config validate --task experiment        # 校验配置能否加载
+  python scripts/cli.py prompt <sample> --task experiment --dim d1 # 回看那次运行发给模型的 prompt
 
 
 命令体只做「建 Engine → evaluate → 打印」：
@@ -15,9 +16,10 @@
 
 from __future__ import annotations
 
+import json
 import sys
 from pathlib import Path
-from typing import Annotated, Dict, List, Optional
+from typing import Annotated, Any, Dict, List, Optional
 
 import typer
 
@@ -36,7 +38,17 @@ from src.config.compiler import (
     load_dimension_rubric,
     prompt_path,
 )
+from src.agents.prompt_builders import (
+    build_adjudication_prompt,
+    build_feedback_prompt,
+    build_rater_extraction_prompt,
+    build_rater_scoring_prompt,
+    build_rater_select_prompt,
+)
+from src.artifacts import dim_dir, sample_dir
+from src.contracts.configuration import RubricSnapshot
 from src.contracts.package import DataPackage
+from src.contracts.scoring import DimensionScore, FinalDecision, RaterChainResult, ScoreSource
 from src.engine import DimensionEvaluation, Engine
 from src.engine_config import (
     EngineConfigError,
@@ -44,7 +56,7 @@ from src.engine_config import (
     load_runtime_config,
     validate_model_config,
 )
-from src.providers.prompt_loader import PromptLoader
+from src.providers.prompt_loader import PromptLoader, PromptTemplate
 from src.segment import read_text_file
 
 load_dotenv()
@@ -120,10 +132,10 @@ def _render_summary(results: Dict[str, DimensionEvaluation]) -> str:
         primary_score = report["primary_score"]
         headline = "全部观测点评价失败" if primary_score is None else f"{primary_score:.2f}"
         lines.append(f"[{dim_id}] 二级指标分：{headline}")
-        for sub_dim_id, entry in sorted(report["dimensions"].items()):
-            lines.append(f"  {sub_dim_id}: {entry['final_score']}  ({entry['source']})")
-        for failed in trace.failed_dims:
-            lines.append(f"  {failed['dimension_id']}: 评价失败 — {failed['error']}")
+        for code, entry in sorted(report["dimensions"].items()):
+            lines.append(f"  {code}: {entry['final_score']}  ({entry['source']})")
+        for failed in trace.failed_codes:
+            lines.append(f"  {failed['code']}: 评价失败 — {failed['error']}")
         lines.append(f"  tokens={trace.total_tokens}  耗时={trace.total_ms / 1000:.1f}s")
     return "\n".join(lines)
 
@@ -226,10 +238,10 @@ def _validate_configs(configs_root: Path, task_id: str) -> List[str]:
         raise ConfigCompileError(f"任务 '{task_id}' 下没有任何 *_rubric.yaml——无可评的二级指标。")
     for dim_id in dim_ids:
         rubric = load_dimension_rubric(configs_root, task_id, dim_id)
-        sub_dim_ids = [d["dimension_id"] for d in rubric.dimensions]
+        codes = [str(d["code"]) for d in rubric.dimensions]
         lines.append(
             f"OK  二级指标       : {dim_id}"
-            f"（{len(sub_dim_ids)} 个观测点：{', '.join(sub_dim_ids)}）"
+            f"（{len(codes)} 个观测点：{', '.join(codes)}）"
         )
 
     # model_config 是模型/参数的唯一来源且必填项不少，一并校验结构——否则漏填
@@ -270,6 +282,162 @@ def config_validate(
     for line in lines:
         typer.echo(line)
     typer.echo("PASS: 配置校验通过。")
+
+
+# ── prompt show ──────────────────────────────────────────────────────────────
+
+
+def _read_json(path: Path) -> Dict[str, Any]:
+    if not path.exists():
+        raise _exit_with_error(f"产物不存在：{path}——先跑一次 `cli.py eval` 再看 prompt。")
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _chain_from_dict(data: Dict[str, Any]) -> RaterChainResult:
+    """把 rater_chains.json 里的一条链读回 RaterChainResult（to_dict 的逆操作）。"""
+    return RaterChainResult(
+        rater_id=str(data["rater_id"]),
+        code=str(data["code"]),
+        selected_unit_ids=list(data["selected_unit_ids"]),
+        evidence_unit_ids=list(data["evidence_unit_ids"]),
+        score=DimensionScore(
+            score=int(data["score"]),
+            supporting_unit_ids=list(data["supporting_unit_ids"]),
+            rationale=str(data["rationale"]),
+            confidence=float(data["confidence"]),
+        ),
+    )
+
+
+def _decision_from_dict(data: Dict[str, Any]) -> FinalDecision:
+    return FinalDecision(
+        code=str(data["code"]),
+        final_score=int(data["final_score"]),
+        source=ScoreSource(data["source"]),
+        unit_ids=list(data["unit_ids"]),
+        rationale=str(data["rationale"]),
+    )
+
+
+def _render_stage_prompts(
+    package: DataPackage,
+    rubric: RubricSnapshot,
+    dimension: Dict[str, Any],
+    templates: Dict[str, PromptTemplate],
+    chains: List[RaterChainResult],
+    decision: FinalDecision,
+) -> Dict[str, str]:
+    """按流水线顺序渲染五个阶段的 prompt，用的是各阶段真正调用的那个构造函数。
+
+    chains[0] 决定 extract/score 看到的单元（该 Rater 上一步真实选出的编号）；
+    仲裁看两条链，反馈看最终决策——全部来自 rater_chains.json，无一处代填。"""
+    levels = rubric.scale_levels
+    chain = chains[0]
+    return {
+        "select": build_rater_select_prompt(
+            package, dimension, levels, templates["select"], rubric.indicator_description
+        ),
+        "extract": build_rater_extraction_prompt(
+            package, chain.selected_unit_ids, dimension, levels, templates["extraction"],
+            rubric.indicator_description,
+        ),
+        "score": build_rater_scoring_prompt(
+            package, chain.evidence_unit_ids, dimension, levels, templates["scoring"]
+        ),
+        "adjudicate": build_adjudication_prompt(
+            package, dimension, levels, chains[0], chains[-1], templates["adjudication"]
+        ),
+        "feedback": build_feedback_prompt(
+            package, decision, dimension, levels, templates["feedback"]
+        ),
+    }
+
+
+@app.command("prompt")
+def prompt_command(
+    sample: Annotated[
+        str,
+        typer.Argument(metavar="SAMPLE", help="样本名或材料文件路径（取文件名，如 2025213223）。"),
+    ],
+    dim: Annotated[str, typer.Option("--dim", help="二级指标（如 d1）。")],
+    task: Annotated[
+        Optional[str],
+        typer.Option("--task", help="任务 id，对应 configs/tasks/<task>/。"),
+    ] = None,
+    code: Annotated[
+        Optional[str],
+        typer.Option("--code", help="观测点 code（如 D1-1）；缺省取该二级指标下第一个。"),
+    ] = None,
+    stage: Annotated[
+        Optional[str],
+        typer.Option("--stage", help="只看某个阶段：select/extract/score/adjudicate/feedback。"),
+    ] = None,
+    rater: Annotated[
+        str,
+        typer.Option("--rater", help="extract/score 用哪条链的真实选段/证据编号。"),
+    ] = "rater_1",
+    configs: Annotated[
+        Path,
+        typer.Option("--configs", help="配置根目录。"),
+    ] = _DEFAULT_CONFIGS_ROOT,
+    output_dir: Annotated[
+        Path,
+        typer.Option("--output-dir", help="产物根目录，从这里读回这次运行的真实数据。"),
+    ] = _DEFAULT_OUTPUT_DIR,
+) -> None:
+    """打印某次真实运行里各阶段进模型的 prompt 全文——不调 LLM，也不代填任何输入。
+
+    单元全文读 package.json，选段/证据编号与双链读 rater_chains.json，最终分读
+    final_decisions——都是那次运行模型真实产出的值，因此渲染出来的就是当时发出去
+    的文本。前提是这个样本 + 二级指标已经 eval 过一次。"""
+    task_id = _require_task(configs, task)
+    sample_name = Path(sample).stem
+    try:
+        rubric = load_dimension_rubric(configs, task_id, dim)
+        loader = PromptLoader()
+        templates = {s: loader.load(prompt_path(configs, s)) for s in PROMPT_STAGES}
+    except _USER_FIXABLE_ERRORS as exc:
+        raise _exit_with_error(str(exc)) from exc
+
+    package = DataPackage.from_dict(
+        _read_json(sample_dir(output_dir, task_id, sample_name) / "package.json")
+    )
+    rater_chains = _read_json(dim_dir(output_dir, task_id, sample_name, dim) / "rater_chains.json")
+
+    target_code = code or str(rubric.dimensions[0]["code"])
+    dimension = rubric.get_dimension(target_code)
+    if dimension is None:
+        available = "、".join(str(d["code"]) for d in rubric.dimensions)
+        raise _exit_with_error(f"观测点 '{target_code}' 不在 {dim} 的量规里。可选：{available}")
+
+    chains = [_chain_from_dict(c) for c in rater_chains["chains"] if c["code"] == target_code]
+    if not chains:
+        raise _exit_with_error(f"rater_chains.json 里没有观测点 '{target_code}' 的链——它这次评价失败了？")
+    # 指定的 rater 排到首位：extract/score 看的是这条链上一步的真实输出。
+    chains.sort(key=lambda c: c.rater_id != rater)
+    decisions = [
+        _decision_from_dict(d) for d in rater_chains["final_decisions"] if d["code"] == target_code
+    ]
+    if not decisions:
+        raise _exit_with_error(f"rater_chains.json 里没有观测点 '{target_code}' 的最终决策。")
+
+    prompts = _render_stage_prompts(
+        package, rubric, dimension, templates, chains, decisions[0]
+    )
+    if stage is not None:
+        if stage not in prompts:
+            raise _exit_with_error(f"未知阶段 '{stage}'。可选：{'、'.join(prompts)}")
+        prompts = {stage: prompts[stage]}
+
+    for name, text in prompts.items():
+        typer.echo("=" * 78)
+        typer.echo(
+            f"  {task_id} / {sample_name} / {dim} / {target_code} / stage={name}"
+            f"  （{len(text)} 字符，{chains[0].rater_id} 链）"
+        )
+        typer.echo("=" * 78)
+        typer.echo(text)
+        typer.echo("")
 
 
 if __name__ == "__main__":

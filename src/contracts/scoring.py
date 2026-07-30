@@ -38,7 +38,7 @@ class DimensionScore:
 
         分值就是量规尺度上的整数，尺度定义留在量规配置里，不随每个分数复制一份。
 
-        属性：
+        Attributes：
             score: 该观测点的整数分。
             supporting_unit_ids: 支持该评分的 Unit 编号引用。
             rationale: 评分理由（自由文本，用于审计追踪）。
@@ -71,15 +71,15 @@ class RaterChainResult:
 
         选段、证据引用与最终分数/rationale 绑定在同一结构里，构成可独立审计的一条链。
 
-        属性：
+        Attributes：
             rater_id: 标识生成该链的评分代理（例如 "rater_1"）。
-            dimension_id: 来自评分量规配置的不透明观测点标识符。
+            code: 观测点 code（如 "D1-1"），来自量规。
             selected_unit_ids: select 阶段选出的相关 Unit 编号。
             evidence_unit_ids: extract 阶段引用为证据的 Unit 编号。
             score: score 阶段产出的 DimensionScore（含最终 rationale/confidence）。"""
 
     rater_id: str
-    dimension_id: str
+    code: str
     selected_unit_ids: List[int]
     evidence_unit_ids: List[int]
     score: DimensionScore
@@ -88,7 +88,7 @@ class RaterChainResult:
         """产物里把 DimensionScore 摊平进这条链，不再多一层嵌套。"""
         return {
             "rater_id": self.rater_id,
-            "dimension_id": self.dimension_id,
+            "code": self.code,
             "selected_unit_ids": list(self.selected_unit_ids),
             "evidence_unit_ids": list(self.evidence_unit_ids),
             **self.score.to_dict(),
@@ -102,21 +102,25 @@ class RaterChainResult:
 class FinalDecision:
     """一个观测点的最终权威评分决定（双链一致，或经 Rater3 仲裁）。
 
-        属性：
-            dimension_id: 来自评分量规配置的不透明观测点标识符。
+        Attributes：
+            code: 观测点 code（如 "D1-1"），来自量规。
             final_score: 该观测点的权威整数分。
             source: 该分数的来源 —— consensus（双链一致）或 adjudicated（Rater3 仲裁）。
-            unit_ids: 支持最终决定的 Unit 编号引用。"""
+            unit_ids: 支持最终决定的 Unit 编号引用。
+            rationale: 定这个分的理由，来自权威那一方（consensus 取被采用的那条链，
+                adjudicated 取 Rater3）。feedback 阶段据此写反馈，不再从证据二次臆测。"""
 
-    dimension_id: str
+    code: str
     final_score: int
     source: ScoreSource
     unit_ids: List[int]
+    rationale: str
 
     def to_dict(self) -> Dict[str, Any]:
         return {
-            "dimension_id": self.dimension_id,
+            "code": self.code,
             "final_score": self.final_score,
             "source": self.source.value,
             "unit_ids": list(self.unit_ids),
+            "rationale": self.rationale,
         }

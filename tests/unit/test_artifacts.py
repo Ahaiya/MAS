@@ -9,7 +9,7 @@ from src.artifacts import (
     write_package_artifact,
     write_rater_chains_artifact,
 )
-from src.contracts.artifact_bundle import RubricSnapshot
+from src.contracts.configuration import RubricSnapshot
 from src.contracts.package import DataPackage, Unit
 from src.contracts.scoring import FinalDecision, ScoreSource
 from src.providers.base import LLMResponse, TokenUsage
@@ -83,29 +83,30 @@ def test_feedback_and_package_round_trip_through_disk(tmp_path: Path) -> None:
     package = DataPackage(package_id="pkg-1", units=units, metadata={})
 
     dimensions = [
-        {"dimension_id": "a4_1", "name": "dim1", "scale_ref": "ordinal_1_5", "weight": 0.5,
-         "levels": [{"rank": r, "summary": str(r), "descriptors": [f"level {r}"]} for r in range(1, 6)]},
-        {"dimension_id": "a4_2", "name": "dim2", "scale_ref": "ordinal_1_5", "weight": 0.5,
-         "levels": [{"rank": r, "summary": str(r), "descriptors": [f"level {r}"]} for r in range(1, 6)]},
+        {"code": "A4-1", "name": "dim1", "weight": 0.5,
+         "anchors": {r: f"level {r}" for r in range(1, 6)}},
+        {"code": "A4-2", "name": "dim2", "weight": 0.5,
+         "anchors": {r: f"level {r}" for r in range(1, 6)}},
     ]
     scale = {"scale_id": "ordinal_1_5", "type": "ordinal", "min": 1, "max": 5}
     rubric = RubricSnapshot(
-        rubric_id="r", rubric_version="t", rubric_name="n", dimensions=dimensions, scales=[scale],
-        dimension_by_id={d["dimension_id"]: d for d in dimensions}, dimension_by_code={},
-        scale_by_id={"ordinal_1_5": scale},
+        dim_id="a4", dim_name="A4", indicator_description="desc", dimensions=dimensions,
+        scale_min=1, scale_max=5, scale_levels={r: str(r) for r in range(1, 6)},
     )
     decisions = [
         FinalDecision(
-            dimension_id="a4_1",
+            code="A4-1",
             final_score=3,
             source=ScoreSource.CONSENSUS,
             unit_ids=[0, 1],
+            rationale="定分理由",
         ),
         FinalDecision(
-            dimension_id="a4_2",
+            code="A4-2",
             final_score=4,
             source=ScoreSource.ADJUDICATED,
             unit_ids=[3],
+            rationale="定分理由",
         ),
     ]
     provider = FakeProvider(
@@ -128,8 +129,8 @@ def test_feedback_and_package_round_trip_through_disk(tmp_path: Path) -> None:
 
     unit_text_by_id = {u["id"]: u["text"] for u in on_disk_package["units"]}
 
-    consensus_entry = on_disk_feedback["dimensions"]["a4_1"]
-    adjudicated_entry = on_disk_feedback["dimensions"]["a4_2"]
+    consensus_entry = on_disk_feedback["dimensions"]["A4-1"]
+    adjudicated_entry = on_disk_feedback["dimensions"]["A4-2"]
     assert consensus_entry["source"] == "consensus"
     assert adjudicated_entry["source"] == "adjudicated"
     assert [unit_text_by_id[uid] for uid in consensus_entry["unit_ids"]] == ["text 0", "text 1"]

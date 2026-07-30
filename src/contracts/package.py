@@ -1,5 +1,5 @@
 """
-数据包契约（v2），定义切分后的单元与数据包结构。
+datapackage schema，定义切分后的单元与数据包结构。
 
 Unit 是切分流水线（segment.py）产出的最小可引用文本单元，全局连续编号，
 证据链（RaterChainResult/DimensionScore）以 unit_ids 引用它而非复述原文。
@@ -11,7 +11,7 @@ DataPackage 是引擎的最小输入单元：量规 + DataPackage → 评价。�
 - Unit / DataPackage 均为冻结（不可变）dataclass。
 - Unit.id 全局唯一；跨多文件共享同一编号空间（不要求严格连续，超预算丢弃单元后
   允许出现空洞）。
-- Unit.char_range 是 (start, end) 左闭右开区间，映射回 source_file 原文。
+- Unit.char_range 是 [start, end) 左闭右开区间，映射回 source_file 原文。
 - DataPackage.metadata 是前端透传字段（学生ID/任务ID/轮次/时间戳等），引擎不解释。"""
 
 from __future__ import annotations
@@ -27,9 +27,9 @@ UNIT_KINDS = frozenset({"prose", "code", "table_row", "heading", "image"})
 
 @dataclass(frozen=True)
 class Unit:
-    """切分流水线产出的最小可引用文本单元。
+    """segment 产出的最小可引用文本单元。
 
-    属性：
+    Attributes：
         id: 全局连续编号，跨多文件共享同一编号空间。
         kind: 内容类型 —— prose | code | table_row | heading | image。
         text: 单元文本（图片单元为其 caption/描述文本）。
@@ -66,6 +66,18 @@ class Unit:
             "speaker": self.speaker,
         }
 
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "Unit":
+        start, end = data["char_range"]
+        return cls(
+            id=int(data["id"]),
+            kind=str(data["kind"]),
+            text=str(data["text"]),
+            source_file=str(data["source_file"]),
+            char_range=(int(start), int(end)),
+            speaker=data.get("speaker"),
+        )
+
 
 # ── DataPackage ──────────────────────────────────────────────────────────────
 
@@ -74,7 +86,7 @@ class Unit:
 class DataPackage:
     """引擎的最小输入单元：量规 + DataPackage → 评价。
 
-    属性：
+    Attributes：
         package_id: 该数据包的唯一标识符。
         units: 全局连续编号的 Unit 列表。
         metadata: 前端透传字段（学生ID/任务ID/轮次/时间戳等），引擎不解释。"""
@@ -105,3 +117,12 @@ class DataPackage:
             "units": [u.to_dict() for u in self.units],
             "metadata": dict(self.metadata),
         }
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "DataPackage":
+        """读回 package.json——产物里的 unit_ids 要解读回原文就得有这一步。"""
+        return cls(
+            package_id=str(data["package_id"]),
+            units=[Unit.from_dict(u) for u in data["units"]],
+            metadata=dict(data.get("metadata", {})),
+        )

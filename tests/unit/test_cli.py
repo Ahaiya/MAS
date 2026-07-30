@@ -114,7 +114,7 @@ class _RecordingEngine:
 def _evaluation(
     dim_id: str,
     *,
-    failed_dims: Optional[List[Dict[str, str]]] = None,
+    failed_codes: Optional[List[Dict[str, str]]] = None,
 ) -> DimensionEvaluation:
     return DimensionEvaluation(
         dim_id=dim_id,
@@ -137,9 +137,9 @@ def _evaluation(
             dim=dim_id,
             total_tokens=1234,
             total_ms=5678.0,
-            adjudicated_dims=[f"{dim_id}_2"],
+            adjudicated_codes=[f"{dim_id}_2"],
             stage_traces=[],
-            failed_dims=failed_dims or [],
+            failed_codes=failed_codes or [],
         ),
     )
 
@@ -156,9 +156,9 @@ def _evaluation_all_failed(dim_id: str) -> DimensionEvaluation:
             dim=dim_id,
             total_tokens=0,
             total_ms=0.0,
-            adjudicated_dims=[],
+            adjudicated_codes=[],
             stage_traces=[],
-            failed_dims=[{"dimension_id": f"{dim_id}_1", "error": "401 unauthorized"}],
+            failed_codes=[{"code": f"{dim_id}_1", "error": "401 unauthorized"}],
         ),
     )
 
@@ -366,7 +366,7 @@ def test_render_summary_shows_scores_sources_and_totals() -> None:
 
 def test_render_summary_surfaces_failed_dimensions() -> None:
     """失败隔离下被跳过的观测点必须打印出来，否则用户以为评了全部维度。"""
-    evaluation = _evaluation("d1", failed_dims=[{"dimension_id": "d1_3", "error": "boom"}])
+    evaluation = _evaluation("d1", failed_codes=[{"code": "d1_3", "error": "boom"}])
 
     text = cli._render_summary({"d1": evaluation})
 

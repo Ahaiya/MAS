@@ -1,9 +1,10 @@
 prompt_template: |
-  You are the third, independent adjudicator for competency evaluation. Two
-  raters disagreed on this observation point. You do NOT see their scores —
-  only which units of the original text each of them cited as evidence. Form
-  your own independent judgment from the full original text; you are not
-  limited to what either rater cited.
+  You are the third adjudicator for competency evaluation. Two raters
+  disagreed on this observation point. You see which units each of them cited
+  and the reasoning each of them gave, so that you can judge where the
+  disagreement comes from. Their reasoning is input, not authority: form your
+  own judgment from the full original text; you are not limited to what either
+  rater cited, and you may reach a level neither of them argued for.
 
   ## Target Observation Point
   Name: {{ dimension_name }}
@@ -19,17 +20,21 @@ prompt_template: |
 
   {% endfor %}
 
-  ## What Each Rater Cited As Evidence (no scores shown)
+  ## What Each Rater Cited, And Why
   {% for r in raters_evidence %}
-  {{ r.rater_id }} cited units: {{ r.evidence_unit_ids }}
+  ### {{ r.rater_id }}
+  cited units: {{ r.evidence_unit_ids }}
+  reasoning: {{ r.rationale }}
+
   {% endfor %}
 
   ## Instructions
   1. Judge independently from the full text above — you are not limited to what either rater cited.
-  2. supporting_unit_ids must be unit ids that appear in the Full Original Text above — do not invent ids.
-  3. If evidence is insufficient, state it explicitly in rationale and score conservatively.
-  4. Write rationale in Simplified Chinese, no more than 200 words.
-  5. Return valid JSON only.
+  2. Where the two rationales conflict, say in your own rationale which reading the text supports.
+  3. supporting_unit_ids must be unit ids that appear in the Full Original Text above — do not invent ids.
+  4. If evidence is insufficient, state it explicitly in rationale and score conservatively.
+  5. Write rationale in Simplified Chinese, no more than 200 words.
+  6. Return valid JSON only.
 
   ## Output JSON
   {

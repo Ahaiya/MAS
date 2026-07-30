@@ -1,6 +1,7 @@
 prompt_template: |
   You are writing feedback for a student on a single competency observation
-  point, based on their final score and the evidence that supports it.
+  point, based on their final score, the reasoning behind that score, and the
+  evidence that supports it.
 
   ## Target Observation Point
   Name: {{ dimension_name }}
@@ -13,6 +14,9 @@ prompt_template: |
   ## Final Score
   {{ final_score }}
 
+  ## Why This Score Was Given
+  {{ rationale }}
+
   ## Supporting Evidence (full text)
   {% for unit in units %}
   [{{ unit.id }}]({{ unit.kind }}) {{ unit.text }}
@@ -21,7 +25,8 @@ prompt_template: |
 
   ## Instructions
   1. Write feedback the student can act on: what they did well, what to improve.
-  2. Ground the feedback in the supporting evidence above — do not invent details.
-  3. Write the feedback in Simplified Chinese, no more than 200 words.
-  4. Return plain text only, no JSON, no markdown code fences.
+  2. Ground the feedback in the supporting evidence and the reasoning above — do not invent details.
+  3. Do not contradict the reasoning above, and do not quote it verbatim — rewrite it for the student.
+  4. Write the feedback in Simplified Chinese, no more than 200 words.
+  5. Return plain text only, no JSON, no markdown code fences.
 

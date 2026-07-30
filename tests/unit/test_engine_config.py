@@ -22,7 +22,7 @@ from src.engine_config import (
 )
 from src.providers.factory import build_provider
 from src.providers.guards import RetryConfig
-from src.contracts.artifact_bundle import ProviderEntryConfig
+from src.contracts.configuration import ProviderEntryConfig
 
 _ENV_KEYS = ("DEEPSEEK_API_KEY", "DASHSCOPE_API_KEY", "LLM_API_KEY", "LLM_MODEL", "LLM_API_BASE")
 

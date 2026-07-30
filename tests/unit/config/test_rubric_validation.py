@@ -168,7 +168,7 @@ def test_blank_anchor_text_raises() -> None:
 
 
 def test_duplicate_observation_point_code_raises() -> None:
-    """同 code 会在 dimension_by_id 里互相覆盖，静默丢掉一个观测点。"""
+    """同 code 会让按 code 查观测点时命中第一条，静默丢掉另一个。"""
     dims = copy.deepcopy(_VALID["dimensions"])
     dims[1]["code"] = "F2-1"
     with pytest.raises(ConfigCompileError) as exc:

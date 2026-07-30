@@ -1,31 +1,28 @@
 import pytest
 
 from src.agents import adjudicator
-from src.contracts.artifact_bundle import RubricSnapshot
+from src.contracts.configuration import RubricSnapshot
 from src.contracts.package import DataPackage, Unit
 from src.contracts.scoring import DimensionScore, RaterChainResult
 from src.providers.fake import FakeProvider, fake_response
 from src.providers.prompt_loader import PromptLoader
 
-_SCALE = {"scale_id": "ordinal_1_5", "type": "ordinal", "min": 1, "max": 5}
 _DIMENSION = {
-    "dimension_id": "a4_1",
+    "code": "A4-1",
     "name": "用户群体识别的全面性",
-    "scale_ref": "ordinal_1_5",
-    "levels": [{"rank": r, "summary": str(r), "descriptors": [f"level {r}"]} for r in range(1, 6)],
+    "anchors": {r: f"level {r}" for r in range(1, 6)},
 }
 
 
 def _rubric() -> RubricSnapshot:
     return RubricSnapshot(
-        rubric_id="r",
-        rubric_version="t",
-        rubric_name="n",
+        dim_id="a4",
+        dim_name="A4 用户研究",
+        indicator_description="desc",
         dimensions=[_DIMENSION],
-        scales=[_SCALE],
-        dimension_by_id={"a4_1": _DIMENSION},
-        dimension_by_code={},
-        scale_by_id={"ordinal_1_5": _SCALE},
+        scale_min=1,
+        scale_max=5,
+        scale_levels={r: str(r) for r in range(1, 6)},
     )
 
 
@@ -38,16 +35,16 @@ def _package() -> DataPackage:
     return DataPackage(package_id="pkg-1", units=units, metadata={})
 
 
-def _chain(rater_id: str, score_val: int, evidence_unit_ids) -> RaterChainResult:
+def _chain(rater_id: str, score_val: int, evidence_unit_ids, rationale: str = "r") -> RaterChainResult:
     return RaterChainResult(
         rater_id=rater_id,
-        dimension_id="a4_1",
+        code="A4-1",
         selected_unit_ids=list(evidence_unit_ids),
         evidence_unit_ids=list(evidence_unit_ids),
         score=DimensionScore(
             score=score_val,
             supporting_unit_ids=list(evidence_unit_ids),
-            rationale="r",
+            rationale=rationale,
             confidence=0.8,
         ),
     )
@@ -110,14 +107,18 @@ def test_adjudicate_rejects_omitted_supporting_unit_ids() -> None:
         adjudicator.adjudicate(_package(), _DIMENSION, _rubric(), chain_a, chain_b, provider, _template())
 
 
-def test_adjudicate_prompt_never_shows_either_raters_score() -> None:
-    """防锚定：Rater3 的 prompt 只应看到双链引用的 unit_ids，不含分数字段。"""
+def test_adjudicate_prompt_shows_both_rationales_but_not_scores() -> None:
+    """Rater3 要看到双方的判档理由（分歧的实质在理由里），但仍不给分数与
+    confidence——自报的置信度是没有论证的权威感，不该成为它的偏向依据。"""
     from src.agents.prompt_builders import build_adjudication_prompt
 
-    chain_a = _chain("rater_1", 2, [0])
-    chain_b = _chain("rater_2", 4, [1])
+    chain_a = _chain("rater_1", 2, [0], rationale="只覆盖了一类用户")
+    chain_b = _chain("rater_2", 4, [1], rationale="识别了多类用户及其差异")
 
-    prompt = build_adjudication_prompt(_package(), _DIMENSION, chain_a, chain_b, _template())
-    cited_lines = [line for line in prompt.splitlines() if "cited units" in line]
+    prompt = build_adjudication_prompt(_package(), _DIMENSION, {}, chain_a, chain_b, _template())
 
-    assert cited_lines == ["rater_1 cited units: [0]", "rater_2 cited units: [1]"]
+    assert "只覆盖了一类用户" in prompt
+    assert "识别了多类用户及其差异" in prompt
+    cited_lines = [line.strip() for line in prompt.splitlines() if "cited units" in line]
+    assert cited_lines == ["cited units: [0]", "cited units: [1]"]
+    assert "0.8" not in prompt  # confidence 不进 prompt

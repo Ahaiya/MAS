@@ -4,31 +4,29 @@ Engine Facade：`Engine.from_configs(root, task_id).evaluate(package, dim)` 跑�
 流水线：rate(r1) → rate(r2) → reconcile → [adjudicate] → feedback.
 同一 sample 下各观测点的双链评价用 ThreadPoolExecutor 并发跑（provider IO 密集，GIL 不碍事）
 上限 `max_workers` 从 model_config.yaml 的 runtime 段读取，默认 8。
-segment阶段发生在 Engine.evaluate() 之外——engine 只认「量规 + 已切分好的DataPackage」，
+segment阶段发生在 Engine.evaluate() 之外，engine 只认「量规 + 已切分好的DataPackage」，
 数据包的来源（read_text_file() 或未来的多源解析接入层）不是它的关心范围。
 
 model_config.yaml 是模型/参数的唯一来源：`providers` 缺 rater_1/rater_2/feedback
-直接报错，条目缺 model/api_base/api_key_env 也直接报错，没有任何环境变量兜底。
+直接报错，条目缺 model/api_base/api_key_env 也直接报错。
 密钥值只从 .env 读，配置里只存环境变量的名字。rater_3 允许缺失：只在真正触发
 仲裁时才需要，报错逻辑在 reconcile.py 里。
 
-trace 用收集器模式：每次调用 select/extract/score/adjudicate/feedback 都在
-一层 provider 包装器上记录耗时与 token 用量，engine 在调用前后各拍一次快照
-做差，不侵入 rater.py/adjudicator.py/feedback.py 内部。并发下同一个 provider
-实例被多个线程共享，包装器按线程隔离计数（threading.local）而非加锁，快照
-差值天然只反映当前线程自己发起的调用。
+trace 用收集器模式：provider 包装器（InstrumentedProvider）按每次 LLM 调用的
+metadata 自动记一条 StageTrace（stage/rater/观测点/token/耗时），engine 在一个
+二级指标跑完后一次性 drain，不侵入
+rater.py/adjudicator.py/feedback.py 内部。仲裁调用同样经过 provider，因此
+「跑没跑 Rater3、在哪个观测点上跑的」逐条在案，不会被折叠进一条汇总里。
 
 失败隔离：一个观测点的双链评价（select→extract→score ×2）失败（LLM 报错/
-超时/越界证据）只把该观测点计入 run_trace 的 failed_dims，不参与 reconcile/
+超时/越界证据）只把该观测点计入 run_trace 的 failed_codes，不参与 reconcile/
 feedback，也不中断其余观测点；二级指标内其余维度照常产出。全部观测点都失败
 时短路掉 reconcile/feedback，产出 primary_score=None 的空评价（失败原因仍逐条在
-run_trace 里），同样不抛异常——抛了就会把同一 sample 下其余二级指标一起带走。
-除此之外错误直接抛出：reconcile/feedback 等阶段本身失败仍会中断当前二级指标的
-评价，没有状态机回退重入。"""
+run_trace 里），同样不抛异常。
+"""
 
 from __future__ import annotations
 
-import time
 import uuid
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
@@ -50,7 +48,7 @@ from src.config.compiler import (
     load_dimension_rubric,
     prompt_path,
 )
-from src.contracts.artifact_bundle import PolicySnapshot, RubricSnapshot
+from src.contracts.configuration import PolicySnapshot, RubricSnapshot
 from src.contracts.package import DataPackage
 from src.contracts.scoring import RaterChainResult, ScoreSource
 from src.contracts.trace import RunTraceSummary, StageTrace
@@ -61,12 +59,13 @@ from src.engine_config import (
     load_runtime_config,
 )
 from src.providers.base import BaseProvider
-from src.providers.instrumented import InstrumentedProvider, call_with_trace
+from src.providers.instrumented import InstrumentedProvider
 from src.providers.prompt_loader import PromptLoader, PromptTemplate
 
 _REQUIRED_PROVIDERS = frozenset({"rater_1", "rater_2", "feedback"})
 _REQUIRED_TEMPLATES = frozenset({"select", "extraction", "scoring", "feedback"})
-# ── trace 收集：provider 包装器 + 调用计时 ─────────────────────────────────────
+# run_trace.json 里 stage_traces 的排序权重，按流水线先后而非字母序。
+_STAGE_ORDER = {"select": 0, "extract": 1, "score": 2, "adjudicate": 3, "feedback": 4}
 
 
 # ── Engine ───────────────────────────────────────────────────────────────────
@@ -128,10 +127,6 @@ class Engine:
     ) -> "Engine":
         """按约定路径读配置：仲裁策略 + prompts + model_config，建出 Engine。
 
-        没有 bundle 文件——路径全部由约定固定，见模块顶部。任务选择是调用现场的
-        参数而不是配置文件里的字段：改一个 tracked 文件来切任务，每次实验都会
-        带一个脏 diff，多任务并行还会互相冲突。
-
         Args:
             configs_root: 配置根目录（如 `configs`）。
             task_id: 要评价的任务，对应 `{configs_root}/tasks/{task_id}/`。
@@ -189,42 +184,30 @@ class Engine:
     def _run_rater_chain(
         self,
         package: DataPackage,
-        dimension_id: str,
+        code: str,
         dimension: Dict[str, Any],
         rubric: RubricSnapshot,
         provider: InstrumentedProvider,
         rater_id: str,
-    ) -> "tuple[RaterChainResult, List[StageTrace]]":
-        traces: List[StageTrace] = []
-
-        selected, t1 = call_with_trace(
-            "select", rater_id, provider,
-            rater.select, package, dimension, provider, self._templates["select"], rater_id,
+    ) -> RaterChainResult:
+        selected = rater.select(
+            package, dimension, rubric, provider, self._templates["select"], rater_id,
             rubric.indicator_description,
         )
-        traces.append(t1)
-
-        evidence, t2 = call_with_trace(
-            "extract", rater_id, provider,
-            rater.extract, package, selected, dimension, provider, self._templates["extraction"], rater_id,
+        evidence = rater.extract(
+            package, selected, dimension, rubric, provider, self._templates["extraction"], rater_id,
             rubric.indicator_description,
         )
-        traces.append(t2)
-
-        dimension_score, t3 = call_with_trace(
-            "score", rater_id, provider,
-            rater.score, package, evidence, dimension, rubric, provider, self._templates["scoring"], rater_id,
+        dimension_score = rater.score(
+            package, evidence, dimension, rubric, provider, self._templates["scoring"], rater_id,
         )
-        traces.append(t3)
-
-        chain = RaterChainResult(
+        return RaterChainResult(
             rater_id=rater_id,
-            dimension_id=dimension_id,
+            code=code,
             selected_unit_ids=selected,
             evidence_unit_ids=evidence,
             score=dimension_score,
         )
-        return chain, traces
 
     def _run_dimension_chains(
         self,
@@ -233,17 +216,24 @@ class Engine:
         rubric: RubricSnapshot,
         rater_1: InstrumentedProvider,
         rater_2: InstrumentedProvider,
-    ) -> "tuple[RaterChainResult, RaterChainResult, List[StageTrace]]":
-        """一个观测点的双链评价（rater_1 + rater_2），跑在
-        ThreadPoolExecutor 的 worker 线程里。异常原样向上抛出，由
-        `_evaluate_one` 捕获并把这一个观测点标记失败——不在这里吞。"""
-        dimension_id = str(dimension["dimension_id"])
-        chain_a, traces_a = self._run_rater_chain(package, dimension_id, dimension, rubric, rater_1, "rater_1")
-        chain_b, traces_b = self._run_rater_chain(package, dimension_id, dimension, rubric, rater_2, "rater_2")
-        return chain_a, chain_b, traces_a + traces_b
+    ) -> "tuple[RaterChainResult, RaterChainResult]":
+        """一个观测点的双链评价（rater_1 + rater_2），跑在ThreadPoolExecutor 的 worker 线程里。
+        异常原样向上抛出，由`_evaluate_one` 捕获并把这一个观测点标记失败。"""
+
+        code = str(dimension["code"])
+        chain_a = self._run_rater_chain(package, code, dimension, rubric, rater_1, "rater_1")
+        chain_b = self._run_rater_chain(package, code, dimension, rubric, rater_2, "rater_2")
+        return chain_a, chain_b
+
+    def _drain_stage_traces(self) -> List[StageTrace]:
+        """取走所有 provider 记下的 StageTrace。
+        并发下各条记录的产生顺序不确定，按 观测点 → 阶段 → rater 排序，让 run_trace.json 在同样地输入下逐行可比。"""
+
+        traces = [t for provider in self._providers.values() for t in provider.drain_traces()]
+        return sorted(traces, key=lambda t: (t.code or "", _STAGE_ORDER.get(t.stage, 99), t.rater or ""))
 
     def _empty_evaluation(
-        self, dim_id: str, stage_traces: List[StageTrace], failed_dims: List[Dict[str, str]]
+        self, dim_id: str, stage_traces: List[StageTrace], failed_codes: List[Dict[str, str]]
     ) -> DimensionEvaluation:
         """一个二级指标下全部观测点都失败时的产物：没有分数，但失败原因逐条在案。
 
@@ -259,9 +249,9 @@ class Engine:
                 dim=dim_id,
                 total_tokens=sum(t.tokens for t in stage_traces),
                 total_ms=sum(t.ms for t in stage_traces),
-                adjudicated_dims=[],
+                adjudicated_codes=[],
                 stage_traces=stage_traces,
-                failed_dims=failed_dims,
+                failed_codes=failed_codes,
             ),
         )
 
@@ -269,7 +259,11 @@ class Engine:
 
     def _evaluate_one(self, package: DataPackage, dim_id: str) -> DimensionEvaluation:
         rubric = self._rubric_for(dim_id)
-        secondary_dim_ids = [d["dimension_id"] for d in rubric.dimensions]
+
+        # 上一个二级指标若在 reconcile/feedback 阶段抛错退出，它的记录还留在 provider 里；丢掉，免得算到这个二级指标头上。
+        self._drain_stage_traces()
+
+        codes = [str(d["code"]) for d in rubric.dimensions]
 
         rater_1 = self._providers["rater_1"]
         rater_2 = self._providers["rater_2"]
@@ -277,88 +271,64 @@ class Engine:
         feedback_provider = self._providers["feedback"]
 
         dimensions: List[Dict[str, Any]] = []
-        for secondary_dim_id in secondary_dim_ids:
-            dimension = rubric.get_dimension(secondary_dim_id)
+        for code in codes:
+            dimension = rubric.get_dimension(code)
             if dimension is None:
-                raise ConfigCompileError(f"Dimension '{secondary_dim_id}' not found in rubric for '{dim_id}'")
+                raise ConfigCompileError(f"观测点 '{code}' 不在二级指标 '{dim_id}' 的量规里")
             dimensions.append(dimension)
 
         # 观测点级并发：每个观测点的双链评价（select→extract→score ×2）
         # 是一整个 provider IO 密集单元，互相独立、互不共享状态，天然适合
         # ThreadPoolExecutor（GIL 不碍事）。失败隔离落在这一层——一个观测点
-        # 抛错（LLM 报错/超时/越界证据）只把它计入 failed_dims，其余
+        # 抛错（LLM 报错/超时/越界证据）只把它计入 failed_codes，其余
         # 观测点不受影响照常产出；不在这里重试或降级。
-        stage_traces: List[StageTrace] = []
         chains_a: List[RaterChainResult] = []
         chains_b: List[RaterChainResult] = []
-        failed_dims: List[Dict[str, str]] = []
+        failed_codes: List[Dict[str, str]] = []
         with ThreadPoolExecutor(max_workers=self._max_workers) as executor:
-            future_to_dim_id = {
+            future_to_code = {
                 executor.submit(self._run_dimension_chains, package, dimension, rubric, rater_1, rater_2): str(
-                    dimension["dimension_id"]
+                    dimension["code"]
                 )
                 for dimension in dimensions
             }
-            for future in as_completed(future_to_dim_id):
-                secondary_dim_id = future_to_dim_id[future]
+            for future in as_completed(future_to_code):
+                code = future_to_code[future]
                 try:
-                    chain_a, chain_b, traces = future.result()
+                    chain_a, chain_b = future.result()
                 except Exception as exc:
-                    failed_dims.append({"dimension_id": secondary_dim_id, "error": str(exc)})
+                    failed_codes.append({"code": code, "error": str(exc)})
                     continue
                 chains_a.append(chain_a)
                 chains_b.append(chain_b)
-                stage_traces.extend(traces)
 
-        # 全都失败时没有任何 FinalDecision 可聚合，reconcile/feedback 都无从谈起：
-        # 硬把空 decisions 往下送，会在 aggregate_final_decisions 才炸出一条与根因
-        # 无关的"decisions 不能为空"，把每个维度真正的错误（鉴权失败/限流/超时）
-        # 全埋掉。这里直接短路——failed_dims 已经把真实错误逐条记下，照常落盘。
-        # 不抛异常：抛了就会顺着 evaluate() 的循环把同一 sample 下其余二级指标一起
-        # 带走，正是 US31「不崩整个 sample」要避免的。
+
         if not chains_a:
-            return self._empty_evaluation(dim_id, stage_traces, failed_dims)
+            return self._empty_evaluation(dim_id, self._drain_stage_traces(), failed_codes)
 
-        # reconcile() 本身总会跑（纯比较，可能 0 次 LLM 调用）；只有触发仲裁时才
-        # 会内部调用 Rater3。rater 标签因此是调用后才知道的——不用
-        # call_with_trace 的固定标签，跑完再按结果决定 rater 是 "rater_3" 还是
-        # None（非 rater 相关阶段），呼应 StageTrace 自身文档里两者都是合法值。
-        before = (rater_3.metrics.llm_calls, rater_3.metrics.total_tokens) if rater_3 is not None else (0, 0)
-        started = time.perf_counter()
+        # reconcile() 是纯比较，本身不发 LLM 调用，因此没有自己的 StageTrace；
+        # 触发仲裁时 Rater3 的调用经过 provider，自动记成 stage="adjudicate" 的条目（带观测点 code），不需要在这里手工插桩。
         decisions = reconcile.reconcile(
             package, chains_a, chains_b, rubric, self._policy, rater_3, self._templates.get("adjudication")
         )
-        reconcile_ms = (time.perf_counter() - started) * 1000
-        after = (rater_3.metrics.llm_calls, rater_3.metrics.total_tokens) if rater_3 is not None else (0, 0)
-        was_adjudicated = any(d.source == ScoreSource.ADJUDICATED for d in decisions)
-        stage_traces.append(
-            StageTrace(
-                stage="reconcile",
-                rater="rater_3" if was_adjudicated else None,
-                llm_calls=after[0] - before[0],
-                tokens=after[1] - before[1],
-                ms=reconcile_ms,
-            )
-        )
 
-        feedback_report_dict, feedback_trace = call_with_trace(
-            "feedback", None, feedback_provider,
-            feedback.build_feedback_report, package, decisions, rubric, feedback_provider, self._templates["feedback"],
+        feedback_report_dict = feedback.build_feedback_report(
+            package, decisions, rubric, feedback_provider, self._templates["feedback"],
         )
-        stage_traces.append(feedback_trace)
+        stage_traces = self._drain_stage_traces()
 
         rater_chains_report = feedback.build_rater_chains_report(chains_a, chains_b, decisions)
 
-        adjudicated_dims = [d.dimension_id for d in decisions if d.source == ScoreSource.ADJUDICATED]
+        adjudicated_codes = [d.code for d in decisions if d.source == ScoreSource.ADJUDICATED]
         run_trace = RunTraceSummary(
             run_id=f"run-{uuid.uuid4().hex[:12]}",
             configs_ref=self._configs_ref,
             dim=dim_id,
             total_tokens=sum(t.tokens for t in stage_traces),
             total_ms=sum(t.ms for t in stage_traces),
-            adjudicated_dims=adjudicated_dims,
+            adjudicated_codes=adjudicated_codes,
             stage_traces=stage_traces,
-            failed_dims=failed_dims,
+            failed_codes=failed_codes,
         )
 
         return DimensionEvaluation(

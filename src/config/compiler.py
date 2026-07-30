@@ -1,12 +1,12 @@
 """
 配置加载：按约定路径读 configs/ 下的量规、提示词与仲裁策略。
 
-没有 bundle 文件——路径全部由约定固定：仲裁策略在 `{root}/adjudication.yaml`，
-提示词在 `{root}/prompts/{stage}.yaml`，量规在
-`{root}/tasks/{task_id}/dimension/{dim_id}_rubric.yaml`。任务由调用现场传入。
+仲裁策略在 `{root}/adjudication.yaml`
+提示词在 `{root}/prompts/{stage}.yaml`
+量规在`{root}/tasks/{task_id}/dimension/{dim_id}_rubric.yaml`
+任务由调用现场传入。
 
-不包含 rubric 语义：trait 名称、分数值、adjudication 阈值、prompt 文本全部只经由
-加载的配置文件流入。"""
+"""
 
 from __future__ import annotations
 
@@ -17,94 +17,41 @@ import yaml
 
 from src.config.errors import ConfigCompileError
 from src.config.rubric_validation import validate_rubric
-from src.contracts.artifact_bundle import PolicySnapshot, RubricSnapshot
+from src.contracts.configuration import PolicySnapshot, RubricSnapshot
 
 # 提示词阶段名 = 文件名（`{configs_root}/prompts/{stage}.yaml`）。
 PROMPT_STAGES = ("select", "extraction", "scoring", "adjudication", "feedback")
 
 
 def _build_rubric_snapshot(rubric_file_data: dict[str, Any]) -> RubricSnapshot:
-    """从任务/维度 rubric 格式构建 RubricSnapshot。
-    
-        转换如下：
-        - ``dimensions[].code``（例如 ``"A4-1"``） → ``dimension_id = "a4_1"``
-        - ``dimensions[].anchors`` → 包含 rank/summary/descriptors 的 ``levels`` 列表
-        - ``scale`` → 合成 ScaleEntry，其中 ``scale_id = "ordinal_{min}_{max}"``"""
-    # 全部必填项由 rubric_validation 在 load_dimension_rubric 里先行保证，这里一律
-    # 直取不兜底——留一个 .get(默认值) 就是给下一个绕过校验的调用方留门，而那正是
-    # 「模型在没有量规的情况下打分」的来路。
-    rubric_key: str = rubric_file_data["dim_id"]
-    rubric_name: str = rubric_file_data["dim_name"]
-    indicator_description: str = rubric_file_data["indicator_description"]
-    scale_data: dict[str, Any] = rubric_file_data["scale"]
+    """把一份 `{dim_id}_rubric.yaml` 读成 RubricSnapshot。
 
+        结构与 YAML 一一对应，只做类型规整（档位键 YAML 可能解析成 int 也可能是
+        str，统一成 int）。观测点以 code 为唯一标识，不再派生第二套 id。"""
+
+    scale_data: dict[str, Any] = rubric_file_data["scale"]
     scale_min: int = int(scale_data["min"])
     scale_max: int = int(scale_data["max"])
-    # YAML 可能将整数键解析为 int；归一化为 int
-    scale_level_labels: dict[int, str] = {
-        int(k): str(v) for k, v in scale_data["levels"].items()
-    }
 
-    scale_id = f"ordinal_{scale_min}_{scale_max}"
-    scale_entry: dict[str, Any] = {
-        "scale_id": scale_id,
-        "min": scale_min,
-        "max": scale_max,
-    }
-
-    dimensions: list[dict[str, Any]] = []
-    for dim_raw in rubric_file_data["dimensions"]:
-        code: str = dim_raw["code"]                          # 例如 "A4-1"
-        dimension_id: str = code.lower().replace("-", "_")   # 例如 "a4_1"
-        name: str = dim_raw["name"]
-        # YAML 可能将整数键解析为 int
-        anchors: dict[int, str] = {
-            int(k): str(v) for k, v in dim_raw["anchors"].items()
-        }
-
-        levels: list[dict[str, Any]] = []
-        for rank in range(scale_min, scale_max + 1):
-            summary = scale_level_labels[rank]
-            anchor_text = anchors[rank]
-            levels.append({
-                "rank": rank,
-                "summary": summary,
-                "descriptors": [anchor_text],
-            })
-
-        dimensions.append({
-            "dimension_id": dimension_id,
-            "code": code,
-            "name": name,
+    dimensions = [
+        {
+            "code": str(dim_raw["code"]),
+            "name": str(dim_raw["name"]),
             # 观测点权重，聚合 dim 分时用（rubric_validation 保证必填且和为 1.0）
             "weight": float(dim_raw["weight"]),
-            "scale_ref": scale_id,
-            "description": name,
-            "observation_schema": {
-                "required_facets": [dimension_id],
-                "facet_descriptions": {dimension_id: name},
-            },
-            "evidence_requirements": {
-                "minimum_evidence_units": 1,
-                "allowed_evidence_scope": ["full_document"],
-                "require_textual_grounding": True,
-            },
-            "levels": levels,
-            "metadata": {},
-        })
+            "anchors": {int(rank): str(text) for rank, text in dim_raw["anchors"].items()},
+        }
+        for dim_raw in rubric_file_data["dimensions"]
+    ]
 
-    scales = [scale_entry]
     return RubricSnapshot(
-        rubric_id=f"dim_{rubric_key}",
-        rubric_version="1.0",
-        rubric_name=rubric_name,
+        dim_id=str(rubric_file_data["dim_id"]),
+        dim_name=str(rubric_file_data["dim_name"]),
+        indicator_description=str(rubric_file_data["indicator_description"]),
         dimensions=dimensions,
-        scales=scales,
-        indicator_description=indicator_description,
-        raw_task_rubric=dict(rubric_file_data),
-        dimension_by_id={d["dimension_id"]: d for d in dimensions},
-        dimension_by_code={d["code"]: d for d in dimensions},
-        scale_by_id={s["scale_id"]: s for s in scales},
+        scale_min=scale_min,
+        scale_max=scale_max,
+        scale_levels={int(rank): str(label) for rank, label in scale_data["levels"].items()},
     )
 
 
@@ -114,13 +61,8 @@ def prompt_path(configs_root: Path | str, stage: str) -> Path:
 
 
 def load_adjudication_policy(configs_root: Path | str) -> PolicySnapshot:
-    """读 `{configs_root}/adjudication.yaml` 建 PolicySnapshot。
+    """读 `{configs_root}/adjudication.yaml` 建 PolicySnapshot。"""
 
-    两个阈值都必填、都必须是整数——缺失时静默用默认值，等于「以为按配置跑了、实际
-    没有」，而这在产物上完全看不出来。
-
-    Engine 与 `scripts/cli.py` 的 `config validate` 共用此函数，避免出现
-    "校验通过但引擎跑不起来"。"""
     path = Path(configs_root) / "adjudication.yaml"
     if not path.exists():
         raise ConfigCompileError(f"仲裁策略文件不存在：{path}")
@@ -146,8 +88,8 @@ def list_task_dimension_ids(configs_root: Path | str, task_id: str) -> list[str]
 
 
 def load_dimension_rubric(configs_root: Path | str, task_id: str, dim_id: str) -> RubricSnapshot:
-    """直接读 configs/tasks/{task_id}/dimension/{dim_id}_rubric.yaml 构建
-    RubricSnapshot，不经过 bundle 级别的工件引用解析。"""
+    """读 configs/tasks/{task_id}/dimension/{dim_id}_rubric.yaml 构建 RubricSnapshot。"""
+
     path = Path(configs_root) / "tasks" / task_id / "dimension" / f"{dim_id}_rubric.yaml"
     if not path.exists():
         raise ConfigCompileError(f"Dimension rubric file not found: {path}")

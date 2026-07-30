@@ -16,10 +16,9 @@ from src.agents.prompt_builders import (
     build_rater_scoring_prompt,
     build_rater_select_prompt,
 )
-from src.contracts.artifact_bundle import RubricSnapshot
+from src.contracts.configuration import RubricSnapshot
 from src.contracts.package import DataPackage
 from src.contracts.scoring import DimensionScore, RaterChainResult
-from src.policies.rubric_core import get_scale_range
 from src.providers.base import BaseProvider
 from src.providers.prompt_loader import PromptTemplate
 
@@ -50,6 +49,7 @@ DEFAULT_SELECT_PREVIEW_BYTES = 200
 def select(
     package: DataPackage,
     dimension: Dict[str, Any],
+    rubric: RubricSnapshot,
     provider: BaseProvider,
     template: PromptTemplate,
     rater_id: str,
@@ -59,9 +59,9 @@ def select(
     """看「unit_id + 每段前若干字节」选出与该观测点相关的unit_id（粗筛）。
 
     模型幻觉出的编号会被静默过滤——这一步只是缩小候选范围，不是证据主张。"""
-    dimension_id = str(dimension.get("dimension_id", ""))
+    code = str(dimension["code"])
     prompt_text = build_rater_select_prompt(
-        package, dimension, template,
+        package, dimension, rubric.scale_levels, template,
         preview_bytes=preview_bytes,
         indicator_description=indicator_description,
     )
@@ -71,7 +71,7 @@ def select(
         _SELECT_OUTPUT_SCHEMA,
         node_id="node_rater_select",
         stage_name="select",
-        dimension_id=dimension_id,
+        code=code,
         rater_id=rater_id,
         template=template,
     )
@@ -84,6 +84,7 @@ def extract(
     package: DataPackage,
     selected_unit_ids: Sequence[int],
     dimension: Dict[str, Any],
+    rubric: RubricSnapshot,
     provider: BaseProvider,
     template: PromptTemplate,
     rater_id: str,
@@ -92,9 +93,9 @@ def extract(
     """选中unit 全文 → 证据，返回其中真正构成证据的unit_id。
 
     只有 select 阶段展示过的unit 才在有效范围内；越界编号直接拒绝。"""
-    dimension_id = str(dimension.get("dimension_id", ""))
+    code = str(dimension["code"])
     prompt_text = build_rater_extraction_prompt(
-        package, selected_unit_ids, dimension, template,
+        package, selected_unit_ids, dimension, rubric.scale_levels, template,
         indicator_description=indicator_description,
     )
     data = call_llm(
@@ -103,7 +104,7 @@ def extract(
         _EXTRACTION_OUTPUT_SCHEMA,
         node_id="node_rater_extract",
         stage_name="extract",
-        dimension_id=dimension_id,
+        code=code,
         rater_id=rater_id,
         template=template,
     )
@@ -124,20 +125,22 @@ def score(
     """证据 + 锚点 → DimensionScore。
 
     supporting_unit_ids 只能引用 extract 阶段已确认的证据编号；越界直接拒绝。"""
-    dimension_id = dimension["dimension_id"]
-    prompt_text = build_rater_scoring_prompt(package, evidence_unit_ids, dimension, template)
+    code = str(dimension["code"])
+    prompt_text = build_rater_scoring_prompt(
+        package, evidence_unit_ids, dimension, rubric.scale_levels, template
+    )
     data = call_llm(
         provider,
         prompt_text,
         _SCORING_OUTPUT_SCHEMA,
         node_id="node_rater_score",
         stage_name="score",
-        dimension_id=dimension_id,
+        code=code,
         rater_id=rater_id,
         template=template,
     )
 
-    scale_min, scale_max = get_scale_range(rubric, dimension_id)
+    scale_min, scale_max = rubric.scale_min, rubric.scale_max
     raw_score = int(data.get("proposed_score", scale_min))
     score_val = max(scale_min, min(scale_max, raw_score))
 
@@ -154,7 +157,7 @@ def score(
 
 def run_chain(
     package: DataPackage,
-    dimension_id: str,
+    code: str,
     rubric: RubricSnapshot,
     provider: BaseProvider,
     select_template: PromptTemplate,
@@ -164,26 +167,26 @@ def run_chain(
     preview_bytes: int = DEFAULT_SELECT_PREVIEW_BYTES,
 ) -> RaterChainResult:
     """跑完一个 Rater 对一个观测点的完整链：select → extract → score。"""
-    dimension = rubric.get_dimension(dimension_id)
+    dimension = rubric.get_dimension(code)
     if dimension is None:
-        raise ValueError(f"Dimension '{dimension_id}' not found in rubric")
+        raise ValueError(f"观测点 '{code}' 不在量规里")
 
     # 指标解释只进选段与取证：这两步判的是「相关不相关」，多给背景是净收益；
     # 判档阶段它会和锚点抢判档依据，放大两位评委的分歧，故不注入。
     selected_unit_ids = select(
-        package, dimension, provider, select_template, rater_id,
+        package, dimension, rubric, provider, select_template, rater_id,
         preview_bytes=preview_bytes,
         indicator_description=rubric.indicator_description,
     )
     evidence_unit_ids = extract(
-        package, selected_unit_ids, dimension, provider, extraction_template, rater_id,
+        package, selected_unit_ids, dimension, rubric, provider, extraction_template, rater_id,
         indicator_description=rubric.indicator_description,
     )
     dimension_score = score(package, evidence_unit_ids, dimension, rubric, provider, scoring_template, rater_id)
 
     return RaterChainResult(
         rater_id=rater_id,
-        dimension_id=dimension_id,
+        code=code,
         selected_unit_ids=selected_unit_ids,
         evidence_unit_ids=evidence_unit_ids,
         score=dimension_score,

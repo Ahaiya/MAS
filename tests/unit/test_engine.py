@@ -67,7 +67,7 @@ def configs_root(tmp_path: Path) -> Path:
 @pytest.fixture
 def configs_root_multi(tmp_path: Path) -> Path:
     """一个最小 configs_root：一个任务下一个二级指标 d1，含 3 个观测点
-    （d1_1/d1_2/d1_3）——用于练到观测点级并发（单个观测点不足以触发并发）。"""
+    （D1-1/D1-2/D1-3）——用于练到观测点级并发（单个观测点不足以触发并发）。"""
     root = tmp_path / "configs"
     (root / "tasks" / "testtask" / "dimension").mkdir(parents=True)
     (root / "prompts").mkdir(parents=True)
@@ -112,7 +112,7 @@ class _StageAwareProvider(BaseProvider):
     用来验证"并发结果与串行一致"而不必依赖 FakeProvider 的 FIFO 顺序（并发下
     多个线程对同一个 FakeProvider 的调用顺序本就是不确定的）。
 
-    `fail_on_dimension_id` 指定时，命中该 dimension_id 的调用直接抛错，用来
+    `fail_on_code` 指定时，命中该 code 的调用直接抛错，用来
     验证单个观测点失败被隔离、不拖垮其余观测点。"""
 
     _RESPONSES = {
@@ -125,12 +125,12 @@ class _StageAwareProvider(BaseProvider):
         *,
         score: int = 3,
         scores: Optional[Dict[str, int]] = None,
-        fail_on_dimension_id: Optional[str] = None,
+        fail_on_code: Optional[str] = None,
         name: str = "stage_aware",
     ) -> None:
         self._score = score
         self._scores = scores or {}
-        self._fail_on_dimension_id = fail_on_dimension_id
+        self._fail_on_code = fail_on_code
         self._name = name
         self.requests: list = []
 
@@ -144,13 +144,13 @@ class _StageAwareProvider(BaseProvider):
 
     def complete(self, request: LLMRequest) -> LLMResponse:
         self.requests.append(request)
-        dimension_id = request.metadata.get("dimension_id")
-        if self._fail_on_dimension_id in ("*", dimension_id):
-            raise ProviderCallError(f"boom on {dimension_id}")
+        code = request.metadata.get("code")
+        if self._fail_on_code in ("*", code):
+            raise ProviderCallError(f"boom on {code}")
         stage = request.metadata.get("stage_name")
         if stage == "score":
             data = {
-                "proposed_score": self._scores.get(str(dimension_id), self._score),
+                "proposed_score": self._scores.get(str(code), self._score),
                 "supporting_unit_ids": [0],
                 "confidence": 0.8,
                 "rationale": "ok",
@@ -212,7 +212,7 @@ def test_evaluate_single_dim_returns_only_that_dim(configs_root: Path) -> None:
 
     assert set(results.keys()) == {"d1"}
     assert isinstance(results["d1"], DimensionEvaluation)
-    assert results["d1"].feedback_report["dimensions"]["d1_1"]["source"] == "consensus"
+    assert results["d1"].feedback_report["dimensions"]["D1-1"]["source"] == "consensus"
 
 
 # ── 全 dim（缺省） ───────────────────────────────────────────────────────────
@@ -257,8 +257,8 @@ def test_consensus_scenario_does_not_call_rater_3(configs_root: Path) -> None:
 
     results = engine.evaluate(_package(), dim="d1")
 
-    assert results["d1"].feedback_report["dimensions"]["d1_1"]["source"] == "consensus"
-    assert results["d1"].run_trace.adjudicated_dims == []
+    assert results["d1"].feedback_report["dimensions"]["D1-1"]["source"] == "consensus"
+    assert results["d1"].run_trace.adjudicated_codes == []
     assert len(rater_3.requests) == 0
 
 
@@ -289,11 +289,11 @@ def test_disagreement_scenario_triggers_adjudication_end_to_end(configs_root: Pa
 
     results = engine.evaluate(_package(), dim="d1")
 
-    dim_entry = results["d1"].feedback_report["dimensions"]["d1_1"]
+    dim_entry = results["d1"].feedback_report["dimensions"]["D1-1"]
     assert dim_entry["source"] == "adjudicated"
     assert dim_entry["final_score"] == 3
     assert dim_entry["unit_ids"] == [2]
-    assert results["d1"].run_trace.adjudicated_dims == ["d1_1"]
+    assert results["d1"].run_trace.adjudicated_codes == ["D1-1"]
     assert len(rater_3.requests) == 1
 
 
@@ -314,7 +314,7 @@ def test_missing_rater_3_only_raises_when_actually_triggered(configs_root: Path)
 
     results = engine.evaluate(_package(), dim="d1")  # 一致场景，用不到 rater_3
 
-    assert results["d1"].feedback_report["dimensions"]["d1_1"]["source"] == "consensus"
+    assert results["d1"].feedback_report["dimensions"]["D1-1"]["source"] == "consensus"
 
 
 def test_missing_rater_3_raises_when_disagreement_occurs(configs_root: Path) -> None:
@@ -354,7 +354,7 @@ def test_full_chain_writes_all_artifacts_with_resolvable_unit_ids(configs_root: 
     package_data = json.loads((output_dir / "testtask" / "student1" / "package.json").read_text(encoding="utf-8"))
     feedback_data = json.loads((output_dir / "testtask" / "student1" / "d1" / "feedback.json").read_text(encoding="utf-8"))
     unit_text_by_id = {u["id"]: u["text"] for u in package_data["units"]}
-    cited = feedback_data["dimensions"]["d1_1"]["unit_ids"]
+    cited = feedback_data["dimensions"]["D1-1"]["unit_ids"]
     assert [unit_text_by_id[uid] for uid in cited] == ["text 0"]
 
 
@@ -362,8 +362,9 @@ def test_full_chain_writes_all_artifacts_with_resolvable_unit_ids(configs_root: 
 
 
 def test_run_trace_json_includes_stage_level_detail(configs_root: Path) -> None:
-    """run_trace.json 不能只有运行级汇总——阶段级（stage/rater/llm_calls/tokens/ms）
-    明细也必须落盘，否则 total_tokens/total_ms 就成了无法核对来源的黑箱数字。"""
+    """run_trace.json 不能只有运行级汇总——阶段级（stage/rater/code/llm_calls/
+    tokens/ms）明细也必须落盘，否则 total_tokens/total_ms 就成了无法核对来源的
+    黑箱数字；每条还要带上观测点 code，否则多观测点下分不清成本花在哪。"""
     output_dir = configs_root.parent / "artifacts"
     engine = _engine(configs_root, extra_providers={"rater_3": FakeProvider([])}, output_dir=output_dir)
 
@@ -375,41 +376,42 @@ def test_run_trace_json_includes_stage_level_detail(configs_root: Path) -> None:
         (output_dir / "testtask" / "student1" / "d1" / "run_trace.json").read_text(encoding="utf-8")
     )
     stages = run_trace["stage_traces"]
-    assert {(s["stage"], s["rater"]) for s in stages} >= {
-        ("select", "rater_1"),
-        ("extract", "rater_1"),
-        ("score", "rater_1"),
-        ("select", "rater_2"),
-        ("extract", "rater_2"),
-        ("score", "rater_2"),
-        ("feedback", None),
+    assert {(s["stage"], s["rater"], s["code"]) for s in stages} == {
+        ("select", "rater_1", "D1-1"),
+        ("extract", "rater_1", "D1-1"),
+        ("score", "rater_1", "D1-1"),
+        ("select", "rater_2", "D1-1"),
+        ("extract", "rater_2", "D1-1"),
+        ("score", "rater_2", "D1-1"),
+        ("feedback", None, "D1-1"),
     }
-    # 一致场景没有触发仲裁：reconcile 阶段记录在案，但不挂 rater_3 标签、无 LLM 调用
-    reconcile_entries = [s for s in stages if s["stage"] == "reconcile"]
-    assert len(reconcile_entries) == 1
-    assert reconcile_entries[0]["rater"] is None
-    assert reconcile_entries[0]["llm_calls"] == 0
+    # 一致场景不触发仲裁：没有 rater_3 的调用，也就没有 adjudicate 条目
+    assert [s for s in stages if s["stage"] == "adjudicate"] == []
     assert run_trace["total_tokens"] == sum(s["tokens"] for s in stages)
 
 
-def test_run_trace_reconcile_stage_labels_rater_3_when_adjudicated(configs_root: Path) -> None:
+def test_run_trace_records_adjudicate_stage_per_observation_point(configs_root_multi: Path) -> None:
+    """触发反思裁决时，Rater3 的调用必须逐观测点在案（stage=adjudicate、
+    rater=rater_3、带 code），而不是折叠进一条汇总——否则无从核对哪个观测点
+    真的走了仲裁、花了多少。这里 D1-1 分差 3 触发，D1-2/D1-3 一致不触发。"""
     rater_providers = {
-        "rater_1": FakeProvider(
-            [fake_response({"selected_unit_ids": [0]}), fake_response({"evidence_unit_ids": [0]}), fake_response({"proposed_score": 2, "supporting_unit_ids": [0]})]
-        ),
-        "rater_2": FakeProvider(
-            [fake_response({"selected_unit_ids": [0]}), fake_response({"evidence_unit_ids": [0]}), fake_response({"proposed_score": 5, "supporting_unit_ids": [0]})]
-        ),
+        "rater_1": _StageAwareProvider(scores={"D1-1": 2}, score=3, name="r1"),
+        "rater_2": _StageAwareProvider(scores={"D1-1": 5}, score=3, name="r2"),
     }
-    rater_3 = FakeProvider([fake_response({"proposed_score": 3, "supporting_unit_ids": [0]})])
-    engine = _engine(configs_root, rater_providers=rater_providers, extra_providers={"rater_3": rater_3})
+    rater_3 = FakeProvider([fake_response({"proposed_score": 4, "supporting_unit_ids": [0]})])
+    engine = _engine(
+        configs_root_multi, rater_providers=rater_providers, extra_providers={"rater_3": rater_3}
+    )
 
     results = engine.evaluate(_package(), dim="d1")
 
-    reconcile_entries = [s for s in results["d1"].run_trace.stage_traces if s.stage == "reconcile"]
-    assert len(reconcile_entries) == 1
-    assert reconcile_entries[0].rater == "rater_3"
-    assert reconcile_entries[0].llm_calls == 1
+    traces = results["d1"].run_trace.stage_traces
+    adjudicate_entries = [s for s in traces if s.stage == "adjudicate"]
+    assert [(s.rater, s.code, s.llm_calls) for s in adjudicate_entries] == [("rater_3", "D1-1", 1)]
+    assert results["d1"].run_trace.adjudicated_codes == ["D1-1"]
+    # 同一观测点的条目按流水线顺序排列，adjudicate 落在 score 之后
+    d1_1_stages = [s.stage for s in traces if s.code == "D1-1"]
+    assert d1_1_stages.index("adjudicate") > d1_1_stages.index("score")
 
 
 # ── model_config 字段校验 ────────────────────────────────────────────────────
@@ -486,7 +488,7 @@ def test_concurrent_result_matches_sequential(configs_root_multi: Path, tmp_path
     sequential = _run(max_workers=1)
     concurrent = _run(max_workers=3)
 
-    assert set(sequential["dimensions"]) == {"d1_1", "d1_2", "d1_3"}
+    assert set(sequential["dimensions"]) == {"D1-1", "D1-2", "D1-3"}
     assert sequential["dimensions"] == concurrent["dimensions"]
     assert sequential["primary_score"] == concurrent["primary_score"]
 
@@ -552,7 +554,7 @@ def test_primary_score_uses_observation_point_weights(configs_root_weighted: Pat
     """权重 0.2/0.3/0.5、得分 1/3/5：加权 3.6，等权会算成 3.0。"""
     engine = Engine.from_configs(
         configs_root_weighted, "testtask",
-        providers=_weighted_providers({"d1_1": 1, "d1_2": 3, "d1_3": 5}),
+        providers=_weighted_providers({"D1-1": 1, "D1-2": 3, "D1-3": 5}),
         model_config_path=_model_config_with_max_workers(tmp_path, 3),
         output_dir=tmp_path / "artifacts",
     )
@@ -565,18 +567,18 @@ def test_primary_score_uses_observation_point_weights(configs_root_weighted: Pat
 def test_primary_score_renormalizes_weights_when_a_point_fails(
     configs_root_weighted: Path, tmp_path: Path
 ) -> None:
-    """d1_3（权重 0.5）评价失败：剩下 0.2/0.3 要重新归一化成 0.4/0.6，
+    """D1-3（权重 0.5）评价失败：剩下 0.2/0.3 要重新归一化成 0.4/0.6，
     得分 1/3 → 2.2；不归一化会算成 1.1，一个观测点失败就让 dim 分凭空腰斩。"""
     engine = Engine.from_configs(
         configs_root_weighted, "testtask",
-        providers=_weighted_providers({"d1_1": 1, "d1_2": 3}, fail_on_dimension_id="d1_3"),
+        providers=_weighted_providers({"D1-1": 1, "D1-2": 3}, fail_on_code="D1-3"),
         model_config_path=_model_config_with_max_workers(tmp_path, 3),
         output_dir=tmp_path / "artifacts",
     )
 
     results = engine.evaluate(_package(), dim="d1")
 
-    assert [f["dimension_id"] for f in results["d1"].run_trace.failed_dims] == ["d1_3"]
+    assert [f["code"] for f in results["d1"].run_trace.failed_codes] == ["D1-3"]
     assert results["d1"].feedback_report["primary_score"] == pytest.approx(2.2)
 
 
@@ -584,9 +586,9 @@ def test_primary_score_renormalizes_weights_when_a_point_fails(
 
 
 def test_single_dimension_failure_is_isolated(configs_root_multi: Path, tmp_path: Path) -> None:
-    """d1_2 的 rater_1 调用抛错：只有 d1_2 被标记失败，d1_1/d1_3 照常产出并落盘。"""
+    """D1-2 的 rater_1 调用抛错：只有 D1-2 被标记失败，D1-1/D1-3 照常产出并落盘。"""
     providers: Dict[str, BaseProvider] = {
-        "rater_1": _StageAwareProvider(score=3, fail_on_dimension_id="d1_2", name="r1"),
+        "rater_1": _StageAwareProvider(score=3, fail_on_code="D1-2", name="r1"),
         "rater_2": _StageAwareProvider(score=3, name="r2"),
         "feedback": FakeProvider([_text_response("反馈")] * 2),
     }
@@ -601,20 +603,20 @@ def test_single_dimension_failure_is_isolated(configs_root_multi: Path, tmp_path
     results = engine.evaluate(_package(), dim="d1")
 
     dimensions_out = results["d1"].feedback_report["dimensions"]
-    assert set(dimensions_out) == {"d1_1", "d1_3"}
+    assert set(dimensions_out) == {"D1-1", "D1-3"}
 
-    failed = results["d1"].run_trace.failed_dims
+    failed = results["d1"].run_trace.failed_codes
     assert len(failed) == 1
-    assert failed[0]["dimension_id"] == "d1_2"
-    assert "boom on d1_2" in failed[0]["error"]
+    assert failed[0]["code"] == "D1-2"
+    assert "boom on D1-2" in failed[0]["error"]
 
     import json
 
     dim_dir = output_dir / "testtask" / "student1" / "d1"
     feedback_data = json.loads((dim_dir / "feedback.json").read_text(encoding="utf-8"))
-    assert set(feedback_data["dimensions"]) == {"d1_1", "d1_3"}
+    assert set(feedback_data["dimensions"]) == {"D1-1", "D1-3"}
     run_trace_data = json.loads((dim_dir / "run_trace.json").read_text(encoding="utf-8"))
-    assert run_trace_data["failed_dims"] == [{"dimension_id": "d1_2", "error": failed[0]["error"]}]
+    assert run_trace_data["failed_codes"] == [{"code": "D1-2", "error": failed[0]["error"]}]
 
 
 def test_all_dimensions_failing_records_errors_without_masking_them(
@@ -626,7 +628,7 @@ def test_all_dimensions_failing_records_errors_without_masking_them(
     aggregate_final_decisions 炸出一条与根因无关的"decisions 不能为空"，把真正
     的原因（鉴权失败/超时/限流）全埋掉。跳过 reconcile/feedback，照常落盘。"""
     providers: Dict[str, BaseProvider] = {
-        "rater_1": _StageAwareProvider(score=3, fail_on_dimension_id="*", name="r1"),
+        "rater_1": _StageAwareProvider(score=3, fail_on_code="*", name="r1"),
         "rater_2": _StageAwareProvider(score=3, name="r2"),
         "feedback": FakeProvider([]),
     }
@@ -643,16 +645,16 @@ def test_all_dimensions_failing_records_errors_without_masking_them(
     evaluation = results["d1"]
     assert evaluation.feedback_report["dimensions"] == {}
     assert evaluation.feedback_report["primary_score"] is None
-    failed_ids = {f["dimension_id"] for f in evaluation.run_trace.failed_dims}
-    assert failed_ids == {"d1_1", "d1_2", "d1_3"}
-    assert all("boom" in f["error"] for f in evaluation.run_trace.failed_dims)
+    failed_ids = {f["code"] for f in evaluation.run_trace.failed_codes}
+    assert failed_ids == {"D1-1", "D1-2", "D1-3"}
+    assert all("boom" in f["error"] for f in evaluation.run_trace.failed_codes)
 
     import json
 
     run_trace_data = json.loads(
         (output_dir / "testtask" / "student1" / "d1" / "run_trace.json").read_text(encoding="utf-8")
     )
-    assert {f["dimension_id"] for f in run_trace_data["failed_dims"]} == {"d1_1", "d1_2", "d1_3"}
+    assert {f["code"] for f in run_trace_data["failed_codes"]} == {"D1-1", "D1-2", "D1-3"}
 
 
 def test_one_primary_dimension_failing_does_not_kill_the_others(
@@ -661,7 +663,7 @@ def test_one_primary_dimension_failing_does_not_kill_the_others(
     """一个二级指标整体失败，不能拖垮同一 sample 下其余二级指标（US31：不崩整个
     sample）。configs_root 里 d1/d2 各有一个观测点，让 d1 的那个必失败。"""
     providers: Dict[str, BaseProvider] = {
-        "rater_1": _StageAwareProvider(score=3, fail_on_dimension_id="d1_1", name="r1"),
+        "rater_1": _StageAwareProvider(score=3, fail_on_code="D1-1", name="r1"),
         "rater_2": _StageAwareProvider(score=3, name="r2"),
         "feedback": FakeProvider([_text_response("反馈")] * 4),
     }
@@ -675,8 +677,8 @@ def test_one_primary_dimension_failing_does_not_kill_the_others(
 
     assert set(results) == {"d1", "d2"}
     assert results["d1"].feedback_report["dimensions"] == {}
-    assert [f["dimension_id"] for f in results["d1"].run_trace.failed_dims] == ["d1_1"]
-    assert set(results["d2"].feedback_report["dimensions"]) == {"d2_1"}
+    assert [f["code"] for f in results["d1"].run_trace.failed_codes] == ["D1-1"]
+    assert set(results["d2"].feedback_report["dimensions"]) == {"D2-1"}
 
 
 def test_indicator_description_reaches_select_and_extract_but_not_score(configs_root: Path) -> None:

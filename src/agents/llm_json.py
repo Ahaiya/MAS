@@ -28,7 +28,7 @@ def call_llm(
     *,
     node_id: str,
     stage_name: str,
-    dimension_id: str,
+    code: str,
     rater_id: str,
     template: PromptTemplate,
 ) -> Dict[str, Any]:
@@ -39,7 +39,7 @@ def call_llm(
         metadata={
             "node_id": node_id,
             "stage_name": stage_name,
-            "dimension_id": dimension_id,
+            "code": code,
             "rater_id": rater_id,
             "template_source": template.source_path,
         },

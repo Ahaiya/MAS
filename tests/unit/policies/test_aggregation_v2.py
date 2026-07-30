@@ -6,12 +6,13 @@ from src.policies.aggregation import aggregate_final_decisions
 _SCALE_REF = "ordinal_1_5"
 
 
-def _decision(dimension_id: str, score_val: int, source: ScoreSource = ScoreSource.CONSENSUS) -> FinalDecision:
+def _decision(code: str, score_val: int, source: ScoreSource = ScoreSource.CONSENSUS) -> FinalDecision:
     return FinalDecision(
-        dimension_id=dimension_id,
+        code=code,
         final_score=score_val,
         source=source,
         unit_ids=[0],
+        rationale="定分理由",
     )
 
 
@@ -23,8 +24,8 @@ def test_aggregate_uses_observation_point_weights() -> None:
 
 
 def test_aggregate_equal_weights_is_arithmetic_mean() -> None:
-    decisions = [_decision("a4_1", 3), _decision("a4_2", 4), _decision("a4_3", 5)]
-    weights = {"a4_1": 1 / 3, "a4_2": 1 / 3, "a4_3": 1 / 3}
+    decisions = [_decision("A4-1", 3), _decision("A4-2", 4), _decision("A4-3", 5)]
+    weights = {"A4-1": 1 / 3, "A4-2": 1 / 3, "A4-3": 1 / 3}
 
     assert aggregate_final_decisions(decisions, weights) == pytest.approx(4.0)
 
@@ -53,19 +54,19 @@ def test_aggregate_single_surviving_observation_point_equals_its_score() -> None
 def test_aggregate_treats_consensus_and_adjudicated_the_same() -> None:
     """二级指标分只看 final_score，不区分 source——两种 source 都已是权威值。"""
     decisions = [
-        _decision("a4_1", 2, ScoreSource.CONSENSUS),
-        _decision("a4_2", 4, ScoreSource.ADJUDICATED),
+        _decision("A4-1", 2, ScoreSource.CONSENSUS),
+        _decision("A4-2", 4, ScoreSource.ADJUDICATED),
     ]
 
-    assert aggregate_final_decisions(decisions, {"a4_1": 0.5, "a4_2": 0.5}) == pytest.approx(3.0)
+    assert aggregate_final_decisions(decisions, {"A4-1": 0.5, "A4-2": 0.5}) == pytest.approx(3.0)
 
 
 def test_aggregate_rejects_empty_decisions() -> None:
     with pytest.raises(ValueError):
-        aggregate_final_decisions([], {"a4_1": 1.0})
+        aggregate_final_decisions([], {"A4-1": 1.0})
 
 
-def test_aggregate_rejects_unknown_dimension_id() -> None:
+def test_aggregate_rejects_unknown_code() -> None:
     """decisions 与 weights 对不上是配置/编译期出了问题，必须炸响而不是静默算。"""
     with pytest.raises(KeyError):
-        aggregate_final_decisions([_decision("a4_9", 3)], {"a4_1": 1.0})
+        aggregate_final_decisions([_decision("A4-9", 3)], {"A4-1": 1.0})

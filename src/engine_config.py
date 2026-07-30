@@ -11,13 +11,7 @@
     runtime:              # 运行期旋钮，全部可省略
       max_workers, timeout_seconds, max_retries, retry_delay_seconds
 
-model_config 是模型/参数的唯一来源：`providers` 缺 rater_1/rater_2/feedback 直接
-报错，条目缺 model/api_base/api_key_env 也直接报错，绝不静默降级——一次跑成了单
-评委却以为跑了双评，从产物上根本看不出来。
-
-`api_key_env` 存的是**环境变量的名字**，密钥值只在 .env 里。名字按**厂商**取
-（DEEPSEEK_API_KEY / DASHSCOPE_API_KEY）而非按角色：凭证属于厂商账号，多个角色
-共用同一个账号时不必把同一个值在 .env 里抄好几遍。"""
+"""
 
 from __future__ import annotations
 
@@ -26,7 +20,7 @@ from typing import Any, Callable, Dict, Tuple
 
 import yaml
 
-from src.contracts.artifact_bundle import ProviderEntryConfig
+from src.contracts.configuration import ProviderEntryConfig
 from src.providers.base import BaseProvider
 from src.providers.factory import build_provider
 from src.providers.guards import RetryConfig
