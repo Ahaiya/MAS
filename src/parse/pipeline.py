@@ -7,13 +7,8 @@ packages/{task}/{submission}/
 └── package.json           # 派生的编号空间
 ```
 
-**不放进 `artifacts/`**：那是「觉得不对就整个删掉重跑」的产出目录，而解析结果是
-花钱买来的**输入**。
 
-**任一文件失败 → 整个 submission 失败**，不产出 package。这与引擎内部的失败隔离
-取向相反，是有意为之：引擎隔离的是同一份材料上的多个判断（缺一个仍然诚实），这里
-缺的是材料本身——报告 PDF 挂了只剩 PPT 却照样评出分，教师看到的是一个偏低的分数，
-而看不出材料缺了一半。
+**任一文件失败 → 整个 submission 失败**，不产出 package。
 
 成功文件的 raw 照常落盘（不扔掉已付费的结果），重跑时已有 raw 直接跳过。"""
 
@@ -80,11 +75,11 @@ def parse_submission(
 ) -> DataPackage:
     """解析一次提交的全部文件，落盘 raw 与 package.json，返回 DataPackage。
 
-    N 个文件**并发**提交、各自轮询——轮询是纯等待，串行等于把等待时间乘 N。
+    N 个文件**并发**提交、各自轮询
 
     Raises:
         SubmissionParseError: 任意一个文件失败。此时 package.json 不产出，但已经
-            成功的文件的 raw 仍然留在盘上（下次重跑不再付费）。"""
+            成功的文件的 raw 仍然留在盘上。"""
     if not files:
         raise ValueError("parse_submission: 一次提交至少要有一个文件。")
 

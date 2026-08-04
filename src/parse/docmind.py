@@ -2,15 +2,11 @@
 Document Mind（文档解析·大模型版）客户端：一个文件进、完整 layouts 出。
 
 三步异步：`SubmitDocParserJobAdvance`（本地文件流直传）→ `QueryDocParserStatus`
-（轮询）→ `GetDocParserResult`（按 LayoutNum / LayoutStepSize 分页拉全）。**拉全
-之前不算成功**——拉了一半就当成功，会得到一份静悄悄缺尾的材料。
+（轮询）→ `GetDocParserResult`（按 LayoutNum / LayoutStepSize 分页拉全）。
 
-不走 URL 版 `SubmitDocParserJob`：那要求材料先落到公网可达的 OSS，而学生材料隐私
-敏感，为此引入一个 OSS 桶和第二套凭证不值得。
 
 **接缝**：本模块把「发起调用」抽成一个函数参数 `call(op, payload) -> dict`，默认是
-真 SDK（`sdk_caller()`），测试传假的。不抽接口、不做工厂、不做 FakeParser 类——解析
-只有一个实现，为它造接口纯属仪式。
+真 SDK（`sdk_caller()`），测试传假的。不抽接口、不做工厂、不做 FakeParser 类。
 
 超时**不算永久失败**：抛出的 ParseTimeout 带 job id，结果 24 小时内可凭它续查，
 不必重新提交重新付费。"""
@@ -53,6 +49,10 @@ class ParseServiceError(DocMindError):
 
 class ParseNetworkError(DocMindError):
     """网络/传输层错误——通常重跑就好。"""
+
+
+class ParseIncompleteError(DocMindError):
+    """拉回的 layout 数与服务端给的总数对不上——材料缺了一块，不产包。"""
 
 
 class ParseTimeout(DocMindError):
@@ -105,14 +105,22 @@ def _wait_until_done(
     call: CallFn,
     sleep: Callable[[float], None],
     clock: Callable[[], float],
-) -> None:
-    """轮询到 success 为止。到上限抛 ParseTimeout，**不**顺手去拉一份残缺结果。"""
+) -> Dict[str, Any]:
+    """轮询到 success 为止，返回**最后一次**的 status 响应。到上限抛 ParseTimeout，
+    **不**顺手去拉一份残缺结果。
+
+    返回整份响应而非只返回状态字：里面还有 NumberOfSuccessfulParsing（拉全校验的
+    依据）、PageCountEstimate / Tokens（计费对账）等，丢了就再也拿不回来。"""
     started = clock()
     while True:
         response = call("status", {"id": job_id})
-        status = str(response.get("status") or "").lower()
+        # 带 code 的响应是服务侧拒绝（NoPermission 之类），data 里根本没有 Status。
+        # 不在这里拦下，就会把它当「处理中」一路轮询到超时——白等两小时。
+        if response.get("code"):
+            raise _classify(response, f"{path.name}：查询解析状态失败。")
+        status = str(response.get("Status") or "").lower()
         if status in _SUCCESS_STATUSES:
-            return
+            return response
         if status in _FAILURE_STATUSES:
             raise _classify(response, f"{path.name}：解析失败。")
         # 其余一律当作「处理中」：把未知状态当失败，会把一个还在跑的付费任务扔掉。
@@ -147,6 +155,20 @@ def _fetch_all_layouts(
         layout_num += len(batch)
 
 
+def _verify_complete(layouts: List[Dict[str, Any]], status: Dict[str, Any], path: Path) -> None:
+    """拿服务端给的总数核对拉回的条数——分页少拉一页在产物上完全看不出来。
+
+    服务端没给这个字段就不校验：编一个期望值出来只会把「不知道」伪装成「已核对」。"""
+    expected = status.get("NumberOfSuccessfulParsing")
+    if expected is None:
+        return
+    if len(layouts) != int(expected):
+        raise ParseIncompleteError(
+            f"{path.name}：只拉回 {len(layouts)} 个版面块，服务端报告共 {int(expected)} 个。"
+            "材料缺了一块，不产出数据包。"
+        )
+
+
 def parse_file(
     path: Path,
     *,
@@ -162,11 +184,14 @@ def parse_file(
 
     Raises:
         ParseQuotaError / UnsupportedFormatError / ParseServiceError /
-        ParseNetworkError / ParseTimeout —— 各自可区分，见模块内各类的说明。"""
+        ParseNetworkError / ParseTimeout / ParseIncompleteError —— 各自可区分，
+        见模块内各类的说明。"""
     job_id = _submit(path, config, call)
-    _wait_until_done(job_id, path, config, call, sleep, clock)
+    status = _wait_until_done(job_id, path, config, call, sleep, clock)
     layouts, last_page = _fetch_all_layouts(job_id, path, config, call)
-    return {**last_page, "layouts": layouts, "job_id": job_id}
+    _verify_complete(layouts, status, path)
+    # status 整份留在 raw 里：解析用量与统计只有这一次机会拿到，任务过期就没了。
+    return {**last_page, "layouts": layouts, "job_id": job_id, "status": status}
 
 
 # ── 真 SDK 的「发起调用」实现 ────────────────────────────────────────────────
@@ -214,15 +239,15 @@ def sdk_caller(config: ParseConfig, credentials: Tuple[str, str]) -> CallFn:
         }
 
     def _query_status(payload: Dict[str, Any]) -> Dict[str, Any]:
+        """data 整份原样透传（PascalCase 键，与阿里云返回一致）：Status 只是其中一个
+        字段，NumberOfSuccessfulParsing / PageCountEstimate / Tokens 同样只有这一次
+        机会拿到。code / message 是 body 级字段，成功时都是 None。"""
         response = client.query_doc_parser_status(
             docmind_models.QueryDocParserStatusRequest(id=payload["id"])
         )
         body = response.body
-        return {
-            "status": getattr(body.data, "status", None) if body.data else None,
-            "code": body.code,
-            "message": body.message,
-        }
+        data = body.data.to_map() if body.data else {}
+        return {**data, "code": body.code, "message": body.message}
 
     def _get_result(payload: Dict[str, Any]) -> Dict[str, Any]:
         response = client.get_doc_parser_result(

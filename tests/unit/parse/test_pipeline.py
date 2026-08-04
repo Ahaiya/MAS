@@ -43,7 +43,7 @@ class _ScriptedCall:
         if isinstance(outcome, Exception):
             raise outcome
         if op == "status":
-            return {"status": "success"}
+            return {"Status": "success"}
         return {"layouts": outcome, "docName": name}
 
 
@@ -197,7 +197,7 @@ def test_溯源记录源文件与开关(tmp_path: Path) -> None:
     package = _run(tmp_path, files, call)
     assert package.provenance["source_files"] == ["a.pdf", "b.pdf"]
     assert package.provenance["options"] == _CONFIG.options
-    assert package.provenance["excluded_layouts"] == {"head": 1}
+    assert package.provenance["excluded_layouts"] == {}  # 黑名单当前为空，head 也放行
     assert package.provenance["parsed_at"] == "2026-08-04T10:00:00"
 
 

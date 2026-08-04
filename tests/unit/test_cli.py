@@ -354,7 +354,7 @@ def fake_docmind(monkeypatch: pytest.MonkeyPatch, configs_root: Path) -> Dict[st
             box["submitted"].append(payload["file_name"])
             return {"id": f"job-{payload['file_name']}"}
         if op == "status":
-            return {"status": "success"}
+            return {"Status": "success"}
         return {
             "layouts": [
                 {"index": 0, "type": "title", "markdownContent": "# 标题", "pageNum": 0},
@@ -391,9 +391,9 @@ def test_parse_解析一次提交的全部文件(
     package_json = packages / "testtask" / "2025213223" / "package.json"
     assert package_json.exists()
     package = DataPackage.from_dict(json.loads(package_json.read_text(encoding="utf-8")))
-    assert [u.id for u in package.units] == [0, 1, 2, 3]
-    # 被剔除的版面块要在命令行上被看见，不静默丢弃。
-    assert "foot" in result.output
+    # 黑名单当前为空：foot 也进包（宁可多一个噪音单元，也不静默扔掉整段材料）。
+    assert [u.id for u in package.units] == [0, 1, 2, 3, 4, 5]
+    assert "第 1 页" in [u.markdown for u in package.units]
 
 
 def test_parse_必须给_submission(configs_root: Path, tmp_path: Path, fake_docmind: Dict[str, Any]) -> None:
@@ -425,7 +425,7 @@ def test_parse_解析失败时非零退出且不产出数据包(
     def _boom(op: str, payload: Dict[str, Any]) -> Dict[str, Any]:
         if op == "submit":
             return {"id": "job-1"}
-        return {"status": "Fail", "message": "服务内部错误"}
+        return {"Status": "Fail", "message": "服务内部错误"}
 
     monkeypatch.setattr(cli, "sdk_caller", lambda _config, _credentials: _boom)
     packages = tmp_path / "packages"
@@ -459,7 +459,7 @@ def test_parse_之后_eval_能直接跑起来(
     assert eval_result.exit_code == 0, eval_result.output
     package, _dim = recorded["engine"].evaluate_calls[0]
     assert package.package_id == "testtask/s1"
-    assert [u.markdown for u in package.units] == ["# 标题", "正文一句。"]
+    assert [u.markdown for u in package.units] == ["# 标题", "正文一句。", "第 1 页"]
 
 
 # ── 打印 ──────────────────────────────────────────────────────────────────────

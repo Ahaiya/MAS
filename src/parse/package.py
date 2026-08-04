@@ -1,12 +1,7 @@
 """
 版面块（layout）→ DataPackage 的纯函数映射。
 
-零网络、零 LLM、确定性：同样的 layouts 永远产出同样的 DataPackage。一个进白名单
-的 layout 就是一个 Unit——不拼接 markdown 字符串、不做句级细分。解析服务已经把
-结构算好了，拼回一根字符串再用正则切一遍是把它扔掉再猜一遍。
-
-不做任何预算裁剪：本层产出**完整**包，预算裁剪归引擎侧（预算值耦合模型上下文
-窗口，且这样换模型不必重新付费解析）。"""
+"""
 
 from __future__ import annotations
 
@@ -14,21 +9,13 @@ from typing import Any, Dict, List, Sequence, Tuple
 
 from src.contracts.package import DataPackage, Unit
 
-# 白名单**写死在代码里，不进配置**：它决定的是编号身份而非内容质量。开关调错得到
-# 的是质量差些的材料，看得出来；白名单调错得到的是编号与历史不可比的材料，看不出来。
-LAYOUT_WHITELIST = frozenset(
-    {
-        "title",
-        "text",
-        "table",
-        "table_name",
-        "table_note",
-        "figure",
-        "picture",
-        "formula",
-        "contents",
-    }
-)
+
+# 黑名单，当前为空 = 全部放行；确认某个 type 恒为噪音（页眉页脚之类）再往里加。
+LAYOUT_BLACKLIST: frozenset[str] = frozenset()
+
+# 这些 type 的正文在 `text` 而非 `markdownContent`：图块的 markdownContent 只是一个
+# 带过期签名的图片链接（当天失效），VLM 的图片理解结果在 text 里。
+_TEXT_FIELD_TYPES = frozenset({"figure", "picture"})
 
 
 def build_package(
@@ -52,16 +39,20 @@ def build_package(
     excluded: Dict[str, int] = {}
 
     for source_file, layouts in files:
-        # 按 index（阅读顺序）排序后再编号：编号顺序必须是人读材料的顺序。
-        for layout in sorted(layouts, key=lambda item: int(item.get("index", 0))):
+        # 按 (pageNum, index) 排序后再编号：编号顺序必须是人读材料的顺序。
+        # index 是**页内**序号（每页从 0 重数）
+        for layout in sorted(
+            layouts, key=lambda item: (int(item.get("pageNum", 0)), int(item.get("index", 0)))
+        ):
             layout_type = str(layout.get("type", ""))
-            if layout_type not in LAYOUT_WHITELIST:
+            if layout_type in LAYOUT_BLACKLIST:
                 excluded[layout_type] = excluded.get(layout_type, 0) + 1
                 continue
+            field = "text" if layout_type in _TEXT_FIELD_TYPES else "markdownContent"
             units.append(
                 Unit(
                     id=len(units),
-                    markdown=str(layout.get("markdownContent", "")),
+                    markdown=str(layout.get(field, "")),
                     type=layout_type,
                     source_file=source_file,
                     page=int(layout.get("pageNum", 0)),

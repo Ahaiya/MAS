@@ -8,18 +8,11 @@
                                                                  # 评单个二级指标
   python scripts/cli.py eval --task experiment --submission 2025213223
                                                                  # 评该任务下全部二级指标
-  python scripts/cli.py config validate --task experiment        # 校验配置能否加载
+  python scripts/cli.py config validate --task experiment
+                                                                 # 校验配置能否加载
   python scripts/cli.py prompt --task experiment --submission 2025213223 --dim d1
                                                                  # 回看那次运行发给模型的 prompt
 
-parse 与 eval 是**两条命令**：解析一次付一次钱，评价可以反复迭代。eval 不吃文件
-路径，按约定去 `packages/{task}/{submission}/package.json` 找包。
-
-
-命令体只做「建 Engine → evaluate → 打印」：
-模型/参数固定从 `configs/model_config.yaml`读，
-密钥值只从 `.env` 读，
-评价逻辑全在 `src/engine.py`。
 """
 
 from __future__ import annotations
@@ -81,7 +74,7 @@ config_app = typer.Typer(name="config", help="配置校验工具。", add_comple
 app.add_typer(config_app, name="config")
 
 
-# 用户能自己修的配置类错误（改 yaml、补 .env、纠正 --dim 拼写）统一按"印一行人话"
+# 用户能自己修的配置类错误（改 yaml、补 .env、纠正 --dim 拼写）统一按"终端提示"
 # 处理，不甩 traceback；不在这张网里的异常照常向上抛，别把 bug 藏起来。
 # 注意：新增的校验必须抛这些类型之一，否则一个 yaml 笔误就会变成一屏 traceback。
 _USER_FIXABLE_ERRORS = (
@@ -110,10 +103,7 @@ def _available_tasks(configs_root: Path) -> List[str]:
 
 
 def _require_task(configs_root: Path, task: Optional[str]) -> str:
-    """任务必须显式指定——没有默认值，也不沿用任何配置文件里的值。
-
-    旧的 `active_task_id` 写在 bundle 里，切任务要改一个 tracked 文件；漏改就会
-    静默评错任务，而产物目录名和分数都"看起来正常"。宁可在这里报错。"""
+    """任务必须显式指定——没有默认值，也不沿用任何配置文件里的值。"""
     if not configs_root.is_dir():
         raise _exit_with_error(f"配置目录不存在：{configs_root}")
 
@@ -133,7 +123,7 @@ def _require_task(configs_root: Path, task: Optional[str]) -> str:
 def _render_summary(results: Dict[str, DimensionEvaluation]) -> str:
     """把 evaluate() 的返回渲染成给人看的摘要。
 
-    失败隔离（07）下被跳过的观测点必须一并打印——否则用户会以为所有观测点都评过，
+    失败隔离 下被跳过的观测点必须一并打印——否则用户会以为所有观测点都评过，
     而实际上 feedback.json 里少了几个观测点。"""
     lines: List[str] = []
     for dim_id in sorted(results):
@@ -247,8 +237,7 @@ def parse_command(
 ) -> None:
     """解析一次提交的全部材料，产出 packages/{task}/{submission}/{raw/,package.json}。
 
-    一次提交的所有文件共享同一编号空间；**任一文件失败则整个提交失败**，不产出
-    数据包——材料缺一块，后面每个判断都建立在残缺输入上。"""
+    一次提交的所有文件共享同一编号空间；**任一文件失败则整个提交失败**，不产出数据包"""
     task_id = _require_task(configs, task)
     if not submission:
         raise _exit_with_error("必须用 --submission 指定这批材料属于哪份提交。")

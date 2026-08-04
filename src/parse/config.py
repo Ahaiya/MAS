@@ -1,8 +1,7 @@
 """
 `configs/parse.yaml` 的加载器与凭证检查。
 
-缺字段直接报错、不回落默认值——与仓库既有的配置原则一致：静默降级会让「以为开了
-VLM、实际没开」这类事故从产物上完全看不出来。
+缺字段直接报错、不回落默认值。
 
 凭证是阿里云账号 AK/SK 两个值（`ALIBABA_CLOUD_ACCESS_KEY_ID` / `_SECRET`），在
 parse 启动时就检查，不等到提交任务、传完文件才失败。"""
@@ -28,7 +27,7 @@ class ParseConfigError(Exception):
 
 @dataclass(frozen=True)
 class ParseConfig:
-    """解析层的全部旋钮。白名单不在这里——它决定编号身份而非内容质量。"""
+    """解析层的全部旋钮。"""
 
     endpoint: str
     connect_timeout_ms: int
@@ -84,13 +83,11 @@ def load_parse_config(path: Path) -> ParseConfig:
 
 
 def require_credentials() -> Tuple[str, str]:
-    """返回 (access_key_id, access_key_secret)；任一缺失即报错。
+    """返回 (access_key_id, access_key_secret)；任一缺失即报错。"""
 
-    阿里云账号 AK/SK 是**两个值**，与百炼的 `DASHSCOPE_API_KEY` 不是同一套凭证。"""
     missing = [name for name in (_ACCESS_KEY_ID_ENV, _ACCESS_KEY_SECRET_ENV) if not os.getenv(name)]
     if missing:
         raise ParseConfigError(
             f".env 缺少解析服务的凭证：{'、'.join(missing)}。"
-            "这是阿里云账号的 AK/SK 两个值，与 DASHSCOPE_API_KEY（百炼）不是同一套。"
         )
     return os.environ[_ACCESS_KEY_ID_ENV], os.environ[_ACCESS_KEY_SECRET_ENV]
