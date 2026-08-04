@@ -26,8 +26,8 @@ def _rubric() -> RubricSnapshot:
 
 
 def _package() -> DataPackage:
-    units = [Unit(id=i, kind="prose", text=f"text {i}", source_file="a.md", char_range=(0, 5), speaker=None) for i in range(5)]
-    return DataPackage(package_id="pkg-1", units=units, metadata={})
+    units = [Unit(id=i, markdown=f"text {i}", type="text", source_file="a.md", page=0) for i in range(5)]
+    return DataPackage(package_id="pkg-1", units=units, provenance={})
 
 
 def _decision(
@@ -126,7 +126,7 @@ def test_feedback_report_unit_ids_resolve_back_to_package_text() -> None:
 
     result = feedback.build_feedback_report(package, decisions, _rubric(), provider, _feedback_template())
 
-    cited_texts = [package.get_unit(uid).text for uid in result["dimensions"]["A4-1"]["unit_ids"]]
+    cited_texts = [package.get_unit(uid).markdown for uid in result["dimensions"]["A4-1"]["unit_ids"]]
     assert cited_texts == ["text 3", "text 4"]
 
 

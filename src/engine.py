@@ -2,10 +2,10 @@
 Engine Facade：`Engine.from_configs(root, task_id).evaluate(package, dim)` 跑通一次完整评价。
 
 流水线：rate(r1) → rate(r2) → reconcile → [adjudicate] → feedback.
-同一 sample 下各观测点的双链评价用 ThreadPoolExecutor 并发跑（provider IO 密集，GIL 不碍事）
+同一 submission 下各观测点的双链评价用 ThreadPoolExecutor 并发跑（provider IO 密集，GIL 不碍事）
 上限 `max_workers` 从 model_config.yaml 的 runtime 段读取，默认 8。
-segment阶段发生在 Engine.evaluate() 之外，engine 只认「量规 + 已切分好的DataPackage」，
-数据包的来源（read_text_file() 或未来的多源解析接入层）不是它的关心范围。
+解析（parse）阶段发生在 Engine.evaluate() 之外，engine 只认「量规 + 数据包」，
+数据包从哪来不是它的关心范围。
 
 model_config.yaml 是模型/参数的唯一来源：`providers` 缺 rater_1/rater_2/feedback
 直接报错，条目缺 model/api_base/api_key_env 也直接报错。
@@ -36,7 +36,6 @@ from typing import Any, Dict, List, Optional
 from src.agents import feedback, rater, reconcile
 from src.artifacts import (
     write_feedback_artifact,
-    write_package_artifact,
     write_rater_chains_artifact,
     write_run_trace_artifact,
 )
@@ -345,26 +344,26 @@ class Engine:
         同一二级指标下各观测点的 rate 阶段并发执行，其余阶段串行。
 
         Args:
-            package: 已切分好的 DataPackage（segment 阶段在此之外完成）。
+            package: 解析好的 DataPackage（parse 阶段在此之外完成）。
             dim: 指定单个二级指标；缺省评当前任务下全部二级指标。
 
-        写盘：package.json 到 sample 层（一次，`package.package_id` 作为
-        sample 名）；feedback.json/rater_chains.json/run_trace.json 到每个
-        评价过的 dim 层。
+        写盘：feedback.json/rater_chains.json/run_trace.json 到每个评价过的
+        dim 层。package.json **不**在这里另存一份——它是 parse 落在
+        `packages/{task}/{submission}/` 的输入，同一份包评多次会存出多份
+        一模一样的副本。
 
         Returns:
             {dim_id: DimensionEvaluation}，每个被评价的二级指标一条。"""
         dim_ids = [dim] if dim is not None else self._discover_dim_ids()
         task = self._active_task_id
-        sample = package.package_id
-
-        write_package_artifact(self._output_dir, task, sample, package)
+        # package_id 是 "{task}/{submission}"，产物目录只用后半段。
+        submission = package.package_id.split("/")[-1]
 
         results: Dict[str, DimensionEvaluation] = {}
         for dim_id in dim_ids:
             evaluation = self._evaluate_one(package, dim_id)
-            write_feedback_artifact(self._output_dir, task, sample, dim_id, evaluation.feedback_report)
-            write_rater_chains_artifact(self._output_dir, task, sample, dim_id, evaluation.rater_chains_report)
-            write_run_trace_artifact(self._output_dir, task, sample, dim_id, evaluation.run_trace.to_dict())
+            write_feedback_artifact(self._output_dir, task, submission, dim_id, evaluation.feedback_report)
+            write_rater_chains_artifact(self._output_dir, task, submission, dim_id, evaluation.rater_chains_report)
+            write_run_trace_artifact(self._output_dir, task, submission, dim_id, evaluation.run_trace.to_dict())
             results[dim_id] = evaluation
         return results

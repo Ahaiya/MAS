@@ -31,8 +31,8 @@ def _policy() -> PolicySnapshot:
 
 
 def _package() -> DataPackage:
-    units = [Unit(id=i, kind="prose", text=f"text {i}", source_file="a.md", char_range=(0, 5), speaker=None) for i in range(5)]
-    return DataPackage(package_id="pkg-1", units=units, metadata={})
+    units = [Unit(id=i, markdown=f"text {i}", type="text", source_file="a.md", page=0) for i in range(5)]
+    return DataPackage(package_id="pkg-1", units=units, provenance={})
 
 
 def _chain(rater_id: str, code: str, score_val: int) -> RaterChainResult:
@@ -156,7 +156,7 @@ def test_adjudicated_decision_unit_ids_resolve_back_to_source_text() -> None:
 
     decisions = reconcile.reconcile(package, chains_a, chains_b, _rubric(), _policy(), rater_3_provider, _adjudication_template())
 
-    cited_texts = [package.get_unit(uid).text for uid in decisions[0].unit_ids]
+    cited_texts = [package.get_unit(uid).markdown for uid in decisions[0].unit_ids]
     assert cited_texts == ["text 2", "text 3"]
 
 

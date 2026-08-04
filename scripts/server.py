@@ -20,7 +20,7 @@ from pathlib import Path
 _PROJECT_ROOT = Path(__file__).resolve().parent.parent
 _PENDING_PATH = _PROJECT_ROOT / "experiments" / "pending_corrections.json"
 
-_REQUIRED_CORRECTION_FIELDS = {"sample_id"}
+_REQUIRED_CORRECTION_FIELDS = {"submission_id"}
 _ALLOWED_LIST_FIELDS = {"score_corrections", "feedback_corrections", "evidence_additions"}
 
 
@@ -86,9 +86,9 @@ class MASHandler(SimpleHTTPRequestHandler):
             self._json_response(400, {"ok": False, "error": "Invalid JSON body"})
             return
 
-        sample_id = str(payload.get("sample_id") or "").strip()
-        if not sample_id:
-            self._json_response(400, {"ok": False, "error": "Missing sample_id"})
+        submission_id = str(payload.get("submission_id") or "").strip()
+        if not submission_id:
+            self._json_response(400, {"ok": False, "error": "Missing submission_id"})
             return
 
         score_corrections = payload.get("score_corrections") or []
@@ -104,7 +104,7 @@ class MASHandler(SimpleHTTPRequestHandler):
 
         # 没有需要记录的内容时跳过。
         if not score_corrections and not feedback_corrections and not evidence_additions:
-            self._json_response(200, {"ok": True, "sample_id": sample_id, "skipped": True})
+            self._json_response(200, {"ok": True, "submission_id": submission_id, "skipped": True})
             return
 
         # 读取已有的待处理文件（或从头开始）。
@@ -120,11 +120,11 @@ class MASHandler(SimpleHTTPRequestHandler):
         if not isinstance(corrections_list, list):
             corrections_list = []
 
-        # 更新或插入：替换同一样本此前的记录。
-        corrections_list = [c for c in corrections_list if c.get("sample_id") != sample_id]
+        # 更新或插入：替换同一份提交此前的记录。
+        corrections_list = [c for c in corrections_list if c.get("submission_id") != submission_id]
 
         event = {
-            "sample_id": sample_id,
+            "submission_id": submission_id,
             "timestamp": datetime.now().isoformat(),
             "score_corrections": score_corrections,
             "feedback_corrections": feedback_corrections,
@@ -145,12 +145,12 @@ class MASHandler(SimpleHTTPRequestHandler):
 
         n_total = len(score_corrections) + len(feedback_corrections) + len(evidence_additions)
         print(
-            f"[corrections] {sample_id}: "
+            f"[corrections] {submission_id}: "
             f"{len(score_corrections)} score, "
             f"{len(feedback_corrections)} feedback, "
             f"{len(evidence_additions)} evidence → {_PENDING_PATH}"
         )
-        self._json_response(200, {"ok": True, "sample_id": sample_id, "total_items": n_total})
+        self._json_response(200, {"ok": True, "submission_id": submission_id, "total_items": n_total})
 
     # 默认静默请求日志。
     def log_message(self, format: str, *args: object) -> None:

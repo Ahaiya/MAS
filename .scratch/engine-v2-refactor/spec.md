@@ -65,7 +65,7 @@ Status: ready-for-agent
 29. 作为性能敏感用户，我想同一样本下多个二级指标并发评价，以便一次完整评价不必串行等待数分钟。
 30. 作为运维者，我想并发上限 `max_workers` 从 `model_config.yaml` 配置（默认 8），以便按 LLM 服务档位调限流、不触发 429。
 31. 作为运维者，我想单个二级指标评价失败只标记该维度失败并记录、不拖垮整个样本，以便其余维度照常产出。
-32. 作为开发者，我想产物按 `artifacts/{task}/{sample}/{dim}/` 三层组织，以便同一学号跨任务的评价不互相混淆。
+32. 作为开发者，我想产物按 `artifacts/{task}/{submission}/{dim}/` 三层组织，以便同一学号跨任务的评价不互相混淆。
 33. 作为维护者，我想主编排从状态机瘦身为线性函数链（chunk 已删 → segment → rate → rate → reconcile →[adjudicate]→ feedback），以便流程一眼可读。
 34. 作为维护者，我想 debug 埋点整体删除、trace 用收集器模式（阶段函数返回结果时附带 trace，runner 只收集），以便埋点不侵入业务逻辑。
 35. 作为维护者，我想删除 observer/chunker/quote_matcher/orchestrator/outer_loop/debug 等冗余模块，以便代码库精简到工程规范。
@@ -138,7 +138,7 @@ Status: ready-for-agent
 
 ### 并发与错误处理
 - 二级指标级并发：`ThreadPoolExecutor`（provider IO 密集，GIL 不碍事）。`max_workers` 从 `model_config.yaml` 的 `concurrency` 段读取，默认 8。
-- 失败隔离：单个二级指标失败仅标记该 dim 失败并记录，不崩整个 sample，其余照常产出。
+- 失败隔离：单个二级指标失败仅标记该 dim 失败并记录，不崩整份提交，其余照常产出。
 - provider 缺失（尤其 rater_3）直接报错，不静默降级。
 
 ### 配置（`configs/`）
@@ -148,14 +148,14 @@ Status: ready-for-agent
 - `model_config.yaml`：`default` + `raters.{rater_1,rater_2,rater_3}` + `concurrency.max_workers`；一期不加 `parser` 段。
 
 ### 产物
-- 三层 `artifacts/{task}/{sample}/{dim}/`（task 不能省——同一学号会跨 task 出现）。
+- 三层 `artifacts/{task}/{submission}/{dim}/`（task 不能省——同一学号会跨 task 出现）。
 - 每 dim 目录出 3 文件：`feedback.json`（精简，给前端/学生：一级指标分 + 雷达数据 + 各二级指标 final_score/source/证据 unit_ids/文字反馈）、`rater_chains.json`（完整双链 + 仲裁记录，审计用）、`run_trace.json`（成本/性能）。
-- `package.json`（切分后带编号单元）放 sample 层，该 sample 所有 dim 共享。
+- `package.json`（带编号单元的数据包）由 parse 落在 `packages/{task}/{submission}/`，不进 artifacts/。
 
 ### 术语约定
 - 一个 `rubric.yaml` = 一个**一级指标**（如 A4），内含多个**二级指标**（A4-1/2/3，代码里叫 `dimension`）。
 - `--dim a4` 选一个一级指标。`task` = 评价场景/量规集（maker_hackathon 等），其 `active_task_id` 在 bundle 里可切。
-- `sample` = 一次提交（学号命名）；一期引擎不把学号当学生实体（跨轮次追踪是三期）。
+- `submission`（提交）= 一名学生交上来的一批材料（学号命名）；一期引擎不把学号当学生实体（跨轮次追踪是三期）。
 
 ## Testing Decisions
 

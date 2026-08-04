@@ -17,9 +17,9 @@ prompt_template: |
   {% endif %}
 
   ## Candidate Units
-  Each unit is shown as [id](kind) followed by a short preview of its text.
+  Each unit is shown as [id](type) followed by a short preview of its content.
   {% for unit in units %}
-  [{{ unit.id }}]({{ unit.kind }}) {{ unit.preview }}
+  [{{ unit.id }}]({{ unit.type }}) {{ unit.preview }}
   {% endfor %}
 
   ## Instructions

@@ -20,13 +20,13 @@ _SCALE_LEVELS = {5: "优秀", 1: "待改进"}
 _INDICATOR_DESCRIPTION = "本指标考察学生是否能识别产品所面向的不同用户群体及其差异化需求。"
 
 _UNITS = [
-    Unit(id=0, kind="prose", text="老年用户经常无法看懂界面文字。" * 5, source_file="a.md", char_range=(0, 10), speaker=None),
-    Unit(id=1, kind="prose", text="年轻用户反馈良好。", source_file="a.md", char_range=(10, 20), speaker=None),
+    Unit(id=0, markdown="老年用户经常无法看懂界面文字。" * 5, type="text", source_file="a.md", page=0),
+    Unit(id=1, markdown="年轻用户反馈良好。", type="text", source_file="a.md", page=0),
 ]
 
 
 def _package() -> DataPackage:
-    return DataPackage(package_id="pkg-1", units=list(_UNITS), metadata={})
+    return DataPackage(package_id="pkg-1", units=list(_UNITS), provenance={})
 
 
 def test_select_prompt_shows_unit_id_and_truncated_preview() -> None:
@@ -34,10 +34,10 @@ def test_select_prompt_shows_unit_id_and_truncated_preview() -> None:
     prompt = build_rater_select_prompt(_package(), _DIMENSION, _SCALE_LEVELS, template, "", preview_bytes=15)
 
     assert "用户群体识别的全面性" in prompt
-    assert "[0](prose)" in prompt
-    assert "[1](prose)" in prompt
+    assert "[0](text)" in prompt
+    assert "[1](text)" in prompt
     # 预览被截断到 15 个字节，完整正文不应整段出现
-    assert _UNITS[0].text not in prompt
+    assert _UNITS[0].markdown not in prompt
 
 
 def test_select_prompt_preview_truncates_by_utf8_bytes_not_chars() -> None:
@@ -60,16 +60,16 @@ def test_extraction_prompt_shows_full_text_of_selected_units_only() -> None:
     template = PromptLoader().load("configs/prompts/extraction.yaml")
     prompt = build_rater_extraction_prompt(_package(), [0], _DIMENSION, _SCALE_LEVELS, template, "")
 
-    assert _UNITS[0].text in prompt
-    assert _UNITS[1].text not in prompt
+    assert _UNITS[0].markdown in prompt
+    assert _UNITS[1].markdown not in prompt
 
 
 def test_scoring_prompt_shows_full_text_of_evidence_units_and_anchors() -> None:
     template = PromptLoader().load("configs/prompts/scoring.yaml")
     prompt = build_rater_scoring_prompt(_package(), [1], _DIMENSION, _SCALE_LEVELS, template)
 
-    assert _UNITS[1].text in prompt
-    assert _UNITS[0].text not in prompt
+    assert _UNITS[1].markdown in prompt
+    assert _UNITS[0].markdown not in prompt
     assert "能识别多类用户" in prompt
 
 

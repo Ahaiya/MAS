@@ -1,0 +1,29 @@
+# 解析层（Document Mind 文档解析·大模型版）的配置。
+#
+# 不进 model_config.yaml：那里的 providers 是「评委角色 → 模型端点」，解析服务不是
+# 评委角色；且 parse 是引擎外的一步，不该由引擎的唯一配置来源养着。
+#
+# 凭证不在这里——`.env` 的 ALIBABA_CLOUD_ACCESS_KEY_ID / _SECRET（阿里云账号 AK/SK，
+# 与 DASHSCOPE_API_KEY 不是同一套）。
+
+endpoint: docmind-api.cn-hangzhou.aliyuncs.com
+
+# 单次 HTTP 调用的超时（毫秒）。解析本身是异步的，这里只管一次请求。
+connect_timeout_ms: 10000
+read_timeout_ms: 60000
+
+# 轮询：官方口径 10s 一轮、最长 120 分钟。到上限不算永久失败——打印 job id 退出，
+# 结果 24 小时内可凭它续查，不必重新提交重新付费。
+poll_interval_seconds: 10
+poll_max_seconds: 7200
+
+# 取结果时每页拉多少个版面块。分页拉全之前不算这个任务成功。
+layout_step_size: 100
+
+# 三个增强开关，默认全开。教师可按材料实际情况关掉不需要的部分（按页计费更高、更慢）。
+# 关掉 VLM，figure/picture 就只剩 caption（学生截图常常没有图注 = 空壳单元）；
+# 关掉公式识别，量规里评「数学模型」的观测点会直接拿到不可读的证据。
+options:
+  llm_enhancement: true # 版面还原质量（多栏、跨页表格）
+  enhancement_mode: VLM # 多模态图片理解
+  formula_enhancement: true # 公式识别

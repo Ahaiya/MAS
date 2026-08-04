@@ -162,10 +162,10 @@ class _StageAwareProvider(BaseProvider):
 
 def _package() -> DataPackage:
     units = [
-        Unit(id=i, kind="prose", text=f"text {i}", source_file="a.md", char_range=(0, 5), speaker=None)
+        Unit(id=i, markdown=f"text {i}", type="text", source_file="a.md", page=0)
         for i in range(5)
     ]
-    return DataPackage(package_id="student1", units=units, metadata={})
+    return DataPackage(package_id="student1", units=units, provenance={})
 
 
 def _text_response(text: str, tokens: int = 10) -> LLMResponse:
@@ -344,18 +344,17 @@ def test_full_chain_writes_all_artifacts_with_resolvable_unit_ids(configs_root: 
     import json
 
     written = sorted(p.relative_to(output_dir) for p in output_dir.rglob("*.json"))
+    # package.json 不落在 artifacts/ 里——它是 parse 花钱买来的输入，住在 packages/。
     assert [str(p) for p in written] == [
         "testtask/student1/d1/feedback.json",
         "testtask/student1/d1/rater_chains.json",
         "testtask/student1/d1/run_trace.json",
-        "testtask/student1/package.json",
     ]
 
-    package_data = json.loads((output_dir / "testtask" / "student1" / "package.json").read_text(encoding="utf-8"))
     feedback_data = json.loads((output_dir / "testtask" / "student1" / "d1" / "feedback.json").read_text(encoding="utf-8"))
-    unit_text_by_id = {u["id"]: u["text"] for u in package_data["units"]}
+    unit_markdown_by_id = {u.id: u.markdown for u in _package().units}
     cited = feedback_data["dimensions"]["D1-1"]["unit_ids"]
-    assert [unit_text_by_id[uid] for uid in cited] == ["text 0"]
+    assert [unit_markdown_by_id[uid] for uid in cited] == ["text 0"]
 
 
 # ── run_trace.json 阶段级明细 ────────────────────────────────────────────────
@@ -660,8 +659,8 @@ def test_all_dimensions_failing_records_errors_without_masking_them(
 def test_one_primary_dimension_failing_does_not_kill_the_others(
     configs_root: Path, tmp_path: Path
 ) -> None:
-    """一个二级指标整体失败，不能拖垮同一 sample 下其余二级指标（US31：不崩整个
-    sample）。configs_root 里 d1/d2 各有一个观测点，让 d1 的那个必失败。"""
+    """一个二级指标整体失败，不能拖垮同一 submission 下其余二级指标（US31：不崩整份
+    提交）。configs_root 里 d1/d2 各有一个观测点，让 d1 的那个必失败。"""
     providers: Dict[str, BaseProvider] = {
         "rater_1": _StageAwareProvider(score=3, fail_on_code="D1-1", name="r1"),
         "rater_2": _StageAwareProvider(score=3, name="r2"),

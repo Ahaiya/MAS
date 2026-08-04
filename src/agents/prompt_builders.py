@@ -36,10 +36,10 @@ def _dimension_anchor_entries(
 
 
 def _units_by_ids(package: DataPackage, unit_ids: Sequence[int]) -> List[Dict[str, Any]]:
-    """按给定编号顺序返回 [{id, kind, text}]，跳过 package 中不存在的编号。"""
+    """按给定编号顺序返回 [{id, type, markdown}]，跳过 package 中不存在的编号。"""
     lookup = {unit.id: unit for unit in package.units}
     return [
-        {"id": unit.id, "kind": unit.kind, "text": unit.text}
+        {"id": unit.id, "type": unit.type, "markdown": unit.markdown}
         for unit_id in unit_ids
         if (unit := lookup.get(unit_id)) is not None
     ]
@@ -65,7 +65,7 @@ def build_rater_select_prompt(
     注入的上下文变量 (匹配 select.yaml)：
         dimension_name    : 来自 rubric 的可读 dimension 名称。
         dimension_anchors : 仅当前 dimension 的 anchors [{rank, label, text}]。
-        units             : 全部候选单元的预览 [{id, kind, preview}]。
+        units             : 全部候选单元的预览 [{id, type, preview}]。
         indicator_description : 二级指标的完整解释（只给选段/取证看，见下）。
 
     Args:
@@ -79,7 +79,7 @@ def build_rater_select_prompt(
     Returns:
         渲染好准备发送给 provider 的 prompt 字符串。"""
     units = [
-        {"id": unit.id, "kind": unit.kind, "preview": _preview_by_bytes(unit.text, preview_bytes)}
+        {"id": unit.id, "type": unit.type, "preview": _preview_by_bytes(unit.markdown, preview_bytes)}
         for unit in package.units
     ]
     context = {
@@ -106,7 +106,7 @@ def build_rater_extraction_prompt(
     注入的上下文变量 (匹配 extraction.yaml)：
         dimension_name    : 来自 rubric 的可读 dimension 名称。
         dimension_anchors : 仅当前 dimension 的 anchors [{rank, label, text}]。
-        units             : 被选中单元的全文 [{id, kind, text}]。
+        units             : 被选中单元的全文 [{id, type, markdown}]。
         indicator_description : 二级指标的完整解释（只给选段/取证看）。
 
     Returns:
@@ -134,7 +134,7 @@ def build_rater_scoring_prompt(
     注入的上下文变量 (匹配 scoring.yaml)：
         dimension_name    : 来自 rubric 的可读 dimension 名称。
         dimension_anchors : 仅当前 dimension 的 anchors [{rank, label, text}]。
-        units             : 证据单元的全文 [{id, kind, text}]。
+        units             : 证据单元的全文 [{id, type, markdown}]。
 
     Returns:
         渲染好准备发送给 provider 的 prompt 字符串。"""
@@ -165,7 +165,7 @@ def build_adjudication_prompt(
     注入的上下文变量 (匹配 adjudication.yaml)：
         dimension_name    : 来自 rubric 的可读 dimension 名称。
         dimension_anchors : 仅当前 dimension 的 anchors [{rank, label, text}]。
-        units             : 完整原文的全部单元 [{id, kind, text}]（不止双链各自的
+        units             : 完整原文的全部单元 [{id, type, markdown}]（不止双链各自的
                              证据子集——Rater3 可以看到前两条链没看到的单元）。
         raters_evidence   : 双链各自的证据编号与判档理由
                              [{rater_id, evidence_unit_ids, rationale}]。分数与
@@ -177,7 +177,9 @@ def build_adjudication_prompt(
     context = {
         "dimension_name": dimension.get("name", dimension.get("code", "")),
         "dimension_anchors": _dimension_anchor_entries(dimension, scale_levels),
-        "units": [{"id": unit.id, "kind": unit.kind, "text": unit.text} for unit in package.units],
+        "units": [
+            {"id": unit.id, "type": unit.type, "markdown": unit.markdown} for unit in package.units
+        ],
         "raters_evidence": [
             {
                 "rater_id": chain.rater_id,
@@ -206,7 +208,7 @@ def build_feedback_prompt(
         dimension_anchors : 仅当前 dimension 的 anchors [{rank, label, text}]。
         final_score       : 该观测点的最终分（整数）。
         rationale         : 定这个分的理由（权威那一方的），反馈据此写而不是重推一遍。
-        units             : final_score 引用的证据单元全文 [{id, kind, text}]。
+        units             : final_score 引用的证据单元全文 [{id, type, markdown}]。
 
     Returns:
         渲染好准备发送给 provider 的 prompt 字符串。"""

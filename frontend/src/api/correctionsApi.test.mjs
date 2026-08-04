@@ -4,7 +4,7 @@ import test from "node:test";
 import { submitCorrections } from "./correctionsApi.js";
 
 const payload = {
-  sample_id: "sample",
+  submission_id: "sample",
   score_corrections: [
     {
       dimension_code: "A1-1",
@@ -41,7 +41,7 @@ test("submitCorrections falls back when a static server returns 501", async () =
   assert.equal(calls[0].url, "http://127.0.0.1:4174/api/corrections");
   assert.equal(calls[1].url, "http://127.0.0.1:8000/api/corrections");
   assert.equal(calls[0].init.method, "POST");
-  assert.equal(JSON.parse(calls[1].init.body).sample_id, "sample");
+  assert.equal(JSON.parse(calls[1].init.body).submission_id, "sample");
   assert.deepEqual(result, { ok: true, total_items: 1 });
 });
 

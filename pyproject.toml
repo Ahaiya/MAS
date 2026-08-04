@@ -35,6 +35,10 @@ classifiers = [
 ]
 
 dependencies = [
+    "alibabacloud-credentials>=1.0.10",
+    "alibabacloud-docmind-api20220711>=1.4.14",
+    "alibabacloud-tea-openapi>=0.4.5",
+    "alibabacloud-tea-util>=0.3.15",
     "jinja2>=3.1.6",
     "openai>=2.49.0",
     "pydantic>=2.13.4",

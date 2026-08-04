@@ -49,5 +49,9 @@ runtime:
   timeout_seconds: 60       # 单次 LLM 调用的挂钟超时
   max_retries: 3            # 首次失败后的额外重试次数
   retry_delay_seconds: 1    # 重试间隔
-  context_budget_tokens: 48000  # 材料切分后的 token 上限；超出部分从尾部丢弃。
-                                # 与上方 providers 的模型上下文窗口耦合——换窗口更小的模型要一起调小
+  context_budget_tokens: 48000  # 数据包进模型的 token 上限；与上方 providers 的模型
+                                # 上下文窗口耦合——换窗口更小的模型要一起调小。
+                                # 注意：**当前没有任何代码消费它**。旧的「超预算从尾部
+                                # 丢单元」逻辑随 segment.py 一并删除（那个做法本身不合理），
+                                # 引擎侧的预算策略待重新设计，见 .scratch/parse-layer/spec.md
+                                # 的 Out of Scope。

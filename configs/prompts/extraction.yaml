@@ -18,7 +18,7 @@ prompt_template: |
 
   ## Selected Units (full text)
   {% for unit in units %}
-  [{{ unit.id }}]({{ unit.kind }}) {{ unit.text }}
+  [{{ unit.id }}]({{ unit.type }}) {{ unit.markdown }}
 
   {% endfor %}
 

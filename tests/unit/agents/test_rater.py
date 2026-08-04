@@ -29,11 +29,11 @@ def _rubric() -> RubricSnapshot:
 
 def _package() -> DataPackage:
     units = [
-        Unit(id=0, kind="prose", text="老年用户经常无法看懂界面文字。", source_file="a.md", char_range=(0, 10), speaker=None),
-        Unit(id=1, kind="prose", text="年轻用户反馈良好。", source_file="a.md", char_range=(10, 20), speaker=None),
-        Unit(id=2, kind="prose", text="与本维度无关的一句话。", source_file="a.md", char_range=(20, 30), speaker=None),
+        Unit(id=0, markdown="老年用户经常无法看懂界面文字。", type="text", source_file="a.md", page=0),
+        Unit(id=1, markdown="年轻用户反馈良好。", type="text", source_file="a.md", page=0),
+        Unit(id=2, markdown="与本维度无关的一句话。", type="text", source_file="a.md", page=0),
     ]
-    return DataPackage(package_id="pkg-1", units=units, metadata={})
+    return DataPackage(package_id="pkg-1", units=units, provenance={})
 
 
 def _templates():
@@ -172,7 +172,7 @@ def test_run_chain_evidence_unit_ids_resolve_back_to_source_text() -> None:
 
     result = rater.run_chain(package, "A4-1", _rubric(), provider, select_t, extract_t, score_t, rater_id="rater_2")
 
-    cited_texts = [package.get_unit(uid).text for uid in result.evidence_unit_ids]
+    cited_texts = [package.get_unit(uid).markdown for uid in result.evidence_unit_ids]
     assert cited_texts == ["老年用户经常无法看懂界面文字。", "与本维度无关的一句话。"]
 
 

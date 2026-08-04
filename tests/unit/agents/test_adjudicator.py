@@ -28,11 +28,11 @@ def _rubric() -> RubricSnapshot:
 
 def _package() -> DataPackage:
     units = [
-        Unit(id=0, kind="prose", text="老年用户经常无法看懂界面文字。", source_file="a.md", char_range=(0, 10), speaker=None),
-        Unit(id=1, kind="prose", text="年轻用户反馈良好。", source_file="a.md", char_range=(10, 20), speaker=None),
-        Unit(id=2, kind="prose", text="第三方观察者未曾提及的一句话。", source_file="a.md", char_range=(20, 30), speaker=None),
+        Unit(id=0, markdown="老年用户经常无法看懂界面文字。", type="text", source_file="a.md", page=0),
+        Unit(id=1, markdown="年轻用户反馈良好。", type="text", source_file="a.md", page=0),
+        Unit(id=2, markdown="第三方观察者未曾提及的一句话。", type="text", source_file="a.md", page=0),
     ]
-    return DataPackage(package_id="pkg-1", units=units, metadata={})
+    return DataPackage(package_id="pkg-1", units=units, provenance={})
 
 
 def _chain(rater_id: str, score_val: int, evidence_unit_ids, rationale: str = "r") -> RaterChainResult:

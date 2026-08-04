@@ -4,9 +4,8 @@ from pathlib import Path
 from src.agents import feedback
 from src.artifacts import (
     dim_dir,
-    sample_dir,
+    submission_dir,
     write_feedback_artifact,
-    write_package_artifact,
     write_rater_chains_artifact,
 )
 from src.contracts.configuration import RubricSnapshot
@@ -18,18 +17,8 @@ from src.providers.prompt_loader import PromptLoader
 
 
 def _package() -> DataPackage:
-    units = [Unit(id=0, kind="prose", text="第一句。", source_file="a.md", char_range=(0, 4), speaker=None)]
-    return DataPackage(package_id="pkg-1", units=units, metadata={"student_id": "s1"})
-
-
-def test_write_package_artifact_lands_at_sample_layer(tmp_path: Path) -> None:
-    path = write_package_artifact(tmp_path, "maker_hackathon", "s1", _package())
-
-    assert path == sample_dir(tmp_path, "maker_hackathon", "s1") / "package.json"
-    assert path.exists()
-    data = json.loads(path.read_text(encoding="utf-8"))
-    assert data["package_id"] == "pkg-1"
-    assert data["units"][0]["text"] == "第一句。"
+    units = [Unit(id=0, markdown="第一句。", type="text", source_file="a.md", page=0)]
+    return DataPackage(package_id="pkg-1", units=units, provenance={"source_files": ["a.pdf"]})
 
 
 def test_write_feedback_artifact_lands_at_dim_layer(tmp_path: Path) -> None:
@@ -46,19 +35,16 @@ def test_write_rater_chains_artifact_lands_at_dim_layer(tmp_path: Path) -> None:
     assert json.loads(path.read_text(encoding="utf-8")) == {"rater_1": []}
 
 
-def test_package_json_is_shared_across_multiple_dims_in_same_sample(tmp_path: Path) -> None:
-    """package.json 只在 sample 层写一份，多个 dim 目录共享同一份原文。"""
-    write_package_artifact(tmp_path, "maker_hackathon", "s1", _package())
+def test_产物目录里不另存_package_json(tmp_path: Path) -> None:
+    """package.json 是 parse 花钱买来的输入，住在 packages/；同一份包评 N 次，
+    往 artifacts/ 里各存一份只会得到 N 份一模一样的副本。"""
     write_feedback_artifact(tmp_path, "maker_hackathon", "s1", "a4", {})
-    write_feedback_artifact(tmp_path, "maker_hackathon", "s1", "f2", {})
+    write_rater_chains_artifact(tmp_path, "maker_hackathon", "s1", "a4", {})
 
-    package_files = list((tmp_path / "maker_hackathon" / "s1").rglob("package.json"))
-    assert len(package_files) == 1
-    assert package_files[0].parent == sample_dir(tmp_path, "maker_hackathon", "s1")
+    assert list(tmp_path.rglob("package.json")) == []
 
 
-def test_three_layer_directory_structure(tmp_path: Path) -> None:
-    write_package_artifact(tmp_path, "maker_hackathon", "s1", _package())
+def test_三层目录结构(tmp_path: Path) -> None:
     write_feedback_artifact(tmp_path, "maker_hackathon", "s1", "a4", {})
     write_rater_chains_artifact(tmp_path, "maker_hackathon", "s1", "a4", {})
 
@@ -66,7 +52,6 @@ def test_three_layer_directory_structure(tmp_path: Path) -> None:
     assert [str(p) for p in relative_paths] == [
         "maker_hackathon/s1/a4/feedback.json",
         "maker_hackathon/s1/a4/rater_chains.json",
-        "maker_hackathon/s1/package.json",
     ]
 
 
@@ -77,10 +62,10 @@ def test_feedback_and_package_round_trip_through_disk(tmp_path: Path) -> None:
     """consensus 与 adjudicated 两种 source 都能正确落盘；feedback.json 的
     unit_ids 能经磁盘上的 package.json 回指原文（不是只在内存里验证）。"""
     units = [
-        Unit(id=i, kind="prose", text=f"text {i}", source_file="a.md", char_range=(0, 5), speaker=None)
+        Unit(id=i, markdown=f"text {i}", type="text", source_file="a.md", page=0)
         for i in range(5)
     ]
-    package = DataPackage(package_id="pkg-1", units=units, metadata={})
+    package = DataPackage(package_id="pkg-1", units=units, provenance={})
 
     dimensions = [
         {"code": "A4-1", "name": "dim1", "weight": 0.5,
@@ -118,16 +103,20 @@ def test_feedback_and_package_round_trip_through_disk(tmp_path: Path) -> None:
     template = PromptLoader().load("configs/prompts/feedback.yaml")
 
     feedback_report = feedback.build_feedback_report(package, decisions, rubric, provider, template)
-    write_package_artifact(tmp_path, "maker_hackathon", "s1", package)
     write_feedback_artifact(tmp_path, "maker_hackathon", "s1", "a4", feedback_report)
+    # package.json 由 parse 落在 packages/ 下，这里模拟它已经在盘上。
+    package_json_path = tmp_path / "packages" / "maker_hackathon" / "s1" / "package.json"
+    package_json_path.parent.mkdir(parents=True)
+    package_json_path.write_text(
+        json.dumps(package.to_dict(), ensure_ascii=False), encoding="utf-8"
+    )
 
     # 从磁盘重新读回，不复用内存里的 package/feedback_report 对象
-    package_json_path = sample_dir(tmp_path, "maker_hackathon", "s1") / "package.json"
     feedback_json_path = dim_dir(tmp_path, "maker_hackathon", "s1", "a4") / "feedback.json"
     on_disk_package = json.loads(package_json_path.read_text(encoding="utf-8"))
     on_disk_feedback = json.loads(feedback_json_path.read_text(encoding="utf-8"))
 
-    unit_text_by_id = {u["id"]: u["text"] for u in on_disk_package["units"]}
+    unit_text_by_id = {u["id"]: u["markdown"] for u in on_disk_package["units"]}
 
     consensus_entry = on_disk_feedback["dimensions"]["A4-1"]
     adjudicated_entry = on_disk_feedback["dimensions"]["A4-2"]

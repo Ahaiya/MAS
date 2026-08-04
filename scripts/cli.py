@@ -2,10 +2,18 @@
 """MAS 命令行入口——单文件 CLI
 
 用法：
-  python scripts/cli.py eval <file> --task experiment --dim a4   # 评单个二级指标
-  python scripts/cli.py eval <file> --task experiment            # 评该任务下全部二级指标
+  python scripts/cli.py parse a.pdf b.pptx --task experiment --submission 2025213223
+                                                                 # 解析一次提交的全部材料
+  python scripts/cli.py eval --task experiment --submission 2025213223 --dim a4
+                                                                 # 评单个二级指标
+  python scripts/cli.py eval --task experiment --submission 2025213223
+                                                                 # 评该任务下全部二级指标
   python scripts/cli.py config validate --task experiment        # 校验配置能否加载
-  python scripts/cli.py prompt <sample> --task experiment --dim d1 # 回看那次运行发给模型的 prompt
+  python scripts/cli.py prompt --task experiment --submission 2025213223 --dim d1
+                                                                 # 回看那次运行发给模型的 prompt
+
+parse 与 eval 是**两条命令**：解析一次付一次钱，评价可以反复迭代。eval 不吃文件
+路径，按约定去 `packages/{task}/{submission}/package.json` 找包。
 
 
 命令体只做「建 Engine → evaluate → 打印」：
@@ -45,7 +53,7 @@ from src.agents.prompt_builders import (
     build_rater_scoring_prompt,
     build_rater_select_prompt,
 )
-from src.artifacts import dim_dir, sample_dir
+from src.artifacts import dim_dir
 from src.contracts.configuration import RubricSnapshot
 from src.contracts.package import DataPackage
 from src.contracts.scoring import DimensionScore, FinalDecision, RaterChainResult, ScoreSource
@@ -56,13 +64,17 @@ from src.engine_config import (
     load_runtime_config,
     validate_model_config,
 )
+from src.parse.config import ParseConfigError, load_parse_config, require_credentials
+from src.parse.docmind import DocMindError, sdk_caller
+from src.parse.pipeline import SubmissionParseError, package_path, parse_submission
 from src.providers.prompt_loader import PromptLoader, PromptTemplate
-from src.segment import read_text_file
 
 load_dotenv()
 
 _DEFAULT_CONFIGS_ROOT = _PROJECT_ROOT / "configs"
 _DEFAULT_OUTPUT_DIR = _PROJECT_ROOT / "artifacts"
+# 解析结果是花钱买来的**输入**，与 artifacts/（觉得不对就整个删掉重跑的产出）分开放。
+_DEFAULT_PACKAGES_ROOT = _PROJECT_ROOT / "packages"
 
 app = typer.Typer(name="mas", help="MAS 评价引擎命令行入口。", add_completion=False)
 config_app = typer.Typer(name="config", help="配置校验工具。", add_completion=False)
@@ -75,6 +87,8 @@ app.add_typer(config_app, name="config")
 _USER_FIXABLE_ERRORS = (
     EngineConfigError,
     ConfigCompileError,
+    ParseConfigError,
+    DocMindError,
     FileNotFoundError,
     yaml.YAMLError,
     KeyError,
@@ -140,38 +154,29 @@ def _render_summary(results: Dict[str, DimensionEvaluation]) -> str:
     return "\n".join(lines)
 
 
-def _load_package(input_file: Path, budget_tokens: int) -> DataPackage:
-    """IO 边界：读文件 → 切分 → DataPackage。sample 名取文件名（不含后缀）。
+def _load_package(packages_root: Path, task: str, submission: str) -> DataPackage:
+    """按约定去 `packages/{task}/{submission}/package.json` 找包——不做引用解析。
 
-    不存在/后缀不支持在这里就报错退出，不让它烂到 engine 里才炸。"""
-    if not input_file.exists():
-        raise _exit_with_error(f"输入文件不存在：{input_file}")
-
-    try:
-        package, dropped_unit_ids = read_text_file(
-            input_file, package_id=input_file.stem, budget_tokens=budget_tokens
+    包不存在就是「还没解析过」，报一行人话让人先跑 parse；不在这里顺手替他解析：
+    那会把网络/配额失败请回评价链路，还藏起「这一步要花钱」这个事实。"""
+    path = package_path(packages_root, task, submission)
+    if not path.exists():
+        raise _exit_with_error(
+            f"找不到数据包：{path}。先解析这次提交："
+            f"`python scripts/cli.py parse <文件...> --task {task} --submission {submission}`"
         )
-    except ValueError as exc:  # read_text_file 对不支持的后缀抛 ValueError
-        raise _exit_with_error(str(exc)) from exc
-
-    if dropped_unit_ids:
-        typer.echo(
-            f"WARNING: 超出上下文预算，已丢弃 {len(dropped_unit_ids)} 个单元"
-            f"（编号 {dropped_unit_ids[0]}–{dropped_unit_ids[-1]}）。",
-            err=True,
-        )
-    return package
+    return DataPackage.from_dict(json.loads(path.read_text(encoding="utf-8")))
 
 
 @app.command("eval")
 def eval_command(
-    input_file: Annotated[
-        Path,
-        typer.Argument(metavar="INPUT_FILE", help="待评价的材料文件（.md / .txt）。"),
-    ],
     task: Annotated[
         Optional[str],
         typer.Option("--task", help="任务 id，对应 configs/tasks/<task>/。"),
+    ] = None,
+    submission: Annotated[
+        Optional[str],
+        typer.Option("--submission", help="提交标识（学号），对应 packages/<task>/<submission>/。"),
     ] = None,
     configs: Annotated[
         Path,
@@ -181,18 +186,20 @@ def eval_command(
         Optional[str],
         typer.Option("--dim", help="二级指标（如 a4）；缺省评该任务下全部二级指标。"),
     ] = None,
+    packages: Annotated[
+        Path,
+        typer.Option("--packages", help="解析结果根目录（parse 的产出）。"),
+    ] = _DEFAULT_PACKAGES_ROOT,
     output_dir: Annotated[
         Path,
         typer.Option("--output-dir", help="产物落盘根目录。"),
     ] = _DEFAULT_OUTPUT_DIR,
 ) -> None:
-    """评价一份材料：切分 → 双链评价 → 仲裁 → 反馈，产物按 {task}/{sample}/{dim}/ 落盘。"""
+    """评价一次提交：读数据包 → 双链评价 → 仲裁 → 反馈，产物按 {task}/{submission}/{dim}/ 落盘。"""
     task_id = _require_task(configs, task)
-    try:
-        budget_tokens = load_context_budget_tokens(configs / "model_config.yaml")
-    except EngineConfigError as exc:
-        raise _exit_with_error(str(exc)) from exc
-    package = _load_package(input_file, budget_tokens)
+    if not submission:
+        raise _exit_with_error("必须用 --submission 指定这次评价的是哪份提交。")
+    package = _load_package(packages, task_id, submission)
 
     try:
         engine = Engine.from_configs(configs, task_id, output_dir=output_dir)
@@ -206,6 +213,75 @@ def eval_command(
     # 一个分都没评出来时退非零：脚本/CI 才能发现这次"跑完了"其实什么都没产出。
     if all(not r.feedback_report["dimensions"] for r in results.values()):
         raise _exit_with_error("本次评价没有产出任何观测点分数——见上方各观测点失败原因。")
+
+
+# ── parse ────────────────────────────────────────────────────────────────────
+
+
+@app.command("parse")
+def parse_command(
+    files: Annotated[
+        List[Path],
+        typer.Argument(metavar="FILES...", help="这次提交的**全部**源文件（PDF/Word/PPT/图片…）。"),
+    ],
+    task: Annotated[
+        Optional[str],
+        typer.Option("--task", help="任务 id，对应 configs/tasks/<task>/。"),
+    ] = None,
+    submission: Annotated[
+        Optional[str],
+        typer.Option("--submission", help="提交标识（学号），产出落在 packages/<task>/<submission>/。"),
+    ] = None,
+    configs: Annotated[
+        Path,
+        typer.Option("--configs", help="配置根目录（解析配置读 <configs>/parse.yaml）。"),
+    ] = _DEFAULT_CONFIGS_ROOT,
+    packages: Annotated[
+        Path,
+        typer.Option("--packages", help="解析结果根目录。"),
+    ] = _DEFAULT_PACKAGES_ROOT,
+    force: Annotated[
+        bool,
+        typer.Option("--force", help="已有解析原件也重新解析（会重新付费）。"),
+    ] = False,
+) -> None:
+    """解析一次提交的全部材料，产出 packages/{task}/{submission}/{raw/,package.json}。
+
+    一次提交的所有文件共享同一编号空间；**任一文件失败则整个提交失败**，不产出
+    数据包——材料缺一块，后面每个判断都建立在残缺输入上。"""
+    task_id = _require_task(configs, task)
+    if not submission:
+        raise _exit_with_error("必须用 --submission 指定这批材料属于哪份提交。")
+
+    missing = [str(f) for f in files if not Path(f).exists()]
+    if missing:
+        raise _exit_with_error(f"源文件不存在：{'、'.join(missing)}")
+
+    try:
+        parse_config = load_parse_config(configs / "parse.yaml")
+        credentials = require_credentials()  # 密钥缺失当场报错，不等到传完文件才失败
+        package = parse_submission(
+            files,
+            task=task_id,
+            submission=submission,
+            packages_root=packages,
+            config=parse_config,
+            call=sdk_caller(parse_config, credentials),
+            force=force,
+        )
+    except SubmissionParseError as exc:
+        raise _exit_with_error(str(exc)) from exc
+    except ValueError as exc:  # 同名文件等输入问题，改个文件名就能修
+        raise _exit_with_error(str(exc)) from exc
+    except _USER_FIXABLE_ERRORS as exc:
+        raise _exit_with_error(f"{type(exc).__name__}: {exc}") from exc
+
+    excluded = package.provenance["excluded_layouts"]
+    typer.echo(f"解析完成：{len(package.units)} 个单元，来自 {len(files)} 个文件。")
+    if excluded:
+        detail = "、".join(f"{name}×{count}" for name, count in sorted(excluded.items()))
+        typer.echo(f"已剔除的版面块（页眉页脚等，不产生单元）：{detail}")
+    typer.echo(f"数据包已写入：{package_path(packages, task_id, submission)}")
 
 
 # ── config validate ──────────────────────────────────────────────────────────
@@ -355,14 +431,14 @@ def _render_stage_prompts(
 
 @app.command("prompt")
 def prompt_command(
-    sample: Annotated[
-        str,
-        typer.Argument(metavar="SAMPLE", help="样本名或材料文件路径（取文件名，如 2025213223）。"),
-    ],
     dim: Annotated[str, typer.Option("--dim", help="二级指标（如 d1）。")],
     task: Annotated[
         Optional[str],
         typer.Option("--task", help="任务 id，对应 configs/tasks/<task>/。"),
+    ] = None,
+    submission: Annotated[
+        Optional[str],
+        typer.Option("--submission", help="提交标识（学号），如 2025213223。"),
     ] = None,
     code: Annotated[
         Optional[str],
@@ -380,6 +456,10 @@ def prompt_command(
         Path,
         typer.Option("--configs", help="配置根目录。"),
     ] = _DEFAULT_CONFIGS_ROOT,
+    packages: Annotated[
+        Path,
+        typer.Option("--packages", help="解析结果根目录，单元全文从这里读。"),
+    ] = _DEFAULT_PACKAGES_ROOT,
     output_dir: Annotated[
         Path,
         typer.Option("--output-dir", help="产物根目录，从这里读回这次运行的真实数据。"),
@@ -389,9 +469,10 @@ def prompt_command(
 
     单元全文读 package.json，选段/证据编号与双链读 rater_chains.json，最终分读
     final_decisions——都是那次运行模型真实产出的值，因此渲染出来的就是当时发出去
-    的文本。前提是这个样本 + 二级指标已经 eval 过一次。"""
+    的文本。前提是这份提交 + 二级指标已经 eval 过一次。"""
     task_id = _require_task(configs, task)
-    sample_name = Path(sample).stem
+    if not submission:
+        raise _exit_with_error("必须用 --submission 指定看的是哪份提交。")
     try:
         rubric = load_dimension_rubric(configs, task_id, dim)
         loader = PromptLoader()
@@ -399,10 +480,8 @@ def prompt_command(
     except _USER_FIXABLE_ERRORS as exc:
         raise _exit_with_error(str(exc)) from exc
 
-    package = DataPackage.from_dict(
-        _read_json(sample_dir(output_dir, task_id, sample_name) / "package.json")
-    )
-    rater_chains = _read_json(dim_dir(output_dir, task_id, sample_name, dim) / "rater_chains.json")
+    package = _load_package(packages, task_id, submission)
+    rater_chains = _read_json(dim_dir(output_dir, task_id, submission, dim) / "rater_chains.json")
 
     target_code = code or str(rubric.dimensions[0]["code"])
     dimension = rubric.get_dimension(target_code)
@@ -432,7 +511,7 @@ def prompt_command(
     for name, text in prompts.items():
         typer.echo("=" * 78)
         typer.echo(
-            f"  {task_id} / {sample_name} / {dim} / {target_code} / stage={name}"
+            f"  {task_id} / {submission} / {dim} / {target_code} / stage={name}"
             f"  （{len(text)} 字符，{chains[0].rater_id} 链）"
         )
         typer.echo("=" * 78)

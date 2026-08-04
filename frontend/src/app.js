@@ -913,7 +913,7 @@ export function mountWorkbench({ root, selectionMenu, toastNode, state }) {
 
       try {
         await submitCorrections({
-          sample_id: sampleId,
+          submission_id: sampleId,
           score_corrections: scoreCorrections,
           feedback_corrections: feedbackCorrections,
           evidence_additions: evidenceAdditions,
