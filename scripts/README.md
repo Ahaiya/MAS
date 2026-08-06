@@ -82,19 +82,3 @@ uv run scripts/cli.py config validate --task experiment --configs configs
 都能加载。刻意不构建 provider——配置是否自洽与密钥是否就位是两件事，因此没有 `.env`
 也能在 CI 里跑。
 
-## 前端审核台(TODO)
-
-审核台需要用仓库自带服务器启动，因为它同时负责静态文件和 `POST /api/corrections`：
-
-```bash
-uv run scripts/server.py
-```
-
-然后访问 `http://127.0.0.1:8000/frontend/index.html`。
-
-不要用 `python3 -m http.server` 代替——它没有 `/api/corrections` POST 接口，点击
-`Release` 时会返回 501。
-
-`server.py` 目前只做静态文件 + `POST /api/corrections`（把教师修正写进
-`experiments/pending_corrections.json`）。消费这个队列的 `CorrectionAgent` 已随 v1
-外环一并删除——人在回路是三期的事，届时重新接线。
